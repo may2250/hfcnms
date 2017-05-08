@@ -39,31 +39,101 @@
         <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
     
-    <!-- 业务对象 -->
-	<bean id="serviceProcessor" class="com.xinlong.Services.Services_Websocket" >
-	</bean>	
-	
-	<!-- 调度业务 -->
-	<bean id="jobDetail0" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-	 <property name="targetObject" ref="serviceProcessor" />
-	 <property name="targetMethod"  value="execute"/>
-	 <property name="concurrent" value="true" />	 	
+    <!-- POOL配置 -->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="20" />
+		<property name="maxIdle" value="20" />
+		<property name="maxWaitMillis" value="3000" />
+		<property name="testOnBorrow" value="false" />
+	</bean>
+
+	<!-- jedis信息配置 -->
+	<bean id="jedis" class="redis.clients.jedis.Jedis">
+		<constructor-arg index="0" value="127.0.0.1" />		
+		<constructor-arg index="1" value="6379" />
+	</bean>
+
+	<!-- jedis pool配置 -->
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+		<constructor-arg index="0" ref="jedisPoolConfig" />
+
+		<constructor-arg index="1" value="127.0.0.1" />		
+
+		<constructor-arg index="2" value="6379" />		
+		<constructor-arg index="3" value="60000" />
 	</bean>
 	
-	<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-	 <property name="jobDetail" ref="jobDetail0" />
+	<!-- 包装类 -->
+	<bean id="redisUtil" class="com.xinlong.util.RedisUtil">
+		<property name="jedisPool" ref="jedisPool" />
+	</bean>
+    
+    <!-- 业务对象 -->
+
+	<bean id="trapReceiverBean" class="com.xinlong.Services.TrapReceiverBean" >
+		<property name="redisUtil" ref="redisUtil" />
+	</bean>
+	<bean id="hfcAlarmProcessor" class="com.xinlong.Services.ServiceHfcAlarmProcessor" >
+		<property name="redisUtil" ref="redisUtil" />
+	</bean>
+	<bean id="hfcDBProcessor" class="com.xinlong.Services.ServicesDB" >
+		<property name="redisUtil" ref="redisUtil" />
+	</bean>
+	
+	<!-- 调度业务 -->
+
+	<bean id="trapReceiverJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	 <property name="targetObject" ref="trapReceiverBean" />
+	 <property name="targetMethod"  value="start"/>
+	 <property name="concurrent" value="true" />	 	
+	</bean>
+	<bean id="hfcAlarmJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	 <property name="targetObject" ref="hfcAlarmProcessor" />
+	 <property name="targetMethod"  value="start"/>
+	 <property name="concurrent" value="true" />	 	
+	</bean>
+	<bean id="hfcDBob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	 <property name="targetObject" ref="hfcDBProcessor" />
+	 <property name="targetMethod"  value="start"/>
+	 <property name="concurrent" value="true" />	 	
+	</bean>
+											
+
+	<bean id="trapReceierTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+	 <property name="jobDetail" ref="trapReceiverJob" />
 	 <property name="startDelay" value="3000" />
 	 <property name="repeatInterval" value="5" />
-	 <property name="repeatCount" value="0" />	  	 
+	 <property name="repeatCount" value="0" />		  	 
+	</bean>
+	<bean id="hfcAlarmTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+	 <property name="jobDetail" ref="hfcAlarmJob" />
+	 <property name="startDelay" value="1000" />
+	 <property name="repeatInterval" value="5" />
+	 <property name="repeatCount" value="0" />		  	 
+	</bean>
+	<bean id="hfcDBTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+	 <property name="jobDetail" ref="hfcDBob" />
+	 <property name="startDelay" value="500" />
+	 <property name="repeatInterval" value="5" />
+	 <property name="repeatCount" value="0" />		  	 
 	</bean>
 	
 	<!-- 设置调度 -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-	 <property name="configLocation" value="classpath:quartz.properties"/>	 
-	 <property name="triggers">
-	  <list>
-	   <ref bean="simpleTrigger" />
-	  </list>
-	 </property>	 
+		 <property name="jobDetails">  
+	        <list>  
+	            <ref bean="hfcDBob" />
+	            <ref bean="trapReceiverJob" /> 
+	            <ref bean="hfcAlarmJob" /> 
+	        </list>  
+	    </property>  
+	   
+	    <property name="triggers">  
+	        <list>  
+	            <ref bean="hfcDBTrigger" />
+	            <ref bean="trapReceierTrigger" />
+	            <ref bean="hfcAlarmTrigger" /> 
+	        </list>  
+	    </property>  
 	</bean>
 </beans>

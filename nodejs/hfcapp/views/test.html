@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Testing websockets</title>
+	<script type="text/javascript" src="/javascripts/jquery-1.10.2.min.js"></script>
+</head>
+<body>
+  <div>
+    <input type="submit" value="Start" onclick="start()" />
+  </div>
+  <div id="messages"></div>
+  <div id="content"></div>
+  <script type="text/javascript">
+  	var webSocket;
+    
+    var initWebSocket = function() {
+        if (window.WebSocket) {
+        	webSocket = new WebSocket('ws://localhost:8080/hfcnms/websocketservice');
+        	webSocket.onmessage = function(event) {
+        		onMessage(event);
+            };
+            webSocket.onopen = function(event) {
+            	onOpen(event);
+            };
+            webSocket.onclose = function(event) {
+                webSocket.close();
+            };
+            webSocket.onerror = function(event) {
+            	onError(event);
+            };
+        }else{
+            alert('This browser does not supports WebSocket');
+        }
+    }
+ 
+    function onMessage(event) {
+      document.getElementById('messages').innerHTML
+        += '<br />' + event.data;
+    }
+ 
+    function onOpen(event) {
+      document.getElementById('messages').innerHTML
+        = 'Connection established';
+    }
+ 
+    function onError(event) {
+    	document.getElementById('messages').innerHTML = event.data;
+    }
+    
+    var send = function() {
+    	webSocket.send('hello');
+    };
+ 
+    function start() {
+    	if (webSocket.readyState !== 1) {
+    		webSocket.close();
+            initWebSocket();
+            setTimeout(function() {
+            	send();
+            }, 250);
+        } else {
+        	send();
+        };
+      $("#content").load("/test1");
+      return false;
+    }
+    
+    window.onload = function() {
+        initWebSocket();
+    }
+    
+    window.onbeforeunload  = function() {    	
+    	webSocket.close();
+    }
+  </script>
+</body>
+</html>

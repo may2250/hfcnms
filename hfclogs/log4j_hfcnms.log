@@ -667,4 +667,257 @@ FrameworkServlet 'hfcnms': initialization completed in 612 ms
 [#3] ..... service HfcAlarm starting
  [INFO ][2017/05/08 11:16:26777][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
 trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/08 14:54:55967][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/08 14:54:5629 ][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Mon May 08 14:54:56 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/08 14:54:5676 ][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/08 14:54:56310][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [ERROR][2017/05/08 14:54:56466][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:331)]
+Context initialization failed
+ org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'trapReceiverBean' defined in ServletContext resource [/WEB-INF/applicationContext.xml]: Instantiation of bean failed; nested exception is org.springframework.beans.BeanInstantiationException: Could not instantiate bean class [com.xinlong.Services.TrapReceiverBean]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problems: 
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	Snmp cannot be resolved to a type
+	Address cannot be resolved to a type
+	Address cannot be resolved to a type
+	Address cannot be resolved to a type
+	GenericAddress cannot be resolved
+	Address cannot be resolved to a type
+	GenericAddress cannot be resolved
+	TransportMapping cannot be resolved to a type
+	DefaultUdpTransportMapping cannot be resolved to a type
+	UdpAddress cannot be resolved to a type
+	Address cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	MPv1 cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	MPv2c cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	CommandResponder cannot be resolved to a type
+	CommandResponder cannot be resolved to a type
+	CommandResponderEvent cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	CommandResponderEvent cannot be resolved to a type
+	VariableBinding cannot be resolved to a type
+	VariableBinding cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	OID cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	VariableBinding cannot be resolved to a type
+
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1076)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1021)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:504)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:475)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:228)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:298)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:193)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:703)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:760)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:482)
+	at org.springframework.web.context.ContextLoader.configureAndRefreshWebApplicationContext(ContextLoader.java:403)
+	at org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:306)
+	at org.springframework.web.context.ContextLoaderListener.contextInitialized(ContextLoaderListener.java:106)
+	at org.apache.catalina.core.StandardContext.listenerStart(StandardContext.java:4939)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:5434)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:150)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1559)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1549)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: org.springframework.beans.BeanInstantiationException: Could not instantiate bean class [com.xinlong.Services.TrapReceiverBean]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problems: 
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	Snmp cannot be resolved to a type
+	Address cannot be resolved to a type
+	Address cannot be resolved to a type
+	Address cannot be resolved to a type
+	GenericAddress cannot be resolved
+	Address cannot be resolved to a type
+	GenericAddress cannot be resolved
+	TransportMapping cannot be resolved to a type
+	DefaultUdpTransportMapping cannot be resolved to a type
+	UdpAddress cannot be resolved to a type
+	Address cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	MPv1 cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	MPv2c cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	CommandResponder cannot be resolved to a type
+	CommandResponder cannot be resolved to a type
+	CommandResponderEvent cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	CommandResponderEvent cannot be resolved to a type
+	VariableBinding cannot be resolved to a type
+	VariableBinding cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	OID cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	VariableBinding cannot be resolved to a type
+
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:164)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:89)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1069)
+	... 22 more
+Caused by: java.lang.Error: Unresolved compilation problems: 
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	The import org.snmp4j cannot be resolved
+	Snmp cannot be resolved to a type
+	Address cannot be resolved to a type
+	Address cannot be resolved to a type
+	Address cannot be resolved to a type
+	GenericAddress cannot be resolved
+	Address cannot be resolved to a type
+	GenericAddress cannot be resolved
+	TransportMapping cannot be resolved to a type
+	DefaultUdpTransportMapping cannot be resolved to a type
+	UdpAddress cannot be resolved to a type
+	Address cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	MPv1 cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	MPv2c cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	CommandResponder cannot be resolved to a type
+	CommandResponder cannot be resolved to a type
+	CommandResponderEvent cannot be resolved to a type
+	Snmp cannot be resolved to a type
+	CommandResponderEvent cannot be resolved to a type
+	VariableBinding cannot be resolved to a type
+	VariableBinding cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	OID cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	PDUv1 cannot be resolved to a type
+	VariableBinding cannot be resolved to a type
+
+	at com.xinlong.Services.TrapReceiverBean.<init>(TrapReceiverBean.java:12)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:148)
+	... 24 more
+[INFO ][2017/05/08 15:07:03402][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/08 15:07:03508][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Mon May 08 15:07:03 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/08 15:07:03541][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/08 15:07:03958][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/08 15:07:04303][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/08 15:07:04323][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/08 15:07:04324][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/08 15:07:04325][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/08 15:07:04326][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/08 15:07:04326][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/08 15:07:04326][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/08 15:07:04328][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@1fbb93c
+ [INFO ][2017/05/08 15:07:04331][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/08 15:07:04332][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/08 15:07:04332][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/08 15:07:04336][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 931 ms
+ [INFO ][2017/05/08 15:07:04370][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/08 15:07:04374][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Mon May 08 15:07:04 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/08 15:07:04374][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/08 15:07:04514][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/08 15:07:04773][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/08 15:07:05131][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/08 15:07:05136][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/08 15:07:05172][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 802 ms
+ [INFO ][2017/05/08 15:07:05267][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/08 15:07:07250][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/08 15:07:07962][com.xinlong.util.MySqlUtil.getConnection(MySqlUtil.java:34)]
+Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+ [INFO ][2017/05/08 15:07:07962][com.xinlong.Services.ServicesDB.start(ServicesDB.java:56)]
+[#0] ..... ServicesDB done
  
