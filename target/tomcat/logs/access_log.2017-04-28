@@ -1,0 +1,16 @@
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:05:58 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-1 63
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:05:59 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-2 2
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:09:56 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-3 2
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:10:52 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-4 2
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:11:02 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-5 1
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:30:51 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-6 2
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:30:58 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-7 2
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:30:59 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-8 2
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:31:44 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-9 2
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:31:45 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-10 3
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:34:49 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-1 2
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:34:58 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-3 2
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:35:10 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-2 1
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:35:41 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-4 2
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:10:36:07 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-5 1
+0:0:0:0:0:0:0:1 - - [28/Apr/2017:11:02:39 +0800] "GET /hfcnms/websocketservice HTTP/1.1" 101 - http-bio-8080-exec-7 2
