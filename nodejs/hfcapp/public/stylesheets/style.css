@@ -331,6 +331,18 @@ li#menu-academico{
     -webkit-filter: drop-shadow(0px 0px 10px rgba(0,0,0,0.5));
 }*/
 
+.sidebar-tree {
+	position: absolute;
+    padding: 5px;
+    margin-right: 16px;	
+    height:80%;
+}
+
+#dev-fancytree {
+	width: 220px;
+    height:80%;
+}
+
 .fa-html5 {
   color: #fff;
   margin-left: 50px;

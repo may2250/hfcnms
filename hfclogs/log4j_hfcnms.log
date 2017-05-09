@@ -920,4 +920,781 @@ Communications link failure
 The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
  [INFO ][2017/05/08 15:07:07962][com.xinlong.Services.ServicesDB.start(ServicesDB.java:56)]
 [#0] ..... ServicesDB done
+ [INFO ][2017/05/09 09:34:02382][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 09:34:02474][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 09:34:02 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 09:34:02541][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 09:34:02976][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 09:34:03286][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 09:34:03301][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 09:34:03302][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 09:34:03304][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 09:34:03306][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 09:34:03308][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 09:34:03309][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 09:34:03313][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@194785c2
+ [INFO ][2017/05/09 09:34:03320][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 09:34:03320][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 09:34:03322][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 09:34:03328][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 915 ms
+ [INFO ][2017/05/09 09:34:03355][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 09:34:03360][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 09:34:03 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 09:34:03363][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 09:34:03496][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 09:34:03753][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 09:34:04111][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 09:34:04121][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 09:34:04174][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 818 ms
+ [INFO ][2017/05/09 09:34:04245][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 09:34:06230][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/09 10:39:42299][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 10:39:42374][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 10:39:42 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 10:39:42416][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 10:39:42657][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 10:39:42948][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 10:39:42967][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 10:39:42969][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 10:39:42971][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 10:39:42974][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 10:39:42977][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 10:39:42979][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 10:39:42983][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@28e325e4
+ [INFO ][2017/05/09 10:39:42990][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 10:39:42991][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 10:39:42993][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 10:39:430  ][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 697 ms
+ [INFO ][2017/05/09 10:39:4339 ][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 10:39:4347 ][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 10:39:43 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 10:39:4349 ][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 10:39:43185][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 10:39:43418][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 10:39:43767][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 10:39:43783][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 10:39:43900][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 859 ms
+ [INFO ][2017/05/09 10:39:43944][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 10:39:45885][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/09 12:27:525  ][com.xinlong.Services.ServicesDB.start(ServicesDB.java:56)]
+[#0] ..... ServicesDB done
+ [ERROR][2017/05/09 12:27:526  ][org.quartz.core.JobRunShell.run(JobRunShell.java:211)]
+Job DEFAULT.hfcDBob threw an unhandled Exception: 
+ org.springframework.scheduling.quartz.JobMethodInvocationFailedException: Invocation of method 'start' on target class [class com.xinlong.Services.ServicesDB] failed; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error
+	at org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean$MethodInvokingJob.executeInternal(MethodInvokingJobDetailFactoryBean.java:331)
+	at org.springframework.scheduling.quartz.QuartzJobBean.execute(QuartzJobBean.java:112)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:573)
+Caused by: redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error
+	at redis.clients.jedis.Connection.flush(Connection.java:279)
+	at redis.clients.jedis.Connection.getAll(Connection.java:252)
+	at redis.clients.jedis.Connection.getAll(Connection.java:247)
+	at redis.clients.jedis.BinaryJedis.resetState(BinaryJedis.java:1793)
+	at redis.clients.jedis.JedisPool.returnResource(JedisPool.java:97)
+	at com.xinlong.Services.ServicesDB.start(ServicesDB.java:58)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.springframework.util.MethodInvoker.invoke(MethodInvoker.java:269)
+	at org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean$MethodInvokingJob.executeInternal(MethodInvokingJobDetailFactoryBean.java:322)
+	... 3 more
+Caused by: java.net.SocketException: Connection reset by peer: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:113)
+	at java.net.SocketOutputStream.write(SocketOutputStream.java:159)
+	at redis.clients.util.RedisOutputStream.flushBuffer(RedisOutputStream.java:31)
+	at redis.clients.util.RedisOutputStream.flush(RedisOutputStream.java:223)
+	at redis.clients.jedis.Connection.flush(Connection.java:276)
+	... 14 more
+[ERROR][2017/05/09 12:27:5213 ][org.quartz.core.ErrorLogger.schedulerError(QuartzScheduler.java:2425)]
+Job (DEFAULT.hfcDBob threw an exception.
+ org.quartz.SchedulerException: Job threw an unhandled exception. [See nested exception: org.springframework.scheduling.quartz.JobMethodInvocationFailedException: Invocation of method 'start' on target class [class com.xinlong.Services.ServicesDB] failed; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error]
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:213)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:573)
+Caused by: org.springframework.scheduling.quartz.JobMethodInvocationFailedException: Invocation of method 'start' on target class [class com.xinlong.Services.ServicesDB] failed; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error
+	at org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean$MethodInvokingJob.executeInternal(MethodInvokingJobDetailFactoryBean.java:331)
+	at org.springframework.scheduling.quartz.QuartzJobBean.execute(QuartzJobBean.java:112)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	... 1 more
+Caused by: redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error
+	at redis.clients.jedis.Connection.flush(Connection.java:279)
+	at redis.clients.jedis.Connection.getAll(Connection.java:252)
+	at redis.clients.jedis.Connection.getAll(Connection.java:247)
+	at redis.clients.jedis.BinaryJedis.resetState(BinaryJedis.java:1793)
+	at redis.clients.jedis.JedisPool.returnResource(JedisPool.java:97)
+	at com.xinlong.Services.ServicesDB.start(ServicesDB.java:58)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.springframework.util.MethodInvoker.invoke(MethodInvoker.java:269)
+	at org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean$MethodInvokingJob.executeInternal(MethodInvokingJobDetailFactoryBean.java:322)
+	... 3 more
+Caused by: java.net.SocketException: Connection reset by peer: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:113)
+	at java.net.SocketOutputStream.write(SocketOutputStream.java:159)
+	at redis.clients.util.RedisOutputStream.flushBuffer(RedisOutputStream.java:31)
+	at redis.clients.util.RedisOutputStream.flush(RedisOutputStream.java:223)
+	at redis.clients.jedis.Connection.flush(Connection.java:276)
+	... 14 more
+[INFO ][2017/05/09 12:34:24862][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 12:34:24933][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 12:34:24 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 12:34:24970][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 12:34:25228][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 12:34:25511][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 12:34:25527][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 12:34:25530][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 12:34:25533][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 12:34:25537][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 12:34:25544][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 12:34:25547][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 12:34:25549][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@2e79bd7
+ [INFO ][2017/05/09 12:34:25558][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 12:34:25560][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 12:34:25562][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 12:34:25569][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 704 ms
+ [INFO ][2017/05/09 12:34:25601][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 12:34:25610][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 12:34:25 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 12:34:25614][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 12:34:25728][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 12:34:26199][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 12:34:26466][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 12:34:26469][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 12:34:26478][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 12:34:26556][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 953 ms
+ [INFO ][2017/05/09 12:34:28451][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/09 12:36:56682][com.xinlong.Services.ServicesDB.start(ServicesDB.java:56)]
+[#0] ..... ServicesDB done
+ [ERROR][2017/05/09 12:36:56684][org.quartz.core.JobRunShell.run(JobRunShell.java:211)]
+Job DEFAULT.hfcDBob threw an unhandled Exception: 
+ org.springframework.scheduling.quartz.JobMethodInvocationFailedException: Invocation of method 'start' on target class [class com.xinlong.Services.ServicesDB] failed; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error
+	at org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean$MethodInvokingJob.executeInternal(MethodInvokingJobDetailFactoryBean.java:331)
+	at org.springframework.scheduling.quartz.QuartzJobBean.execute(QuartzJobBean.java:112)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:573)
+Caused by: redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error
+	at redis.clients.jedis.Connection.flush(Connection.java:279)
+	at redis.clients.jedis.Connection.getAll(Connection.java:252)
+	at redis.clients.jedis.Connection.getAll(Connection.java:247)
+	at redis.clients.jedis.BinaryJedis.resetState(BinaryJedis.java:1793)
+	at redis.clients.jedis.JedisPool.returnResource(JedisPool.java:97)
+	at com.xinlong.Services.ServicesDB.start(ServicesDB.java:58)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.springframework.util.MethodInvoker.invoke(MethodInvoker.java:269)
+	at org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean$MethodInvokingJob.executeInternal(MethodInvokingJobDetailFactoryBean.java:322)
+	... 3 more
+Caused by: java.net.SocketException: Connection reset by peer: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:113)
+	at java.net.SocketOutputStream.write(SocketOutputStream.java:159)
+	at redis.clients.util.RedisOutputStream.flushBuffer(RedisOutputStream.java:31)
+	at redis.clients.util.RedisOutputStream.flush(RedisOutputStream.java:223)
+	at redis.clients.jedis.Connection.flush(Connection.java:276)
+	... 14 more
+[ERROR][2017/05/09 12:36:56702][org.quartz.core.ErrorLogger.schedulerError(QuartzScheduler.java:2425)]
+Job (DEFAULT.hfcDBob threw an exception.
+ org.quartz.SchedulerException: Job threw an unhandled exception. [See nested exception: org.springframework.scheduling.quartz.JobMethodInvocationFailedException: Invocation of method 'start' on target class [class com.xinlong.Services.ServicesDB] failed; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error]
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:213)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:573)
+Caused by: org.springframework.scheduling.quartz.JobMethodInvocationFailedException: Invocation of method 'start' on target class [class com.xinlong.Services.ServicesDB] failed; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error
+	at org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean$MethodInvokingJob.executeInternal(MethodInvokingJobDetailFactoryBean.java:331)
+	at org.springframework.scheduling.quartz.QuartzJobBean.execute(QuartzJobBean.java:112)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	... 1 more
+Caused by: redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error
+	at redis.clients.jedis.Connection.flush(Connection.java:279)
+	at redis.clients.jedis.Connection.getAll(Connection.java:252)
+	at redis.clients.jedis.Connection.getAll(Connection.java:247)
+	at redis.clients.jedis.BinaryJedis.resetState(BinaryJedis.java:1793)
+	at redis.clients.jedis.JedisPool.returnResource(JedisPool.java:97)
+	at com.xinlong.Services.ServicesDB.start(ServicesDB.java:58)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.springframework.util.MethodInvoker.invoke(MethodInvoker.java:269)
+	at org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean$MethodInvokingJob.executeInternal(MethodInvokingJobDetailFactoryBean.java:322)
+	... 3 more
+Caused by: java.net.SocketException: Connection reset by peer: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:113)
+	at java.net.SocketOutputStream.write(SocketOutputStream.java:159)
+	at redis.clients.util.RedisOutputStream.flushBuffer(RedisOutputStream.java:31)
+	at redis.clients.util.RedisOutputStream.flush(RedisOutputStream.java:223)
+	at redis.clients.jedis.Connection.flush(Connection.java:276)
+	... 14 more
+[INFO ][2017/05/09 12:44:31620][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 12:44:31705][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 12:44:31 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 12:44:31748][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 12:44:3246 ][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 12:44:32376][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 12:44:32395][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 12:44:32398][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 12:44:32400][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 12:44:32402][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 12:44:32409][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 12:44:32411][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 12:44:32416][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@15849b25
+ [INFO ][2017/05/09 12:44:32422][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 12:44:32425][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 12:44:32428][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 12:44:32506][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 883 ms
+ [INFO ][2017/05/09 12:44:32554][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 12:44:32563][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 12:44:32 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 12:44:32565][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 12:44:32759][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 12:44:32925][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 12:44:33328][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 12:44:33396][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 12:44:33406][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 12:44:33467][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 911 ms
+ [INFO ][2017/05/09 12:44:34138][com.xinlong.Services.ServicesDB.start(ServicesDB.java:56)]
+[#0] ..... ServicesDB done
+ [INFO ][2017/05/09 12:44:35305][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/09 12:51:1728 ][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 12:51:17105][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 12:51:17 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 12:51:17149][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 12:51:17413][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 12:51:17777][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 12:51:17797][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 12:51:17799][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 12:51:17801][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 12:51:17804][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 12:51:17810][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 12:51:17813][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 12:51:17817][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@6b743b70
+ [INFO ][2017/05/09 12:51:17824][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 12:51:17827][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 12:51:17830][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 12:51:17838][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 807 ms
+ [INFO ][2017/05/09 12:51:17874][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 12:51:17883][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 12:51:17 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 12:51:17887][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 12:51:1828 ][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 12:51:18231][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 12:51:18544][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 12:51:18561][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 12:51:18624][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 748 ms
+ [INFO ][2017/05/09 12:51:18714][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 12:51:20716][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/09 13:17:13393][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 13:17:13469][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 13:17:13 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 13:17:13514][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 13:17:13749][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 13:17:1435 ][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 13:17:1453 ][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 13:17:1455 ][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 13:17:1457 ][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 13:17:1461 ][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 13:17:1468 ][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 13:17:1470 ][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 13:17:1473 ][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@2b5a1cfa
+ [INFO ][2017/05/09 13:17:1482 ][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 13:17:1484 ][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 13:17:1486 ][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 13:17:1494 ][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 698 ms
+ [INFO ][2017/05/09 13:17:14131][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 13:17:14139][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 13:17:14 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 13:17:14144][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 13:17:14271][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 13:17:14499][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 13:17:14694][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 13:17:14708][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 13:17:14775][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 642 ms
+ [INFO ][2017/05/09 13:17:14981][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 13:17:16957][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/09 13:26:18228][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 13:26:18308][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 13:26:18 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 13:26:18347][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 13:26:18612][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 13:26:18893][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 13:26:18909][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 13:26:18912][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 13:26:18914][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 13:26:18917][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 13:26:18924][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 13:26:18928][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 13:26:18932][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@7a3abb51
+ [INFO ][2017/05/09 13:26:18939][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 13:26:18944][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 13:26:18946][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 13:26:18954][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 723 ms
+ [INFO ][2017/05/09 13:26:18995][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 13:26:192  ][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 13:26:19 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 13:26:194  ][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 13:26:19122][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 13:26:19372][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 13:26:19545][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 13:26:19558][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 13:26:19634][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 637 ms
+ [INFO ][2017/05/09 13:26:19852][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 13:26:21833][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/09 14:37:40566][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 14:37:40633][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 14:37:40 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 14:37:40664][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 14:37:40868][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 14:37:41149][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 14:37:41163][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 14:37:41165][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 14:37:41167][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 14:37:41169][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 14:37:41174][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 14:37:41175][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 14:37:41179][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@129a1274
+ [INFO ][2017/05/09 14:37:41185][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 14:37:41186][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 14:37:41187][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 14:37:41193][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 623 ms
+ [INFO ][2017/05/09 14:37:41222][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 14:37:41228][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 14:37:41 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 14:37:41231][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 14:37:41348][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 14:37:41622][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 14:37:41659][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 14:37:41672][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 14:37:41734][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 511 ms
+ [INFO ][2017/05/09 14:37:42109][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 14:37:4488 ][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/09 14:39:10809][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 14:39:10876][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 14:39:10 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 14:39:10908][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 14:39:11123][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 14:39:11429][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 14:39:11443][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 14:39:11445][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 14:39:11448][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 14:39:11450][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 14:39:11454][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 14:39:11457][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 14:39:11459][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@6aad3504
+ [INFO ][2017/05/09 14:39:11465][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 14:39:11466][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 14:39:11468][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 14:39:11474][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 663 ms
+ [INFO ][2017/05/09 14:39:11501][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 14:39:11508][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 14:39:11 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 14:39:11511][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 14:39:11621][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 14:39:11896][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 14:39:11951][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 14:39:11960][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 14:39:1217 ][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 515 ms
+ [INFO ][2017/05/09 14:39:12645][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 14:39:14367][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/09 14:44:20292][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 14:44:20375][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 14:44:20 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 14:44:20417][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 14:44:20661][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 14:44:20946][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 14:44:20966][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 14:44:20968][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 14:44:20972][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 14:44:20974][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 14:44:20981][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 14:44:20983][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 14:44:20989][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@33b85696
+ [INFO ][2017/05/09 14:44:20998][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 14:44:210  ][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 14:44:214  ][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 14:44:2112 ][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 715 ms
+ [INFO ][2017/05/09 14:44:2147 ][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 14:44:2154 ][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 14:44:21 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 14:44:2157 ][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 14:44:21167][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 14:44:21412][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 14:44:21624][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 14:44:21635][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 14:44:21699][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 651 ms
+ [INFO ][2017/05/09 14:44:21899][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 14:44:23879][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
+ [INFO ][2017/05/09 14:47:28934][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:285)]
+Root WebApplicationContext: initialization started
+ [INFO ][2017/05/09 14:47:2913 ][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing Root WebApplicationContext: startup date [Tue May 09 14:47:29 CST 2017]; root of context hierarchy
+ [INFO ][2017/05/09 14:47:2952 ][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+ [INFO ][2017/05/09 14:47:29298][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 14:47:29588][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1184)]
+Using default implementation for ThreadExecutor
+ [INFO ][2017/05/09 14:47:29604][org.quartz.core.SchedulerSignalerImpl.<init>(SchedulerSignalerImpl.java:61)]
+Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+ [INFO ][2017/05/09 14:47:29606][org.quartz.core.QuartzScheduler.<init>(QuartzScheduler.java:240)]
+Quartz Scheduler v.2.2.1 created.
+ [INFO ][2017/05/09 14:47:29608][org.quartz.simpl.RAMJobStore.initialize(RAMJobStore.java:155)]
+RAMJobStore initialized.
+ [INFO ][2017/05/09 14:47:29613][org.quartz.core.QuartzScheduler.initialize(QuartzScheduler.java:305)]
+Scheduler meta-data: Quartz Scheduler (v2.2.1) 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+ [INFO ][2017/05/09 14:47:29617][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1339)]
+Quartz scheduler 'org.springframework.scheduling.quartz.SchedulerFactoryBean#0' initialized from an externally provided properties instance.
+ [INFO ][2017/05/09 14:47:29619][org.quartz.impl.StdSchedulerFactory.instantiate(StdSchedulerFactory.java:1343)]
+Quartz scheduler version: 2.2.1
+ [INFO ][2017/05/09 14:47:29623][org.quartz.core.QuartzScheduler.setJobFactory(QuartzScheduler.java:2311)]
+JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@4d0e16a4
+ [INFO ][2017/05/09 14:47:29632][org.springframework.context.support.DefaultLifecycleProcessor$LifecycleGroup.start(DefaultLifecycleProcessor.java:341)]
+Starting beans in phase 2147483647
+ [INFO ][2017/05/09 14:47:29633][org.springframework.scheduling.quartz.SchedulerFactoryBean.startScheduler(SchedulerFactoryBean.java:649)]
+Starting Quartz Scheduler now
+ [INFO ][2017/05/09 14:47:29634][org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:575)]
+Scheduler org.springframework.scheduling.quartz.SchedulerFactoryBean#0_$_NON_CLUSTERED started.
+ [INFO ][2017/05/09 14:47:29643][org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:325)]
+Root WebApplicationContext: initialization completed in 706 ms
+ [INFO ][2017/05/09 14:47:29684][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:479)]
+FrameworkServlet 'hfcnms': initialization started
+ [INFO ][2017/05/09 14:47:29694][org.springframework.context.support.AbstractApplicationContext.prepareRefresh(AbstractApplicationContext.java:513)]
+Refreshing WebApplicationContext for namespace 'hfcnms-servlet': startup date [Tue May 09 14:47:29 CST 2017]; parent: Root WebApplicationContext
+ [INFO ][2017/05/09 14:47:29698][org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:316)]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/hfcnms-config.xml]
+ [INFO ][2017/05/09 14:47:29827][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.<init>(AutowiredAnnotationBeanPostProcessor.java:141)]
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+ [INFO ][2017/05/09 14:47:3059 ][com.xinlong.Services.ServicesDB.start(ServicesDB.java:38)]
+[#3] ..... service DB starting
+ [INFO ][2017/05/09 14:47:30227][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+ [INFO ][2017/05/09 14:47:30237][org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler(AbstractUrlHandlerMapping.java:315)]
+Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+ [INFO ][2017/05/09 14:47:30309][org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:498)]
+FrameworkServlet 'hfcnms': initialization completed in 623 ms
+ [INFO ][2017/05/09 14:47:30543][com.xinlong.Services.ServiceHfcAlarmProcessor.start(ServiceHfcAlarmProcessor.java:70)]
+[#3] ..... service HfcAlarm starting
+ [INFO ][2017/05/09 14:47:32524][com.xinlong.Services.TrapReceiverBean.start(TrapReceiverBean.java:53)]
+trapreceiver.start() action called, start trap receivering..........
  
