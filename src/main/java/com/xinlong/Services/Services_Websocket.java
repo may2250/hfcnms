@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -55,6 +56,16 @@ public class Services_Websocket {
 				String jsonString = rootjson.toJSONString();
 				session.getBasicRemote().sendText(jsonString);
 				System.out.println(jsonString);
+			}else if(cmd.equalsIgnoreCase("nodeadd")){
+				rootjson.put("cmd", "nodeadd");
+				rootjson.put("key", "1");
+				rootjson.put("pkey", jsondata.get("key").toString());
+				rootjson.put("title", jsondata.get("value").toString());
+				rootjson.put("type", "custom");
+				rootjson.put("isFolder", true);
+				rootjson.put("expand", true);
+				rootjson.put("icon", "images/net_center.png");
+				broadCast(rootjson.toJSONString());
 			}else if(cmd.equalsIgnoreCase("test")){
 				// Send the first message to the client
 				rootjson.put("cmd", "test");
@@ -75,11 +86,30 @@ public class Services_Websocket {
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			log.info(e.getMessage());
 		}
 		
         
 
+    }
+    
+    private static void broadCast(String message) {
+        for (Session session : webSocketClients) {
+            try {
+                synchronized (session) {
+                    session.getBasicRemote().sendText(message);
+                }
+            } catch (IOException e) {
+            	webSocketClients.remove(session);
+            	System.out.println("Connection closed::::" + webSocketClients.size());
+                try {
+                    session.close();
+                } catch (IOException e1) {
+                }
+                
+            }
+        }
     }
 
     @OnOpen
@@ -87,6 +117,12 @@ public class Services_Websocket {
     	webSocketClients.add(session);
         System.out.println("Client connected::::" + webSocketClients.size());
     }
+    
+    @OnError
+    public void onError(Throwable throwable) {
+        System.out.println(throwable.getMessage());
+    }
+
 
     @OnClose
     public void onClose(Session session) {

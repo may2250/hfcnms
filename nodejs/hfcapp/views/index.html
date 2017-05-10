@@ -10,127 +10,20 @@
 <link href="/stylesheets/bootstrap.min.css" rel='stylesheet' type='text/css' />
 <link href="/stylesheets/ui.fancytree.css" rel='stylesheet' type='text/css' />
 <link href="/stylesheets/jquery-ui.min.css" rel='stylesheet' type='text/css' />
+<link href="/stylesheets/jquery.contextMenu.min.css" rel='stylesheet' type='text/css' />
 <!-- Custom CSS -->
 <link href="/stylesheets/style.css" rel='stylesheet' type='text/css' />
 <!-- Graph CSS -->
 <link href="/stylesheets/font-awesome.css" rel="stylesheet"> 
 <link rel="stylesheet" href="/stylesheets/icon-font.min.css" type='text/css' />
 <!-- //lined-icons -->
-<script src="/javascripts/jquery-1.10.2.min.js"></script>
+<script src="/javascripts/jquery-3.2.1.min.js"></script>
 <script src="/javascripts/jquery-ui.min.js"></script>
 <script src="/javascripts/jquery.fancytree.min.js"></script>
+<script src="/javascripts/jquery.ui-contextmenu.min.js"></script>
 <script type="text/javascript">
-	var webSocket;    
-    $(function () {
-    	initWebSocket();
-    	var datastring = '{"cmd":"getInitTree","message":""}';
-    	send(datastring); 	      
-
-          
-    });
-    
-    var initWebSocket = function() {
-        if (window.WebSocket) {
-        	webSocket = new WebSocket('ws://localhost:8080/hfcnms/websocketservice');
-        	webSocket.onmessage = function(event) {
-        		onMessage(event);
-            };
-            webSocket.onopen = function(event) {
-            	onOpen(event);
-            };
-            webSocket.onclose = function(event) {
-                webSocket.close();
-            };
-            webSocket.onerror = function(event) {
-            	onError(event);
-            };
-        }else{
-            alert('This browser does not supports WebSocket');
-        }
-    }
-    
-    function lazyLoad(event, data) {
-        switch (data.node.key) {
-          case "ajax":
-            
-            break;
-          
-          default:
-            data.result = [];
-        }
-      }
-      
-      function loadError(e,data) {
-          var error = data.error;
-          if (error.status && error.statusText) {
-            data.message = "Ajax error: " + data.message;
-            data.details = "Ajax error: " + error.statusText + ", status code = " + error.status;
-          } else {
-            data.message = "Custom error: " + data.message;
-            data.details = "An error occurred during loading: " + error;
-          }
-        }       
-    
-    function send(datastring) {  
-    	if (webSocket.readyState !== 1) {
-    		webSocket.close();
-            initWebSocket();
-            setTimeout(function() {
-            	webSocket.send(datastring);
-            }, 250);
-        } else {
-        	webSocket.send(datastring);
-        };
-    	
-    };
-    
-    function onMessage(event) {
-    	var jsonobj =  eval('(' + event.data + ')');
-        if(jsonobj.cmd == "getInitTree"){
-        	$("#dev-fancytree").fancytree({
-                source: jsonobj.treenodes,
-                ajax: { debugDelay: 1000 },
-                lazyLoad: lazyLoad
-              });
-        
-        }else if(jsonobj.cmd == "test"){
-        	document.getElementById('messages').innerHTML
-            += '<br />' + jsonobj.message;
-        }else{
-        	document.getElementById('messages').innerHTML
-            += '<br />' + event.data;
-        }
-    }
- 
-    function onOpen(event) {
-      document.getElementById('messages').innerHTML
-        = 'Connection established';
-    }
- 
-    function onError(event) {
-    	//document.getElementById('messages').innerHTML = event.data;
-    }   
- 
-    function start() {
-    	var datastring = '{"cmd":"test","message":"hello!"}';
-    	if (webSocket.readyState !== 1) {
-    		webSocket.close();
-            initWebSocket();
-            setTimeout(function() {
-            	send(datastring);
-            }, 250);
-        } else {
-        	send(datastring);
-        };
-      return false;
-    }
-    
-    window.onload = function() {
-        //initWebSocket();
-    }
-    
     window.onbeforeunload  = function() {    	
-    	webSocket.close();
+    	//webSocket.close();
     }
 </script>
 </head> 
@@ -230,7 +123,14 @@
 		</script>
 
 	</div>
+	<!-- hide div -->
+	<div id="dialog-form" title="配置">
+		<p class="validateTips">在文本框中输入.</p>
+	 	<input type="text" id="set_value" value="" >
+	  
+	</div>
 <!-- Bootstrap Core JavaScript -->
    <script src="/javascripts/bootstrap.min.js"></script>
+   <script src="/javascripts/main.js"></script>
 </body>
 </html>

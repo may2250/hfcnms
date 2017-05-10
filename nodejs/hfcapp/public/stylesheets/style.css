@@ -338,6 +338,12 @@ li#menu-academico{
     height:80%;
 }
 
+.ui-menu {
+    width: 100px;
+    font-size: 63%;
+    z-index: 3; /* over ext-wide titles */
+}
+  
 #dev-fancytree {
 	width: 220px;
     height:80%;
