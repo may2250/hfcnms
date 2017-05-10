@@ -95,13 +95,13 @@ public class helloWorld {
             String sqlInsert = "SELECT * FROM UserGroupTable";
 	
 	      	  pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
-	      	rs= pstmt.executeQuery();
+	      	rs= pstmt.executeQuery(sqlInsert);
 
 	      	   while(rs.next()){
 	      	      UserGroupTableRow tmpRow = new UserGroupTableRow(
-	      	    		  rs.getInt(0),
-	      	   		  rs.getString(1),
-	      	  	  rs.getInt(2));
+	      	    		  rs.getInt(1),
+	      	   		  rs.getString(2),
+	      	  	  rs.getInt(3));
 
                   int i = 3;
                   tmpRow.x1 = rs.getFloat(i++);
