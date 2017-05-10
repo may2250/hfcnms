@@ -53,20 +53,6 @@ public class TrapReceiverBean {
 		logger.info("trapreceiver.start() action called, start trap receivering..........");
 
 		targetAddress = GenericAddress.parse("udp:127.0.0.1/2250");		
-		//test
-		Jedis jedis = null;
-		try {
-			jedis = redisUtil.getConnection();
-			jedis.publish(HFCALARM_MESSAGE, "test message............");
-			redisUtil.closeConnection(jedis);
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			if(jedis != null)
-				redisUtil.getJedisPool().returnBrokenResource(jedis);
-
-		}
 		
 		doWork();
 		

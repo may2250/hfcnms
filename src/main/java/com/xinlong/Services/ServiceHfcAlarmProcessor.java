@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
@@ -19,16 +20,22 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
 import com.xinlong.util.RedisUtil;
+import com.xinlong.util.StaticMemory;
 
 
 public class ServiceHfcAlarmProcessor {
 	private static final String  HFCALARM_MESSAGE =  "servicehfcalarm.message" ;
-	private static final String DB_QUEUE_NAME = "db_queue_message";//Êı¾İ¿âÏûÏ¢¶ÓÁĞ
+	private static final String DB_QUEUE_NAME = "db_queue_message";//ï¿½ï¿½ï¿½İ¿ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
 	private static Logger log = Logger.getLogger(ServiceHfcAlarmProcessor.class);
 	private static RedisUtil redisUtil;
+	private static StaticMemory staticmemory;
 
 	public static void setRedisUtil(RedisUtil redisUtil) {
 		ServiceHfcAlarmProcessor.redisUtil = redisUtil;
+	}
+	
+	public static void setStaticMemory(StaticMemory staticmemory) {
+		ServiceHfcAlarmProcessor.staticmemory = staticmemory;
 	}
 	
 	private   JedisPubSub jedissubSub = new JedisPubSub() {
@@ -84,7 +91,23 @@ public class ServiceHfcAlarmProcessor {
 	
 	private void servicestart(String message) throws InterruptedException, ParseException, IOException{
 		System.out.println(" [x] ServiceHfcAlarmProcessor Received: '" + message + "'");			
-		//dowork(message);					
+		//dowork(message);		
+		//test TODO
+		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
+		String cmd = jsondata.get("cmd").toString();
+		if(cmd.equalsIgnoreCase("nodeadd")){
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "nodeadd");
+			rootjson.put("key", "1");
+			rootjson.put("pkey", jsondata.get("pkey").toString());
+			rootjson.put("title", jsondata.get("title").toString());
+			rootjson.put("type", "custom");
+			rootjson.put("isFolder", true);
+			rootjson.put("expand", true);
+			rootjson.put("icon", "images/net_center.png");
+			staticmemory.broadCast(rootjson.toJSONString());
+		}
+		
 
 	}
 	
@@ -194,12 +217,12 @@ public class ServiceHfcAlarmProcessor {
         switch (traptype)
         { 
             case 0:
-            	cntrapstring = "æ ‡å‡†å†·å¯åŠ?";
+            	cntrapstring = "æ ‡å‡†å†·å¯ï¿½?";
             	entrapstring = "Standard ColdStart";
             	hash.put("alarmlevel", "2");
                 break;
             case 1:
-            	cntrapstring = "æ ‡å‡†çƒ­å¯åŠ?";
+            	cntrapstring = "æ ‡å‡†çƒ­å¯ï¿½?";
             	entrapstring = "Standard WarmStart";
             	hash.put("alarmlevel", "3");
                 break;
@@ -243,14 +266,14 @@ public class ServiceHfcAlarmProcessor {
 	
 	public void ParseTrapWosTrapRestart(Map<String,String> alarm)
     {
-        String cntrapstring = "WOSå…‰å¹³å°é‡å¯åŠ¨ï¼?";
-        String entrapstring = "WOS PlatForm Restartï¼?";
+        String cntrapstring = "WOSå…‰å¹³å°é‡å¯åŠ¨ï¿½?";
+        String entrapstring = "WOS PlatForm Restartï¿½?";
         String devmac = alarm.get("mac");
         String logicalid = alarm.get("logicalid");
-        cntrapstring += ",ç‰©ç†åœ°å€ï¼?" + devmac;
-        cntrapstring += " ,è½¯ä»¶ç‰ˆæœ¬ï¼?" + Float.valueOf(logicalid) / 100.0f;
-        entrapstring += ",MACï¼?" + devmac;
-        entrapstring += " ,Versionï¼?" + Float.valueOf(logicalid) / 100.0f;
+        cntrapstring += ",ç‰©ç†åœ°å€ï¿½?" + devmac;
+        cntrapstring += " ,è½¯ä»¶ç‰ˆæœ¬ï¿½?" + Float.valueOf(logicalid) / 100.0f;
+        entrapstring += ",MACï¿½?" + devmac;
+        entrapstring += " ,Versionï¿½?" + Float.valueOf(logicalid) / 100.0f;
         Map<String, String> hash = new LinkedHashMap();
         long alarmtime = System.currentTimeMillis();
 		Date date = new Date();
@@ -280,7 +303,7 @@ public class ServiceHfcAlarmProcessor {
 	public void ParseTrapHfcColdStart(String mac,String logicid){
 		String cntrapstring = "";
 		String entrapstring = "";
-		cntrapstring = "HFCè®¾å¤‡å†·å¯åŠ?,";
+		cntrapstring = "HFCè®¾å¤‡å†·å¯ï¿½?,";
 		cntrapstring += "é€»è¾‘ID:"+ logicid;
 		entrapstring = "HFC Cold Start,";
 		entrapstring += "Logical ID:"+ logicid;
@@ -296,7 +319,7 @@ public class ServiceHfcAlarmProcessor {
 		hash.put("alarmlevel", "2");
 		hash.put("cnalarminfo", cntrapstring);
 		hash.put("enalarminfo", entrapstring);
-		//·¢ÍùWEBÇ°¶Ë
+		//ï¿½ï¿½ï¿½ï¿½WEBÇ°ï¿½ï¿½
 		sendToAlarmQueue(JSONValue.toJSONString(hash));
 	}
 	
@@ -364,7 +387,7 @@ public class ServiceHfcAlarmProcessor {
 		}
 	}
 	 
-	 //½«´æ´¢ĞÅÏ¢·¢ÍùÊı¾İ¿â¶ÓÁĞ
+	 //ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ¿ï¿½ï¿½ï¿½ï¿½
 	 private void sendToDBQueue(String msg) {
 			try {
 				Jedis jedis = redisUtil.getConnection();

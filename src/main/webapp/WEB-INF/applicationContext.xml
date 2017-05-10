@@ -67,14 +67,20 @@
 	<bean id="redisUtil" class="com.xinlong.util.RedisUtil">
 		<property name="jedisPool" ref="jedisPool" />
 	</bean>
+	<bean id="staticMemory" class="com.xinlong.util.StaticMemory">
+	</bean>
     
     <!-- 业务对象 -->
-
+	<bean id="websocktService" class="com.xinlong.Services.Services_Websocket" >
+		<property name="redisUtil" ref="redisUtil" />
+		<property name="staticMemory" ref="staticMemory" />
+	</bean>
 	<bean id="trapReceiverBean" class="com.xinlong.Services.TrapReceiverBean" >
 		<property name="redisUtil" ref="redisUtil" />
 	</bean>
 	<bean id="hfcAlarmProcessor" class="com.xinlong.Services.ServiceHfcAlarmProcessor" >
 		<property name="redisUtil" ref="redisUtil" />
+		<property name="staticMemory" ref="staticMemory" />
 	</bean>
 	<bean id="hfcDBProcessor" class="com.xinlong.Services.ServicesDB" >
 		<property name="redisUtil" ref="redisUtil" />

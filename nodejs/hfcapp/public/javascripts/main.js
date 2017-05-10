@@ -111,7 +111,7 @@
     	        "edit": {name: "编辑", icon: "edit",
     	        	callback: function(key, opt){
       	              var node = $.ui.fancytree.getNode(opt.$trigger);
-      	              alert("Clicked on " + key + " on " + node);
+      	              
       	            }
     	          },
     	        "delete": {name: "删除", icon: "delete",

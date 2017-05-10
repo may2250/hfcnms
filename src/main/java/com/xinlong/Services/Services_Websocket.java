@@ -23,12 +23,30 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.xinlong.util.RedisUtil;
+import com.xinlong.util.StaticMemory;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPubSub;
+
+
 
 @ServerEndpoint("/websocketservice")
 public class Services_Websocket {
-	private static CopyOnWriteArraySet<Session> webSocketClients = new CopyOnWriteArraySet<Session>();
-
 	private static Logger log = Logger.getLogger(Services_Websocket.class);
+	private static final String  HFCALARM_MESSAGE =  "servicehfcalarm.message" ;
+	
+	private static RedisUtil redisUtil;
+	private static StaticMemory staticmemory;
+
+	public static void setRedisUtil(RedisUtil redisUtil) {
+		Services_Websocket.redisUtil = redisUtil;
+	}
+	
+	public static void setStaticMemory(StaticMemory staticmemory) {
+		Services_Websocket.staticmemory = staticmemory;
+	}
+	
 	
     @OnMessage
     public void onMessage(String message, Session session) throws IOException, InterruptedException {
@@ -65,7 +83,7 @@ public class Services_Websocket {
 				rootjson.put("isFolder", true);
 				rootjson.put("expand", true);
 				rootjson.put("icon", "images/net_center.png");
-				broadCast(rootjson.toJSONString());
+				sendToQueue(rootjson.toJSONString());
 			}else if(cmd.equalsIgnoreCase("test")){
 				// Send the first message to the client
 				rootjson.put("cmd", "test");
@@ -94,28 +112,27 @@ public class Services_Websocket {
 
     }
     
-    private static void broadCast(String message) {
-        for (Session session : webSocketClients) {
-            try {
-                synchronized (session) {
-                    session.getBasicRemote().sendText(message);
-                }
-            } catch (IOException e) {
-            	webSocketClients.remove(session);
-            	System.out.println("Connection closed::::" + webSocketClients.size());
-                try {
-                    session.close();
-                } catch (IOException e1) {
-                }
-                
-            }
-        }
-    }
+   
+    private void sendToQueue(String msg) {
+		Jedis jedis = null;
+		try {
+			jedis = redisUtil.getConnection();
+			jedis.publish(HFCALARM_MESSAGE, msg);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		}finally{
+			redisUtil.closeConnection(jedis);
+		}
+	}    
+    
 
     @OnOpen
     public void onOpen(Session session) {
-    	webSocketClients.add(session);
-        System.out.println("Client connected::::" + webSocketClients.size());
+    	staticmemory.AddSession(session);
+        System.out.println("Client connected::::" + staticmemory.getCount());
     }
     
     @OnError
@@ -126,8 +143,8 @@ public class Services_Websocket {
 
     @OnClose
     public void onClose(Session session) {
-    	webSocketClients.remove(session);
-        System.out.println("Connection closed::::" + webSocketClients.size());        
+    	staticmemory.RemoveSession(session);
+        System.out.println("Connection closed::::" + staticmemory.getCount());        
     }
 
 }
