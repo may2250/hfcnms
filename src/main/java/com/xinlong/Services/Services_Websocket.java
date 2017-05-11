@@ -66,8 +66,9 @@ public class Services_Websocket {
 				sysjson.put("pkey", "");
 				sysjson.put("title", "中心机房");
 				sysjson.put("type", "system");
-				sysjson.put("isFolder", "true");
-				sysjson.put("expand", "true");
+				sysjson.put("isFolder", true);
+				sysjson.put("expand", true);
+				sysjson.put("lazy", true);
 				sysjson.put("icon", "images/net_center.png");
 				jsonarray.add(sysjson);
 				rootjson.put("treenodes", jsonarray);
@@ -83,6 +84,25 @@ public class Services_Websocket {
 				rootjson.put("isFolder", true);
 				rootjson.put("expand", true);
 				rootjson.put("icon", "images/net_center.png");
+				sendToQueue(rootjson.toJSONString());
+			}else if(cmd.equalsIgnoreCase("nodeedit")){
+				rootjson.put("cmd", "nodeedit");
+				rootjson.put("key", jsondata.get("key").toString());
+				rootjson.put("title", jsondata.get("value").toString());
+				rootjson.put("type", "custom");
+				rootjson.put("isFolder", true);
+				rootjson.put("expand", true);
+				rootjson.put("icon", "images/net_center.png");
+				sendToQueue(rootjson.toJSONString());
+			}else if(cmd.equalsIgnoreCase("nodedel")){
+				rootjson.put("cmd", "nodedel");
+				rootjson.put("key", jsondata.get("key").toString());
+				rootjson.put("pkey", jsondata.get("pkey").toString());
+				sendToQueue(rootjson.toJSONString());
+			}else if(cmd.equalsIgnoreCase("lazyLoad")){
+				rootjson.put("cmd", "lazyLoad");
+				rootjson.put("sessionid", session.getId());
+				rootjson.put("key", jsondata.get("key").toString());				
 				sendToQueue(rootjson.toJSONString());
 			}else if(cmd.equalsIgnoreCase("test")){
 				// Send the first message to the client

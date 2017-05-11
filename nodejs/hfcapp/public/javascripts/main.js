@@ -1,5 +1,6 @@
 (function($) {
 	var webSocket;
+	var lazyLoadData = null;
 	$(function() {
 		initWebSocket();
     	var datastring = '{"cmd":"getInitTree","message":""}';
@@ -51,6 +52,17 @@
                expand: jsonobj.expand               
              });
              rootNode.setExpanded(jsonobj.expand);
+        }else if(jsonobj.cmd == "nodeedit"){
+	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
+	       	 node.title = jsonobj.title;
+	         node.renderTitle();
+        }else if(jsonobj.cmd == "nodedel"){
+	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
+	         node.remove();
+        }else if(jsonobj.cmd == "lazyLoad"){
+	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
+	       	 lazyLoadData = jsonobj.lazynodes;
+	         //node.addChildren(jsonobj.lazynodes);
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;
@@ -71,7 +83,8 @@
     	devtree = $("#dev-fancytree").fancytree({
     		extensions: [],
             source: treedata,
-            ajax: { debugDelay: 1000 }
+            ajax: { debugDelay: 1000 },
+            lazyLoad: lazyLoad
           });
     	
     	$.contextMenu({
@@ -83,11 +96,11 @@
     	              alert("Clicked on " + key + " on " + node);
     	            }
     	          },
-    	        "add": {name: "添加", icon: "add",
+    	        "add": {name: "添加节点", icon: "add",
     	        	callback: function(key, opt){
       	              var node = $.ui.fancytree.getNode(opt.$trigger);
       	              if(node.data.type != "device"){
-      	            	  	//添加节点
+      	            	//添加节点
 	      	            $( "#dialog-form" ).dialog({
 	      	        	      autoOpen: false,
 	      	        	      height: 240,
@@ -102,22 +115,46 @@
 	      	        	      }
       	        	    });
 	      	            $("#dialog-form").dialog("open");
-      	              }else{
-      	            	  //添加设备
-      	            	  
       	              }
       	            }
     	          },    	        
     	        "edit": {name: "编辑", icon: "edit",
     	        	callback: function(key, opt){
-      	              var node = $.ui.fancytree.getNode(opt.$trigger);
-      	              
+      	              	var node = $.ui.fancytree.getNode(opt.$trigger);
+	      	            if(node.data.type != "device"){
+	      	            	//编辑节点
+		      	            $( "#dialog-form" ).dialog({
+		      	        	      autoOpen: false,
+		      	        	      height: 240,
+		      	        	      width: 300,
+		      	        	      modal: true,
+		      	        	      buttons: {
+		      	        	    	  Ok: function() {	    
+		      	        	    		  var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
+		      	        	    		  webSocket.send(datastring);
+		      	        	              $( this ).dialog( "close" );
+		      	        	            }
+		      	        	      }
+	      	        	    });
+		      	            $("#dialog-form").dialog("open");
+	      	              }
       	            }
     	          },
     	        "delete": {name: "删除", icon: "delete",
     	        	callback: function(key, opt){
-      	              var node = $.ui.fancytree.getNode(opt.$trigger);
-      	              alert("Clicked on " + key + " on " + node);
+      	              	var node = $.ui.fancytree.getNode(opt.$trigger);
+      	              	if((confirm( "确定要删除？ ")==true))
+      	              	{
+	      	              	if(node.data.type != "device"){
+		      	            	//删除节点
+	      	              		var datastring = '{"cmd":"nodedel","key":"'+node.key +'","type":"'+ node.data.type +'","pkey":"'+ node.data.pkey +'"}';
+	      	              		webSocket.send(datastring);
+			      	            $("#dialog-form").dialog("open");
+		      	             }else{
+		      	            	 //删除设备
+		      	            	 
+		      	             }
+      	              	}	      	            
       	            }
     	          }
     	        }
@@ -127,15 +164,15 @@
     
     
     function lazyLoad(event, data) {
-        switch (data.node.key) {
-          case "ajax":
-            
-            break;
-          
-          default:
-            data.result = [];
-        }
-      }
+    	var datastring = '{"cmd":"lazyLoad","key":"'+ data.node.key + '"}';
+    	webSocket.send(datastring);
+    	data.result = $.Deferred(function (dfd) {
+            setTimeout(function () {
+              dfd.resolve(lazyLoadData);
+            }, 1000);
+          });
+    	lazyLoadData = null;
+    }
       
       function loadError(e,data) {
           var error = data.error;

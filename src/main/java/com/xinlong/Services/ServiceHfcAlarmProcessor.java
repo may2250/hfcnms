@@ -9,7 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.websocket.Session;
+
 import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ContainerFactory;
@@ -106,6 +109,44 @@ public class ServiceHfcAlarmProcessor {
 			rootjson.put("expand", true);
 			rootjson.put("icon", "images/net_center.png");
 			staticmemory.broadCast(rootjson.toJSONString());
+		}else if(cmd.equalsIgnoreCase("nodeedit")){
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "nodeedit");
+			rootjson.put("key", jsondata.get("key").toString());
+			rootjson.put("title", jsondata.get("title").toString());
+			rootjson.put("type", "custom");
+			rootjson.put("isFolder", true);
+			rootjson.put("expand", true);
+			rootjson.put("icon", "images/net_center.png");
+			staticmemory.broadCast(rootjson.toJSONString());
+		}else if(cmd.equalsIgnoreCase("nodedel")){
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "nodedel");
+			rootjson.put("key", jsondata.get("key").toString());
+			rootjson.put("pkey", jsondata.get("pkey").toString());
+			staticmemory.broadCast(rootjson.toJSONString());
+		}else if(cmd.equalsIgnoreCase("lazyLoad")){
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "lazyLoad");
+			rootjson.put("key", jsondata.get("key").toString());
+			JSONArray jsonarray = new JSONArray();
+			JSONObject sysjson = new JSONObject();
+			sysjson.put("key", "3");
+			sysjson.put("pkey", jsondata.get("key").toString());
+			sysjson.put("title", "LazyLoadNode");
+			sysjson.put("type", "device");
+			sysjson.put("isFolder", false);
+			sysjson.put("expand", false);
+			sysjson.put("icon", "images/net_center.png");
+			jsonarray.add(sysjson);
+			rootjson.put("lazynodes", jsonarray);
+			Session ses = staticmemory.getSessionByID(jsondata.get("sessionid").toString());
+			if(ses != null){
+				ses.getBasicRemote().sendText(rootjson.toJSONString());
+			}else{
+				System.out.println("No Session Found::::");
+			}
+			
 		}
 		
 
