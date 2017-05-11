@@ -1,4 +1,4 @@
-package com.xinlong.util;
+package wl.hfc.common;
 
 public class UserGroupTableRow
 {
