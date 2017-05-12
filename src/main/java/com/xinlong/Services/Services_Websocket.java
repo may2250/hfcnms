@@ -53,7 +53,13 @@ public class Services_Websocket {
 
         // Print the client message for testing purposes
         System.out.println("Received: " + message);
-		try {
+        parseWebMessage(message, session);        
+
+    }
+    
+    @SuppressWarnings("unchecked")
+	private void parseWebMessage(String message, Session session) throws IOException, InterruptedException{
+    	try {
 			JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 			String cmd = jsondata.get("cmd").toString();
 			JSONObject rootjson = new JSONObject();
@@ -104,6 +110,11 @@ public class Services_Websocket {
 				rootjson.put("sessionid", session.getId());
 				rootjson.put("key", jsondata.get("key").toString());				
 				sendToQueue(rootjson.toJSONString());
+			}
+			else if(cmd.equalsIgnoreCase("deviceadd")){
+				rootjson.put("cmd", "deviceadd");
+				rootjson.put("value", jsondata.get("value").toString());				
+				sendToQueue(rootjson.toJSONString());
 			}else if(cmd.equalsIgnoreCase("test")){
 				// Send the first message to the client
 				rootjson.put("cmd", "test");
@@ -127,9 +138,7 @@ public class Services_Websocket {
 			e.printStackTrace();
 			log.info(e.getMessage());
 		}
-		
-        
-
+    	
     }
     
    

@@ -177,16 +177,38 @@ a:hover { transition: all 200ms ease-in-out; }
     width: 15%;	
 }
 
+.user-png {
+	width: 20px;
+}
+
+.loginuser:hover{
+    color:white;
+}
+
+.loginuser {
+	margin-right: 5px;
+    color: dodgerblue;
+}
+
 .users_details_left li {
 	height: 89.4px;
 	text-align: center;
-	padding-top: 20px;
+	padding-top: 30px;
 	padding-bottom: 0px;
 }
 
 .outter-wp {
     padding: 0.5em 1.5em;
     margin-bottom: 2em;
+}
+
+div.dataTables_wrapper {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.tabbable {
+	font-size: 10px;
 }
 
 .sidebar-menu {

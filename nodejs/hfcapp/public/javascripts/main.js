@@ -1,10 +1,49 @@
 (function($) {
 	var webSocket;
+	var tbl_devalarm;
+	var tbl_optlog;
 	var lazyLoadData = null;
 	$(function() {
 		initWebSocket();
     	var datastring = '{"cmd":"getInitTree","message":""}';
     	send(datastring);
+    	
+    	tbl_devalarm = $('#tbl_devalarm').DataTable({
+    		scrollY:        200,
+    		scrollX: 		true,
+    		scrollCollapse: true,
+    		order: 			[[ 0, "desc" ]],
+            paging:         false,
+            info:     		false,
+            searching: 		false,
+            columns: [
+                      { title: "ID" },
+                      { title: "级别" },
+                      { title: "来源" },
+                      { title: "路径" },
+                      { title: "类型" },
+                      { title: "参数名" },
+                      { title: "参数值" },
+                      { title: "发生时间" },
+                      { title: "处理提交" },
+                      { title: "确认时间" }
+                  ]
+        } );
+    	
+    	tbl_optlog = $('#tbl_optlog').DataTable({
+    		scrollY:        200,
+    		scrollCollapse: true,
+    		order: 			[[ 0, "desc" ]],
+            paging:         false,
+            info:     		false,
+            searching: 		false,
+            columns: [
+                      { title: "日志编号" },
+                      { title: "日志类型" },
+                      { title: "日志内容" },
+                      { title: "登记时间" }
+                  ]
+        } );
     	
     	$("#start").click(function(){
     		start();
@@ -12,8 +51,9 @@
 	});
 	
 	function initWebSocket() {
+		var hostip = window.location.hostname;
         if (window.WebSocket) {
-        	webSocket = new WebSocket('ws://localhost:8080/hfcnms/websocketservice');
+        	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice');
         	webSocket.onmessage = function(event) {
         		onMessage(event);
             };
@@ -81,21 +121,46 @@
     
     function initTree(treedata) {
     	devtree = $("#dev-fancytree").fancytree({
-    		extensions: [],
+    		extensions: ["dnd"],
             source: treedata,
-            ajax: { debugDelay: 1000 },
-            lazyLoad: lazyLoad
+            clickFolderMode: 1,
+            click: function(event, data) {
+                
+            },
+            dblclick: function(event, data) {
+            	//data.node.toggleSelect();
+            	
+            },
+            dnd: {
+                autoExpandMS: 400,
+                focusOnClick: true,
+                preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+                preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+                dragStart: function(node, data) {
+
+                  return true;
+                },
+                dragEnter: function(node, data) {
+
+                   return true;
+                },
+                dragDrop: function(node, data) {                  
+                	if(node.data.type != "device"){
+                		data.otherNode.moveTo(node, data.hitMode);
+                    	node.setExpanded();
+                    	var datastring = '{"cmd":"nodemove","key":"'+data.otherNode.key +'","pkey":"'+ data.otherNode.data.pkey +'","moveto":"'+ node.key +'"}';
+        	    		webSocket.send(datastring);
+                	}else{
+                		alert("移动到错误的节点!");
+                	}                	
+                }
+              },
+              lazyLoad: lazyLoad
           });
     	
     	$.contextMenu({
     	      selector: "#dev-fancytree span.fancytree-title",
     	      items: {
-    	        "cut": {name: "Cut", icon: "cut",
-    	            callback: function(key, opt){
-    	              var node = $.ui.fancytree.getNode(opt.$trigger);
-    	              alert("Clicked on " + key + " on " + node);
-    	            }
-    	          },
     	        "add": {name: "添加节点", icon: "add",
     	        	callback: function(key, opt){
       	              var node = $.ui.fancytree.getNode(opt.$trigger);
@@ -114,6 +179,8 @@
 	      	        	            }
 	      	        	      }
       	        	    });
+	      	            $("#set_value").value = "";
+	      	            updateTips("请输入添加节点名称:");
 	      	            $("#dialog-form").dialog("open");
       	              }
       	            }
@@ -136,11 +203,38 @@
 		      	        	            }
 		      	        	      }
 	      	        	    });
+		      	            $("#set_value").value = "";
+		      	            updateTips("请输入要更改的内容:");
 		      	            $("#dialog-form").dialog("open");
 	      	              }
       	            }
     	          },
-    	        "delete": {name: "删除", icon: "delete",
+    	          "sep1": "----",
+    	          "add": {name: "添加设备", icon: "add",
+      	        	callback: function(key, opt){
+        	              var node = $.ui.fancytree.getNode(opt.$trigger);
+        	              if(node.data.type != "device"){
+        	            	//添加设备
+        	            	  $( "#dialog-form" ).dialog({
+    	      	        	      autoOpen: false,
+    	      	        	      height: 240,
+    	      	        	      width: 300,
+    	      	        	      modal: true,
+    	      	        	      buttons: {
+    	      	        	    	  Ok: function() {	    
+    	      	        	    		  var datastring = '{"cmd":"deviceadd","value":"'+ $("#set_value").val()+'"}';
+    	      	        	    		  webSocket.send(datastring);
+    	      	        	              $( this ).dialog( "close" );
+    	      	        	            }
+    	      	        	      }
+	          	        	    });
+	    	      	            $("#set_value").value = "";
+	        	            	updateTips("输入搜索设备的IP地址:");
+	        	            	$("#dialog-form").dialog("open");
+	        	          }
+	        	     }
+      	          },    	 
+    	          "delete": {name: "删除", icon: "delete",
     	        	callback: function(key, opt){
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
       	              	if((confirm( "确定要删除？ ")==true))
@@ -183,7 +277,12 @@
             data.message = "Custom error: " + data.message;
             data.details = "An error occurred during loading: " + error;
           }
-        }       
+        } 
+      
+	  function updateTips( t ) {
+		  $( ".validateTips" )
+	        .text( t );
+	  }
     
     function send(datastring) {  
     	if (webSocket.readyState !== 1) {
