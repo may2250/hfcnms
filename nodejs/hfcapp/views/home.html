@@ -3,3 +3,23 @@
 	<button id="start">start</button>
 </div>
 <div id="messages"></div>
+<script type="text/javascript">
+$("#start").click(function(){
+	start();
+});
+
+function start() {
+	var datastring = '{"cmd":"test","message":"hello!"}';
+	if (__globalobj__._webSocket.readyState !== 1) {
+		__globalobj__._webSocket.close();
+		__globalobj__._initWebSocket();
+        setTimeout(function() {
+        	__globalobj__._send(datastring);
+        }, 250);
+    } else {
+    	__globalobj__._send(datastring);
+    };
+  return false;
+}
+
+</script>

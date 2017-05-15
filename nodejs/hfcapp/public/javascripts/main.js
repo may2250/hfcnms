@@ -4,12 +4,46 @@
 	var tbl_optlog;
 	var lazyLoadData = null;
 	$(function() {
-		initWebSocket();
+		initWebSocket();		
     	var datastring = '{"cmd":"getInitTree","message":""}';
     	send(datastring);
     	
+    	window.__globalobj__ = {
+    		    _webSocket:webSocket,
+    		    _send:function(datastring) {  
+    		    	if (webSocket.readyState !== 1) {
+    		            setTimeout(function() {
+    		            	webSocket.send(datastring);
+    		            }, 250);
+    		        } else {
+    		        	webSocket.send(datastring);
+    		        };
+    		    	
+    		    },
+    		    _initWebSocket:function(){
+    				var hostip = window.location.hostname;
+    		        if (window.WebSocket) {
+    		        	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice');
+    		        	webSocket.onmessage = function(event) {
+    		        		onMessage(event);
+    		            };
+    		            webSocket.onopen = function(event) {
+    		            	onOpen(event);
+    		            };
+    		            webSocket.onclose = function(event) {
+    		                webSocket.close();
+    		            };
+    		            webSocket.onerror = function(event) {
+    		            	onError(event);
+    		            };
+    		        }else{
+    		            alert('This browser does not supports WebSocket');
+    		        }
+    		    }
+    		};
+    	
     	tbl_devalarm = $('#tbl_devalarm').DataTable({
-    		scrollY:        200,
+    		scrollY:        150,
     		scrollX: 		true,
     		scrollCollapse: true,
     		order: 			[[ 0, "desc" ]],
@@ -27,27 +61,51 @@
                       { title: "发生时间" },
                       { title: "处理提交" },
                       { title: "确认时间" }
-                  ]
+                  ],
+            drawCallback: function() {
+        	    $.contextMenu({
+        	      selector: '#tbl_devalarm tbody tr td',
+        	      callback: function(key, options) {
+        	        var id = options.$trigger[0].parentElement.id;
+        	        var m = "clicked: " + key + ' ' + id;
+        	        window.console && console.log(m) || alert(m);
+        	      },
+        	      items: {
+        	        "edit": {
+        	          name: "处理",
+        	          icon: "edit"
+        	        }
+        	      }
+        	    });
+        	  }
         } );
     	
     	tbl_optlog = $('#tbl_optlog').DataTable({
-    		scrollY:        200,
+    		scrollY:        150,
+    		scrollX: 		true,
     		scrollCollapse: true,
     		order: 			[[ 0, "desc" ]],
             paging:         false,
             info:     		false,
-            searching: 		false,
-            columns: [
-                      { title: "日志编号" },
-                      { title: "日志类型" },
-                      { title: "日志内容" },
-                      { title: "登记时间" }
-                  ]
+            searching: 		false
         } );
     	
-    	$("#start").click(function(){
-    		start();
-    	});
+    	$('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
+            $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+        } );
+    	
+    	$('#tbl_devalarm tbody').on( 'click', 'tr', function () {
+            if ( $(this).hasClass('selected') ) {
+                $(this).removeClass('selected');
+            }
+            else {
+            	tbl_devalarm.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        } ); 
+    	
+    	
+    	
 	});
 	
 	function initWebSocket() {
@@ -297,18 +355,6 @@
     
        
  
-    function start() {
-    	var datastring = '{"cmd":"test","message":"hello!"}';
-    	if (webSocket.readyState !== 1) {
-    		webSocket.close();
-            initWebSocket();
-            setTimeout(function() {
-            	send(datastring);
-            }, 250);
-        } else {
-        	send(datastring);
-        };
-      return false;
-    }
+    
     
 })(jQuery);
