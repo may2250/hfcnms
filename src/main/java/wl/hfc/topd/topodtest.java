@@ -12,7 +12,7 @@ public class topodtest {
 		CDatabaseEngine	ICDatabaseEngine1=new CDatabaseEngine();
 		ICDatabaseEngine1.getConnection();
 		
-		DevGrpModel md1DevGrpModel=new DevGrpModel(ICDatabaseEngine1);
+		MainKernel md1DevGrpModel=new MainKernel(ICDatabaseEngine1);
 		md1DevGrpModel.initTopodData();
 	}
 

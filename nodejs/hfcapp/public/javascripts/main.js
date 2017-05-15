@@ -182,11 +182,11 @@
     		extensions: ["dnd"],
             source: treedata,
             clickFolderMode: 1,
-            click: function(event, data) {
-                
-            },
             dblclick: function(event, data) {
-            	//data.node.toggleSelect();
+            	if(data.node.data.type == "device"){
+            		//show deivce detail
+            		showDeviceDetail(data.node.data.type);
+            	}
             	
             },
             dnd: {
@@ -311,6 +311,11 @@
     	          }
     	        }
     	    });
+    }
+    
+    function showDeviceDetail(devtype){
+    	//TODO
+    	$(".candile").load("/opticalTran");
     }
     
     

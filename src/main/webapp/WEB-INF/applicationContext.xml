@@ -85,6 +85,10 @@
 	<bean id="hfcDBProcessor" class="com.xinlong.Services.ServicesDB" >
 		<property name="redisUtil" ref="redisUtil" />
 	</bean>
+	<bean id="mainKernel" class="wl.hfc.topd.MainKernel" >
+		<property name="redisUtil" ref="redisUtil" />
+		<property name="staticMemory" ref="staticMemory" />
+	</bean>
 	
 	<!-- 调度业务 -->
 
@@ -98,8 +102,13 @@
 	 <property name="targetMethod"  value="start"/>
 	 <property name="concurrent" value="true" />	 	
 	</bean>
-	<bean id="hfcDBob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	<bean id="hfcDBJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="hfcDBProcessor" />
+	 <property name="targetMethod"  value="start"/>
+	 <property name="concurrent" value="true" />	 	
+	</bean>
+	<bean id="mainKernelJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	 <property name="targetObject" ref="mainKernel" />
 	 <property name="targetMethod"  value="start"/>
 	 <property name="concurrent" value="true" />	 	
 	</bean>
@@ -118,8 +127,14 @@
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
 	<bean id="hfcDBTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-	 <property name="jobDetail" ref="hfcDBob" />
+	 <property name="jobDetail" ref="hfcDBJob" />
 	 <property name="startDelay" value="500" />
+	 <property name="repeatInterval" value="5" />
+	 <property name="repeatCount" value="0" />		  	 
+	</bean>
+	<bean id="mainKernelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+	 <property name="jobDetail" ref="mainKernelJob" />
+	 <property name="startDelay" value="3000" />
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
@@ -131,6 +146,7 @@
 	            <ref bean="hfcDBob" />
 	            <ref bean="trapReceiverJob" /> 
 	            <ref bean="hfcAlarmJob" /> 
+	            <ref bean="mainKernelJob" />
 	        </list>  
 	    </property>  
 	   
@@ -139,6 +155,7 @@
 	            <ref bean="hfcDBTrigger" />
 	            <ref bean="trapReceierTrigger" />
 	            <ref bean="hfcAlarmTrigger" /> 
+	            <ref bean="mainKernelTrigger" /> 
 	        </list>  
 	    </property>  
 	</bean>

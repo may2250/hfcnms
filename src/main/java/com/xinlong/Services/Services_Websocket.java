@@ -34,7 +34,7 @@ import redis.clients.jedis.JedisPubSub;
 @ServerEndpoint("/websocketservice")
 public class Services_Websocket {
 	private static Logger log = Logger.getLogger(Services_Websocket.class);
-	private static final String  HFCALARM_MESSAGE =  "servicehfcalarm.message" ;
+	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
 	
 	private static RedisUtil redisUtil;
 	private static StaticMemory staticmemory;
@@ -64,8 +64,9 @@ public class Services_Websocket {
 			String cmd = jsondata.get("cmd").toString();
 			JSONObject rootjson = new JSONObject();
 			if(cmd.equalsIgnoreCase("getInitTree")){
+				sendToQueue(message);
 				//获取设备数结构				
-				JSONArray jsonarray = new JSONArray();
+				/*JSONArray jsonarray = new JSONArray();
 				rootjson.put("cmd", "getInitTree");
 				JSONObject sysjson = new JSONObject();
 				sysjson.put("key", "0");
@@ -81,6 +82,7 @@ public class Services_Websocket {
 				String jsonString = rootjson.toJSONString();
 				session.getBasicRemote().sendText(jsonString);
 				System.out.println(jsonString);
+				*/
 			}else if(cmd.equalsIgnoreCase("nodeadd")){
 				rootjson.put("cmd", "nodeadd");
 				rootjson.put("key", "1");
@@ -146,7 +148,7 @@ public class Services_Websocket {
 		Jedis jedis = null;
 		try {
 			jedis = redisUtil.getConnection();
-			jedis.publish(HFCALARM_MESSAGE, msg);
+			jedis.publish(MAINKERNEL_MESSAGE, msg);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

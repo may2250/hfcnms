@@ -10,4 +10,8 @@ router.get('/home', function(req, res, next) {
 	  res.render('home', { title: 'Express' });
 	});
 
+router.get('/opticalTran', function(req, res, next) {
+	  res.render('opticalTran', { title: 'Express' });
+	});
+
 module.exports = router;
