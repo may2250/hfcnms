@@ -3,6 +3,7 @@ package wl.hfc.topd;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.websocket.Session;
@@ -31,6 +32,10 @@ public class MainKernel {
     public Hashtable listGrpHash = new Hashtable();
     
     public static MainKernel me;
+    public MainKernel()
+    {
+
+    }
     public MainKernel(CDatabaseEngine pICDatabaseEngine)
     {
 
@@ -84,38 +89,39 @@ public class MainKernel {
 		System.out.println(" [x] MainKernel Received: '" + message + "'");			
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
-		if(cmd.equalsIgnoreCase("getInitTree")){
-			//获取设备树结构
-			
+		JSONObject rootjson = new JSONObject();
+		if(cmd.equalsIgnoreCase("getInitTree")){			
+			Session ses = staticmemory.getSessionByID(jsondata.get("sessionid").toString());
+			if(ses != null){
+				ses.getBasicRemote().sendText(getInitTree(rootjson));
+			}else{
+				System.out.println("No Session Found::::");
+			}
 		}else if(cmd.equalsIgnoreCase("nodeadd")){
-			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "nodeadd");
-			rootjson.put("key", "1");
+			rootjson.put("key", "1");//node UserGroupID
 			rootjson.put("pkey", jsondata.get("pkey").toString());
 			rootjson.put("title", jsondata.get("title").toString());
-			rootjson.put("type", "custom");
+			rootjson.put("type", "group");
 			rootjson.put("isFolder", true);
 			rootjson.put("expand", true);
 			rootjson.put("icon", "images/net_center.png");
 			staticmemory.broadCast(rootjson.toJSONString());
 		}else if(cmd.equalsIgnoreCase("nodeedit")){
-			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "nodeedit");
 			rootjson.put("key", jsondata.get("key").toString());
 			rootjson.put("title", jsondata.get("title").toString());
-			rootjson.put("type", "custom");
+			rootjson.put("type", "group");
 			rootjson.put("isFolder", true);
 			rootjson.put("expand", true);
 			rootjson.put("icon", "images/net_center.png");
 			staticmemory.broadCast(rootjson.toJSONString());
 		}else if(cmd.equalsIgnoreCase("nodedel")){
-			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "nodedel");
 			rootjson.put("key", jsondata.get("key").toString());
 			rootjson.put("pkey", jsondata.get("pkey").toString());
 			staticmemory.broadCast(rootjson.toJSONString());
 		}else if(cmd.equalsIgnoreCase("lazyLoad")){
-			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "lazyLoad");
 			rootjson.put("key", jsondata.get("key").toString());
 			JSONArray jsonarray = new JSONArray();
@@ -126,7 +132,7 @@ public class MainKernel {
 			sysjson.put("type", "device");
 			sysjson.put("isFolder", false);
 			sysjson.put("expand", false);
-			sysjson.put("icon", "images/net_center.png");
+			sysjson.put("icon", "images/device.png");
 			jsonarray.add(sysjson);
 			rootjson.put("lazynodes", jsonarray);
 			Session ses = staticmemory.getSessionByID(jsondata.get("sessionid").toString());
@@ -134,11 +140,8 @@ public class MainKernel {
 				ses.getBasicRemote().sendText(rootjson.toJSONString());
 			}else{
 				System.out.println("No Session Found::::");
-			}
-			
+			}			
 		}
-		
-
 	}
   	
     
@@ -148,10 +151,14 @@ public class MainKernel {
 		log.info("[#3] .....MainKernel starting.......");
 		Jedis jedis=null;
 		try {			
-			  jedis = redisUtil.getConnection();		 
-			  jedis.psubscribe(jedissubSub, MAINKERNEL_MESSAGE);
-			  redisUtil.getJedisPool().returnResource(jedis);
-		  
+			ICDatabaseEngine1=new CDatabaseEngine();
+			ICDatabaseEngine1.getConnection();
+
+			initTopodData();
+			jedis = redisUtil.getConnection();		 
+			jedis.psubscribe(jedissubSub, MAINKERNEL_MESSAGE);
+			redisUtil.getJedisPool().returnResource(jedis); 
+			  
 		}catch(Exception e){
 			e.printStackTrace();
 			redisUtil.getJedisPool().returnBrokenResource(jedis);
@@ -159,17 +166,83 @@ public class MainKernel {
 		}
 		
 	}
+    
+    private String getInitTree(JSONObject rootjson){
+    	rootjson.put("cmd", "getInitTree");
+		JSONArray jsonarray = new JSONArray();
+		//获取设备树结构
+		/*for(Iterator iter = rootListNode.Nodes.iterator(); iter.hasNext();){
+			LNode node = (LNode)iter.next();
+			InodeInterface InodeInterface1 = (InodeInterface)node;
+			if (InodeInterface1.isGroup())
+            {
+				devGroup group = (devGroup)InodeInterface1;
+				UserGroupTableRow usergroup = group.BindUserGroupTableRow;
+				sysjson.put("key", usergroup.UserGroupID);
+				sysjson.put("pkey", usergroup.ParentGroupID);
+				sysjson.put("title", usergroup.UserGroupName);
+				sysjson.put("type", "group");
+				sysjson.put("isFolder", true);
+				sysjson.put("expand", true);
+				sysjson.put("isAlarm", group.isAlarm == 0?false:true);				
+				sysjson.put("icon", "images/net_center.png");
+				JSONArray subjsonarray = getSubTree(node, sysjson,jsonarray);
+				if(!subjsonarray.isEmpty()){
+					sysjson.put("lazy", false);
+					sysjson.put("children", subjsonarray);
+				}else{
+					sysjson.put("lazy", true);
+				}
+				jsonarray.add(sysjson);
+            }
+		}*/
+		jsonarray = getSubTree(rootListNode);
+		rootjson.put("treenodes", jsonarray);
+		String jsonString = rootjson.toJSONString();
+		return jsonString;
+    }
+    
+    private JSONArray getSubTree(LNode pnode){
+    	JSONObject subjson = new JSONObject();
+    	JSONArray jsonarray = new JSONArray();
+    	for(Iterator iter = pnode.Nodes.iterator(); iter.hasNext();){
+			LNode node = (LNode)iter.next();
+			InodeInterface InodeInterface1 = (InodeInterface)node;
+			if (InodeInterface1.isGroup())
+            {
+				devGroup group = (devGroup)InodeInterface1;
+				UserGroupTableRow usergroup = group.BindUserGroupTableRow;
+				subjson.put("key", usergroup.UserGroupID);
+				subjson.put("pkey", usergroup.ParentGroupID);
+				subjson.put("title", usergroup.UserGroupName);
+				subjson.put("type", "group");
+				subjson.put("isFolder", true);
+				subjson.put("expand", true);
+				subjson.put("isAlarm", group.isAlarm == 0?false:true);
+				subjson.put("icon", "images/net_center.png");
+				JSONArray subjsonarray = new JSONArray();
+				subjsonarray = getSubTree(node);
+				if(!subjsonarray.isEmpty()){
+					subjson.put("lazy", false);
+					subjson.put("children", subjsonarray);
+				}else{
+					subjson.put("lazy", true);
+				}
+				jsonarray.add(subjson);
+            }
+		}
+    	return jsonarray;
+    }
 
 
 	public  void initTopodData() {
-
 		Hashtable devHash = ICDatabaseEngine1.DeviceTableGetAllRows();
 		Hashtable grpHash = ICDatabaseEngine1.UserGroupTableGetAllRows();
 		// List<CDataBasePropery.nojuDeviceTableRow> SlotRowsList =
 		// ICDatabaseEngine1.slotTableGetAllRows();
 		rootListNode = this.offerTopodModel(devHash, grpHash);			
 
-		
+		System.out.println("Have Init rootListNode::::size===" + rootListNode.Nodes.size());
 		
 		//print rootListNode;
 	}

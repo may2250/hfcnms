@@ -31,14 +31,9 @@ public class ServiceHfcAlarmProcessor {
 	private static final String DB_QUEUE_NAME = "db_queue_message";//���ݿ���Ϣ����
 	private static Logger log = Logger.getLogger(ServiceHfcAlarmProcessor.class);
 	private static RedisUtil redisUtil;
-	private static StaticMemory staticmemory;
 
 	public static void setRedisUtil(RedisUtil redisUtil) {
 		ServiceHfcAlarmProcessor.redisUtil = redisUtil;
-	}
-	
-	public static void setStaticMemory(StaticMemory staticmemory) {
-		ServiceHfcAlarmProcessor.staticmemory = staticmemory;
 	}
 	
 	private   JedisPubSub jedissubSub = new JedisPubSub() {

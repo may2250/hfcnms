@@ -80,7 +80,6 @@
 	</bean>
 	<bean id="hfcAlarmProcessor" class="com.xinlong.Services.ServiceHfcAlarmProcessor" >
 		<property name="redisUtil" ref="redisUtil" />
-		<property name="staticMemory" ref="staticMemory" />
 	</bean>
 	<bean id="hfcDBProcessor" class="com.xinlong.Services.ServicesDB" >
 		<property name="redisUtil" ref="redisUtil" />
@@ -143,7 +142,7 @@
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		 <property name="jobDetails">  
 	        <list>  
-	            <ref bean="hfcDBob" />
+	            <ref bean="hfcDBJob" />
 	            <ref bean="trapReceiverJob" /> 
 	            <ref bean="hfcAlarmJob" /> 
 	            <ref bean="mainKernelJob" />

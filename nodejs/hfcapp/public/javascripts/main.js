@@ -203,7 +203,7 @@
                    return true;
                 },
                 dragDrop: function(node, data) {                  
-                	if(node.data.type != "device"){
+                	if(node.data.type == "group"){
                 		data.otherNode.moveTo(node, data.hitMode);
                     	node.setExpanded();
                     	var datastring = '{"cmd":"nodemove","key":"'+data.otherNode.key +'","pkey":"'+ data.otherNode.data.pkey +'","moveto":"'+ node.key +'"}';
@@ -222,7 +222,7 @@
     	        "add": {name: "添加节点", icon: "add",
     	        	callback: function(key, opt){
       	              var node = $.ui.fancytree.getNode(opt.$trigger);
-      	              if(node.data.type != "device"){
+      	              if(node.data.type == "group"){
       	            	//添加节点
 	      	            $( "#dialog-form" ).dialog({
 	      	        	      autoOpen: false,
@@ -246,7 +246,7 @@
     	        "edit": {name: "编辑", icon: "edit",
     	        	callback: function(key, opt){
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
-	      	            if(node.data.type != "device"){
+	      	            if(node.data.type == "group"){
 	      	            	//编辑节点
 		      	            $( "#dialog-form" ).dialog({
 		      	        	      autoOpen: false,
@@ -268,10 +268,10 @@
       	            }
     	          },
     	          "sep1": "----",
-    	          "add": {name: "添加设备", icon: "add",
+    	          "adddevice": {name: "添加设备", icon: "add",
       	        	callback: function(key, opt){
         	              var node = $.ui.fancytree.getNode(opt.$trigger);
-        	              if(node.data.type != "device"){
+        	              if(node.data.type == "group"){
         	            	//添加设备
         	            	  $( "#dialog-form" ).dialog({
     	      	        	      autoOpen: false,
@@ -297,7 +297,7 @@
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
       	              	if((confirm( "确定要删除？ ")==true))
       	              	{
-	      	              	if(node.data.type != "device"){
+	      	              	if(node.data.type == "group"){
 		      	            	//删除节点
 	      	              		var datastring = '{"cmd":"nodedel","key":"'+node.key +'","type":"'+ node.data.type +'","pkey":"'+ node.data.pkey +'"}';
 	      	              		webSocket.send(datastring);

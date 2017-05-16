@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
 
-public class LNode {	
+public class LNode{	
 
     public LinkedList<LNode> Nodes;
     public int Level;

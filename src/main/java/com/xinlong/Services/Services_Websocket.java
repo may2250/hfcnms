@@ -64,7 +64,9 @@ public class Services_Websocket {
 			String cmd = jsondata.get("cmd").toString();
 			JSONObject rootjson = new JSONObject();
 			if(cmd.equalsIgnoreCase("getInitTree")){
-				sendToQueue(message);
+				rootjson.put("cmd", "getInitTree");
+				rootjson.put("sessionid", session.getId());
+				sendToQueue(rootjson.toJSONString());
 				//获取设备数结构				
 				/*JSONArray jsonarray = new JSONArray();
 				rootjson.put("cmd", "getInitTree");
