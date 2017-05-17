@@ -100,8 +100,8 @@ public class MainKernel {
 		}else if(cmd.equalsIgnoreCase("nodeadd")){
 			rootjson.put("cmd", "nodeadd");
 			rootjson.put("key", "1");//node UserGroupID
-			rootjson.put("pkey", jsondata.get("pkey").toString());
-			rootjson.put("title", jsondata.get("title").toString());
+			rootjson.put("pkey", jsondata.get("key").toString()); //ParentGroupID
+			rootjson.put("title", jsondata.get("value").toString());//UserGroupName
 			rootjson.put("type", "group");
 			rootjson.put("isFolder", true);
 			rootjson.put("expand", true);
@@ -110,7 +110,7 @@ public class MainKernel {
 		}else if(cmd.equalsIgnoreCase("nodeedit")){
 			rootjson.put("cmd", "nodeedit");
 			rootjson.put("key", jsondata.get("key").toString());
-			rootjson.put("title", jsondata.get("title").toString());
+			rootjson.put("title", jsondata.get("value").toString());
 			rootjson.put("type", "group");
 			rootjson.put("isFolder", true);
 			rootjson.put("expand", true);
@@ -127,12 +127,24 @@ public class MainKernel {
 			JSONArray jsonarray = new JSONArray();
 			JSONObject sysjson = new JSONObject();
 			sysjson.put("key", "3");
-			sysjson.put("pkey", jsondata.get("key").toString());
+			sysjson.put("pkey", jsondata.get("key").toString());			
 			sysjson.put("title", "LazyLoadNode");
 			sysjson.put("type", "device");
-			sysjson.put("isFolder", false);
+			sysjson.put("isFolder", true);
 			sysjson.put("expand", false);
 			sysjson.put("icon", "images/device.png");
+			JSONArray subjsonarray = new JSONArray();
+			JSONObject subjson = new JSONObject();
+			subjson.put("title", "192.168.1.120");	
+			subjson.put("icon", "images/net_info.png");
+			subjson.put("isFolder", false);
+			subjsonarray.add(subjson);
+			subjson = new JSONObject();
+			subjson.put("title", "光发射机");
+			subjson.put("icon", "images/net_info.png");
+			subjson.put("isFolder", false);
+			subjsonarray.add(subjson);
+			sysjson.put("children", subjsonarray);
 			jsonarray.add(sysjson);
 			rootjson.put("lazynodes", jsonarray);
 			Session ses = staticmemory.getSessionByID(jsondata.get("sessionid").toString());
@@ -141,6 +153,17 @@ public class MainKernel {
 			}else{
 				System.out.println("No Session Found::::");
 			}			
+		}else if(cmd.equalsIgnoreCase("devicetrapedit")){
+			//修改设备Trap主机地址
+			rootjson.put("cmd", "devicetrapedit");
+			rootjson.put("domstr", jsondata.get("domstr").toString());
+			rootjson.put("value", jsondata.get("value").toString());
+			Session ses = staticmemory.getSessionByID(jsondata.get("sessionid").toString());
+			if(ses != null){
+				ses.getBasicRemote().sendText(rootjson.toJSONString());
+			}else{
+				System.out.println("No Session Found::::");
+			}	
 		}
 	}
   	

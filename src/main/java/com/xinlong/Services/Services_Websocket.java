@@ -64,61 +64,26 @@ public class Services_Websocket {
 			String cmd = jsondata.get("cmd").toString();
 			JSONObject rootjson = new JSONObject();
 			if(cmd.equalsIgnoreCase("getInitTree")){
-				rootjson.put("cmd", "getInitTree");
-				rootjson.put("sessionid", session.getId());
-				sendToQueue(rootjson.toJSONString());
-				//获取设备数结构				
-				/*JSONArray jsonarray = new JSONArray();
-				rootjson.put("cmd", "getInitTree");
-				JSONObject sysjson = new JSONObject();
-				sysjson.put("key", "0");
-				sysjson.put("pkey", "");
-				sysjson.put("title", "中心机房");
-				sysjson.put("type", "system");
-				sysjson.put("isFolder", true);
-				sysjson.put("expand", true);
-				sysjson.put("lazy", true);
-				sysjson.put("icon", "images/net_center.png");
-				jsonarray.add(sysjson);
-				rootjson.put("treenodes", jsonarray);
-				String jsonString = rootjson.toJSONString();
-				session.getBasicRemote().sendText(jsonString);
-				System.out.println(jsonString);
-				*/
+				//获取设备数结构
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString());				
 			}else if(cmd.equalsIgnoreCase("nodeadd")){
-				rootjson.put("cmd", "nodeadd");
-				rootjson.put("key", "1");
-				rootjson.put("pkey", jsondata.get("key").toString());
-				rootjson.put("title", jsondata.get("value").toString());
-				rootjson.put("type", "custom");
-				rootjson.put("isFolder", true);
-				rootjson.put("expand", true);
-				rootjson.put("icon", "images/net_center.png");
-				sendToQueue(rootjson.toJSONString());
+				sendToQueue(jsondata.toJSONString());
 			}else if(cmd.equalsIgnoreCase("nodeedit")){
 				rootjson.put("cmd", "nodeedit");
 				rootjson.put("key", jsondata.get("key").toString());
 				rootjson.put("title", jsondata.get("value").toString());
-				rootjson.put("type", "custom");
-				rootjson.put("isFolder", true);
-				rootjson.put("expand", true);
-				rootjson.put("icon", "images/net_center.png");
 				sendToQueue(rootjson.toJSONString());
 			}else if(cmd.equalsIgnoreCase("nodedel")){
-				rootjson.put("cmd", "nodedel");
-				rootjson.put("key", jsondata.get("key").toString());
-				rootjson.put("pkey", jsondata.get("pkey").toString());
-				sendToQueue(rootjson.toJSONString());
+				sendToQueue(jsondata.toJSONString());
 			}else if(cmd.equalsIgnoreCase("lazyLoad")){
-				rootjson.put("cmd", "lazyLoad");
-				rootjson.put("sessionid", session.getId());
-				rootjson.put("key", jsondata.get("key").toString());				
-				sendToQueue(rootjson.toJSONString());
-			}
-			else if(cmd.equalsIgnoreCase("deviceadd")){
-				rootjson.put("cmd", "deviceadd");
-				rootjson.put("value", jsondata.get("value").toString());				
-				sendToQueue(rootjson.toJSONString());
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString());
+			}else if(cmd.equalsIgnoreCase("deviceadd")){				
+				sendToQueue(jsondata.toJSONString());
+			}else if(cmd.equalsIgnoreCase("devicetrapedit")){
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString());
 			}else if(cmd.equalsIgnoreCase("test")){
 				// Send the first message to the client
 				rootjson.put("cmd", "test");
@@ -136,6 +101,8 @@ public class Services_Websocket {
 		        // Send a final message to the client
 		        rootjson.put("message", "This is the last server message");
 		        session.getBasicRemote().sendText(rootjson.toJSONString());
+			}else{
+				sendToQueue(message);
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

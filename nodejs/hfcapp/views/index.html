@@ -12,7 +12,7 @@
 <link href="/stylesheets/jquery-ui.min.css" rel='stylesheet' type='text/css' />
 <link href="/stylesheets/jquery.contextMenu.min.css" rel='stylesheet' type='text/css' />
 <link href="/stylesheets/jquery.dataTables.min.css" rel='stylesheet' type='text/css' />
-<link href="/stylesheets/shCore.css" rel='stylesheet' type='text/css' />
+
 <!-- Custom CSS -->
 <link href="/stylesheets/style.css" rel='stylesheet' type='text/css' />
 <!-- Graph CSS -->
@@ -25,11 +25,9 @@
 <script src="/javascripts/jquery.ui-contextmenu.min.js"></script>
 <script src="/javascripts/jquery.fancytree.dnd.js"></script>
 <script src="/javascripts/jquery.dataTables.min.js"></script>
-<script src="/javascripts/shCore.js"></script>
+
 <script type="text/javascript">
-    window.onbeforeunload  = function() {    	
-    	//webSocket.close();
-    }
+
 </script>
 </head> 
 <body>
@@ -52,8 +50,8 @@
 									<p>权限管理</p>
 								</li>
 								<li>
-									<img src="/images/in5.jpg"></img>
-									<p>aaaxsdf</p>
+									<img src="/images/nav_log.png"></img>
+									<p>日志管理</p>
 								</li>
 								<li>
 									<img src="/images/in6.jpg"></img>
@@ -174,15 +172,15 @@
 					      <table id="tbl_optlog" class="table table-striped table-bordered" cellspacing="0" width="100%">
 					      	<thead>
 					            <tr>
-					                <th style="width:46px">日志编号</th>
-					                <th style="width:146px">日志类型</th>
-					                <th style="width:146px">日志内容</th>
-					                <th style="width:146px">登记时间</th>
+					                <th>日志编号</th>
+					                <th>日志类型</th>
+					                <th>日志内容</th>
+					                <th>登记时间</th>
 					            </tr>
 					        </thead>
 					      	<tbody>
 								<tr>
-									<td>Tiger</td>
+									<td id = "test">Tiger</td>
 									<td>Nixon</td>
 									<td>System Architect</td>
 									<td>Edinburgh</td>
@@ -248,6 +246,7 @@
 	</div>
 <!-- Bootstrap Core JavaScript -->
    <script src="/javascripts/bootstrap.min.js"></script>
+   <script src="/javascripts/hfcdetails.js"></script>
    <script src="/javascripts/main.js"></script>
 </body>
 </html>

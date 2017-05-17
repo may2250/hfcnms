@@ -2,8 +2,33 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link href="/stylesheets/bootstrap.min.css" rel='stylesheet' type='text/css' />
-	<script src="/javascripts/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(".trapaddr").dblclick(function(){
+			var domstr = $(this)[0].id;
+			$( "#dialog-form" ).dialog({
+        	      autoOpen: false,
+        	      height: 240,
+        	      width: 300,
+        	      modal: true,
+        	      buttons: {
+        	    	  Ok: function() {	    
+        	    		  var node = __globalobj__._realDevice.getFirstChild();
+        	    		  var datastring = '{"cmd":"devicetrapedit","ip":"' + node.title +'","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
+        	    		  __globalobj__._send(datastring);
+        	              $( this ).dialog( "close" );
+        	            }
+        	      }
+    	    });
+            $("#set_value").val($(this)[0].textContent);
+            updateTips("请输入新的Trap地址:");
+            $("#dialog-form").dialog("open");
+		});
+		
+		function updateTips( t ) {
+			  $( ".validateTips" )
+		        .text( t );
+		}
+	</script>
 </head>
 <body>
 	<div class="devdetail">
@@ -19,32 +44,116 @@
 				</ul>
 				<div class="tab-content">
 				    <div class="tab-pane active" id="tab-dev1">
-				    	<table class="table">
-						   <caption>直流电源</caption>
-						   <thead>
-							    <tr>
-							      <th>电源名称</th>
-							      <th>电源电压</th>
-							    </tr>
-						  </thead>
-						  <tbody>
-							    <tr>
-							      <td>+5V DC Power</td>
-							      <td class="plus-5">5.10V</td>
-							    </tr>
-							    <tr>
-							      <td>-5V DC Power</td>
-							      <td class="minus-5">5.10V</td>
-							    </tr>
-							    <tr>
-							      <td>+24V DC Power</td>
-							      <td class="plus-24">23.10V</td>
-							    </tr>
-						  </tbody>
-						</table>
+					    <div class="devdetail-content">
+					    	<table class="table tbl_power" style="width:30%">
+							   <caption>直流电源</caption>
+							   <thead>
+								    <tr>
+								      <th>电源名称</th>
+								      <th>电源电压</th>
+								    </tr>
+							  </thead>
+							  <tbody>
+								    <tr>
+								      <td>+5V DC Power</td>
+								      <td class="plus-5">5.10V</td>
+								    </tr>
+								    <tr>
+								      <td>-5V DC Power</td>
+								      <td class="minus-5">5.10V</td>
+								    </tr>
+								    <tr>
+								      <td>+24V DC Power</td>
+								      <td class="plus-24">23.10V</td>
+								    </tr>
+							  </tbody>
+							</table>
+							<table class="table tbl_detail">
+							  <tbody>
+								    <tr>
+								      <td>电视信号频道数:</td>
+								      <td><input type="text" class="form-control" id="detail_channel"></td>
+								      <td>激光器激励电平:</td>
+								      <td><input type="text" class="form-control" id="detail_level"></td>
+								      <td>激光器波长(nm):</td>
+								      <td><input type="text" class="form-control" id="detail_wave"></td>
+								    </tr>
+								    <tr>
+								      <td>射频信号衰减范围:</td>
+								      <td><input type="text" class="form-control" id="detail_attrange"></td>
+								      <td>激光器类型:</td>
+								      <td><input type="text" class="form-control" id="detail_lasertype"></td>
+								      <td>AGC控制使能:</td>
+								      <td><button type="button" class="btn btn-primary">当前状态:AGC</button></td>
+								    </tr>
+								    <tr>
+								      <td>输出光功率:</td>
+								      <td><input type="text" class="form-control" id="detail_outpower"></td>	
+								      <td>激光器偏置电流:</td>
+								      <td><input type="text" class="form-control" id="detail_electric"></td>
+								    </tr>
+							  </tbody>
+							</table>
+					    </div>				    	
 				    </div>
 				    <div class="tab-pane" id="tab-dev2">
-				    	<p>xxxxxxx</p>
+				    	<div class="devdetail-public">
+				    		<div>
+				    			<table class="table table-bordered">
+								   <caption>Trap目标主机表</caption>
+								   <thead>
+									    <tr>
+									      <th>序号.</th>
+									      <th>目标IP地址</th>
+									    </tr>
+								  </thead>
+								  <tbody>
+									    <tr>
+									      <td>1.</td>
+									      <td class="trapaddr" id="trapaddr_1">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>2.</td>
+									      <td class="trapaddr" id="trapaddr_2">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>3.</td>
+									      <td class="trapaddr" id="trapaddr_3">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>4.</td>
+									      <td class="trapaddr" id="trapaddr_4">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>5.</td>
+									      <td class="trapaddr" id="trapaddr_5">0.0.0.0</td>
+									    </tr>
+								  </tbody>
+								</table>
+				    		</div>
+					    	<div>
+					    		<table class="table tbl_hfcpublic">
+								  <tbody>
+									    <tr>
+									      <td>温度:</td>
+									      <td><input type="text" class="form-control" id="detail_temper"></td>									      
+									    </tr>
+									    <tr>
+									      <td>逻辑ID:</td>
+									      <td><input type="text" class="form-control" id="detail_logicid"></td>
+									    </tr>
+									    <tr>
+									      <td>型号:</td>
+									      <td><input type="text" class="form-control" id="detail_model"></td>
+									    </tr>
+									    <tr>
+									      <td>序列号:</td>
+									      <td><input type="text" class="form-control" id="detail_sn"></td>
+									    </tr>
+								  </tbody>
+								</table>
+					    	</div>							
+					    </div>				    	
 				    </div>
 				</div>
 			</div>

@@ -172,6 +172,11 @@ a:hover { transition: all 200ms ease-in-out; }
     cursor: pointer;
 }
 
+.candile {
+	height: 450px;
+    overflow: auto;
+}
+
 .users_details_left {
 	float: right;
     width: 15%;	
@@ -210,6 +215,50 @@ div.dataTables_wrapper {
 
 .tabbable {
 	font-size: 10px;
+}
+
+.tabbable table tbody td {
+	padding: 4px 5px;
+}
+
+.tabbable>.tab-content>.tab-pane {
+	height:135px;
+}
+
+.devdetail-content{
+	text-align: center;
+	height:290px;
+}
+
+.tbl_power {
+    min-width: 200px;
+    text-align: left;
+    margin: 0 auto;
+}
+
+.tbl_detail{
+	margin: 8px auto 0px auto;
+    width: 80%;
+    min-width:750px;
+}
+
+.devdetail-public {
+	margin: 20px auto 0px auto;
+    width: 70%;
+    min-width: 545px;
+}
+
+.devdetail-public div{
+	float:left;
+	width: 50%;
+}
+
+.devdetail-public table{
+    width: 80%;
+}
+
+.tbl_hfcpublic {
+	margin-top:20px;
 }
 
 .sidebar-menu {
@@ -530,10 +579,6 @@ span#logo h1 {
     width: 15%;
 }
 
-.candile {
-    margin-top: 0.5em;
-}
-
 .header-section {
     background:#00c6d7;
 	box-shadow: 2px 0 6px rgba(1, 70, 76, 0.68);
@@ -554,7 +599,6 @@ footer {
     background:#00C6D7;
     padding: 12px;
     width: 100%;
-    border-top: 1px solid #00C6D7;
     text-align:center;
     position: fixed;
     bottom: 0;
@@ -569,7 +613,7 @@ footer  p {
 .footer p {
 	color: #333;
     font-size: 1em;
-	    margin-top: 1em;
+	margin-top: 1em;
 }
 .footer p a{
 	color:#00C6D7;
@@ -581,6 +625,7 @@ footer  p a{
 footer  p a:hover ,.footer p a:hover{
 	text-decoration:underline;
 }
+
 /*---responsive-----*/
 @media (max-width:1600px){
 	.left-content {

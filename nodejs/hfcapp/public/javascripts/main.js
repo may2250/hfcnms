@@ -2,6 +2,7 @@
 	var webSocket;
 	var tbl_devalarm;
 	var tbl_optlog;
+	var realdevice;
 	var lazyLoadData = null;
 	$(function() {
 		initWebSocket();		
@@ -10,6 +11,7 @@
     	
     	window.__globalobj__ = {
     		    _webSocket:webSocket,
+    		    _realDevice:realdevice,
     		    _send:function(datastring) {  
     		    	if (webSocket.readyState !== 1) {
     		            setTimeout(function() {
@@ -43,7 +45,7 @@
     		};
     	
     	tbl_devalarm = $('#tbl_devalarm').DataTable({
-    		scrollY:        150,
+    		scrollY:        130,
     		scrollX: 		true,
     		scrollCollapse: true,
     		order: 			[[ 0, "desc" ]],
@@ -81,7 +83,7 @@
         } );
     	
     	tbl_optlog = $('#tbl_optlog').DataTable({
-    		scrollY:        150,
+    		scrollY:        130,
     		scrollX: 		true,
     		scrollCollapse: true,
     		order: 			[[ 0, "desc" ]],
@@ -103,7 +105,6 @@
                 $(this).addClass('selected');
             }
         } ); 
-    	
     	
     	
 	});
@@ -185,7 +186,8 @@
             dblclick: function(event, data) {
             	if(data.node.data.type == "device"){
             		//show deivce detail
-            		showDeviceDetail(data.node.data.type);
+            		__globalobj__._realDevice = data.node;
+            		showDeviceDetail(data.node.getLastChild().title);
             	}
             	
             },
@@ -313,9 +315,10 @@
     	    });
     }
     
-    function showDeviceDetail(devtype){
+    function showDeviceDetail(devtype, param){
     	//TODO
-    	$(".candile").load("/opticalTran");
+    	$(".candile").load("/opticalTran", param);
+    	showopticalTran();
     }
     
     
