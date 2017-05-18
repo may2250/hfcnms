@@ -161,7 +161,16 @@
         }else if(jsonobj.cmd == "lazyLoad"){
 	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
 	       	 lazyLoadData = jsonobj.lazynodes;
-	         //node.addChildren(jsonobj.lazynodes);
+        }else if(jsonobj.cmd == "hfcvalueset"){
+        	 switch(jsonobj.target){
+        	 case "devicetrapedit":
+        		 $("#" + jsonobj.domstr)[0].textContent = jsonobj.value;
+        		 break;
+        	 case "devicechannel":
+        		 $("#" + jsonobj.domstr).val(jsonobj.value);
+        		 break;
+        	 }
+	       	 
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;

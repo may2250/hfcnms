@@ -153,18 +153,45 @@ public class MainKernel {
 			}else{
 				System.out.println("No Session Found::::");
 			}			
-		}else if(cmd.equalsIgnoreCase("devicetrapedit")){
+		}else if(cmd.equalsIgnoreCase("hfcvalueset")){
+			hfcValueSet(jsondata);			
+		}
+	}
+	
+	private void hfcValueSet(JSONObject jsondata){
+		JSONObject rootjson = new JSONObject();
+		String target = jsondata.get("target").toString();
+		if(target.equalsIgnoreCase("devicetrapedit")){
 			//修改设备Trap主机地址
-			rootjson.put("cmd", "devicetrapedit");
+			rootjson.put("cmd", "hfcvalueset");
+			rootjson.put("target", "devicetrapedit");
 			rootjson.put("domstr", jsondata.get("domstr").toString());
 			rootjson.put("value", jsondata.get("value").toString());
-			Session ses = staticmemory.getSessionByID(jsondata.get("sessionid").toString());
-			if(ses != null){
-				ses.getBasicRemote().sendText(rootjson.toJSONString());
-			}else{
-				System.out.println("No Session Found::::");
-			}	
+			//TODO
+			//发送到设备
+			
+		}else if(target.equalsIgnoreCase("devicechannel")){
+			//修改设备频道数
+			rootjson.put("cmd", "hfcvalueset");
+			rootjson.put("target", "devicechannel");
+			rootjson.put("domstr", jsondata.get("domstr").toString());
+			rootjson.put("value", jsondata.get("value").toString());
+			//TODO
+			//发送到设备
+			
 		}
+		Session ses = staticmemory.getSessionByID(jsondata.get("sessionid").toString());
+		if(ses != null){
+			try {
+				ses.getBasicRemote().sendText(rootjson.toJSONString());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				log.info(e.getMessage());
+			}
+		}else{
+			System.out.println("No Session Found::::");
+		}	
 	}
   	
     

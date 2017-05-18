@@ -81,7 +81,7 @@ public class Services_Websocket {
 				sendToQueue(jsondata.toJSONString());
 			}else if(cmd.equalsIgnoreCase("deviceadd")){				
 				sendToQueue(jsondata.toJSONString());
-			}else if(cmd.equalsIgnoreCase("devicetrapedit")){
+			}else if(cmd.equalsIgnoreCase("hfcvalueset")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString());
 			}else if(cmd.equalsIgnoreCase("test")){

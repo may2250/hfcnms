@@ -157,29 +157,48 @@ a:hover { transition: all 200ms ease-in-out; }
 
 .top_menu p {
 	margin: 0 0 2px;
+	font-size: 10px;
 }
 
 .top_menu ul  li:hover{
 	color:white;
 }
 
+.signout {
+	padding-left: 5px;    
+}
+
 .top_menu ul  li {
 	position: relative;
 	background: #00c6d7;
-    border-left: 1px solid rgba(1, 189, 206, 0.93);
+    border-left: 2px solid rgba(255,255,255,.15);
     display: block;
     float: left;
     cursor: pointer;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.users_details_left ul li{
+	background:white;
+	width: 100%;
+    text-align: left;
+}
+
+.navigation p {
+	font-size:10px;
 }
 
 .candile {
-	height: 450px;
+	height: 485px;
     overflow: auto;
 }
 
 .users_details_left {
 	float: right;
-    width: 15%;	
+    width: 10%;
+    padding-top: 10px;
+    height: 52.6px;	
 }
 
 .user-png {
@@ -193,13 +212,6 @@ a:hover { transition: all 200ms ease-in-out; }
 .loginuser {
 	margin-right: 5px;
     color: dodgerblue;
-}
-
-.users_details_left li {
-	height: 89.4px;
-	text-align: center;
-	padding-top: 30px;
-	padding-bottom: 0px;
 }
 
 .outter-wp {
@@ -574,10 +586,6 @@ span#logo h1 {
     font-weight: 300;
 }
 /*--- User Panel---*/
-.users_details_left {
-    float: right;
-    width: 15%;
-}
 
 .header-section {
     background:#00c6d7;
