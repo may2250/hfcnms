@@ -43,7 +43,7 @@ public class MainKernel {
         me = this;
     }
     
-    private static Logger log = Logger.getLogger(MainKernel.class);
+   // private static Logger log = Logger.getLogger(MainKernel.class);
 	private static RedisUtil redisUtil;
 	private static StaticMemory staticmemory;
 
@@ -78,7 +78,7 @@ public class MainKernel {
   			
   		}catch(Exception e){
   			e.printStackTrace();	
-  			log.info(e.getMessage());
+  			//log.info(e.getMessage());
   		}
   		
       }
@@ -187,7 +187,7 @@ public class MainKernel {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				log.info(e.getMessage());
+				//log.info(e.getMessage());
 			}
 		}else{
 			System.out.println("No Session Found::::");
@@ -198,7 +198,7 @@ public class MainKernel {
     @SuppressWarnings("static-access")
 	public void start(){
 		
-		log.info("[#3] .....MainKernel starting.......");
+	//	log.info("[#3] .....MainKernel starting.......");
 		Jedis jedis=null;
 		try {			
 			ICDatabaseEngine1=new CDatabaseEngine();
@@ -429,15 +429,281 @@ public class MainKernel {
     }
 		
 	
-    public devGroup handleInsertGrp(Object message)
+    public boolean handleInsertGrp(JSONObject jsondata)
     {
-    	 
-    	 Object msgObject=message;         
+    	boolean mStatus =false;
 
-    	 return new devGroup(1, "", -1);
+    	
+    	////get the  group information from  jsondata ,build a new UserGroupTableRow ***************
+    	UserGroupTableRow mDevGrpTableRow =new UserGroupTableRow(0, "绍兴", -1);
+    	
+    
+
+        if (this.ICDatabaseEngine1.UserGroupTableInsertRow(mDevGrpTableRow) > 0)
+        {
+            mStatus = true;
+        }
+
+        if (mStatus)
+        {
+            LNode pGrp;
+            if (mDevGrpTableRow.ParentGroupID == -1)
+            {
+                pGrp = this.rootListNode;
+            }
+            else
+            {
+                pGrp = (LNode)listGrpHash.get(mDevGrpTableRow.ParentGroupID);
+         /*       if (pGrp == null)//设备组不存在
+                {
+                    return null;
+                }*/
+            }
+
+            UserGroupTableRow dr = mDevGrpTableRow;
+
+   
+            devGroup  rootGroup = new devGroup(dr.UserGroupID, dr.UserGroupName, dr.ParentGroupID);
+            rootGroup.BindUserGroupTableRow = dr;
+            rootGroup.parent = pGrp;
+            rootGroup.fullpath = pGrp.fullpath + "/" + rootGroup.BindUserGroupTableRow.UserGroupName;
+            rootGroup.Level = rootGroup.parent.Level + 1;
+
+            listGrpHash.put(rootGroup.BindUserGroupTableRow.UserGroupID, rootGroup);
+            pGrp.Nodes.add(rootGroup);
+
+
+
+
+            //  this.Notify("DbEngine.grpOP", cmd);//notify runtimedev
+     
+
+
+        }
+
+        return mStatus;
+
+    }
+
+    public boolean handleDelGrp(JSONObject jsondata)
+    {
+      	boolean mStatus =false;
+      	
+      	
+    	int usergroupID=9;//get  goupid from jsondata
+      	devGroup delgrp = (devGroup)listGrpHash.get(usergroupID); 
+
+
+    	UserGroupTableRow mDevGrpTableRow = delgrp.BindUserGroupTableRow;    	
+
+    	
+    	
+ /*       if (!this.ICDatabaseEngine1.clearUserDevGrpInfo("", mDevGrpTableRow.UserGroupID))
+        {
+            return false;
+        }
+        if (!this.ICDatabaseEngine1.clearElemetTableByGID(cmd.mDevGrpTableRow.UserGroupID))
+        {
+            return false;
+        }
+*/
+
+        mStatus = this.ICDatabaseEngine1.UserGroupTableDeleteRow(mDevGrpTableRow.UserGroupID);
+        if (mStatus)
+        {
+            LNode pGrp;
+            if (mDevGrpTableRow.ParentGroupID == -1)
+            {
+                pGrp = this.rootListNode;
+            }
+            else
+            {
+                pGrp = (LNode)listGrpHash.get(mDevGrpTableRow.ParentGroupID);
+            }
+
+            pGrp.Nodes.remove(delgrp);
+            listGrpHash.remove(mDevGrpTableRow.UserGroupID);
+
+
+            return true;
+
+        }
+
+
+        return false;
+
+
+    }
+
+    public boolean handleUpdGrp(JSONObject jsondata)
+    {
+    	boolean mStatus =false;
+    	
+    	int userid=11;//get 组ID from jsondata
+      	devGroup rootGroup = (devGroup)listGrpHash.get(userid); 
+
+      	
+      	
+    	UserGroupTableRow mDevGrpTableRow = rootGroup.BindUserGroupTableRow;
+    	
+        //edit the  mDevGrpTableRow's 的属性 here from jsondata    	
+    //	mDevGrpTableRow.UserGroupName="new name";
+    	
+        mStatus = this.ICDatabaseEngine1.UserGroupTableUpdateRow(mDevGrpTableRow);
+        if (mStatus)
+        {
+
+           
+            rootGroup.BindUserGroupTableRow = mDevGrpTableRow;
+         //   rootGroup.name = rootGroup.BindUserGroupTableRow.UserGroupName;
+            rootGroup.fullpath = rootGroup.parent.fullpath + "/" + rootGroup.BindUserGroupTableRow.UserGroupName;
+            //Hashtable effectPathList = new Hashtable();
+            //effectPathList.Add(rootGroup.BindUserGroupTableRow.UserGroupID.ToString(), grp.fullpath);
+          //  reflashPath(grp, effectPathList);
+
+            return true;
+        }
+
+        return false;
+
+
+
+
     }
 
 
-   
-	
+
+    public DevTopd handleInsertDev(JSONObject jsondata)
+    {      	boolean mStatus =false;
+  	
+      	int usergroupID=6;//get  goupid from jsondata
+
+      	devGroup grp = (devGroup)listGrpHash.get(usergroupID); 
+
+        if (grp == null)//父设备组不存在
+        {
+            return null;
+        }
+
+    	
+    	////get the  name, parent from  jsondata ,build a new devicerow
+
+        nojuDeviceTableRow mDeviceTableRow=new nojuDeviceTableRow("1.2.3.5", NetTypes.other);
+        mDeviceTableRow.UserGroupID=usergroupID;
+        
+        
+        mStatus = this.ICDatabaseEngine1.DeviceTableInsertRow(mDeviceTableRow);
+        if (mStatus)
+        {
+
+
+            DevTopd dev = new DevTopd(mDeviceTableRow);         
+            dev.isOline = false;
+
+
+            dev.parent = grp;
+            dev.fullpath = grp.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;
+
+
+
+
+            dev.OnlineCount = 0;
+
+
+          //  dev.Pm = null;
+
+
+            listDevHash.put(dev._NetAddress, dev);
+            grp.Nodes.add(dev);
+
+
+            return dev;
+
+        }
+
+        return null;
+    }
+
+    public boolean handleUpdateDev(JSONObject jsondata)
+    {
+    	boolean mStatus =false;
+    	
+    	String netaddr="1.2.3.5";//get  netaddr from jsondata
+      	DevTopd dev = (DevTopd)listDevHash.get(netaddr); 
+
+      	if (dev==null) {
+      		
+      		return false;
+			
+		}
+      	
+    	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;
+    	
+        //edit the  mDeviceTableRow property here from jsondata    	
+     	mDeviceTableRow._ROCommunity="new rocm";
+        mStatus = this.ICDatabaseEngine1.DeviceTableUpdateRow(mDeviceTableRow);
+
+        if (mStatus)
+        {
+
+        	dev.BindnojuDeviceTableRow = mDeviceTableRow;
+
+        	dev.fullpath = dev.parent.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;
+
+
+        }
+
+
+        return mStatus;
+
+
+    }
+
+    public boolean handleDeleteDev(JSONObject jsondata)
+    {
+
+      	boolean mStatus =false;
+      	
+      	
+    	String devAddr="1.2.3.5";//get  ip from jsondata
+      	DevTopd  delDev = (DevTopd)listDevHash.get(devAddr); 
+      	
+    	if (delDev==null) {
+      		
+      		return false;
+			
+		}
+
+/*        if (!this.ICDatabaseEngine1.clearElemetTableByLinked(cmd.mDeviceTableRow.NetAddress))
+        {
+            return false;
+        }
+
+        
+        if (cmd.mDeviceTableRow.NetType==NetTypes.wos)
+        {
+            if (!this.ICDatabaseEngine1.clearSlotTableByNetAddress(cmd.mDeviceTableRow.NetAddress))
+            {
+                return false;
+            }
+        }*/
+
+
+        mStatus = this.ICDatabaseEngine1.DeviceTableDeleteRow(delDev.BindnojuDeviceTableRow);
+  
+
+        if (mStatus)
+        {
+
+        	DevTopd dev = (DevTopd)listDevHash.get(delDev.BindnojuDeviceTableRow.get_NetAddress());
+            devGroup grp = (devGroup)listGrpHash.get(delDev.BindnojuDeviceTableRow.UserGroupID);
+            grp.Nodes.remove(dev);
+            listDevHash.remove(delDev.BindnojuDeviceTableRow.get_NetAddress());
+
+
+        }
+
+        return mStatus;
+    }
+
 }
