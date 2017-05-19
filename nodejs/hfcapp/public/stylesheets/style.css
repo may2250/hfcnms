@@ -1,8 +1,8 @@
 html, body{
 	font-family: 'Roboto', sans-serif;
     font-size: 100%;
-  	overflow-x: hidden;
-	background:#FFFFFF;
+  	/*overflow-x: hidden;*/
+	background: lightgray;
 }
 body a{
 	transition:0.5s all;
@@ -140,6 +140,10 @@ a:hover { transition: all 200ms ease-in-out; }
   transition-delay: 300ms;
 }
 
+.ui-state-error-custom {
+	border: 1px solid red;
+}
+
 .top_nav  img{
 	height:60px;
 	width: 60px;
@@ -191,7 +195,6 @@ a:hover { transition: all 200ms ease-in-out; }
 
 .candile {
 	height: 485px;
-    overflow: auto;
 }
 
 .users_details_left {
@@ -216,8 +219,7 @@ a:hover { transition: all 200ms ease-in-out; }
 
 .outter-wp {
     padding: 0.5em 1.5em;
-    margin-bottom: 2em;
-    background: lightgray;
+    margin-bottom: 2em;    
 }
 
 div.dataTables_wrapper {
@@ -240,6 +242,7 @@ div.dataTables_wrapper {
 .devdetail-content{
 	text-align: center;
 	height:290px;
+	min-height:275px;
 }
 
 .tbl_power {
@@ -273,6 +276,17 @@ div.dataTables_wrapper {
 	margin-top:20px;
 }
 
+.sidebar-info {
+	width: 95%;
+    margin: 0px 5px;
+    height: 20%;
+}
+
+.sidebar-info table{
+	text-align: center;
+	width: 90%;
+}
+
 .sidebar-menu {
     position: fixed;
     float: left;
@@ -281,7 +295,6 @@ div.dataTables_wrapper {
     left: 0;
     bottom: 0;
     background-color: #052963;
-    color: #aaabae;
     box-shadow: 0px 0px 10px 0px rgb(58, 41, 31);
 	-o-box-shadow: 0px 0px 10px 0px rgb(58, 41, 31);
 	-webkit-box-shadow: 0px 0px 10px 0px rgb(58, 41, 31);
@@ -416,10 +429,9 @@ li#menu-academico{
 }*/
 
 .sidebar-tree {
-	position: absolute;
     padding: 5px;
     margin-right: 16px;	
-    height:80%;
+    height:70%;
 }
 
 .ui-menu {
@@ -430,7 +442,7 @@ li#menu-academico{
   
 #dev-fancytree {
 	width: 220px;
-    height:80%;
+    height:100%;
 }
 
 .fa-html5 {
@@ -445,8 +457,8 @@ li#menu-academico{
 	min-width:800px;
 	max-width:1100px;
 	width:90%;
-	height:450px;
-	overflow: auto;
+	height:auto!important;
+	min-height:450px;
     display: block;
     margin: 0 auto;
     background: ghostwhite;

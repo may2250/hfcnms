@@ -15,6 +15,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.xinlong.Services.ServiceHfcAlarmProcessor;
+import com.xinlong.Services.Services_Websocket;
 import com.xinlong.util.RedisUtil;
 import com.xinlong.util.StaticMemory;
 
@@ -26,6 +27,7 @@ import wl.hfc.common.*;
 //DevGrpModel将承担拓扑的组建，维护，以及组，设备的增删查改的响应
 public class MainKernel {
 	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
+	private static Logger log = Logger.getLogger(MainKernel.class);
 	public  CDatabaseEngine ICDatabaseEngine1;
 	private LNode rootListNode;//设备树总节点（虚拟）
 	public Hashtable listDevHash = new Hashtable();
@@ -98,29 +100,11 @@ public class MainKernel {
 				System.out.println("No Session Found::::");
 			}
 		}else if(cmd.equalsIgnoreCase("nodeadd")){
-			rootjson.put("cmd", "nodeadd");
-			rootjson.put("key", "1");//node UserGroupID
-			rootjson.put("pkey", jsondata.get("key").toString()); //ParentGroupID
-			rootjson.put("title", jsondata.get("value").toString());//UserGroupName
-			rootjson.put("type", "group");
-			rootjson.put("isFolder", true);
-			rootjson.put("expand", true);
-			rootjson.put("icon", "images/net_center.png");
-			staticmemory.broadCast(rootjson.toJSONString());
+			handleInsertGrp(jsondata);			
 		}else if(cmd.equalsIgnoreCase("nodeedit")){
-			rootjson.put("cmd", "nodeedit");
-			rootjson.put("key", jsondata.get("key").toString());
-			rootjson.put("title", jsondata.get("value").toString());
-			rootjson.put("type", "group");
-			rootjson.put("isFolder", true);
-			rootjson.put("expand", true);
-			rootjson.put("icon", "images/net_center.png");
-			staticmemory.broadCast(rootjson.toJSONString());
+			handleUpdGrp(jsondata);
 		}else if(cmd.equalsIgnoreCase("nodedel")){
-			rootjson.put("cmd", "nodedel");
-			rootjson.put("key", jsondata.get("key").toString());
-			rootjson.put("pkey", jsondata.get("pkey").toString());
-			staticmemory.broadCast(rootjson.toJSONString());
+			handleDelGrp(jsondata);
 		}else if(cmd.equalsIgnoreCase("lazyLoad")){
 			rootjson.put("cmd", "lazyLoad");
 			rootjson.put("key", jsondata.get("key").toString());
@@ -221,45 +205,22 @@ public class MainKernel {
     	rootjson.put("cmd", "getInitTree");
 		JSONArray jsonarray = new JSONArray();
 		//获取设备树结构
-		/*for(Iterator iter = rootListNode.Nodes.iterator(); iter.hasNext();){
-			LNode node = (LNode)iter.next();
-			InodeInterface InodeInterface1 = (InodeInterface)node;
-			if (InodeInterface1.isGroup())
-            {
-				devGroup group = (devGroup)InodeInterface1;
-				UserGroupTableRow usergroup = group.BindUserGroupTableRow;
-				sysjson.put("key", usergroup.UserGroupID);
-				sysjson.put("pkey", usergroup.ParentGroupID);
-				sysjson.put("title", usergroup.UserGroupName);
-				sysjson.put("type", "group");
-				sysjson.put("isFolder", true);
-				sysjson.put("expand", true);
-				sysjson.put("isAlarm", group.isAlarm == 0?false:true);				
-				sysjson.put("icon", "images/net_center.png");
-				JSONArray subjsonarray = getSubTree(node, sysjson,jsonarray);
-				if(!subjsonarray.isEmpty()){
-					sysjson.put("lazy", false);
-					sysjson.put("children", subjsonarray);
-				}else{
-					sysjson.put("lazy", true);
-				}
-				jsonarray.add(sysjson);
-            }
-		}*/
 		jsonarray = getSubTree(rootListNode);
 		rootjson.put("treenodes", jsonarray);
 		String jsonString = rootjson.toJSONString();
+		System.out.println("jsonString==" + jsonString);
 		return jsonString;
     }
     
     private JSONArray getSubTree(LNode pnode){
-    	JSONObject subjson = new JSONObject();
+    	JSONObject subjson;
     	JSONArray jsonarray = new JSONArray();
     	for(Iterator iter = pnode.Nodes.iterator(); iter.hasNext();){
 			LNode node = (LNode)iter.next();
 			InodeInterface InodeInterface1 = (InodeInterface)node;
 			if (InodeInterface1.isGroup())
             {
+				subjson = new JSONObject();
 				devGroup group = (devGroup)InodeInterface1;
 				UserGroupTableRow usergroup = group.BindUserGroupTableRow;
 				subjson.put("key", usergroup.UserGroupID);
@@ -269,7 +230,7 @@ public class MainKernel {
 				subjson.put("isFolder", true);
 				subjson.put("expand", true);
 				subjson.put("isAlarm", group.isAlarm == 0?false:true);
-				subjson.put("icon", "images/net_center.png");
+				subjson.put("icon", "images/net_center.png");				
 				JSONArray subjsonarray = new JSONArray();
 				subjsonarray = getSubTree(node);
 				if(!subjsonarray.isEmpty()){
@@ -291,8 +252,6 @@ public class MainKernel {
 		// List<CDataBasePropery.nojuDeviceTableRow> SlotRowsList =
 		// ICDatabaseEngine1.slotTableGetAllRows();
 		rootListNode = this.offerTopodModel(devHash, grpHash);			
-
-		System.out.println("Have Init rootListNode::::size===" + rootListNode.Nodes.size());
 		
 		//print rootListNode;
 	}
@@ -432,12 +391,12 @@ public class MainKernel {
     public boolean handleInsertGrp(JSONObject jsondata)
     {
     	boolean mStatus =false;
-
+    	JSONObject rootjson = new JSONObject();
     	
     	////get the  group information from  jsondata ,build a new UserGroupTableRow ***************
-    	UserGroupTableRow mDevGrpTableRow =new UserGroupTableRow(0, "绍兴", -1);
+    	UserGroupTableRow mDevGrpTableRow =new UserGroupTableRow(0, jsondata.get("value").toString(),  Integer.parseInt(jsondata.get("key").toString()));
     	
-    
+    	System.out.println(jsondata.get("value").toString());
 
         if (this.ICDatabaseEngine1.UserGroupTableInsertRow(mDevGrpTableRow) > 0)
         {
@@ -476,11 +435,19 @@ public class MainKernel {
 
 
             //  this.Notify("DbEngine.grpOP", cmd);//notify runtimedev
-     
-
+            
+            rootjson.put("cmd", "nodeadd");
+			rootjson.put("key", mDevGrpTableRow.UserGroupID);//node UserGroupID
+			rootjson.put("pkey", jsondata.get("key").toString()); //ParentGroupID
+			rootjson.put("title", jsondata.get("value").toString());//UserGroupName
+			rootjson.put("type", "group");
+			rootjson.put("isFolder", true);
+			rootjson.put("expand", true);
+			rootjson.put("icon", "images/net_center.png");
+			staticmemory.broadCast(rootjson.toJSONString());
 
         }
-
+        
         return mStatus;
 
     }
@@ -490,7 +457,7 @@ public class MainKernel {
       	boolean mStatus =false;
       	
       	
-    	int usergroupID=9;//get  goupid from jsondata
+    	int usergroupID= Integer.parseInt(jsondata.get("key").toString());//get  goupid from jsondata
       	devGroup delgrp = (devGroup)listGrpHash.get(usergroupID); 
 
 
@@ -523,10 +490,16 @@ public class MainKernel {
 
             pGrp.Nodes.remove(delgrp);
             listGrpHash.remove(mDevGrpTableRow.UserGroupID);
-
-
+            
+            JSONObject rootjson = new JSONObject();
+            rootjson.put("cmd", "nodedel");
+			rootjson.put("key", jsondata.get("key").toString());
+			rootjson.put("pkey", jsondata.get("pkey").toString());
+			staticmemory.broadCast(rootjson.toJSONString());
             return true;
 
+        }else{
+        	log.info("Del Grp :" + mDevGrpTableRow.UserGroupName + " Error!");
         }
 
 
@@ -539,15 +512,12 @@ public class MainKernel {
     {
     	boolean mStatus =false;
     	
-    	int userid=11;//get 组ID from jsondata
+    	int userid= Integer.parseInt(jsondata.get("key").toString());//get 组ID from jsondata
       	devGroup rootGroup = (devGroup)listGrpHash.get(userid); 
-
-      	
       	
     	UserGroupTableRow mDevGrpTableRow = rootGroup.BindUserGroupTableRow;
     	
-        //edit the  mDevGrpTableRow's 的属性 here from jsondata    	
-    //	mDevGrpTableRow.UserGroupName="new name";
+    	mDevGrpTableRow.UserGroupName = jsondata.get("value").toString();
     	
         mStatus = this.ICDatabaseEngine1.UserGroupTableUpdateRow(mDevGrpTableRow);
         if (mStatus)
@@ -560,15 +530,19 @@ public class MainKernel {
             //Hashtable effectPathList = new Hashtable();
             //effectPathList.Add(rootGroup.BindUserGroupTableRow.UserGroupID.ToString(), grp.fullpath);
           //  reflashPath(grp, effectPathList);
-
+            JSONObject rootjson = new JSONObject();
+        	rootjson.put("cmd", "nodeedit");
+    		rootjson.put("key", jsondata.get("key").toString());
+    		rootjson.put("title", jsondata.get("value").toString());
+    		rootjson.put("type", "group");
+    		rootjson.put("isFolder", true);
+    		rootjson.put("expand", true);
+    		rootjson.put("icon", "images/net_center.png");
+    		staticmemory.broadCast(rootjson.toJSONString());
             return true;
         }
 
         return false;
-
-
-
-
     }
 
 

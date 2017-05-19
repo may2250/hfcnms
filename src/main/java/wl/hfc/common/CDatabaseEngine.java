@@ -15,11 +15,11 @@ public class CDatabaseEngine {
 
 
 	public  Connection getConnection() {
-		String url = "jdbc:mysql://localhost:3306/hfctraplogs";
+		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
 		// ����������
 		String driver = "com.mysql.jdbc.Driver";
-		String dbuser = "bobo";
-		String dbpass = "123456";
+		String dbuser = "root";
+		String dbpass = "prevail";
 		try {
 			if (con == null) {
 				Class.forName(driver);

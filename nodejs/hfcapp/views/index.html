@@ -6,20 +6,21 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
- <!-- Bootstrap Core CSS -->
-<link href="/stylesheets/bootstrap.min.css" rel='stylesheet' type='text/css' />
 <link href="/stylesheets/ui.fancytree.css" rel='stylesheet' type='text/css' />
 <link href="/stylesheets/jquery-ui.min.css" rel='stylesheet' type='text/css' />
 <link href="/stylesheets/jquery.contextMenu.min.css" rel='stylesheet' type='text/css' />
 <link href="/stylesheets/jquery.dataTables.min.css" rel='stylesheet' type='text/css' />
-
+<script src="/javascripts/jquery-3.2.1.min.js"></script>
+ <!-- Bootstrap Core CSS -->
+<link href="/stylesheets/bootstrap.min.css" rel='stylesheet' type='text/css' />
 <!-- Custom CSS -->
 <link href="/stylesheets/style.css" rel='stylesheet' type='text/css' />
 <!-- Graph CSS -->
 <link href="/stylesheets/font-awesome.min.css" rel="stylesheet"> 
 <link rel="stylesheet" href="/stylesheets/icon-font.min.css" type='text/css' />
 <!-- //lined-icons -->
-<script src="/javascripts/jquery-3.2.1.min.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="/javascripts/bootstrap.min.js"></script>
 <script src="/javascripts/jquery-ui.min.js"></script>
 <script src="/javascripts/jquery.fancytree.min.js"></script>
 <script src="/javascripts/jquery.ui-contextmenu.min.js"></script>
@@ -41,21 +42,21 @@
 					<div class="top_menu">
 						<div class="top_nav">
 							<ul class="navigation">
-								<li>
+								<li class="nav_search">
 									<i class="icon-search icon-2x" ></i>
 									<p>搜索设备</p>
 								</li>
-								<li>
+								<li class="nav_managerauth">
 									<i class="icon-lock icon-2x" ></i>
 									<p>权限管理</p>
 								</li>
-								<li>
+								<li class="nav_managerlog">
 									<i class="icon-calendar icon-2x" ></i>
 									<p>日志管理</p>
 								</li>
-								<li>
-									<i class="icon-user-md icon-2x" ></i>
-									<p>aaaxsdf</p>
+								<li class="nav_displaylog">
+									<i class="icon-eye-open icon-2x" ></i>
+									<p>隐藏日志栏</p>
 								</li>
 							</ul>
 						</div>
@@ -212,6 +213,23 @@
 	 			<div class="sidebar-tree">
 	 				<div id="dev-fancytree"></div>
 	 			</div>
+	 			<div class="panel panel-info sidebar-info">
+				    <div class="panel-heading" style="padding: 5px 8px;">
+				        <h3 class="panel-title">状态信息</h3>
+				    </div>
+				    <div class="panel-body">
+				        <table>
+				        	<tr>
+				        		<td>服务器状态:</td>
+				        		<td><i class="icon-ok-circle"></i></td>
+				        	</tr>
+				        	<tr>
+				        		<td>数据库状态:</td>
+				        		<td><i class="icon-ok-circle"></i></td>
+				        	</tr>
+				        </table>
+				    </div>
+				</div>
 			</div>
 			<div class="clearfix"></div>		
 		</div>
@@ -223,17 +241,22 @@
 			  {
 				$(".page-container").addClass("sidebar-collapsed").removeClass("sidebar-collapsed-back");
 				$("#dev-fancytree").css({"display":"none"});
+				$(".sidebar-info").css({"display":"none"});
 				$("#menu span").css({"position":"absolute"});
+				$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
 			  }
 			  else
 			  {
 				$(".page-container").removeClass("sidebar-collapsed").addClass("sidebar-collapsed-back");
 				$("#dev-fancytree").css({"display":"block"});
+				$(".sidebar-info").css({"display":"block"});
+				$("#menu span").css({"position":"relative"});
 				setTimeout(function() {
-				  $("#menu span").css({"position":"relative"});
+					$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
 				}, 400);
+				
 			  }
-							
+			  				
 				toggle = !toggle;
 			});
 			
@@ -244,11 +267,9 @@
 	<!-- hide div -->
 	<div id="dialog-form" title="配置">
 		<p class="validateTips">在文本框中输入.</p>
-	 	<input type="text" id="set_value" value="" >
+	 	<input type="text" style="display:none" id="set_value" value="" >
 	  
 	</div>
-<!-- Bootstrap Core JavaScript -->
-   <script src="/javascripts/bootstrap.min.js"></script>
    <script src="/javascripts/hfcdetails.js"></script>
    <script src="/javascripts/main.js"></script>
 </body>

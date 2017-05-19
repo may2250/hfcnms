@@ -106,7 +106,21 @@
             }
         } ); 
     	
-    	
+    	$('.nav_displaylog').click(function(){
+    		if($('.nav_displaylog p')[0].textContent == "隐藏日志栏"){
+    			$('.nav_displaylog i').addClass("icon-eye-close");
+    			$('.nav_displaylog i').removeClass(" icon-eye-open"); 
+    			$('.nav_displaylog p')[0].textContent = "显示日志栏";
+    			$("footer").css('display','none');
+    			$(".devdetail-content").css('height',$(window).height() - 200);    			
+    		}else{
+    			$('.nav_displaylog i').addClass("icon-eye-open");
+    			$('.nav_displaylog i').removeClass(" icon-eye-close"); 
+    			$('.nav_displaylog p')[0].textContent = "隐藏日志栏";
+    			$("footer").css('display','block');
+    			$(".devdetail-content").css('height',$(window).height() - 360); 
+    		};    		
+    	});
 	});
 	
 	function initWebSocket() {
@@ -192,6 +206,9 @@
     		extensions: ["dnd"],
             source: treedata,
             clickFolderMode: 1,
+            click: function(event, data) {
+            	
+            },
             dblclick: function(event, data) {
             	if(data.node.data.type == "device"){
             		//show deivce detail
@@ -230,7 +247,99 @@
     	$.contextMenu({
     	      selector: "#dev-fancytree span.fancytree-title",
     	      items: {
+    	    	  "rcommunity": {name: "修改只读团体名", icon: "icon-book",
+    	    		  disabled: function(key, opt){
+    	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+        	              if(node.data.type == "device"){
+        	            	  return false;
+        	              }else{
+        	            	  return true;
+        	              }
+    	        	  },
+      	        	callback: function(key, opt){
+        	              var node = $.ui.fancytree.getNode(opt.$trigger);
+        	              if(node.data.type == "device"){
+        	            	//添加节点
+  	      	            $( "#dialog-form" ).dialog({
+  	      	        	      autoOpen: false,
+  	      	        	      height: 240,
+  	      	        	      width: 300,
+  	      	        	      modal: true,
+  	      	        	      buttons: {
+  	      	        	    	  Ok: function() {	    
+  	      	        	    		  if($("#set_value").val() != ""){
+  	      	        	    			  var datastring = '{"cmd":"nodeadd","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
+  		      	        	    		  webSocket.send(datastring);
+  		      	        	    		  $( this ).dialog( "close" );
+  	      	        	    		  }else{
+  	      	        	    			  $("#set_value").addClass( "ui-state-error-custom" )
+  	      	        	    		  }   	        	    		  
+  	      	        	              	      	        	              
+  	      	        	            }
+  	      	        	      },
+  	      	        	      close: function() {
+  	      	        	    	$("#set_value").css('display','none');
+  	      	        	    	$("#set_value").removeClass("ui-state-error-custom");
+  	      	        	      }
+        	        	    });
+	  	      	            $("#set_value").css('display','block');
+	  	      	            $("#set_value").value = "";
+	  	      	            updateTips("请输入添加节点名称:");
+	  	      	            $("#dialog-form").dialog("open");
+        	              }
+        	            }
+      	          },
+      	        "wcommunity": {name: "修改只写团体名", icon: "edit",
+      	        	disabled: function(key, opt){
+  	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+      	              if(node.data.type == "device"){
+      	            	  return false;
+      	              }else{
+      	            	  return true;
+      	              }
+  	        	  },
+      	        	callback: function(key, opt){
+        	              var node = $.ui.fancytree.getNode(opt.$trigger);
+        	              if(node.data.type == "device"){
+        	            	//添加节点
+	  	      	            $( "#dialog-form" ).dialog({
+	  	      	        	      autoOpen: false,
+	  	      	        	      height: 240,
+	  	      	        	      width: 300,
+	  	      	        	      modal: true,
+	  	      	        	      buttons: {
+	  	      	        	    	  Ok: function() {	    
+	  	      	        	    		  if($("#set_value").val() != ""){
+	  	      	        	    			  var datastring = '{"cmd":"nodeadd","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
+	  		      	        	    		  webSocket.send(datastring);
+	  		      	        	    		  $( this ).dialog( "close" );
+	  	      	        	    		  }else{
+	  	      	        	    			  $("#set_value").addClass( "ui-state-error-custom" )
+	  	      	        	    		  }   	        	    		  
+	  	      	        	              	      	        	              
+	  	      	        	            }
+	  	      	        	      },
+	  	      	        	      close: function() {
+	  	      	        	    	$("#set_value").css('display','none');
+	  	      	        	    	$("#set_value").removeClass("ui-state-error-custom");
+	  	      	        	      }
+	        	        	    });
+		  	      	            $("#set_value").css('display','block');
+		  	      	            $("#set_value").value = "";
+		  	      	            updateTips("请输入添加节点名称:");
+		  	      	            $("#dialog-form").dialog("open");
+	        	              }
+        	         }
+      	          },    	
     	        "add": {name: "添加节点", icon: "add",
+    	        	disabled: function(key, opt){
+    	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+        	              if(node.data.type == "group"){
+        	            	  return false;
+        	              }else{
+        	            	  return true;
+        	              }
+    	        	  },
     	        	callback: function(key, opt){
       	              var node = $.ui.fancytree.getNode(opt.$trigger);
       	              if(node.data.type == "group"){
@@ -242,12 +351,22 @@
 	      	        	      modal: true,
 	      	        	      buttons: {
 	      	        	    	  Ok: function() {	    
-	      	        	    		  var datastring = '{"cmd":"nodeadd","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
-	      	        	    		  webSocket.send(datastring);
-	      	        	              $( this ).dialog( "close" );
+	      	        	    		  if($("#set_value").val() != ""){
+	      	        	    			  var datastring = '{"cmd":"nodeadd","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
+		      	        	    		  webSocket.send(datastring);
+		      	        	    		  $( this ).dialog( "close" );
+	      	        	    		  }else{
+	      	        	    			  $("#set_value").addClass( "ui-state-error-custom" )
+	      	        	    		  }   	        	    		  
+	      	        	              	      	        	              
 	      	        	            }
+	      	        	      },
+	      	        	      close: function() {
+	      	        	    	$("#set_value").css('display','none');
+	      	        	    	$("#set_value").removeClass("ui-state-error-custom");
 	      	        	      }
       	        	    });
+	      	            $("#set_value").css('display','block');
 	      	            $("#set_value").value = "";
 	      	            updateTips("请输入添加节点名称:");
 	      	            $("#dialog-form").dialog("open");
@@ -255,6 +374,14 @@
       	            }
     	          },    	        
     	        "edit": {name: "编辑", icon: "edit",
+    	        	disabled: function(key, opt){
+  	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+      	              if(node.data.type == "group" || node.data.type == "device"){
+      	            	  return false;
+      	              }else{
+      	            	  return true;
+      	              }
+  	        	  	},
     	        	callback: function(key, opt){
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
 	      	            if(node.data.type == "group"){
@@ -265,13 +392,23 @@
 		      	        	      width: 300,
 		      	        	      modal: true,
 		      	        	      buttons: {
-		      	        	    	  Ok: function() {	    
-		      	        	    		  var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
-		      	        	    		  webSocket.send(datastring);
-		      	        	              $( this ).dialog( "close" );
-		      	        	            }
-		      	        	      }
+		      	        	    	  Ok: function() {	 
+		      	        	    		if($("#set_value").val() != ""){
+		      	        	    			var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
+			      	        	    		webSocket.send(datastring);
+			      	        	            $( this ).dialog( "close" );
+		      	        	    		}else{
+		      	        	    			$("#set_value").addClass( "ui-state-error-custom" )
+		      	        	    		}
+		      	        	    		        	    		  
+		      	        	    	  }
+		      	        	      },
+		      	        	      close: function() {
+			      	        	    	$("#set_value").css('display','none');
+			      	        	    	$("#set_value").removeClass("ui-state-error-custom");
+			      	        	  }
 	      	        	    });
+		      	          $("#set_value").css('display','block');
 		      	            $("#set_value").value = "";
 		      	            updateTips("请输入要更改的内容:");
 		      	            $("#dialog-form").dialog("open");
@@ -280,7 +417,15 @@
     	          },
     	          "sep1": "----",
     	          "adddevice": {name: "添加设备", icon: "add",
-      	        	callback: function(key, opt){
+    	        	  disabled: function(key, opt){
+    	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+        	              if(node.data.type == "group"){
+        	            	  return false;
+        	              }else{
+        	            	  return true;
+        	              }
+    	        	  },
+      	        	  callback: function(key, opt){
         	              var node = $.ui.fancytree.getNode(opt.$trigger);
         	              if(node.data.type == "group"){
         	            	//添加设备
@@ -304,6 +449,14 @@
 	        	     }
       	          },    	 
     	          "delete": {name: "删除", icon: "delete",
+    	        	  disabled: function(key, opt){
+      	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+          	              if(node.data.type == "group" || node.data.type == "device"){
+          	            	  return false;
+          	              }else{
+          	            	  return true;
+          	              }
+      	        	  	},
     	        	callback: function(key, opt){
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
       	              	if((confirm( "确定要删除？ ")==true))
@@ -312,7 +465,6 @@
 		      	            	//删除节点
 	      	              		var datastring = '{"cmd":"nodedel","key":"'+node.key +'","type":"'+ node.data.type +'","pkey":"'+ node.data.pkey +'"}';
 	      	              		webSocket.send(datastring);
-			      	            $("#dialog-form").dialog("open");
 		      	             }else{
 		      	            	 //删除设备
 		      	            	 
