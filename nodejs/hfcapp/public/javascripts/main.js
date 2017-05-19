@@ -172,6 +172,9 @@
         }else if(jsonobj.cmd == "nodedel"){
 	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
 	         node.remove();
+        }else if(jsonobj.cmd == "deviceadd"){
+	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.pkey);
+	       	 node.addChildren(jsonobj.devnodes);
         }else if(jsonobj.cmd == "lazyLoad"){
 	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
 	       	 lazyLoadData = jsonobj.lazynodes;
@@ -398,7 +401,7 @@
 			      	        	    		webSocket.send(datastring);
 			      	        	            $( this ).dialog( "close" );
 		      	        	    		}else{
-		      	        	    			$("#set_value").addClass( "ui-state-error-custom" )
+		      	        	    			$("#set_value").addClass( "ui-state-error-custom" );
 		      	        	    		}
 		      	        	    		        	    		  
 		      	        	    	  }
@@ -435,15 +438,24 @@
     	      	        	      width: 300,
     	      	        	      modal: true,
     	      	        	      buttons: {
-    	      	        	    	  Ok: function() {	    
-    	      	        	    		  var datastring = '{"cmd":"deviceadd","value":"'+ $("#set_value").val()+'"}';
-    	      	        	    		  webSocket.send(datastring);
-    	      	        	              $( this ).dialog( "close" );
-    	      	        	            }
-    	      	        	      }
+    	      	        	    	  Ok: function() {	   
+	    	      	        	    		if($("#set_value").val() != "" && ipvalidate($("#set_value").val())){
+	    	      	        	    			var datastring = '{"cmd":"deviceadd","key":"'+ node.key + '","value":"'+ $("#set_value").val()+'"}';
+	      	      	        	    		  	webSocket.send(datastring);
+	      	      	        	    		  	$( this ).dialog( "close" );
+	    	      	        	    		}else{
+	    	      	        	    			$("#set_value").addClass( "ui-state-error-custom" );
+	    	      	        	    		}
+    	      	        	    	  }
+    	      	        	      },
+    	      	        	      close: function() {
+    		      	        	    	$("#set_value").css('display','none');
+    		      	        	    	$("#set_value").removeClass("ui-state-error-custom");
+    		      	        	  }
 	          	        	    });
+        	            	  	$("#set_value").css('display','block');
 	    	      	            $("#set_value").value = "";
-	        	            	updateTips("输入搜索设备的IP地址:");
+	        	            	updateTips("输入设备的IP地址:");
 	        	            	$("#dialog-form").dialog("open");
 	        	          }
 	        	     }
@@ -461,14 +473,9 @@
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
       	              	if((confirm( "确定要删除？ ")==true))
       	              	{
-	      	              	if(node.data.type == "group"){
-		      	            	//删除节点
-	      	              		var datastring = '{"cmd":"nodedel","key":"'+node.key +'","type":"'+ node.data.type +'","pkey":"'+ node.data.pkey +'"}';
-	      	              		webSocket.send(datastring);
-		      	             }else{
-		      	            	 //删除设备
-		      	            	 
-		      	             }
+      	              		//删除节点
+      	              		var datastring = '{"cmd":"nodedel","key":"'+node.key +'","type":"'+ node.data.type +'","pkey":"'+ node.data.pkey +'"}';
+      	              		webSocket.send(datastring);
       	              	}	      	            
       	            }
     	          }
@@ -476,9 +483,9 @@
     	    });
     }
     
-    function showDeviceDetail(devtype, param){
+    function showDeviceDetail(devtype){
     	//TODO
-    	$(".candile").load("/opticalTran", param);
+    	$(".candile").load("/opticalTran");
     	showopticalTran();
     }
     
@@ -510,6 +517,20 @@
 		  $( ".validateTips" )
 	        .text( t );
 	  }
+	  
+	  function ipvalidate(ip) {  
+	    var val = /([0-9]{1,3}\.{1}){3}[0-9]{1,3}/;  
+	    var vald = val.exec(ip);  
+	    if (vald == null) {    
+	        return false;  
+	    }  
+	    if (vald != '') {  
+	        if (vald[0] != ip) {    
+	            return false;  
+	        }  
+	    }
+	    return true;
+	}
     
     function send(datastring) {  
     	if (webSocket.readyState !== 1) {

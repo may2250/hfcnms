@@ -104,7 +104,13 @@ public class MainKernel {
 		}else if(cmd.equalsIgnoreCase("nodeedit")){
 			handleUpdGrp(jsondata);
 		}else if(cmd.equalsIgnoreCase("nodedel")){
-			handleDelGrp(jsondata);
+			if(jsondata.get("type").toString().equalsIgnoreCase("group")){
+				handleDelGrp(jsondata);
+			}else{
+				handleDeleteDev(jsondata);
+			}			
+		}else if(cmd.equalsIgnoreCase("deviceadd")){
+			handleInsertDev(jsondata);
 		}else if(cmd.equalsIgnoreCase("lazyLoad")){
 			rootjson.put("cmd", "lazyLoad");
 			rootjson.put("key", jsondata.get("key").toString());
@@ -243,6 +249,46 @@ public class MainKernel {
             }
 		}
     	return jsonarray;
+    }
+    
+    private String getLazyNodes(JSONObject jsondata){
+    	JSONObject subjson;
+    	JSONObject rootjson = new JSONObject();
+    	JSONArray jsonarray = new JSONArray();
+    	int usergroupID= Integer.parseInt(jsondata.get("key").toString());//get  goupid from jsondata
+      	devGroup grp = (devGroup)listGrpHash.get(usergroupID); 
+      	for(Iterator iter = grp.Nodes.iterator(); iter.hasNext();){
+			LNode node = (LNode)iter.next();
+			InodeInterface InodeInterface1 = (InodeInterface)node;
+			if (InodeInterface1.isGroup())
+            {
+				subjson = new JSONObject();
+				devGroup group = (devGroup)InodeInterface1;
+				UserGroupTableRow usergroup = group.BindUserGroupTableRow;
+				subjson.put("key", usergroup.UserGroupID);
+				subjson.put("pkey", usergroup.ParentGroupID);
+				subjson.put("title", usergroup.UserGroupName);
+				subjson.put("type", "group");
+				subjson.put("isFolder", true);
+				subjson.put("expand", true);
+				subjson.put("isAlarm", group.isAlarm == 0?false:true);
+				subjson.put("icon", "images/net_center.png");				
+				JSONArray subjsonarray = new JSONArray();
+				subjsonarray = getSubTree(node);
+				if(!subjsonarray.isEmpty()){
+					subjson.put("lazy", false);
+					subjson.put("children", subjsonarray);
+				}else{
+					subjson.put("lazy", true);
+				}
+				jsonarray.add(subjson);
+            }else{
+            	DevTopd dev = (DevTopd)InodeInterface1;
+            	subjson = new JSONObject();
+            	
+            }
+		}
+    	return "";
     }
 
 
@@ -548,9 +594,9 @@ public class MainKernel {
 
 
     public DevTopd handleInsertDev(JSONObject jsondata)
-    {      	boolean mStatus =false;
-  	
-      	int usergroupID=6;//get  goupid from jsondata
+    {      	
+    	boolean mStatus =false;  	
+      	int usergroupID=Integer.parseInt(jsondata.get("key").toString());//get  goupid from jsondata
 
       	devGroup grp = (devGroup)listGrpHash.get(usergroupID); 
 
@@ -562,15 +608,13 @@ public class MainKernel {
     	
     	////get the  name, parent from  jsondata ,build a new devicerow
 
-        nojuDeviceTableRow mDeviceTableRow=new nojuDeviceTableRow("1.2.3.5", NetTypes.other);
+        nojuDeviceTableRow mDeviceTableRow=new nojuDeviceTableRow(jsondata.get("value").toString(), NetTypes.other);
         mDeviceTableRow.UserGroupID=usergroupID;
         
         
         mStatus = this.ICDatabaseEngine1.DeviceTableInsertRow(mDeviceTableRow);
         if (mStatus)
         {
-
-
             DevTopd dev = new DevTopd(mDeviceTableRow);         
             dev.isOline = false;
 
@@ -578,19 +622,39 @@ public class MainKernel {
             dev.parent = grp;
             dev.fullpath = grp.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;
 
-
-
-
             dev.OnlineCount = 0;
-
-
           //  dev.Pm = null;
-
 
             listDevHash.put(dev._NetAddress, dev);
             grp.Nodes.add(dev);
-
-
+            JSONArray jsonarray = new JSONArray();
+            JSONArray subjsonarray = new JSONArray();
+            JSONObject rootnodejson = new JSONObject();
+            JSONObject rootjson = new JSONObject();
+            JSONObject subjson = new JSONObject();
+        	rootjson.put("cmd", "deviceadd");
+        	rootjson.put("pkey", jsondata.get("key").toString());
+        	rootnodejson.put("key", dev._NetAddress);
+        	rootnodejson.put("pkey", jsondata.get("key").toString());
+        	rootnodejson.put("title", jsondata.get("value").toString());
+        	rootnodejson.put("type", "device");
+        	rootnodejson.put("rcommunity", dev.BindnojuDeviceTableRow._ROCommunity);
+        	rootnodejson.put("wcommunity", dev.BindnojuDeviceTableRow._RWCommunity);
+        	rootnodejson.put("isonline", dev.isOline);
+        	rootnodejson.put("icon", dev.isOline?"images/device.png":"images/devoff.png");         	
+    		subjson.put("title", dev._NetAddress);	
+			subjson.put("icon", "images/net_info.png");
+			subjsonarray.add(subjson);
+			subjson = new JSONObject();
+			subjson.put("title", dev.mNetType.toString());	
+			subjson.put("icon", "images/net_info.png");
+			subjsonarray.add(subjson);
+			rootnodejson.put("children", subjsonarray);
+			jsonarray.add(rootnodejson);
+			rootjson.put("devnodes", jsonarray);
+			
+    		staticmemory.broadCast(rootjson.toJSONString());
+    		System.out.println("-------devadd str===" + rootjson.toJSONString());
             return dev;
 
         }
@@ -639,7 +703,7 @@ public class MainKernel {
       	boolean mStatus =false;
       	
       	
-    	String devAddr="1.2.3.5";//get  ip from jsondata
+    	String devAddr=jsondata.get("key").toString();//get  ip from jsondata
       	DevTopd  delDev = (DevTopd)listDevHash.get(devAddr); 
       	
     	if (delDev==null) {
@@ -674,7 +738,11 @@ public class MainKernel {
             grp.Nodes.remove(dev);
             listDevHash.remove(delDev.BindnojuDeviceTableRow.get_NetAddress());
 
-
+            JSONObject rootjson = new JSONObject();
+            rootjson.put("cmd", "nodedel");
+			rootjson.put("key", jsondata.get("key").toString());
+			rootjson.put("pkey", jsondata.get("pkey").toString());
+			staticmemory.broadCast(rootjson.toJSONString());
         }
 
         return mStatus;
