@@ -67,6 +67,9 @@ public class Services_Websocket {
 				//获取设备数结构
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString());				
+			}else if(cmd.equalsIgnoreCase("getInitLog")){
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString());
 			}else if(cmd.equalsIgnoreCase("nodeadd")){
 				sendToQueue(jsondata.toJSONString());
 			}else if(cmd.equalsIgnoreCase("nodeedit")){
@@ -82,6 +85,9 @@ public class Services_Websocket {
 			}else if(cmd.equalsIgnoreCase("deviceadd")){				
 				sendToQueue(jsondata.toJSONString());
 			}else if(cmd.equalsIgnoreCase("hfcvalueset")){
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString());
+			}else if(cmd.equalsIgnoreCase("getdevicedetail")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString());
 			}else if(cmd.equalsIgnoreCase("test")){

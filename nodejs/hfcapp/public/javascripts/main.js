@@ -8,6 +8,8 @@
 		initWebSocket();		
     	var datastring = '{"cmd":"getInitTree","message":""}';
     	send(datastring);
+    	var datastring = '{"cmd":"getInitLog","message":""}';
+    	send(datastring);
     	
     	window.__globalobj__ = {
     		    _webSocket:webSocket,
@@ -147,8 +149,10 @@
 	function onMessage(event) {
     	var jsonobj =  eval('(' + event.data + ')');
         if(jsonobj.cmd == "getInitTree"){
-        	initTree(jsonobj.treenodes);
-        
+        	initTree(jsonobj.treenodes);        
+        }else if(jsonobj.cmd == "getInitLog"){
+        	//解析日志并显示
+        	parseLogs(jsonobj);
         }else if(jsonobj.cmd == "test"){
         	document.getElementById('messages').innerHTML
             += '<br />' + jsonobj.message;
@@ -178,6 +182,8 @@
         }else if(jsonobj.cmd == "lazyLoad"){
 	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
 	       	 lazyLoadData = jsonobj.lazyNodes;
+        }else if(jsonobj.cmd == "devicedetail"){
+        	 showopticalTran(jsonobj);
         }else if(jsonobj.cmd == "hfcvalueset"){
         	 switch(jsonobj.target){
         	 case "devicetrapedit":
@@ -224,7 +230,7 @@
             	if(data.node.data.type == "device"){
             		//show deivce detail
             		__globalobj__._realDevice = data.node;
-            		showDeviceDetail(data.node.getLastChild().title);
+            		getDeviceDetail(data.node);
             	}
             	
             },
@@ -395,7 +401,7 @@
   	        	  	},
     	        	callback: function(key, opt){
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
-	      	            if(node.data.type == "group"){
+	      	            if(node.data.type == "group" || node.data.type == "device"){
 	      	            	//编辑节点
 		      	            $( "#dialog-form" ).dialog({
 		      	        	      autoOpen: false,
@@ -491,12 +497,42 @@
     	    });
     }
     
-    function showDeviceDetail(devtype){
-    	//TODO
-    	$(".candile").load("/opticalTran");
-    	showopticalTran();
+    function parseLogs(jsonobj){
+    	$.each(jsonobj.alarms, function (n, value) {
+    		tbl_devalarm.row.add( [
+    		            value.id,
+    		            value.level,
+    		            value.source,
+    		            value.path,
+    		            value.type,
+    		            value.paramname,
+    		            value.paramvalue,
+    		            value.eventtime,
+    		            value.solved,
+    		            value.solvetime
+    		        ] ).draw( false );
+        });
+    	
+    	$.each(jsonobj.logs, function (n, value) {
+    		tbl_optlog.row.add( [
+    		            value.id,
+    		            value.type,
+    		            value.content,
+    		            value.time
+    		        ] ).draw( false );
+        });
     }
     
+    function getDeviceDetail(devnode){
+    	//TODO
+    	switch(devnode.getLastChild().title){
+    	case "":
+    		
+    	}
+    	$(".candile").load("/opticalTran");
+    	var datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().title + '"}';
+    	send(datastring);
+    }  
     
     
     function lazyLoad(event, data) {

@@ -80,7 +80,7 @@ public class MainKernel {
   			
   		}catch(Exception e){
   			e.printStackTrace();	
-  			//log.info(e.getMessage());
+  			log.info(e.getMessage());
   		}
   		
       }
@@ -94,10 +94,16 @@ public class MainKernel {
 		JSONObject rootjson = new JSONObject();
 		if(cmd.equalsIgnoreCase("getInitTree")){	
 			staticmemory.sendRemoteStr(getInitTree(rootjson), jsondata.get("sessionid").toString());			
+		}else if(cmd.equalsIgnoreCase("getInitLog")){
+			staticmemory.sendRemoteStr(getInitLog(rootjson), jsondata.get("sessionid").toString());	
 		}else if(cmd.equalsIgnoreCase("nodeadd")){
 			handleInsertGrp(jsondata);			
 		}else if(cmd.equalsIgnoreCase("nodeedit")){
-			handleUpdGrp(jsondata);
+			if(jsondata.get("type").toString().equalsIgnoreCase("group")){
+				handleUpdGrp(jsondata);
+			}else{
+				handleUpdateDev(jsondata);
+			}		
 		}else if(cmd.equalsIgnoreCase("nodedel")){
 			if(jsondata.get("type").toString().equalsIgnoreCase("group")){
 				handleDelGrp(jsondata);
@@ -110,7 +116,30 @@ public class MainKernel {
 			staticmemory.sendRemoteStr(getLazyNodes(jsondata), jsondata.get("sessionid").toString());					
 		}else if(cmd.equalsIgnoreCase("hfcvalueset")){
 			hfcValueSet(jsondata);			
+		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
+			staticmemory.sendRemoteStr(hfcDeviceDetail(jsondata), jsondata.get("sessionid").toString());				
 		}
+	}
+	
+	private String hfcDeviceDetail(JSONObject jsondata){
+		//获取设备详细信息		
+		String netaddr = jsondata.get("key").toString();
+		String devtype = jsondata.get("devtype").toString();
+		DevTopd dev = (DevTopd)listDevHash.get(netaddr); 
+
+      	if (dev==null) {      		
+      		return "";			
+		}
+      	
+    	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;
+    	JSONObject rootjson = new JSONObject();
+    	rootjson.put("cmd", "getdevicedetail");
+    	rootjson.put("key", netaddr);
+    	//TODO
+		if(devtype.equalsIgnoreCase("")){
+			
+		}
+		return "";
 	}
 	
 	private void hfcValueSet(JSONObject jsondata){
@@ -141,23 +170,38 @@ public class MainKernel {
 		}else if(target.equalsIgnoreCase("rcommunity")){
 			String value = jsondata.get("value").toString();
 			//修改数据库及内存设备信息
-			//TODO
-			
-			
-			
-			//修改成功后返回WEB前端
-			staticmemory.broadCast(jsondata.toJSONString());
-			
+			DevTopd dev = (DevTopd)listDevHash.get(jsondata.get("key").toString()); 
+	      	if (dev==null) {	      		
+	      		return ;				
+			}	      	
+	    	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;   	
+	     	mDeviceTableRow._ROCommunity= jsondata.get("value").toString();
+	        if (this.ICDatabaseEngine1.DeviceTableUpdateRow(mDeviceTableRow))
+	        {
+	        	dev.BindnojuDeviceTableRow = mDeviceTableRow;
+	        	dev.fullpath = dev.parent.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;	        	
+
+	        	//修改成功后返回WEB前端
+				staticmemory.broadCast(jsondata.toJSONString());
+	        }
+
 		}else if(target.equalsIgnoreCase("wcommunity")){
 			String value = jsondata.get("value").toString();
 			//修改数据库及内存设备信息
-			//TODO
-			
-			
-			
-			//修改成功后返回WEB前端
-			staticmemory.broadCast(jsondata.toJSONString());
-			
+			DevTopd dev = (DevTopd)listDevHash.get(jsondata.get("key").toString()); 
+	      	if (dev==null) {	      		
+	      		return ;				
+			}	      	
+	    	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;   	
+	     	mDeviceTableRow._RWCommunity= jsondata.get("value").toString();
+	        if (this.ICDatabaseEngine1.DeviceTableUpdateRow(mDeviceTableRow))
+	        {
+	        	dev.BindnojuDeviceTableRow = mDeviceTableRow;
+	        	dev.fullpath = dev.parent.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;	        	
+
+	        	//修改成功后返回WEB前端
+				staticmemory.broadCast(jsondata.toJSONString());
+	        }
 		}
 	}
   	
@@ -193,6 +237,37 @@ public class MainKernel {
 		String jsonString = rootjson.toJSONString();
 		System.out.println("jsonString==" + jsonString);
 		return jsonString;
+    }
+    
+    private String getInitLog(JSONObject rootjson){
+    	JSONObject logjson = new JSONObject();
+    	rootjson.put("cmd", "getInitLog");
+		JSONArray jsonarray = new JSONArray();
+		//获取发往WEB的设备告警及日志信息
+		//TODO
+		//test alarms
+		logjson.put("id", "1");
+		logjson.put("level", "1");
+		logjson.put("source", "grp1/xxxx");
+		logjson.put("path", "grp1/xxxx");
+		logjson.put("type", "warn");
+		logjson.put("paramname", "name");
+		logjson.put("paramvalue", "grp1");
+		logjson.put("eventtime", "2017-5-22");
+		logjson.put("solved", "yes");
+		logjson.put("solvetime", "2017-5-22");
+		jsonarray.add(logjson);
+		rootjson.put("alarms", jsonarray);
+		//test logs
+		logjson = new JSONObject();
+		logjson.put("id", "1");
+		logjson.put("type", "test");
+		logjson.put("content", "test log!!");
+		logjson.put("time", "2017-5-22");
+		jsonarray = new JSONArray();
+		jsonarray.add(logjson);
+		rootjson.put("logs", jsonarray);
+		return rootjson.toJSONString();
     }
     
     private JSONArray getSubTree(LNode pnode){
@@ -269,7 +344,7 @@ public class MainKernel {
                 	JSONObject infojson = new JSONObject();
                 	subjson.put("key", dev._NetAddress);
     				subjson.put("pkey", usergroupID);
-    				subjson.put("title", dev._NetAddress);
+    				subjson.put("title", dev.BindnojuDeviceTableRow.Name);
     				subjson.put("type", "device");
     				subjson.put("rcommunity", dev.BindnojuDeviceTableRow._ROCommunity);
     				subjson.put("wcommunity", dev.BindnojuDeviceTableRow._RWCommunity);
@@ -583,9 +658,6 @@ public class MainKernel {
     		rootjson.put("key", jsondata.get("key").toString());
     		rootjson.put("title", jsondata.get("value").toString());
     		rootjson.put("type", "group");
-    		rootjson.put("isFolder", true);
-    		rootjson.put("expand", true);
-    		rootjson.put("icon", "images/net_center.png");
     		staticmemory.broadCast(rootjson.toJSONString());
             return true;
         }
@@ -656,7 +728,6 @@ public class MainKernel {
 			rootjson.put("devnodes", jsonarray);
 			
     		staticmemory.broadCast(rootjson.toJSONString());
-    		System.out.println("-------devadd str===" + rootjson.toJSONString());
             return dev;
 
         }
@@ -668,7 +739,7 @@ public class MainKernel {
     {
     	boolean mStatus =false;
     	
-    	String netaddr="1.2.3.5";//get  netaddr from jsondata
+    	String netaddr= jsondata.get("key").toString();//get  netaddr from jsondata
       	DevTopd dev = (DevTopd)listDevHash.get(netaddr); 
 
       	if (dev==null) {
@@ -680,7 +751,7 @@ public class MainKernel {
     	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;
     	
         //edit the  mDeviceTableRow property here from jsondata    	
-     	mDeviceTableRow._ROCommunity="new rocm";
+     	mDeviceTableRow.Name= jsondata.get("value").toString();
         mStatus = this.ICDatabaseEngine1.DeviceTableUpdateRow(mDeviceTableRow);
 
         if (mStatus)
@@ -689,7 +760,13 @@ public class MainKernel {
         	dev.BindnojuDeviceTableRow = mDeviceTableRow;
 
         	dev.fullpath = dev.parent.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;
-
+        	
+        	JSONObject rootjson = new JSONObject();
+        	rootjson.put("cmd", "nodeedit");
+    		rootjson.put("key", jsondata.get("key").toString());
+    		rootjson.put("title", jsondata.get("value").toString());
+    		rootjson.put("type", "group");
+    		staticmemory.broadCast(rootjson.toJSONString());
 
         }
 
