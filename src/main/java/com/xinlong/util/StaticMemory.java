@@ -5,10 +5,14 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.websocket.Session;
 
+import org.apache.log4j.Logger;
+
+import wl.hfc.topd.MainKernel;
+
 public class StaticMemory {
 	//save web sessions
 	public static CopyOnWriteArraySet<Session> webSocketClients = new CopyOnWriteArraySet<Session>();
-	
+	private static Logger log = Logger.getLogger(StaticMemory.class);
 	public void AddSession(Session session){
 		synchronized(this) { 
 			webSocketClients.add(session);
@@ -50,6 +54,21 @@ public class StaticMemory {
 	        }
 			return null;
 		}		
+	}
+	
+	public void sendRemoteStr(String message, String sessionid){
+		Session ses = getSessionByID(sessionid);
+		if(ses != null){
+			try {
+				ses.getBasicRemote().sendText(message);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				log.info(e.getMessage());
+			}
+		}else{
+			System.out.println("No Session Found::::");
+		}	
 	}
 	
 	public void broadCast(String message) {

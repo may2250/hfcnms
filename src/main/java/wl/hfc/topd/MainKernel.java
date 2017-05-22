@@ -92,13 +92,8 @@ public class MainKernel {
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
 		JSONObject rootjson = new JSONObject();
-		if(cmd.equalsIgnoreCase("getInitTree")){			
-			Session ses = staticmemory.getSessionByID(jsondata.get("sessionid").toString());
-			if(ses != null){
-				ses.getBasicRemote().sendText(getInitTree(rootjson));
-			}else{
-				System.out.println("No Session Found::::");
-			}
+		if(cmd.equalsIgnoreCase("getInitTree")){	
+			staticmemory.sendRemoteStr(getInitTree(rootjson), jsondata.get("sessionid").toString());			
 		}else if(cmd.equalsIgnoreCase("nodeadd")){
 			handleInsertGrp(jsondata);			
 		}else if(cmd.equalsIgnoreCase("nodeedit")){
@@ -112,37 +107,7 @@ public class MainKernel {
 		}else if(cmd.equalsIgnoreCase("deviceadd")){
 			handleInsertDev(jsondata);
 		}else if(cmd.equalsIgnoreCase("lazyLoad")){
-			rootjson.put("cmd", "lazyLoad");
-			rootjson.put("key", jsondata.get("key").toString());
-			JSONArray jsonarray = new JSONArray();
-			JSONObject sysjson = new JSONObject();
-			sysjson.put("key", "3");
-			sysjson.put("pkey", jsondata.get("key").toString());			
-			sysjson.put("title", "LazyLoadNode");
-			sysjson.put("type", "device");
-			sysjson.put("isFolder", true);
-			sysjson.put("expand", false);
-			sysjson.put("icon", "images/device.png");
-			JSONArray subjsonarray = new JSONArray();
-			JSONObject subjson = new JSONObject();
-			subjson.put("title", "192.168.1.120");	
-			subjson.put("icon", "images/net_info.png");
-			subjson.put("isFolder", false);
-			subjsonarray.add(subjson);
-			subjson = new JSONObject();
-			subjson.put("title", "光发射机");
-			subjson.put("icon", "images/net_info.png");
-			subjson.put("isFolder", false);
-			subjsonarray.add(subjson);
-			sysjson.put("children", subjsonarray);
-			jsonarray.add(sysjson);
-			rootjson.put("lazynodes", jsonarray);
-			Session ses = staticmemory.getSessionByID(jsondata.get("sessionid").toString());
-			if(ses != null){
-				ses.getBasicRemote().sendText(rootjson.toJSONString());
-			}else{
-				System.out.println("No Session Found::::");
-			}			
+			staticmemory.sendRemoteStr(getLazyNodes(jsondata), jsondata.get("sessionid").toString());					
 		}else if(cmd.equalsIgnoreCase("hfcvalueset")){
 			hfcValueSet(jsondata);			
 		}
@@ -160,6 +125,8 @@ public class MainKernel {
 			//TODO
 			//发送到设备
 			
+			
+			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
 		}else if(target.equalsIgnoreCase("devicechannel")){
 			//修改设备频道数
 			rootjson.put("cmd", "hfcvalueset");
@@ -169,19 +136,29 @@ public class MainKernel {
 			//TODO
 			//发送到设备
 			
+			
+			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
+		}else if(target.equalsIgnoreCase("rcommunity")){
+			String value = jsondata.get("value").toString();
+			//修改数据库及内存设备信息
+			//TODO
+			
+			
+			
+			//修改成功后返回WEB前端
+			staticmemory.broadCast(jsondata.toJSONString());
+			
+		}else if(target.equalsIgnoreCase("wcommunity")){
+			String value = jsondata.get("value").toString();
+			//修改数据库及内存设备信息
+			//TODO
+			
+			
+			
+			//修改成功后返回WEB前端
+			staticmemory.broadCast(jsondata.toJSONString());
+			
 		}
-		Session ses = staticmemory.getSessionByID(jsondata.get("sessionid").toString());
-		if(ses != null){
-			try {
-				ses.getBasicRemote().sendText(rootjson.toJSONString());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				//log.info(e.getMessage());
-			}
-		}else{
-			System.out.println("No Session Found::::");
-		}	
 	}
   	
     
@@ -255,40 +232,65 @@ public class MainKernel {
     	JSONObject subjson;
     	JSONObject rootjson = new JSONObject();
     	JSONArray jsonarray = new JSONArray();
+    	rootjson.put("cmd", "lazyLoad");
+		rootjson.put("key", jsondata.get("key").toString());
     	int usergroupID= Integer.parseInt(jsondata.get("key").toString());//get  goupid from jsondata
-      	devGroup grp = (devGroup)listGrpHash.get(usergroupID); 
-      	for(Iterator iter = grp.Nodes.iterator(); iter.hasNext();){
-			LNode node = (LNode)iter.next();
-			InodeInterface InodeInterface1 = (InodeInterface)node;
-			if (InodeInterface1.isGroup())
-            {
-				subjson = new JSONObject();
-				devGroup group = (devGroup)InodeInterface1;
-				UserGroupTableRow usergroup = group.BindUserGroupTableRow;
-				subjson.put("key", usergroup.UserGroupID);
-				subjson.put("pkey", usergroup.ParentGroupID);
-				subjson.put("title", usergroup.UserGroupName);
-				subjson.put("type", "group");
-				subjson.put("isFolder", true);
-				subjson.put("expand", true);
-				subjson.put("isAlarm", group.isAlarm == 0?false:true);
-				subjson.put("icon", "images/net_center.png");				
-				JSONArray subjsonarray = new JSONArray();
-				subjsonarray = getSubTree(node);
-				if(!subjsonarray.isEmpty()){
-					subjson.put("lazy", false);
-					subjson.put("children", subjsonarray);
-				}else{
-					subjson.put("lazy", true);
-				}
-				jsonarray.add(subjson);
-            }else{
-            	DevTopd dev = (DevTopd)InodeInterface1;
-            	subjson = new JSONObject();
-            	
-            }
-		}
-    	return "";
+    	try{
+    		devGroup grp = (devGroup)listGrpHash.get(usergroupID); 
+          	for(Iterator iter = grp.Nodes.iterator(); iter.hasNext();){
+    			LNode node = (LNode)iter.next();
+    			InodeInterface InodeInterface1 = (InodeInterface)node;
+    			if (InodeInterface1.isGroup())
+                {
+    				subjson = new JSONObject();
+    				devGroup group = (devGroup)InodeInterface1;
+    				UserGroupTableRow usergroup = group.BindUserGroupTableRow;
+    				subjson.put("key", usergroup.UserGroupID);
+    				subjson.put("pkey", usergroup.ParentGroupID);
+    				subjson.put("title", usergroup.UserGroupName);
+    				subjson.put("type", "group");
+    				subjson.put("isFolder", true);
+    				subjson.put("expand", true);
+    				subjson.put("isAlarm", group.isAlarm == 0?false:true);
+    				subjson.put("icon", "images/net_center.png");				
+    				JSONArray subjsonarray = new JSONArray();
+    				subjsonarray = getSubTree(node);
+    				if(!subjsonarray.isEmpty()){
+    					subjson.put("lazy", false);
+    					subjson.put("children", subjsonarray);
+    				}else{
+    					subjson.put("lazy", true);
+    				}
+    				jsonarray.add(subjson);
+                }else{
+                	DevTopd dev = (DevTopd)InodeInterface1;
+                	JSONArray subjsonarray = new JSONArray();
+                	subjson = new JSONObject();
+                	JSONObject infojson = new JSONObject();
+                	subjson.put("key", dev._NetAddress);
+    				subjson.put("pkey", usergroupID);
+    				subjson.put("title", dev._NetAddress);
+    				subjson.put("type", "device");
+    				subjson.put("rcommunity", dev.BindnojuDeviceTableRow._ROCommunity);
+    				subjson.put("wcommunity", dev.BindnojuDeviceTableRow._RWCommunity);
+    				subjson.put("isonline", dev.isOline);
+    				subjson.put("icon", dev.isOline?"images/device.png":"images/devoff.png");         	
+    				infojson.put("title", dev._NetAddress);	
+    				infojson.put("icon", "images/net_info.png");
+    				subjsonarray.add(infojson);
+    				infojson = new JSONObject();
+    				infojson.put("title", dev.mNetType.toString());	
+    				infojson.put("icon", "images/net_info.png");
+    				subjsonarray.add(infojson);
+    				subjson.put("children", subjsonarray);
+    				jsonarray.add(subjson);
+                }
+    		}
+    	}catch(Exception ex){
+    		log.info(ex.getMessage());
+    	}
+    	rootjson.put("lazyNodes", jsonarray);
+    	return rootjson.toJSONString();
     }
 
 

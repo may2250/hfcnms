@@ -177,7 +177,7 @@
 	       	 node.addChildren(jsonobj.devnodes);
         }else if(jsonobj.cmd == "lazyLoad"){
 	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
-	       	 lazyLoadData = jsonobj.lazynodes;
+	       	 lazyLoadData = jsonobj.lazyNodes;
         }else if(jsonobj.cmd == "hfcvalueset"){
         	 switch(jsonobj.target){
         	 case "devicetrapedit":
@@ -185,6 +185,14 @@
         		 break;
         	 case "devicechannel":
         		 $("#" + jsonobj.domstr).val(jsonobj.value);
+        		 break;
+        	 case "rcommunity":
+        		 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
+        		 node.data.rcommunity = jsonobj.value;
+        		 break;
+        	 case "wcommunity":
+        		 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
+        		 node.data.wcommunity = jsonobj.value;
         		 break;
         	 }
 	       	 
@@ -250,7 +258,7 @@
     	$.contextMenu({
     	      selector: "#dev-fancytree span.fancytree-title",
     	      items: {
-    	    	  "rcommunity": {name: "修改只读团体名", icon: "icon-book",
+    	    	  "rcommunity": {name: "修改只读团体名", icon: "edit",
     	    		  disabled: function(key, opt){
     	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
         	              if(node.data.type == "device"){
@@ -271,7 +279,7 @@
   	      	        	      buttons: {
   	      	        	    	  Ok: function() {	    
   	      	        	    		  if($("#set_value").val() != ""){
-  	      	        	    			  var datastring = '{"cmd":"nodeadd","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
+  	      	        	    			  var datastring = '{"cmd":"hfcvalueset","target":"rcommunity","key":"'+node.key +'","value":"'+ $("#set_value").val()+'"}';
   		      	        	    		  webSocket.send(datastring);
   		      	        	    		  $( this ).dialog( "close" );
   	      	        	    		  }else{
@@ -286,7 +294,7 @@
   	      	        	      }
         	        	    });
 	  	      	            $("#set_value").css('display','block');
-	  	      	            $("#set_value").value = "";
+	  	      	            $("#set_value").value = node.data.rcommunity;
 	  	      	            updateTips("请输入添加节点名称:");
 	  	      	            $("#dialog-form").dialog("open");
         	              }
@@ -313,7 +321,7 @@
 	  	      	        	      buttons: {
 	  	      	        	    	  Ok: function() {	    
 	  	      	        	    		  if($("#set_value").val() != ""){
-	  	      	        	    			  var datastring = '{"cmd":"nodeadd","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
+	  	      	        	    			  var datastring = '{"cmd":"hfcvalueset","target":"wcommunity","key":"'+node.key +'","value":"'+ $("#set_value").val()+'"}';
 	  		      	        	    		  webSocket.send(datastring);
 	  		      	        	    		  $( this ).dialog( "close" );
 	  	      	        	    		  }else{
@@ -328,7 +336,7 @@
 	  	      	        	      }
 	        	        	    });
 		  	      	            $("#set_value").css('display','block');
-		  	      	            $("#set_value").value = "";
+		  	      	            $("#set_value").value = node.data.wcommunity;
 		  	      	            updateTips("请输入添加节点名称:");
 		  	      	            $("#dialog-form").dialog("open");
 	        	              }
