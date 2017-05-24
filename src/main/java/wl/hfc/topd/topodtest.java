@@ -6,6 +6,7 @@ import java.util.concurrent.Delayed;
 import org.json.simple.JSONObject;
 
 import wl.hfc.common.*;
+import wl.hfc.online.PDUServer;
 
 
 
@@ -58,7 +59,10 @@ public class topodtest {
 	
 	
 	//md1DevGrpModel.handleUpdateDev(new JSONObject());
-	md1DevGrpModel.handleDeleteDev(new JSONObject());
+	//md1DevGrpModel.handleDeleteDev(new JSONObject());
+	
+	
+	new PDUServer(md1DevGrpModel.listDevHash);
 	}
 
 }

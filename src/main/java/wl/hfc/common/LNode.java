@@ -18,7 +18,7 @@ public class LNode{
     public String MD = "";
     public String SN = "";
     public String DEVICEID = "";
-  //  public HFCTypes HFCType1 = HFCTypes.Unknown;
+    public HFCTypes HFCType1 = HFCTypes.Unknown;
 
 
     //确保devgroup和listnode告警标志同步的清晰写法；

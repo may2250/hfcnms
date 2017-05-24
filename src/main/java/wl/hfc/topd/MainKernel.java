@@ -827,4 +827,31 @@ public class MainKernel {
         return mStatus;
     }
 
+    private void handleOnlineInfo(JSONObject jsondata)
+    {    	
+    	String ipaddr="1.2.3.4";//GET FROM JOSNDATA
+
+        DevTopd lNode = (DevTopd)listDevHash.get(ipaddr);
+
+        if (lNode == null)
+        {
+            return;
+        }
+
+       //hi，xinglong，HFCType1，ID,MD,SN,DEVICEID,ISONLINE?这些信息请提交到前端
+        
+    /*    ScMessage scMessage = new ScMessage(dev.IsOline, lNode.HFCType1, dev.NetAddress);
+        scMessage.ID = lNode.ID;
+        scMessage.MD = lNode.MD;
+        scMessage.SN = lNode.SN;
+        scMessage.DEVICEID = lNode.DEVICEID;
+
+
+        OlineeInforCmd OlineeInforCmd1 = new OlineeInforCmd(scMessage, CMDType.OLINE_INFO);
+        OlineeInforCmd1.mTimeStamp = DateTime.Now.Ticks;
+        this.Notify("DbEngine.newCMD", OlineeInforCmd1);
+*/
+
+    }
+    
 }
