@@ -1,0 +1,216 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript">		
+		
+		$(".trapaddr").dblclick(function(){
+			var domstr = $(this)[0].id;
+			$( "#dialog-form" ).dialog({
+        	      autoOpen: false,
+        	      height: 240,
+        	      width: 300,
+        	      modal: true,
+        	      buttons: {
+        	    	  Ok: function() {	   
+        	    		  if($("#set_value").val() != "" && ipvalidate($("#set_value").val())){
+        	    			  var node = __globalobj__._realDevice.getFirstChild();
+            	    		  var datastring = '{"cmd":"hfcvalueset","target":"devicetrapedit","ip":"' + node.title +'","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
+            	    		  __globalobj__._send(datastring);
+            	              $( this ).dialog( "close" );
+        	    		  }else{
+        	    			  $("#set_value").addClass( "ui-state-error-custom" )
+        	    		  }        	    		  
+        	            }
+        	      },
+        	      close: function() {
+	        	    	$("#set_value").css('display','none');
+	        	    	$("#set_value").removeClass("ui-state-error-custom");
+	        	  }
+    	    });
+			$("#set_value").css('display','block');
+            $("#set_value").val($(this)[0].textContent);
+            updateTips("请输入新的Trap地址:");
+            $("#dialog-form").dialog("open");
+		});
+		
+		$(".hfcunit").dblclick(function(){
+			var domstr = $(this)[0].id;
+			$( "#dialog-form" ).dialog({
+        	      autoOpen: false,
+        	      height: 240,
+        	      width: 300,
+        	      modal: true,
+        	      buttons: {
+        	    	  Ok: function() {
+        	    		  if($("#set_value").val() != ""){
+        	    			  var node = __globalobj__._realDevice.getFirstChild();
+            	    		  var datastring = '{"cmd":"hfcvalueset","target":"devicechannel","ip":"' + node.title +'","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
+            	    		  __globalobj__._send(datastring);
+            	              $( this ).dialog( "close" );
+        	    		  }else{
+        	    			  $("#set_value").addClass( "ui-state-error-custom" )
+        	    		  }
+        	    		  
+        	            }
+        	      },
+        	      close: function() {
+	        	    	$("#set_value").css('display','none');
+	        	    	$("#set_value").removeClass("ui-state-error-custom");
+	        	  }
+    	    });
+			$("#set_value").css('display','block');
+            $("#set_value").val($(this).val());
+            updateTips("请输入新值:");
+            $("#dialog-form").dialog("open");
+		});
+		
+		function updateTips( t ) {
+			  $( ".validateTips" )
+		        .text( t );
+		}
+		
+		function ipvalidate(ip) {  
+		    var val = /([0-9]{1,3}\.{1}){3}[0-9]{1,3}/;  
+		    var vald = val.exec(ip);  
+		    if (vald == null) {    
+		        return false;  
+		    }  
+		    if (vald != '') {  
+		        if (vald[0] != ip) {    
+		            return false;  
+		        }  
+		    } 
+		    return true;
+		}  
+	</script>
+</head>
+<body>
+	<div class="devdetail">
+		<ul class = "devdetail-header">
+			<li class="dev-img"><img src = "../images/oprv8604jl.png" /></li>
+			<li class="dev-status"><span>设备连接正常...</span></li>
+		</ul>	
+		<div class = "devdetail-content">
+			<div class="tabbable">
+				<ul class="nav nav-tabs" role="tablist">
+				    <li class="active"><a href="#tab-dev1" data-toggle="tab">OPTRV设备参数</a></li>
+				    <li><a href="#tab-dev2" data-toggle="tab">HFC公共库参数</a></li>				    
+				</ul>
+				<div class="tab-content">
+				    <div class="tab-pane tab-devpane active" id="tab-dev1">
+					    <div class="devdetail-content">					    	
+							<table class="table tbl_detail">
+							  <tbody>
+								    <tr>
+								      <td>输入光功率:</td>
+								      <td><input type="text" class="form-control hfcunit" id="detail_inoptical" readonly></td>
+								      <td>反向发射光功率:</td>
+								      <td><input type="text" class="form-control" id="detail_mineroptical" readonly></td>
+								    </tr>
+								    <tr>
+								      <td>反向偏置电流:</td>
+								      <td><input type="text" class="form-control" id="detail_minerelectric" readonly></td>
+								      <td>反向衰减值:</td>
+								      <td><input type="text" class="form-control" id="detail_minieratt" readonly></td>
+								    </tr>
+								    <tr>
+								      <td>频道数:</td>
+								      <td><input type="text" class="form-control" id="detail_channel" readonly></td>
+								    </tr>
+							  </tbody>
+							</table>
+							<table class="table tbl_power" style="width:30%">
+							   <thead>
+								    <tr>
+								      <th>电源输出表</th>
+								      <th>输出电压</th>
+								    </tr>
+							  </thead>
+							  <tbody>
+
+							  </tbody>
+							</table>
+							<table class="table tbl_devmiddle tbl_devcontent" style="width:30%">
+							   <thead>
+								    <tr>
+								      <th>输出端口</th>
+								      <th>ATT</th>
+								      <th>EQ均衡</th>
+								      <th>输出电平</th>
+								    </tr>
+							  </thead>
+							  <tbody>
+
+							  </tbody>
+							</table>
+					    </div>				    	
+				    </div>
+				    <div class="tab-pane tab-devpane" id="tab-dev2">
+				    	<div class="devdetail-public">
+				    		<div>
+				    			<table class="table table-bordered">
+								   <caption>Trap目标主机表</caption>
+								   <thead>
+									    <tr>
+									      <th>序号.</th>
+									      <th>目标IP地址</th>
+									    </tr>
+								  </thead>
+								  <tbody>
+									    <tr>
+									      <td>1.</td>
+									      <td class="trapaddr" id="trapaddr_1">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>2.</td>
+									      <td class="trapaddr" id="trapaddr_2">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>3.</td>
+									      <td class="trapaddr" id="trapaddr_3">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>4.</td>
+									      <td class="trapaddr" id="trapaddr_4">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>5.</td>
+									      <td class="trapaddr" id="trapaddr_5">0.0.0.0</td>
+									    </tr>
+								  </tbody>
+								</table>
+				    		</div>
+					    	<div>
+					    		<table class="table tbl_hfcpublic">
+								  <tbody>
+									    <tr>
+									      <td>温度:</td>
+									      <td><input type="text" class="form-control" id="detail_temper" readonly></td>									      
+									    </tr>
+									    <tr>
+									      <td>逻辑ID:</td>
+									      <td><input type="text" class="form-control" id="detail_logicid" readonly></td>
+									    </tr>
+									    <tr>
+									      <td>型号:</td>
+									      <td><input type="text" class="form-control" id="detail_model" readonly></td>
+									    </tr>
+									    <tr>
+									      <td>序列号:</td>
+									      <td><input type="text" class="form-control" id="detail_sn" readonly></td>
+									    </tr>
+									    <tr>
+									      <td>MAC:</td>
+									      <td><input type="text" class="form-control" id="detail_mac" readonly></td>
+									    </tr>
+								  </tbody>
+								</table>
+					    	</div>							
+					    </div>				    	
+				    </div>
+				</div>
+			</div>
+		</div>
+	</div>	
+</body>

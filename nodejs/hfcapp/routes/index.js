@@ -14,4 +14,8 @@ router.get('/opticalTran', function(req, res, next) {
 	  res.render('opticalTran', { title: 'Express' });
 	});
 
+router.get('/rece_workstation', function(req, res, next) {
+	  res.render('rece_workstation', { title: 'Express' });
+	});
+
 module.exports = router;

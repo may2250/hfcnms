@@ -165,8 +165,21 @@ public class MainKernel {
       	
     	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;
     	rootjson.put("isonline", dev.isOline);
-    	//TODO
-		if(devtype.equalsIgnoreCase("")){
+		if(devtype.equalsIgnoreCase("other")){
+			
+		}else if(devtype.equalsIgnoreCase("EDFA")){
+			
+		}else if(devtype.equalsIgnoreCase("Trans")){
+			
+		}else if(devtype.equalsIgnoreCase("rece_workstation")){
+			
+		}else if(devtype.equalsIgnoreCase("OSW")){
+			
+		}else if(devtype.equalsIgnoreCase("RFSW")){
+			
+		}else if(devtype.equalsIgnoreCase("PreAMP")){
+			
+		}else if(devtype.equalsIgnoreCase("wos")){
 			
 		}
 		return rootjson.toJSONString();

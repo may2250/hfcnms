@@ -342,7 +342,7 @@
   	      	        	      }
         	        	    });
 	  	      	            $("#set_value").css('display','block');
-	  	      	            $("#set_value").value = node.data.rcommunity;
+	  	      	            $("#set_value").val(node.data.rcommunity);
 	  	      	            updateTips("请输入添加节点名称:");
 	  	      	            $("#dialog-form").dialog("open");
         	              }
@@ -384,7 +384,7 @@
 	  	      	        	      }
 	        	        	    });
 		  	      	            $("#set_value").css('display','block');
-		  	      	            $("#set_value").value = node.data.wcommunity;
+		  	      	            $("#set_value").val(node.data.wcommunity);
 		  	      	            updateTips("请输入添加节点名称:");
 		  	      	            $("#dialog-form").dialog("open");
 	        	              }
@@ -426,7 +426,7 @@
 	      	        	      }
       	        	    });
 	      	            $("#set_value").css('display','block');
-	      	            $("#set_value").value = "";
+	      	            $("#set_value").val("");
 	      	            updateTips("请输入添加节点名称:");
 	      	            $("#dialog-form").dialog("open");
       	              }
@@ -468,7 +468,7 @@
 			      	        	  }
 	      	        	    });
 		      	          $("#set_value").css('display','block');
-		      	            $("#set_value").value = "";
+		      	            $("#set_value").val("");
 		      	            updateTips("请输入要更改的内容:");
 		      	            $("#dialog-form").dialog("open");
 	      	              }
@@ -510,7 +510,7 @@
     		      	        	  }
 	          	        	    });
         	            	  	$("#set_value").css('display','block');
-	    	      	            $("#set_value").value = "";
+	    	      	            $("#set_value").val("");
 	        	            	updateTips("输入设备的IP地址:");
 	        	            	$("#dialog-form").dialog("open");
 	        	          }
@@ -571,7 +571,7 @@
     		$(".candile").load("/opticalTran");
     		break;
     	case "other":
-    		$(".candile").load("/opticalTran");
+    		$(".candile").load("/rece_workstation");
     		break;
     	case "EDFA":
     		$(".candile").load("/opticalTran");
@@ -592,7 +592,7 @@
     		$(".candile").load("/opticalTran");
     		break;
     	default:
-    		$(".candile").load("/opticalTran");
+    		$(".candile").load("/rece_workstation");
     		break;
     	}
     	var datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().title + '"}';

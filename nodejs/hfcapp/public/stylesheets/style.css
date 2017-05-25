@@ -235,8 +235,8 @@ div.dataTables_wrapper {
 	padding: 4px 5px;
 }
 
-.tabbable>.tab-content>.tab-pane {
-	height:135px;
+.tab-log {
+	height:135px !important;
 }
 
 .devdetail-content{
@@ -249,6 +249,16 @@ div.dataTables_wrapper {
     min-width: 200px;
     text-align: left;
     margin: 0 auto;
+}
+
+.tbl_devmiddle{
+	margin: 0 auto;
+	min-width:750px;
+}
+
+.tab-devpane{
+	height: 320px !important;
+    overflow: auto;
 }
 
 .tbl_detail{
@@ -458,7 +468,7 @@ li#menu-academico{
 	max-width:1100px;
 	width:90%;
 	height:auto!important;
-	min-height:450px;
+	min-height:470px;
     display: block;
     margin: 0 auto;
     background: ghostwhite;
