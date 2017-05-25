@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
@@ -20,19 +21,33 @@ import org.snmp4j.smi.UdpAddress;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
+import com.xinlong.util.RedisUtil;
+import com.xinlong.util.StaticMemory;
+
 import redis.clients.jedis.Jedis;
 import wl.hfc.common.*;
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
+import wl.hfc.topd.MainKernel;
 
 public class PDUServer {
 	// config
 	public static int OnlineInterval=0;// 单位:S;设备树在线轮询一遍总时间
 	public int MinInterval; // 设备数量所决定的最低轮询一遍的时间；
-
+	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
+	private static Logger log = Logger.getLogger(PDUServer.class);
 	// private EnumLogoVersion logoVersion;//当前网管定制版本
 	private Snmp session;
 	private boolean isOnlineThreadRun = true;
 	private Hashtable listDevHash;
+	
+	private static RedisUtil redisUtil;
+	public static void setRedisUtil(RedisUtil redisUtil) {
+		PDUServer.redisUtil = redisUtil;
+	}
+	
+	public PDUServer(){
+		
+	}
 
 	public PDUServer(Hashtable pListDevHash) {
 
@@ -199,7 +214,11 @@ public class PDUServer {
 				lNode.isOline = true;
 				
 				//hi,xinglong ,send to Mainkernel ip+isonline?  message		
-
+				JSONObject rootjson = new JSONObject();
+		    	rootjson.put("cmd", "devstatus");
+		    	rootjson.put("ip", ipaddr);
+		    	rootjson.put("isonline", true);
+				sendToSub(rootjson.toJSONString());
 			}
 
 		}
@@ -209,7 +228,9 @@ public class PDUServer {
 		// Console.WriteLine(timeSpan.ToString() + "result resultresultresult");
 	}
 
+	@SuppressWarnings("static-access")
 	private void OnlineTestThread() {
+		log.info("[#3] .....OnlineTestThread starting.......");
 		LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
 
 		PDU outpdu = new PDU();
@@ -286,8 +307,12 @@ public class PDUServer {
 							if (dev.isOline) {
 								dev.isOline = false;						
 								
-								//hi,xinglong ,send to Mainkernel ip+isonline?  message			
-								
+								//hi,xinglong ,send to Mainkernel ip+isonline?  message	
+								JSONObject rootjson = new JSONObject();
+						    	rootjson.put("cmd", "devstatus");
+						    	rootjson.put("ip", dev._NetAddress);
+						    	rootjson.put("isonline", false);
+								sendToSub(rootjson.toJSONString());
 
 
 							}
@@ -322,6 +347,22 @@ public class PDUServer {
 
 		}
 
+	}
+	
+	private void sendToSub(String msg) {
+		Jedis jedis = null;
+		try {
+			jedis = redisUtil.getConnection();
+			jedis.publish(MAINKERNEL_MESSAGE, msg);
+			redisUtil.closeConnection(jedis);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			if(jedis != null)
+				redisUtil.getJedisPool().returnBrokenResource(jedis);
+
+		}
 	}
 
 }

@@ -118,28 +118,58 @@ public class MainKernel {
 			hfcValueSet(jsondata);			
 		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
 			staticmemory.sendRemoteStr(hfcDeviceDetail(jsondata), jsondata.get("sessionid").toString());				
+		}else if(cmd.equalsIgnoreCase("devstatus")){
+			staticmemory.broadCast(jsondata.toJSONString());				
 		}
 	}
 	
+	public static String getNetTypeTostring(NetTypes pNetTypes)
+    {
+        switch (pNetTypes)
+        {
+            case other:
+                return ClsLanguageExmp.viewGet("其他设备");
+            case EDFA:
+                return "EDFA";
+            case Trans:
+                return ClsLanguageExmp.viewGet("光发射机");
+            case rece_workstation:
+                return ClsLanguageExmp.viewGet("光接收机")+"/"+ClsLanguageExmp.viewGet("光工作站");
+            case OSW:
+                return ClsLanguageExmp.viewGet("光切换开关");
+            case RFSW:
+                return ClsLanguageExmp.viewGet("射频切换开关");
+            case PreAMP:
+                return ClsLanguageExmp.viewGet("前置放大器");
+            case wos:
+                return ClsLanguageExmp.viewGet("光平台");
+            default:
+                return ClsLanguageExmp.viewGet("其他设备");
+
+        }
+    }
+
+	
 	private String hfcDeviceDetail(JSONObject jsondata){
 		//获取设备详细信息		
-		String netaddr = jsondata.get("key").toString();
+		String netaddr = jsondata.get("ip").toString();
 		String devtype = jsondata.get("devtype").toString();
 		DevTopd dev = (DevTopd)listDevHash.get(netaddr); 
-
-      	if (dev==null) {      		
-      		return "";			
+		JSONObject rootjson = new JSONObject();
+    	rootjson.put("cmd", "getdevicedetail");
+    	rootjson.put("key", netaddr);
+      	if (dev==null) {   
+      		rootjson.put("isonline", false);
+      		return rootjson.toJSONString();			
 		}
       	
     	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;
-    	JSONObject rootjson = new JSONObject();
-    	rootjson.put("cmd", "getdevicedetail");
-    	rootjson.put("key", netaddr);
+    	rootjson.put("isonline", dev.isOline);
     	//TODO
 		if(devtype.equalsIgnoreCase("")){
 			
 		}
-		return "";
+		return rootjson.toJSONString();
 	}
 	
 	private void hfcValueSet(JSONObject jsondata){
@@ -209,7 +239,7 @@ public class MainKernel {
     @SuppressWarnings("static-access")
 	public void start(){
 		
-	//	log.info("[#3] .....MainKernel starting.......");
+		log.info("[#3] .....MainKernel starting.......");
 		Jedis jedis=null;
 		try {			
 			ICDatabaseEngine1=new CDatabaseEngine();
@@ -288,15 +318,40 @@ public class MainKernel {
 				subjson.put("isFolder", true);
 				subjson.put("expand", true);
 				subjson.put("isAlarm", group.isAlarm == 0?false:true);
-				subjson.put("icon", "images/net_center.png");				
-				JSONArray subjsonarray = new JSONArray();
-				subjsonarray = getSubTree(node);
-				if(!subjsonarray.isEmpty()){
+				subjson.put("icon", "images/net_center.png");	
+				//第三级开始启用延迟加载功能
+				if(usergroup.ParentGroupID == -1){
+					JSONArray subjsonarray = new JSONArray();
+					subjsonarray = getSubTree(node);
 					subjson.put("lazy", false);
 					subjson.put("children", subjsonarray);
 				}else{
 					subjson.put("lazy", true);
 				}
+				
+				jsonarray.add(subjson);
+            }else{
+            	DevTopd dev = (DevTopd)InodeInterface1;
+            	JSONArray subjsonarray = new JSONArray();
+            	subjson = new JSONObject();
+            	JSONObject infojson = new JSONObject();
+            	subjson.put("key", dev._NetAddress);
+				subjson.put("pkey", dev.BindnojuDeviceTableRow.UserGroupID);
+				subjson.put("title", dev.BindnojuDeviceTableRow.Name);
+				subjson.put("type", "device");
+				subjson.put("rcommunity", dev.BindnojuDeviceTableRow._ROCommunity);
+				subjson.put("wcommunity", dev.BindnojuDeviceTableRow._RWCommunity);
+				subjson.put("isonline", dev.isOline);
+				subjson.put("icon", dev.isOline?"images/device.png":"images/devoff.png");         	
+				infojson.put("title", dev._NetAddress);	
+				infojson.put("icon", "images/net_info.png");
+				subjsonarray.add(infojson);
+				infojson = new JSONObject();
+				infojson.put("key", dev.mNetType.toString());
+				infojson.put("title", getNetTypeTostring(dev.mNetType));	
+				infojson.put("icon", "images/net_info.png");
+				subjsonarray.add(infojson);
+				subjson.put("children", subjsonarray);
 				jsonarray.add(subjson);
             }
 		}
@@ -312,59 +367,10 @@ public class MainKernel {
     	int usergroupID= Integer.parseInt(jsondata.get("key").toString());//get  goupid from jsondata
     	try{
     		devGroup grp = (devGroup)listGrpHash.get(usergroupID); 
-          	for(Iterator iter = grp.Nodes.iterator(); iter.hasNext();){
-    			LNode node = (LNode)iter.next();
-    			InodeInterface InodeInterface1 = (InodeInterface)node;
-    			if (InodeInterface1.isGroup())
-                {
-    				subjson = new JSONObject();
-    				devGroup group = (devGroup)InodeInterface1;
-    				UserGroupTableRow usergroup = group.BindUserGroupTableRow;
-    				subjson.put("key", usergroup.UserGroupID);
-    				subjson.put("pkey", usergroup.ParentGroupID);
-    				subjson.put("title", usergroup.UserGroupName);
-    				subjson.put("type", "group");
-    				subjson.put("isFolder", true);
-    				subjson.put("expand", true);
-    				subjson.put("isAlarm", group.isAlarm == 0?false:true);
-    				subjson.put("icon", "images/net_center.png");				
-    				JSONArray subjsonarray = new JSONArray();
-    				subjsonarray = getSubTree(node);
-    				if(!subjsonarray.isEmpty()){
-    					subjson.put("lazy", false);
-    					subjson.put("children", subjsonarray);
-    				}else{
-    					subjson.put("lazy", true);
-    				}
-    				jsonarray.add(subjson);
-                }else{
-                	DevTopd dev = (DevTopd)InodeInterface1;
-                	JSONArray subjsonarray = new JSONArray();
-                	subjson = new JSONObject();
-                	JSONObject infojson = new JSONObject();
-                	subjson.put("key", dev._NetAddress);
-    				subjson.put("pkey", usergroupID);
-    				subjson.put("title", dev.BindnojuDeviceTableRow.Name);
-    				subjson.put("type", "device");
-    				subjson.put("rcommunity", dev.BindnojuDeviceTableRow._ROCommunity);
-    				subjson.put("wcommunity", dev.BindnojuDeviceTableRow._RWCommunity);
-    				subjson.put("isonline", dev.isOline);
-    				subjson.put("icon", dev.isOline?"images/device.png":"images/devoff.png");         	
-    				infojson.put("title", dev._NetAddress);	
-    				infojson.put("icon", "images/net_info.png");
-    				subjsonarray.add(infojson);
-    				infojson = new JSONObject();
-    				infojson.put("title", dev.mNetType.toString());	
-    				infojson.put("icon", "images/net_info.png");
-    				subjsonarray.add(infojson);
-    				subjson.put("children", subjsonarray);
-    				jsonarray.add(subjson);
-                }
-    		}
+    		rootjson.put("lazyNodes", getSubTree(grp));          	
     	}catch(Exception ex){
     		log.info(ex.getMessage());
     	}
-    	rootjson.put("lazyNodes", jsonarray);
     	return rootjson.toJSONString();
     }
 

@@ -182,8 +182,29 @@
         }else if(jsonobj.cmd == "lazyLoad"){
 	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
 	       	 lazyLoadData = jsonobj.lazyNodes;
-        }else if(jsonobj.cmd == "devicedetail"){
-        	 showopticalTran(jsonobj);
+        }else if(jsonobj.cmd == "getdevicedetail"){
+        	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
+        	if(node != undefined){
+        		if(jsonobj.isonline == true){
+        			node.data.isonline = true;
+        			node.icon = "../images/device.png";
+        			if(realdevice != undefined && realdevice != null){
+            			if(jsonobj.key == realdevice.key){
+            				$(".dev-status").css("color", "lightgreen");
+            			}
+            		}
+        		}else{
+        			node.data.isonline = false;
+        			node.icon = "../images/devoff.png";
+        			if(realdevice != undefined && realdevice != null){
+            			if(jsonobj.key == realdevice.key){
+            				$(".dev-status").css("color", "red");
+            			}
+            		}
+        		}
+        		node.render();        		
+        	}
+        	showopticalTran(jsonobj);
         }else if(jsonobj.cmd == "hfcvalueset"){
         	 switch(jsonobj.target){
         	 case "devicetrapedit":
@@ -200,8 +221,29 @@
         		 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
         		 node.data.wcommunity = jsonobj.value;
         		 break;
-        	 }
-	       	 
+        	 }	       	 
+        }else if(jsonobj.cmd == "devstatus"){
+        	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
+        	if(node != undefined){
+        		if(jsonobj.isonline == true){
+        			node.data.isonline = true;
+        			node.icon = "../images/device.png";
+        			if(realdevice != undefined && realdevice != null){
+            			if(jsonobj.key == realdevice.key){
+            				$(".dev-status").css("color", "lightgreen");
+            			}
+            		}
+        		}else{
+        			node.data.isonline = false;
+        			node.icon = "../images/devoff.png";
+        			if(realdevice != undefined && realdevice != null){
+            			if(jsonobj.key == realdevice.key){
+            				$(".dev-status").css("color", "red");
+            			}
+            		}
+        		}
+        		node.render();        		
+        	}
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;
@@ -229,7 +271,7 @@
             dblclick: function(event, data) {
             	if(data.node.data.type == "device"){
             		//show deivce detail
-            		__globalobj__._realDevice = data.node;
+            		realdevice = data.node;
             		getDeviceDetail(data.node);
             	}
             	
@@ -524,14 +566,40 @@
     }
     
     function getDeviceDetail(devnode){
-    	//TODO
-    	switch(devnode.getLastChild().title){
-    	case "":
-    		
+    	switch(devnode.getLastChild().key){
+    	case "Trans":
+    		$(".candile").load("/opticalTran");
+    		break;
+    	case "other":
+    		$(".candile").load("/opticalTran");
+    		break;
+    	case "EDFA":
+    		$(".candile").load("/opticalTran");
+    		break;
+    	case "rece_workstation":
+    		$(".candile").load("/opticalTran");
+    		break;
+    	case "OSW":
+    		$(".candile").load("/opticalTran");
+    		break;
+    	case "RFSW":
+    		$(".candile").load("/opticalTran");
+    		break;
+    	case "PreAMP":
+    		$(".candile").load("/opticalTran");
+    		break;
+    	case "wos":
+    		$(".candile").load("/opticalTran");
+    		break;
+    	default:
+    		$(".candile").load("/opticalTran");
+    		break;
     	}
-    	$(".candile").load("/opticalTran");
     	var datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().title + '"}';
     	send(datastring);
+    	/*if(!devnode.data.isonline){
+			$("dev-status").css("color", "red");
+		}*/
     }  
     
     
