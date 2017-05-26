@@ -5,11 +5,7 @@
 	var realdevice;
 	var lazyLoadData = null;
 	$(function() {
-		initWebSocket();		
-    	var datastring = '{"cmd":"getInitTree","message":""}';
-    	send(datastring);
-    	var datastring = '{"cmd":"getInitLog","message":""}';
-    	send(datastring);
+		initWebSocket();	   	
     	
     	window.__globalobj__ = {
     		    _webSocket:webSocket,
@@ -158,27 +154,40 @@
             += '<br />' + jsonobj.message;
         }else if(jsonobj.cmd == "nodeadd"){
         	 var rootNode = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.pkey);
-             rootNode.addChildren({
-               title: jsonobj.title,
-               tooltip: "This folder and all child nodes were added programmatically.",
-               key: jsonobj.key,
-               pkey: jsonobj.pkey,
-               folder: true,
-               type : jsonobj.type,
-               icon: jsonobj.icon,
-               expand: jsonobj.expand               
-             });
-             rootNode.setExpanded(jsonobj.expand);
+        	 if(rootNode != undefined){
+        		 rootNode.addChildren({
+                     title: jsonobj.title,
+                     tooltip: "This folder and all child nodes were added programmatically.",
+                     key: jsonobj.key,
+                     pkey: jsonobj.pkey,
+                     folder: true,
+                     type : jsonobj.type,
+                     icon: jsonobj.icon,
+                     expand: jsonobj.expand               
+                   });
+                   rootNode.setExpanded(jsonobj.expand);
+        	 }             
         }else if(jsonobj.cmd == "nodeedit"){
 	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
-	       	 node.title = jsonobj.title;
-	         node.renderTitle();
+	       	 if(node != undefined){
+	       		node.title = jsonobj.title;
+		       	 if(node.data.type == "device"){
+		       		node.data.rcommunity = jsonobj.rcommunity;
+		       		node.data.wcommunity = jsonobj.wcommunity;
+		       	 }
+		         node.renderTitle();
+	       	 }	       	 
         }else if(jsonobj.cmd == "nodedel"){
 	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
-	         node.remove();
+	       	 if(node != undefined){
+	       		node.remove();
+	       	 }
+	         
         }else if(jsonobj.cmd == "deviceadd"){
 	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.pkey);
-	       	 node.addChildren(jsonobj.devnodes);
+	       	 if(node != undefined){
+	       		node.addChildren(jsonobj.devnodes);
+	       	 }	       	 
         }else if(jsonobj.cmd == "lazyLoad"){
 	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
 	       	 lazyLoadData = jsonobj.lazyNodes;
@@ -213,14 +222,6 @@
         	 case "devicechannel":
         		 $("#" + jsonobj.domstr).val(jsonobj.value);
         		 break;
-        	 case "rcommunity":
-        		 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
-        		 node.data.rcommunity = jsonobj.value;
-        		 break;
-        	 case "wcommunity":
-        		 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
-        		 node.data.wcommunity = jsonobj.value;
-        		 break;
         	 }	       	 
         }else if(jsonobj.cmd == "devstatus"){
         	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
@@ -252,8 +253,10 @@
 
  
     function onOpen(event) {
-      document.getElementById('messages').innerHTML
-        = 'Connection established';
+    	var datastring = '{"cmd":"getInitTree","message":""}';
+    	send(datastring);
+    	var datastring = '{"cmd":"getInitLog","message":""}';
+    	send(datastring);
     }
  
     function onError(event) {
@@ -327,7 +330,7 @@
   	      	        	      buttons: {
   	      	        	    	  Ok: function() {	    
   	      	        	    		  if($("#set_value").val() != ""){
-  	      	        	    			  var datastring = '{"cmd":"hfcvalueset","target":"rcommunity","key":"'+node.key +'","value":"'+ $("#set_value").val()+'"}';
+  	      	        	    			  var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","title":"'+ node.title+'","type":"'+ node.data.type +'","wcommunity":"'+ node.data.wcommunity +'","rcommunity":"'+ $("#set_value").val()+'"}';
   		      	        	    		  webSocket.send(datastring);
   		      	        	    		  $( this ).dialog( "close" );
   	      	        	    		  }else{
@@ -360,7 +363,6 @@
       	        	callback: function(key, opt){
         	              var node = $.ui.fancytree.getNode(opt.$trigger);
         	              if(node.data.type == "device"){
-        	            	//添加节点
 	  	      	            $( "#dialog-form" ).dialog({
 	  	      	        	      autoOpen: false,
 	  	      	        	      height: 240,
@@ -369,7 +371,7 @@
 	  	      	        	      buttons: {
 	  	      	        	    	  Ok: function() {	    
 	  	      	        	    		  if($("#set_value").val() != ""){
-	  	      	        	    			  var datastring = '{"cmd":"hfcvalueset","target":"wcommunity","key":"'+node.key +'","value":"'+ $("#set_value").val()+'"}';
+	  	      	        	    			  var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","title":"'+ node.title+'","type":"'+ node.data.type +'","rcommunity":"'+ node.data.rcommunity +'","wcommunity":"'+ $("#set_value").val()+'"}';
 	  		      	        	    		  webSocket.send(datastring);
 	  		      	        	    		  $( this ).dialog( "close" );
 	  	      	        	    		  }else{
@@ -453,7 +455,7 @@
 		      	        	      buttons: {
 		      	        	    	  Ok: function() {	 
 		      	        	    		if($("#set_value").val() != ""){
-		      	        	    			var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
+		      	        	    			var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","title":"'+ $("#set_value").val() +'","type":"'+ node.data.type +'","rcommunity":"'+ node.data.rcommunity +'","wcommunity":"'+ node.data.wcommunity+'"}';
 			      	        	    		webSocket.send(datastring);
 			      	        	            $( this ).dialog( "close" );
 		      	        	    		}else{
@@ -646,6 +648,7 @@
     
     function send(datastring) {  
     	if (webSocket.readyState !== 1) {
+    		initWebSocket();
             setTimeout(function() {
             	webSocket.send(datastring);
             }, 250);

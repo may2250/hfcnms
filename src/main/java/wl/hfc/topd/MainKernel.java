@@ -27,6 +27,7 @@ import wl.hfc.common.*;
 //DevGrpModel将承担拓扑的组建，维护，以及组，设备的增删查改的响应
 public class MainKernel {
 	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
+	private static final String  PARAMKERNEL_MESSAGE =  "paramkernel.message";
 	private static Logger log = Logger.getLogger(MainKernel.class);
 	public  CDatabaseEngine ICDatabaseEngine1;
 	private LNode rootListNode;//设备树总节点（虚拟）
@@ -114,10 +115,9 @@ public class MainKernel {
 			handleInsertDev(jsondata);
 		}else if(cmd.equalsIgnoreCase("lazyLoad")){
 			staticmemory.sendRemoteStr(getLazyNodes(jsondata), jsondata.get("sessionid").toString());					
-		}else if(cmd.equalsIgnoreCase("hfcvalueset")){
-			hfcValueSet(jsondata);			
 		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
-			staticmemory.sendRemoteStr(hfcDeviceDetail(jsondata), jsondata.get("sessionid").toString());				
+			//转发到paramkernel进程处理
+			sendToQueue(message, PARAMKERNEL_MESSAGE);				
 		}else if(cmd.equalsIgnoreCase("devstatus")){
 			staticmemory.broadCast(jsondata.toJSONString());				
 		}
@@ -148,105 +148,6 @@ public class MainKernel {
 
         }
     }
-
-	
-	private String hfcDeviceDetail(JSONObject jsondata){
-		//获取设备详细信息		
-		String netaddr = jsondata.get("ip").toString();
-		String devtype = jsondata.get("devtype").toString();
-		DevTopd dev = (DevTopd)listDevHash.get(netaddr); 
-		JSONObject rootjson = new JSONObject();
-    	rootjson.put("cmd", "getdevicedetail");
-    	rootjson.put("key", netaddr);
-      	if (dev==null) {   
-      		rootjson.put("isonline", false);
-      		return rootjson.toJSONString();			
-		}
-      	
-    	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;
-    	rootjson.put("isonline", dev.isOline);
-		if(devtype.equalsIgnoreCase("other")){
-			
-		}else if(devtype.equalsIgnoreCase("EDFA")){
-			
-		}else if(devtype.equalsIgnoreCase("Trans")){
-			
-		}else if(devtype.equalsIgnoreCase("rece_workstation")){
-			
-		}else if(devtype.equalsIgnoreCase("OSW")){
-			
-		}else if(devtype.equalsIgnoreCase("RFSW")){
-			
-		}else if(devtype.equalsIgnoreCase("PreAMP")){
-			
-		}else if(devtype.equalsIgnoreCase("wos")){
-			
-		}
-		return rootjson.toJSONString();
-	}
-	
-	private void hfcValueSet(JSONObject jsondata){
-		JSONObject rootjson = new JSONObject();
-		String target = jsondata.get("target").toString();
-		if(target.equalsIgnoreCase("devicetrapedit")){
-			//修改设备Trap主机地址
-			rootjson.put("cmd", "hfcvalueset");
-			rootjson.put("target", "devicetrapedit");
-			rootjson.put("domstr", jsondata.get("domstr").toString());
-			rootjson.put("value", jsondata.get("value").toString());
-			//TODO
-			//发送到设备
-			
-			
-			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
-		}else if(target.equalsIgnoreCase("devicechannel")){
-			//修改设备频道数
-			rootjson.put("cmd", "hfcvalueset");
-			rootjson.put("target", "devicechannel");
-			rootjson.put("domstr", jsondata.get("domstr").toString());
-			rootjson.put("value", jsondata.get("value").toString());
-			//TODO
-			//发送到设备
-			
-			
-			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
-		}else if(target.equalsIgnoreCase("rcommunity")){
-			String value = jsondata.get("value").toString();
-			//修改数据库及内存设备信息
-			DevTopd dev = (DevTopd)listDevHash.get(jsondata.get("key").toString()); 
-	      	if (dev==null) {	      		
-	      		return ;				
-			}	      	
-	    	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;   	
-	     	mDeviceTableRow._ROCommunity= jsondata.get("value").toString();
-	        if (this.ICDatabaseEngine1.DeviceTableUpdateRow(mDeviceTableRow))
-	        {
-	        	dev.BindnojuDeviceTableRow = mDeviceTableRow;
-	        	dev.fullpath = dev.parent.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;	        	
-
-	        	//修改成功后返回WEB前端
-				staticmemory.broadCast(jsondata.toJSONString());
-	        }
-
-		}else if(target.equalsIgnoreCase("wcommunity")){
-			String value = jsondata.get("value").toString();
-			//修改数据库及内存设备信息
-			DevTopd dev = (DevTopd)listDevHash.get(jsondata.get("key").toString()); 
-	      	if (dev==null) {	      		
-	      		return ;				
-			}	      	
-	    	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;   	
-	     	mDeviceTableRow._RWCommunity= jsondata.get("value").toString();
-	        if (this.ICDatabaseEngine1.DeviceTableUpdateRow(mDeviceTableRow))
-	        {
-	        	dev.BindnojuDeviceTableRow = mDeviceTableRow;
-	        	dev.fullpath = dev.parent.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;	        	
-
-	        	//修改成功后返回WEB前端
-				staticmemory.broadCast(jsondata.toJSONString());
-	        }
-		}
-	}
   	
     
     @SuppressWarnings("static-access")
@@ -770,7 +671,9 @@ public class MainKernel {
     	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;
     	
         //edit the  mDeviceTableRow property here from jsondata    	
-     	mDeviceTableRow.Name= jsondata.get("value").toString();
+     	mDeviceTableRow.Name= jsondata.get("title").toString();
+     	mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
+     	mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();
         mStatus = this.ICDatabaseEngine1.DeviceTableUpdateRow(mDeviceTableRow);
 
         if (mStatus)
@@ -779,13 +682,8 @@ public class MainKernel {
         	dev.BindnojuDeviceTableRow = mDeviceTableRow;
 
         	dev.fullpath = dev.parent.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;
-        	
-        	JSONObject rootjson = new JSONObject();
-        	rootjson.put("cmd", "nodeedit");
-    		rootjson.put("key", jsondata.get("key").toString());
-    		rootjson.put("title", jsondata.get("value").toString());
-    		rootjson.put("type", "group");
-    		staticmemory.broadCast(rootjson.toJSONString());
+
+    		staticmemory.broadCast(jsondata.toJSONString());
 
         }
 
@@ -872,5 +770,20 @@ public class MainKernel {
 */
 
     }
+    
+    public void sendToQueue(String msg, String queue) {
+		Jedis jedis = null;
+		try {
+			jedis = redisUtil.getConnection();
+			jedis.publish(queue, msg);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			log.info(e.getMessage());
+
+		}finally{
+			redisUtil.closeConnection(jedis);
+		}
+	}    
     
 }

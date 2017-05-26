@@ -35,6 +35,7 @@ import redis.clients.jedis.JedisPubSub;
 public class Services_Websocket {
 	private static Logger log = Logger.getLogger(Services_Websocket.class);
 	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
+	private static final String  PARAMKERNEL_MESSAGE =  "paramkernel.message";
 	
 	private static RedisUtil redisUtil;
 	private static StaticMemory staticmemory;
@@ -52,7 +53,7 @@ public class Services_Websocket {
     public void onMessage(String message, Session session) throws IOException, InterruptedException {
 
         // Print the client message for testing purposes
-        System.out.println("Received: " + message);
+        System.out.println("Services_Websocket Received: " + message);
         parseWebMessage(message, session);        
 
     }
@@ -66,30 +67,27 @@ public class Services_Websocket {
 			if(cmd.equalsIgnoreCase("getInitTree")){
 				//获取设备数结构
 				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString());				
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);				
 			}else if(cmd.equalsIgnoreCase("getInitLog")){
 				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("nodeadd")){
-				sendToQueue(jsondata.toJSONString());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("nodeedit")){
-				rootjson.put("cmd", "nodeedit");
-				rootjson.put("key", jsondata.get("key").toString());
-				rootjson.put("title", jsondata.get("value").toString());
-				sendToQueue(rootjson.toJSONString());
+				sendToQueue(message, MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("nodedel")){
-				sendToQueue(jsondata.toJSONString());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("lazyLoad")){
 				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("deviceadd")){				
-				sendToQueue(jsondata.toJSONString());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("hfcvalueset")){
 				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString());
+				sendToQueue(jsondata.toJSONString(), PARAMKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("getdevicedetail")){
 				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("test")){
 				// Send the first message to the client
 				rootjson.put("cmd", "test");
@@ -108,7 +106,7 @@ public class Services_Websocket {
 		        rootjson.put("message", "This is the last server message");
 		        session.getBasicRemote().sendText(rootjson.toJSONString());
 			}else{
-				sendToQueue(message);
+				sendToQueue(message, MAINKERNEL_MESSAGE);
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -119,11 +117,11 @@ public class Services_Websocket {
     }
     
    
-    private void sendToQueue(String msg) {
+    private void sendToQueue(String msg, String queue) {
 		Jedis jedis = null;
 		try {
 			jedis = redisUtil.getConnection();
-			jedis.publish(MAINKERNEL_MESSAGE, msg);
+			jedis.publish(queue, msg);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
