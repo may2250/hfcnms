@@ -88,40 +88,16 @@ public class ParamKernel {
 		}
 	}
 	
-	public static String getNetTypeTostring(NetTypes pNetTypes)
-    {
-        switch (pNetTypes)
-        {
-            case other:
-                return ClsLanguageExmp.viewGet("其他设备");
-            case EDFA:
-                return "EDFA";
-            case Trans:
-                return ClsLanguageExmp.viewGet("光发射机");
-            case rece_workstation:
-                return ClsLanguageExmp.viewGet("光接收机")+"/"+ClsLanguageExmp.viewGet("光工作站");
-            case OSW:
-                return ClsLanguageExmp.viewGet("光切换开关");
-            case RFSW:
-                return ClsLanguageExmp.viewGet("射频切换开关");
-            case PreAMP:
-                return ClsLanguageExmp.viewGet("前置放大器");
-            case wos:
-                return ClsLanguageExmp.viewGet("光平台");
-            default:
-                return ClsLanguageExmp.viewGet("其他设备");
-
-        }
-    }
 
 	
 	private String hfcDeviceDetail(JSONObject jsondata){
 		//获取设备详细信息		
 		String netaddr = jsondata.get("ip").toString();
-		String devtype = jsondata.get("devtype").toString();
-		DevTopd dev = (DevTopd)MainKernel.me.listDevHash.get(netaddr); 
+		String devtype = jsondata.get("devtype").toString();		 
 		JSONObject rootjson = new JSONObject();
     	rootjson.put("cmd", "getdevicedetail");
+    	
+    	DevTopd dev = (DevTopd)MainKernel.me.listDevHash.get(netaddr);
     	rootjson.put("key", netaddr);
       	if (dev==null) {   
       		rootjson.put("isonline", false);

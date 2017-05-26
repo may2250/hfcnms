@@ -118,8 +118,8 @@ public class MainKernel {
 		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
 			//转发到paramkernel进程处理
 			sendToQueue(message, PARAMKERNEL_MESSAGE);				
-		}else if(cmd.equalsIgnoreCase("devstatus")){
-			staticmemory.broadCast(jsondata.toJSONString());				
+		}else if(cmd.equalsIgnoreCase("devstatus")){			
+			staticmemory.broadCast(handleOnlineInfo(jsondata));				
 		}
 	}
 	
@@ -145,6 +145,32 @@ public class MainKernel {
                 return ClsLanguageExmp.viewGet("光平台");
             default:
                 return ClsLanguageExmp.viewGet("其他设备");
+
+        }
+    }
+	
+	public static NetTypes getStringToNetType(String pNetTypes)
+    {
+        switch (pNetTypes)
+        {
+            case "other":
+                return NetTypes.other;
+            case "EDFA":
+                return NetTypes.EDFA;
+            case "Trans":
+                return NetTypes.Trans;
+            case "rece_workstation":
+                return NetTypes.rece_workstation;
+            case "OSW":
+                return NetTypes.OSW;
+            case "RFSW":
+                return NetTypes.RFSW;
+            case "PreAMP":
+                return NetTypes.PreAMP;
+            case "wos":
+                return NetTypes.wos;
+            default:
+                return NetTypes.other;
 
         }
     }
@@ -593,18 +619,18 @@ public class MainKernel {
       	int usergroupID=Integer.parseInt(jsondata.get("key").toString());//get  goupid from jsondata
 
       	devGroup grp = (devGroup)listGrpHash.get(usergroupID); 
+      	String devtypestr = jsondata.get("devtype").toString();
 
         if (grp == null)//父设备组不存在
         {
             return null;
         }
 
-    	
-    	////get the  name, parent from  jsondata ,build a new devicerow
-
-        nojuDeviceTableRow mDeviceTableRow=new nojuDeviceTableRow(jsondata.get("value").toString(), NetTypes.other);
+        nojuDeviceTableRow mDeviceTableRow=new nojuDeviceTableRow(jsondata.get("netip").toString(), getStringToNetType(devtypestr));
         mDeviceTableRow.UserGroupID=usergroupID;
-        
+        mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
+        mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();
+        mDeviceTableRow.Name = jsondata.get("devname").toString();
         
         mStatus = this.ICDatabaseEngine1.DeviceTableInsertRow(mDeviceTableRow);
         if (mStatus)
@@ -630,7 +656,7 @@ public class MainKernel {
         	rootjson.put("pkey", jsondata.get("key").toString());
         	rootnodejson.put("key", dev._NetAddress);
         	rootnodejson.put("pkey", jsondata.get("key").toString());
-        	rootnodejson.put("title", jsondata.get("value").toString());
+        	rootnodejson.put("title", dev.BindnojuDeviceTableRow.Name);
         	rootnodejson.put("type", "device");
         	rootnodejson.put("rcommunity", dev.BindnojuDeviceTableRow._ROCommunity);
         	rootnodejson.put("wcommunity", dev.BindnojuDeviceTableRow._RWCommunity);
@@ -728,7 +754,6 @@ public class MainKernel {
 
         if (mStatus)
         {
-
         	DevTopd dev = (DevTopd)listDevHash.get(delDev.BindnojuDeviceTableRow.get_NetAddress());
             devGroup grp = (devGroup)listGrpHash.get(delDev.BindnojuDeviceTableRow.UserGroupID);
             grp.Nodes.remove(dev);
@@ -744,15 +769,15 @@ public class MainKernel {
         return mStatus;
     }
 
-    private void handleOnlineInfo(JSONObject jsondata)
+    private String handleOnlineInfo(JSONObject jsondata)
     {    	
-    	String ipaddr="1.2.3.4";//GET FROM JOSNDATA
+    	String ipaddr=jsondata.get("ip").toString();//GET FROM JOSNDATA
 
         DevTopd lNode = (DevTopd)listDevHash.get(ipaddr);
 
         if (lNode == null)
         {
-            return;
+            return jsondata.toJSONString();
         }
 
        //hi，xinglong，HFCType1，ID,MD,SN,DEVICEID,ISONLINE?这些信息请提交到前端
@@ -768,7 +793,11 @@ public class MainKernel {
         OlineeInforCmd1.mTimeStamp = DateTime.Now.Ticks;
         this.Notify("DbEngine.newCMD", OlineeInforCmd1);
 */
-
+        jsondata.put("hfctype", lNode.HFCType1.toString());
+        jsondata.put("id", lNode.ID);
+        jsondata.put("md", lNode.MD);
+        jsondata.put("sn", lNode.SN);
+        return jsondata.toJSONString();
     }
     
     public void sendToQueue(String msg, String queue) {

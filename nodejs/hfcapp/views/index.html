@@ -178,11 +178,56 @@
 
 	</div>
 	<!-- hide div -->
-	<div id="dialog-form" title="配置">
+	<div id="dialog-form" title="配置" style="display:none">
 		<p class="validateTips">在文本框中输入.</p>
-	 	<input type="text" style="display:none" id="set_value" value="" >
+	 	<input type="text" id="set_value" value="" >
 	  
 	</div>
+	<div id="dialog-newdev" title="添加新的二类设备" style="display:none">
+			<table class="table">
+				<tr>
+					<td>
+						<input id="needtype" type="checkbox" value="" />指定设备类型 
+	  				</td>
+	  				<td>IP地址:</td>
+	  				<td>
+						<input type="text" class="form-control" id="newdev_ip" >
+	  				</td>
+				</tr>
+				<tr>
+					<td>
+						<select name="salutation" id="salutation" disabled>
+					      <option disabled selected value="other">其他设备</option>
+					      <option value="EDFA">EDFA</option>
+					      <option value="Trans">光发射机</option>
+					      <option value="rece_workstation">光接收机/光工作站</option>
+					      <option value="OSW">光切换开关</option>
+					      <option value="RFSW">射频切换开关</option>
+					      <option value="PreAMP">前置放大器</option>
+					      <option value="wos">光平台</option>
+					    </select>
+					</td>
+					<td>只读团体名:</td>
+	  				<td>
+						<input type="text" class="form-control" id="newdev_rcommunity" value="public" >
+	  				</td>
+				</tr>
+				<tr>
+					<td>						
+					</td>
+					<td>读写团体名:</td>
+	  				<td>
+						<input type="text" class="form-control" id="newdev_wcommunity" value="public" >
+	  				</td>
+				</tr>
+			</table>
+		  	<div>
+    			<div >
+			               设备名称:<input type="text" class="form-control" id="newdev_devname" value="新设备" >
+			        	设备组名请勿包含以下字符:/ \ #
+			    </div>
+			</div>
+		</div>
    <script src="/javascripts/hfcdetails.js"></script>
    <script src="/javascripts/main.js"></script>
 </body>

@@ -13,7 +13,7 @@
         	      modal: true,
         	      buttons: {
         	    	  Ok: function() {	   
-        	    		  if($("#set_value").val() != "" && ipvalidate($("#set_value").val())){
+        	    		  if(ipvalidate($("#set_value").val())){
         	    			  var node = __globalobj__._realDevice.getFirstChild();
             	    		  var datastring = '{"cmd":"hfcvalueset","target":"devicetrapedit","ip":"' + node.title +'","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
             	    		  __globalobj__._send(datastring);
@@ -43,7 +43,7 @@
         	      modal: true,
         	      buttons: {
         	    	  Ok: function() {
-        	    		  if($("#set_value").val() != ""){
+        	    		  if(checkInt($("#set_value").val())){
         	    			  var node = __globalobj__._realDevice.getFirstChild();
             	    		  var datastring = '{"cmd":"hfcvalueset","target":"devicechannel","ip":"' + node.title +'","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
             	    		  __globalobj__._send(datastring);
@@ -63,26 +63,7 @@
             $("#set_value").val($(this).val());
             updateTips("请输入新值:");
             $("#dialog-form").dialog("open");
-		});
-		
-		function updateTips( t ) {
-			  $( ".validateTips" )
-		        .text( t );
-		}
-		
-		function ipvalidate(ip) {  
-		    var val = /([0-9]{1,3}\.{1}){3}[0-9]{1,3}/;  
-		    var vald = val.exec(ip);  
-		    if (vald == null) {    
-		        return false;  
-		    }  
-		    if (vald != '') {  
-		        if (vald[0] != ip) {    
-		            return false;  
-		        }  
-		    } 
-		    return true;
-		}  
+		}); 
 	</script>
 </head>
 <body>
@@ -104,7 +85,7 @@
 							  <tbody>
 								    <tr>
 								      <td>输入光功率:</td>
-								      <td><input type="text" class="form-control hfcunit" id="detail_inoptical" readonly></td>
+								      <td><input type="text" class="form-control" id="detail_inoptical" readonly></td>
 								      <td>反向发射光功率:</td>
 								      <td><input type="text" class="form-control" id="detail_mineroptical" readonly></td>
 								    </tr>
@@ -116,7 +97,7 @@
 								    </tr>
 								    <tr>
 								      <td>频道数:</td>
-								      <td><input type="text" class="form-control" id="detail_channel" readonly></td>
+								      <td><input type="text" class="form-control hfcunit" id="detail_channel" readonly></td>
 								    </tr>
 							  </tbody>
 							</table>

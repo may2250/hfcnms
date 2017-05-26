@@ -1,25 +1,34 @@
-<div id="xxx">
-	sjdifjsijfidjgoagada
-	<button id="start">start</button>
-</div>
-<div id="messages"></div>
-<script type="text/javascript">
-$("#start").click(function(){
-	start();
-});
-
-function start() {
-	var datastring = '{"cmd":"test","message":"hello!"}';
-	if (__globalobj__._webSocket.readyState !== 1) {
-		__globalobj__._webSocket.close();
-		__globalobj__._initWebSocket();
-        setTimeout(function() {
-        	__globalobj__._send(datastring);
-        }, 250);
-    } else {
-    	__globalobj__._send(datastring);
-    };
-  return false;
-}
-
-</script>
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />	
+</head>
+<body>
+	<div id="xxx">
+		sjdifjsijfidjgoagada
+		<button id="start">start</button>
+		
+	</div>
+	<div id="messages"></div>
+	<script type="text/javascript">
+		
+		$("#start").click(function(){
+			start();
+		});
+		
+		function start() {
+			var datastring = '{"cmd":"test","message":"hello!"}';
+			if (__globalobj__._webSocket.readyState !== 1) {
+				__globalobj__._webSocket.close();
+				__globalobj__._initWebSocket();
+		        setTimeout(function() {
+		        	__globalobj__._send(datastring);
+		        }, 250);
+		    } else {
+		    	__globalobj__._send(datastring);
+		    };
+		  return false;
+		}
+	
+	</script>
+</body>

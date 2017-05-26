@@ -2,14 +2,13 @@
 	var webSocket;
 	var tbl_devalarm;
 	var tbl_optlog;
-	var realdevice;
 	var lazyLoadData = null;
 	$(function() {
 		initWebSocket();	   	
     	
     	window.__globalobj__ = {
     		    _webSocket:webSocket,
-    		    _realDevice:realdevice,
+    		    _realDevice:"",
     		    _send:function(datastring) {  
     		    	if (webSocket.readyState !== 1) {
     		            setTimeout(function() {
@@ -119,6 +118,10 @@
     			$(".devdetail-content").css('height',$(window).height() - 360); 
     		};    		
     	});
+    	
+    	$('#needtype').change(function(){ 
+    		$('#salutation').attr("disabled", !$(this).is(':checked'));    		
+    	}) 
 	});
 	
 	function initWebSocket() {
@@ -274,7 +277,7 @@
             dblclick: function(event, data) {
             	if(data.node.data.type == "device"){
             		//show deivce detail
-            		realdevice = data.node;
+            		__globalobj__._realDevice = data.node;
             		getDeviceDetail(data.node);
             	}
             	
@@ -340,13 +343,11 @@
   	      	        	            }
   	      	        	      },
   	      	        	      close: function() {
-  	      	        	    	$("#set_value").css('display','none');
   	      	        	    	$("#set_value").removeClass("ui-state-error-custom");
   	      	        	      }
         	        	    });
-	  	      	            $("#set_value").css('display','block');
 	  	      	            $("#set_value").val(node.data.rcommunity);
-	  	      	            updateTips("请输入添加节点名称:");
+	  	      	            updateTips("请输入新的团体名:");
 	  	      	            $("#dialog-form").dialog("open");
         	              }
         	            }
@@ -381,13 +382,11 @@
 	  	      	        	            }
 	  	      	        	      },
 	  	      	        	      close: function() {
-	  	      	        	    	$("#set_value").css('display','none');
 	  	      	        	    	$("#set_value").removeClass("ui-state-error-custom");
 	  	      	        	      }
 	        	        	    });
-		  	      	            $("#set_value").css('display','block');
 		  	      	            $("#set_value").val(node.data.wcommunity);
-		  	      	            updateTips("请输入添加节点名称:");
+		  	      	            updateTips("请输入新的团体名:");
 		  	      	            $("#dialog-form").dialog("open");
 	        	              }
         	         }
@@ -423,11 +422,9 @@
 	      	        	            }
 	      	        	      },
 	      	        	      close: function() {
-	      	        	    	$("#set_value").css('display','none');
 	      	        	    	$("#set_value").removeClass("ui-state-error-custom");
 	      	        	      }
       	        	    });
-	      	            $("#set_value").css('display','block');
 	      	            $("#set_value").val("");
 	      	            updateTips("请输入添加节点名称:");
 	      	            $("#dialog-form").dialog("open");
@@ -465,11 +462,9 @@
 		      	        	    	  }
 		      	        	      },
 		      	        	      close: function() {
-			      	        	    	$("#set_value").css('display','none');
 			      	        	    	$("#set_value").removeClass("ui-state-error-custom");
 			      	        	  }
 	      	        	    });
-		      	          $("#set_value").css('display','block');
 		      	            $("#set_value").val("");
 		      	            updateTips("请输入要更改的内容:");
 		      	            $("#dialog-form").dialog("open");
@@ -490,31 +485,28 @@
         	              var node = $.ui.fancytree.getNode(opt.$trigger);
         	              if(node.data.type == "group"){
         	            	//添加设备
-        	            	  $( "#dialog-form" ).dialog({
+        	            	  $( "#dialog-newdev" ).dialog({
     	      	        	      autoOpen: false,
-    	      	        	      height: 240,
-    	      	        	      width: 300,
+    	      	        	      height: 400,
+    	      	        	      width: 730,
     	      	        	      modal: true,
     	      	        	      buttons: {
     	      	        	    	  Ok: function() {	   
-	    	      	        	    		if($("#set_value").val() != "" && ipvalidate($("#set_value").val())){
-	    	      	        	    			var datastring = '{"cmd":"deviceadd","key":"'+ node.key + '","value":"'+ $("#set_value").val()+'"}';
+	    	      	        	    		if($("#newdev_ip").val() != "" && ipvalidate($("#newdev_ip").val())){
+	    	      	        	    			var datastring = '{"cmd":"deviceadd","key":"'+ node.key + '","devtype":"'+ $("#salutation").children('option:selected').val()+ '","rcommunity":"'+ $("#newdev_rcommunity").val()+ '","wcommunity":"'+ $("#newdev_wcommunity").val() + '","devname":"'+ $("#newdev_devname").val()+ '","netip":"'+ $("#newdev_ip").val()+'"}';
 	      	      	        	    		  	webSocket.send(datastring);
 	      	      	        	    		  	$( this ).dialog( "close" );
 	    	      	        	    		}else{
-	    	      	        	    			$("#set_value").addClass( "ui-state-error-custom" );
+	    	      	        	    			$("#newdev_ip").addClass( "ui-state-error-custom" );
 	    	      	        	    		}
     	      	        	    	  }
     	      	        	      },
     	      	        	      close: function() {
-    		      	        	    	$("#set_value").css('display','none');
-    		      	        	    	$("#set_value").removeClass("ui-state-error-custom");
+    		      	        	    	$("#newdev_ip").removeClass("ui-state-error-custom");
     		      	        	  }
 	          	        	    });
-        	            	  	$("#set_value").css('display','block');
-	    	      	            $("#set_value").val("");
-	        	            	updateTips("输入设备的IP地址:");
-	        	            	$("#dialog-form").dialog("open");
+	    	      	            $("#newdev_ip").val("");
+	        	            	$("#dialog-newdev").dialog("open");
 	        	          }
 	        	     }
       	          },    	 
@@ -597,7 +589,7 @@
     		$(".candile").load("/rece_workstation");
     		break;
     	}
-    	var datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().title + '"}';
+    	var datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().key + '"}';
     	send(datastring);
     	/*if(!devnode.data.isonline){
 			$("dev-status").css("color", "red");
@@ -626,25 +618,6 @@
             data.details = "An error occurred during loading: " + error;
           }
         } 
-      
-	  function updateTips( t ) {
-		  $( ".validateTips" )
-	        .text( t );
-	  }
-	  
-	  function ipvalidate(ip) {  
-	    var val = /([0-9]{1,3}\.{1}){3}[0-9]{1,3}/;  
-	    var vald = val.exec(ip);  
-	    if (vald == null) {    
-	        return false;  
-	    }  
-	    if (vald != '') {  
-	        if (vald[0] != ip) {    
-	            return false;  
-	        }  
-	    }
-	    return true;
-	}
     
     function send(datastring) {  
     	if (webSocket.readyState !== 1) {

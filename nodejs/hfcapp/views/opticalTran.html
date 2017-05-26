@@ -24,11 +24,9 @@
         	            }
         	      },
         	      close: function() {
-	        	    	$("#set_value").css('display','none');
 	        	    	$("#set_value").removeClass("ui-state-error-custom");
 	        	  }
     	    });
-			$("#set_value").css('display','block');
             $("#set_value").val($(this)[0].textContent);
             updateTips("请输入新的Trap地址:");
             $("#dialog-form").dialog("open");
@@ -55,34 +53,14 @@
         	            }
         	      },
         	      close: function() {
-	        	    	$("#set_value").css('display','none');
 	        	    	$("#set_value").removeClass("ui-state-error-custom");
 	        	  }
     	    });
-			$("#set_value").css('display','block');
             $("#set_value").val($(this).val());
             updateTips("请输入新值:");
             $("#dialog-form").dialog("open");
-		});
-		
-		function updateTips( t ) {
-			  $( ".validateTips" )
-		        .text( t );
-		}
-		
-		function ipvalidate(ip) {  
-		    var val = /([0-9]{1,3}\.{1}){3}[0-9]{1,3}/;  
-		    var vald = val.exec(ip);  
-		    if (vald == null) {    
-		        return false;  
-		    }  
-		    if (vald != '') {  
-		        if (vald[0] != ip) {    
-		            return false;  
-		        }  
-		    } 
-		    return true;
-		}  
+		});		
+		 
 	</script>
 </head>
 <body>
