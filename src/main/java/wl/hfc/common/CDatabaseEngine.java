@@ -8,12 +8,16 @@ import java.sql.Statement;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import org.apache.log4j.Logger;
+
+import wl.hfc.topd.MainKernel;
+
 /*import com.mysql.jdbc.Connection;
  import com.mysql.jdbc.PreparedStatement;*/
 
 public class CDatabaseEngine {
 
-
+	private static Logger log = Logger.getLogger(CDatabaseEngine.class);
 	public  Connection getConnection() {
 		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
 		// ����������
@@ -29,7 +33,7 @@ public class CDatabaseEngine {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			// log.info(e.getMessage());
+			log.info(e.getMessage());
 		}
 
 		return con;
@@ -76,7 +80,7 @@ public class CDatabaseEngine {
 		 
 		row.UserGroupName = newName;
 
-		String sqlInsert = "INSERT INTO UserGroupTable(UserGroupName,ParentGroupID) VALUES('" + row.UserGroupName + "'," + row.ParentGroupID + ')';
+		String sqlInsert = "INSERT INTO usergrouptable(UserGroupName,ParentGroupID) VALUES('" + row.UserGroupName + "'," + row.ParentGroupID + ')';
 
 		//sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
@@ -99,7 +103,7 @@ public class CDatabaseEngine {
 	public  boolean UserGroupTableDeleteRow(int thisID){
 
 
-		  String sqlInsert = "DELETE FROM UserGroupTable WHERE UserGroupID=" + thisID;
+		  String sqlInsert = "DELETE FROM usergrouptable WHERE UserGroupID=" + thisID;
 		//sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
 		try {
@@ -108,7 +112,7 @@ public class CDatabaseEngine {
                  return true;
 	
 		} catch (Exception EX) {
-			  sqlInsert = "DELETE FROM UserGroupTable WHERE UserGroupID=" + thisID;
+			  sqlInsert = "DELETE FROM usergrouptable WHERE UserGroupID=" + thisID;
 			return false;
 
 		}
@@ -127,7 +131,7 @@ public class CDatabaseEngine {
             }
         }
 
-        String sqlInsert = "UPDATE UserGroupTable SET UserGroupName='" + row.UserGroupName +
+        String sqlInsert = "UPDATE usergrouptable SET UserGroupName='" + row.UserGroupName +
                 "',ParentGroupID=" + row.ParentGroupID +
                 ",Txa=" + row.x1 + ",Txb=" + row.x2 + ",Txc=" + row.y1 + ",Txd=" + row.y2+ ",isTx=" + (row.isTx?"1":"0") +
                 " WHERE UserGroupID=" + row.UserGroupID;
@@ -150,7 +154,7 @@ public class CDatabaseEngine {
 		Hashtable retList = new Hashtable();
 		ResultSet rs = null;
 		try {
-			String sqlInsert = "SELECT * FROM UserGroupTable";
+			String sqlInsert = "SELECT * FROM usergrouptable";
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 			rs = pstmt.executeQuery(sqlInsert);
@@ -187,7 +191,7 @@ public class CDatabaseEngine {
 		Hashtable retList = new Hashtable();
 		ResultSet rs = null;
 		try {
-			String sqlInsert = "SELECT * FROM DeviceTable";
+			String sqlInsert = "SELECT * FROM eevicetable";
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 			rs = pstmt.executeQuery(sqlInsert);
@@ -265,7 +269,7 @@ public class CDatabaseEngine {
         }
 
         row.Name = newName;
-        String sqlInsert = "INSERT INTO DeviceTable(NetAddress,NetType," +
+        String sqlInsert = "INSERT INTO devicetable(NetAddress,NetType," +
                 "UserGroupID,HeadAddress,Name,ROCommunity,RWCommunity,RemarkText) VALUES('" +
                 row.get_NetAddress() + "'," + row.get_NetType().ordinal()+ ',' +
                 row.UserGroupID + ",'" + row.HeadAddress + "','" + row.Name + "','" +
@@ -288,7 +292,7 @@ public class CDatabaseEngine {
 	public  boolean DeviceTableDeleteRow(nojuDeviceTableRow row){
 
 
-	      String sqlInsert = "DELETE FROM DeviceTable WHERE NetAddress='" + row.get_NetAddress() + '\'';
+	      String sqlInsert = "DELETE FROM devicetable WHERE NetAddress='" + row.get_NetAddress() + '\'';
 		//sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
 		try {
@@ -316,7 +320,7 @@ public class CDatabaseEngine {
                }
            }
 
-           String sqlInsert = "UPDATE DeviceTable SET NetType=" + row.get_NetType().ordinal() + ",UserGroupID=" +
+           String sqlInsert = "UPDATE devicetable SET NetType=" + row.get_NetType().ordinal() + ",UserGroupID=" +
                    row.UserGroupID + ",HeadAddress='" + row.HeadAddress + "',Name='" + row.Name +
                    "',ROCommunity='" + row._ROCommunity + "',RWCommunity='" + row._RWCommunity + "',RemarkText='" + row.remark +
                     "',Txa=" + row.x1 + ",Txb=" + row.x2+ ",Txc=" + row.y1+ ",Txd=" + row.y2+ ",isTx=" + (row.isTx ? "1" : "0") +

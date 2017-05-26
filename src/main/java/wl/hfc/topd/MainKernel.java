@@ -184,7 +184,6 @@ public class MainKernel {
 		try {			
 			ICDatabaseEngine1=new CDatabaseEngine();
 			ICDatabaseEngine1.getConnection();
-
 			initTopodData();
 			jedis = redisUtil.getConnection();		 
 			jedis.psubscribe(jedissubSub, MAINKERNEL_MESSAGE);
@@ -192,6 +191,7 @@ public class MainKernel {
 			  
 		}catch(Exception e){
 			e.printStackTrace();
+			log.info(e.getMessage());
 			redisUtil.getJedisPool().returnBrokenResource(jedis);
 			
 		}
@@ -317,7 +317,7 @@ public class MainKernel {
 
 	public  void initTopodData() {
 		Hashtable devHash = ICDatabaseEngine1.DeviceTableGetAllRows();
-		Hashtable grpHash = ICDatabaseEngine1.UserGroupTableGetAllRows();
+		Hashtable grpHash = ICDatabaseEngine1.UserGroupTableGetAllRows();		
 		// List<CDataBasePropery.nojuDeviceTableRow> SlotRowsList =
 		// ICDatabaseEngine1.slotTableGetAllRows();
 		rootListNode = this.offerTopodModel(devHash, grpHash);			
@@ -355,21 +355,18 @@ public class MainKernel {
 			}
 
 		}
-
 		// select the all root nodes
 		for (UserGroupTableRow dr : rows) {
-			
 			// add the child group and the device
 			devGroup group = new devGroup(dr.UserGroupID, dr.UserGroupName, dr.ParentGroupID);
 			group.BindUserGroupTableRow = dr;
-			
 	
 			group.Level=1;
 			rootNode.Nodes.add(group);
 			group.parent=rootNode;
 			group.fullpath=rootNode.fullpath + "/" + group.BindUserGroupTableRow.UserGroupName;
 			group.Tag = group;
-			System.out.println(	group.fullpath);
+			log.info(group.fullpath);
             listGrpHash.put(group.BindUserGroupTableRow.UserGroupID, group);
 
 			CreateTreeNode(group, groupLists, devLists);

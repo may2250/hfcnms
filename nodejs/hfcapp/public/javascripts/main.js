@@ -282,7 +282,7 @@
             	}
             	
             },
-            dnd: {
+            /*dnd: {
                 autoExpandMS: 400,
                 focusOnClick: true,
                 preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
@@ -305,7 +305,7 @@
                 		alert("移动到错误的节点!");
                 	}                	
                 }
-              },
+              },*/
               lazyLoad: lazyLoad
           });
     	
@@ -521,6 +521,10 @@
       	        	  	},
     	        	callback: function(key, opt){
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
+      	              	if(node.data.type == "group" && node.hasChildren()){
+      	              		alert("不是子节点，无法删除!");
+      	              		return false;
+      	              	}
       	              	if((confirm( "确定要删除？ ")==true))
       	              	{
       	              		//删除节点
