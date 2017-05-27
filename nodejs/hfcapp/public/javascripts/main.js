@@ -220,16 +220,9 @@
         		}
         		node.render();        		
         	}
-        	showopticalTran(jsonobj);
+        	showHfcDevice(jsonobj);
         }else if(jsonobj.cmd == "hfcvalueset"){
-        	 switch(jsonobj.target){
-        	 case "devicetrapedit":
-        		 $("#" + jsonobj.domstr)[0].textContent = jsonobj.value;
-        		 break;
-        	 case "devicechannel":
-        		 $("#" + jsonobj.domstr).val(jsonobj.value);
-        		 break;
-        	 }	       	 
+        	parseHfcValueSet(jsonobj);        	   	 
         }else if(jsonobj.cmd == "devstatus"){
         	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
         	if(node != undefined){
@@ -275,6 +268,7 @@
     		extensions: ["dnd"],
             source: treedata,
             clickFolderMode: 1,
+            minExpandLevel: 2,
             click: function(event, data) {
             	
             },

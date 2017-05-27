@@ -151,6 +151,44 @@ public class ParamKernel {
 			
 			
 			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
+		}else if(target.equalsIgnoreCase("getalarmThreshold")){
+			//获取告警门限			
+			staticmemory.sendRemoteStr(getAlarmThreshold(jsondata), jsondata.get("sessionid").toString());
+		}else if(target.equalsIgnoreCase("setalarmThreshold")){
+			//设置告警门限	
+			setAlarmThreshold(jsondata);
+			//staticmemory.sendRemoteStr(getAlarmThreshold(jsondata), jsondata.get("sessionid").toString());
+		}
+	}
+	
+	private String getAlarmThreshold(JSONObject jsondata){
+		JSONObject rootjson = new JSONObject();
+		String netaddr = jsondata.get("ip").toString();
+		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
+			//获取温度相关门限信息
+			//TODO
+			//test
+			rootjson.put("HIHI", "60");
+			rootjson.put("HI", "55");
+			rootjson.put("LO", "30");
+			rootjson.put("LOLO", "10");
+			rootjson.put("DEAD", "0");
+		}
+		jsondata.put("detail", rootjson);
+		return jsondata.toJSONString();
+	}
+	
+	private void setAlarmThreshold(JSONObject jsondata){
+		String netaddr = jsondata.get("ip").toString();
+		String HIHI = jsondata.get("HIHI").toString();
+		String HI = jsondata.get("HI").toString();
+		String LO = jsondata.get("LO").toString();
+		String LOLO = jsondata.get("LOLO").toString();
+		String DEAD = jsondata.get("DEAD").toString();
+		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
+			//设置温度相关门限信息
+			//TODO
+			
 		}
 	}
   	
