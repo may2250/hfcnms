@@ -227,6 +227,18 @@ public class MainKernel {
 		logjson.put("solved", "yes");
 		logjson.put("solvetime", "2017-5-22");
 		jsonarray.add(logjson);
+		logjson = new JSONObject();
+		logjson.put("id", "2");
+		logjson.put("level", "2");
+		logjson.put("source", "grp1/xxxx");
+		logjson.put("path", "grp1/xxxx");
+		logjson.put("type", "warn");
+		logjson.put("paramname", "name");
+		logjson.put("paramvalue", "grp1");
+		logjson.put("eventtime", "2017-5-22");
+		logjson.put("solved", "yes");
+		logjson.put("solvetime", "2017-5-22");
+		jsonarray.add(logjson);
 		rootjson.put("alarms", jsonarray);
 		//test logs
 		logjson = new JSONObject();

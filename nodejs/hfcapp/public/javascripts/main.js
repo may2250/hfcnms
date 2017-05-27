@@ -76,7 +76,18 @@
         	        }
         	      }
         	    });
-        	  }
+        	  },
+        	  "createdRow": function ( row, data, index ) {
+                  if ( data[1] == "1" ) {
+                	  $('td', row).parent().addClass('alarm-danger');
+                  }else if(data[1] == "2"){
+                	  $('td', row).parent().addClass('alarm-major');
+                  }else if(data[1] == "3"){
+                	  $('td', row).parent().addClass('alarm-warning');
+                  }else if(data[1] == "4"){
+                	  $('td', row).parent().addClass('alarm-clear');
+                  }
+              }
         } );
     	
     	tbl_optlog = $('#tbl_optlog').DataTable({

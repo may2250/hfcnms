@@ -317,6 +317,23 @@ div.dataTables_wrapper {
 	-moz-box-shadow: 0px 0px 10px 0px rgb(58, 41, 31);
    z-index: 999;
 }
+
+.alarm-danger {
+	background: #d23939 !important;
+}
+
+.alarm-major {
+	background: #d76d00 !important;
+}
+
+.alarm-warning {
+	background: yellow !important;
+}
+
+.alarm-clear {
+	background: #4ec57e !important;
+}
+
 #menu {
   list-style: none;
   margin: 0;
@@ -628,7 +645,6 @@ footer {
     background:#00C6D7;
     padding: 12px;
     width: 100%;
-    text-align:center;
     position: fixed;
     bottom: 0;
 	z-index: 999;
