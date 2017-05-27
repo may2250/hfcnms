@@ -191,7 +191,7 @@ public class CDatabaseEngine {
 		Hashtable retList = new Hashtable();
 		ResultSet rs = null;
 		try {
-			String sqlInsert = "SELECT * FROM eevicetable";
+			String sqlInsert = "SELECT * FROM devicetable";
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 			rs = pstmt.executeQuery(sqlInsert);

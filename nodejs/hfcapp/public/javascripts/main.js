@@ -109,13 +109,17 @@
     			$('.nav_displaylog i').removeClass(" icon-eye-open"); 
     			$('.nav_displaylog p')[0].textContent = "显示日志栏";
     			$("footer").css('display','none');
-    			$(".devdetail-content").css('height',$(window).height() - 200);    			
+    			$(".devdetail-content").css('height',$(window).height() - 200); 
+    			$("#tab-dev1").removeClass("tab-devpane");
+    			$("#tab-dev1").addClass('tab-devpane-h');
     		}else{
     			$('.nav_displaylog i').addClass("icon-eye-open");
     			$('.nav_displaylog i').removeClass(" icon-eye-close"); 
     			$('.nav_displaylog p')[0].textContent = "隐藏日志栏";
     			$("footer").css('display','block');
-    			$(".devdetail-content").css('height',$(window).height() - 360); 
+    			$(".devdetail-content").css('height','295px'); 
+    			$("#tab-dev1").removeClass("tab-devpane-h");
+    			$("#tab-dev1").addClass('tab-devpane');
     		};    		
     	});
     	
@@ -575,7 +579,7 @@
     		$(".candile").load("/opticalTran");
     		break;
     	case "rece_workstation":
-    		$(".candile").load("/opticalTran");
+    		$(".candile").load("/rece_workstation");
     		break;
     	case "OSW":
     		$(".candile").load("/opticalTran");
