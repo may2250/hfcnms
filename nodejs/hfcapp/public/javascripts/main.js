@@ -114,6 +114,46 @@
             }
         } ); 
     	
+    	$('.nav_search').click(function(){
+    		$( "#dialog-devsearch" ).dialog({
+	        	      autoOpen: false,
+	        	      height: 300,
+	        	      width: 890,
+	        	      modal: true,
+	        	      buttons: {
+	        	    	  "开始": function() {	    
+		        	    		  if(!ipvalidate($("#search-sip").val())){
+		        	    			  $("#search-sip").addClass( "ui-state-error-custom" );
+		        	    			  return;
+		        	    		  }else{
+		        	    			  $("#search-sip").removeClass("ui-state-error-custom");
+		        	    		  };
+		        	    		  if(!ipvalidate($("#search-eip").val())){
+		        	    			  $("#search-eip").addClass( "ui-state-error-custom" );
+		        	    			  return;
+		        	    		  }else{
+		        	    			  $("#search-eip").removeClass("ui-state-error-custom");
+		        	    		  };
+		        	              if(compareIP($("#search-sip").val(), $("#search-eip").val()) == 1){
+		        	            	  $("#search-eip").addClass( "ui-state-error-custom" );
+		        	    			  return;
+		        	              };  
+		        	              var datastring = '{"cmd":"devsearch","community":"'+$("#search-community").val() +'","startip":"'+ $("#search-sip").val()+'","endip":"'+ $("#search-eip").val() +'","target":"start"}';
+	      	        	    	  webSocket.send(datastring);
+	        	            },
+	        	            "结束": function(){
+	        	            	var datastring = '{"cmd":"devsearch","community":"'+$("#search-community").val() +'","startip":"'+ $("#search-sip").val()+'","endip":"'+ $("#search-eip").val() +'","target":"stop"}';
+	      	        	    	webSocket.send(datastring);
+	        	            }
+	        	      },
+	        	      close: function() {
+	        	    	  $("#search-sip").removeClass("ui-state-error-custom");
+	        	    	  $("#search-eip").removeClass("ui-state-error-custom");
+	        	      }
+      	    });
+            $("#dialog-devsearch").dialog("open");
+    	});
+    	
     	$('.nav_displaylog').click(function(){
     		if($('.nav_displaylog p')[0].textContent == "隐藏日志栏"){
     			$('.nav_displaylog i').addClass("icon-eye-close");
@@ -136,7 +176,7 @@
     	
     	$('#needtype').change(function(){ 
     		$('#salutation').attr("disabled", !$(this).is(':checked'));    		
-    	}) 
+    	});
 	});
 	
 	function initWebSocket() {
