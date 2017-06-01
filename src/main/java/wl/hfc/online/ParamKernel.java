@@ -1,0 +1,241 @@
+package wl.hfc.online;
+
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import javax.websocket.Session;
+
+import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.xinlong.Services.ServiceHfcAlarmProcessor;
+import com.xinlong.Services.Services_Websocket;
+import com.xinlong.util.RedisUtil;
+import com.xinlong.util.StaticMemory;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPubSub;
+import wl.hfc.common.*;
+import wl.hfc.topd.MainKernel;
+
+
+//DevGrpModel将承担拓扑的组建，维护，以及组，设备的增删查改的响应
+public class ParamKernel {
+	private static final String  PARAMKERNEL_MESSAGE =  "paramkernel.message";
+	private static Logger log = Logger.getLogger(ParamKernel.class);
+	private Hashtable<String, CDevForCMD> realTimeDevHashtable=new Hashtable<String, CDevForCMD>();
+
+    public ParamKernel()
+    {
+    	new pmls();  
+    }
+
+	private static RedisUtil redisUtil;
+	private static StaticMemory staticmemory;
+
+	public static void setRedisUtil(RedisUtil redisUtil) {
+		ParamKernel.redisUtil = redisUtil;
+	}
+	
+	public static void setStaticMemory(StaticMemory staticmemory) {
+		ParamKernel.staticmemory = staticmemory;
+	}
+	
+	private   JedisPubSub jedissubSub = new JedisPubSub() {
+		public void onUnsubscribe(String arg0, int arg1) {
+
+        }
+		public void onSubscribe(String arg0, int arg1) {
+
+        }
+		 public void onMessage(String arg0, String arg1) {
+	       
+	     }
+		 public void onPUnsubscribe(String arg0, int arg1) {
+
+	        }
+		 public void onPSubscribe(String arg0, int arg1) {
+
+	        } 
+
+      public void onPMessage(String arg0, String arg1, String msg) {
+      	try {  			
+  			servicestart(msg);
+  			
+  		}catch(Exception e){
+  			e.printStackTrace();	
+  			log.info(e.getMessage());
+  		}
+  		
+      }
+
+	};
+	
+	private void servicestart(String message) throws InterruptedException, ParseException, IOException{
+		System.out.println(" [x] ParamKernel Received: '" + message + "'");			
+		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
+		String cmd = jsondata.get("cmd").toString();
+		if(cmd.equalsIgnoreCase("hfcvalueset")){
+			hfcValueSet(jsondata);			
+		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
+			staticmemory.sendRemoteStr(hfcDeviceDetail(jsondata), jsondata.get("sessionid").toString());				
+		}
+	}
+	
+
+	
+	private String hfcDeviceDetail(JSONObject jsondata){
+		//获取设备详细信息		
+		String netaddr = jsondata.get("ip").toString();
+		String devtype = jsondata.get("devtype").toString();		 
+		JSONObject rootjson = new JSONObject();
+    	rootjson.put("cmd", "getdevicedetail");
+    	
+    	DevTopd dev = (DevTopd)MainKernel.me.listDevHash.get(netaddr);
+    	rootjson.put("key", netaddr);
+      	if (dev==null) {   
+      		rootjson.put("isonline", false);
+      		return rootjson.toJSONString();			
+		}
+      	
+    	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;
+    	rootjson.put("isonline", dev.isOline);
+		if(devtype.equalsIgnoreCase("other")){
+			
+		}else if(devtype.equalsIgnoreCase("EDFA")){
+			
+		}else if(devtype.equalsIgnoreCase("Trans")){
+			
+		}else if(devtype.equalsIgnoreCase("rece_workstation")){
+			
+		}else if(devtype.equalsIgnoreCase("OSW")){
+			
+		}else if(devtype.equalsIgnoreCase("RFSW")){
+			
+		}else if(devtype.equalsIgnoreCase("PreAMP")){
+			
+		}else if(devtype.equalsIgnoreCase("wos")){
+			
+		}
+		return rootjson.toJSONString();
+	}
+	
+	private void hfcValueSet(JSONObject jsondata){
+		JSONObject rootjson = new JSONObject();
+		String target = jsondata.get("target").toString();
+		if(target.equalsIgnoreCase("devicetrapedit")){
+			//修改设备Trap主机地址
+			rootjson.put("cmd", "hfcvalueset");
+			rootjson.put("target", "devicetrapedit");
+			rootjson.put("domstr", jsondata.get("domstr").toString());
+			rootjson.put("value", jsondata.get("value").toString());
+			//TODO
+			//发送到设备
+			
+			
+			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
+		}else if(target.equalsIgnoreCase("devicechannel")){
+			//修改设备频道数
+			rootjson.put("cmd", "hfcvalueset");
+			rootjson.put("target", "devicechannel");
+			rootjson.put("domstr", jsondata.get("domstr").toString());
+			rootjson.put("value", jsondata.get("value").toString());
+			//TODO
+			//发送到设备
+			
+			
+			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
+		}else if(target.equalsIgnoreCase("getalarmThreshold")){
+			//获取告警门限			
+			staticmemory.sendRemoteStr(getAlarmThreshold(jsondata), jsondata.get("sessionid").toString());
+		}else if(target.equalsIgnoreCase("setalarmThreshold")){
+			//设置告警门限	
+			setAlarmThreshold(jsondata);
+			//staticmemory.sendRemoteStr(getAlarmThreshold(jsondata), jsondata.get("sessionid").toString());
+		}
+	}
+	
+	private String getAlarmThreshold(JSONObject jsondata){
+		JSONObject rootjson = new JSONObject();
+		String netaddr = jsondata.get("ip").toString();
+		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
+			//获取温度相关门限信息
+			//TODO
+			//test
+			rootjson.put("HIHI", "60");
+			rootjson.put("HI", "55");
+			rootjson.put("LO", "30");
+			rootjson.put("LOLO", "10");
+			rootjson.put("DEAD", "0");
+		}
+		jsondata.put("detail", rootjson);
+		return jsondata.toJSONString();
+	}
+	
+	private void setAlarmThreshold(JSONObject jsondata){
+		String netaddr = jsondata.get("ip").toString();
+		String HIHI = jsondata.get("HIHI").toString();
+		String HI = jsondata.get("HI").toString();
+		String LO = jsondata.get("LO").toString();
+		String LOLO = jsondata.get("LOLO").toString();
+		String DEAD = jsondata.get("DEAD").toString();
+		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
+			//设置温度相关门限信息
+			//TODO
+			
+		}
+	}
+  	
+    
+    @SuppressWarnings("static-access")
+	public void start(){
+		
+		log.info("[#3] .....ParamKernel starting.......");
+		Jedis jedis=null;
+		try {		
+			jedis = redisUtil.getConnection();		 
+			jedis.psubscribe(jedissubSub, PARAMKERNEL_MESSAGE);
+			redisUtil.getJedisPool().returnResource(jedis); 
+			  
+		}catch(Exception e){
+			e.printStackTrace();
+			redisUtil.getJedisPool().returnBrokenResource(jedis);
+			
+		}
+		
+		while (true) {
+    		
+    		System.out.println("-------------------while start----");
+    		CDevForCMD cDevForCMD1=new CDevForCMD();
+			JSONObject json = new JSONObject();
+			ReceiverSnmpPrevail receiverSnmpPrevail1Prevai11ll = new ReceiverSnmpPrevail(".1");
+			receiverSnmpPrevail1Prevai11ll.thisDev = new CDevForCMD(cDevForCMD1.ROCommunity, cDevForCMD1.RWCommunity,cDevForCMD1.mNetAddress);
+			receiverSnmpPrevail1Prevai11ll.sver = new PDUServerForOneDev(0);
+			try {
+				System.out.println(json.toString());
+				json = receiverSnmpPrevail1Prevai11ll.getPmWithModelNumber(json);
+				System.out.println(json.toString());
+	
+			    Thread.sleep(3000);
+	
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+
+			}
+    		
+    		
+    		
+			
+		}
+		
+	}
+	
+}
