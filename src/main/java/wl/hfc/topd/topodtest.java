@@ -62,7 +62,7 @@ public class topodtest {
 	//md1DevGrpModel.handleDeleteDev(new JSONObject());
 	
 	
-	new PDUServer(md1DevGrpModel.listDevHash);
+
 	}
 
 }
