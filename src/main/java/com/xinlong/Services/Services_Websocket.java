@@ -88,6 +88,9 @@ public class Services_Websocket {
 			}else if(cmd.equalsIgnoreCase("getdevicedetail")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
+			}else if(cmd.equalsIgnoreCase("devsearch")){
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("test")){
 				// Send the first message to the client
 				rootjson.put("cmd", "test");

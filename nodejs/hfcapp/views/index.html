@@ -197,7 +197,7 @@
 			<tr>
 				<td>
 					<select name="salutation" id="salutation" disabled>
-				      <option disabled selected value="other">其他设备</option>
+				      <option selected value="other">其他设备</option>
 				      <option value="EDFA">EDFA</option>
 				      <option value="Trans">光发射机</option>
 				      <option value="rece_workstation">光接收机/光工作站</option>
@@ -271,6 +271,48 @@
   				</td>
 			</tr>
 		</table>
+	</div>
+	<div id="dialog-devsearch" title="搜索" style="display:none">
+		<table class="table">
+			<tr>
+				<td>
+					团体名: 
+  				</td>
+  				<td>
+					<input type="text" class="form-control" id="search-community" value="public" >
+  				</td>
+  				<td>
+					起始IP: 
+  				</td>
+  				<td>
+					<input type="text" class="form-control" id="search-sip" value="192.168.1.2" >
+  				</td>
+			</tr>
+			<tr>
+				<td>
+					请选择设备类型: 
+  				</td>
+  				<td>
+					<select name="search-stype" id="search-stype">
+				      <option selected>国标设备</option>
+				      <option>Wos4000</option>
+				    </select>
+  				</td>
+  				<td>
+					结束IP: 
+  				</td>
+  				<td>
+					<input type="text" class="form-control" id="search-eip" value="192.168.1.253" >
+  				</td>
+			</tr>			
+		</table>
+		<div class="progress progress-striped">
+		    <div class="progress-bar progress-bar-info progress-search" role="progressbar"
+		         aria-valuemin="0" aria-valuemax="100"
+		         style="width: 0%;">
+		        <span class="sr-only">0%</span>
+		    </div>
+		</div>
 	</div>
    <script src="/javascripts/hfcdetails.js"></script>
    <script src="/javascripts/main.js"></script>

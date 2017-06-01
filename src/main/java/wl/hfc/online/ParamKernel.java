@@ -80,7 +80,6 @@ public class ParamKernel {
 		System.out.println(" [x] ParamKernel Received: '" + message + "'");			
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
-		JSONObject rootjson = new JSONObject();
 		if(cmd.equalsIgnoreCase("hfcvalueset")){
 			hfcValueSet(jsondata);			
 		}else if(cmd.equalsIgnoreCase("getdevicedetail")){

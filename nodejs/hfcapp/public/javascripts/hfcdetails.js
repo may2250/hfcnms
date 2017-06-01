@@ -103,7 +103,7 @@ function updateTips( t ) {
 }
 
 function ipvalidate(ip) {  
-    var val = /([0-9]{1,3}\.{1}){3}[0-9]{1,3}/;  
+    var val = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;  
     var vald = val.exec(ip);  
     if (vald == null) {    
         return false;  
@@ -115,6 +115,27 @@ function ipvalidate(ip) {
     }
     return true;
 }
+
+//比较两个ip的大小,如果大于，返回1，等于返回0，小于返回-1  
+function compareIP(ipBegin, ipEnd)  
+{  
+    var temp1;  
+    var temp2;    
+    temp1 = ipBegin.split(".");  
+    temp2 = ipEnd.split(".");     
+    for (var i = 0; i < 4; i++)  
+    {  
+        if (temp1[i]>temp2[i])  
+        {  
+            return 1;  
+        }  
+        else if (temp1[i]<temp2[i])  
+        {  
+            return -1;  
+        }  
+    }  
+    return 0;     
+}  
 
 function checkInt(str){
 	var re = /^[1-9]+[0-9]*]*$/; 
