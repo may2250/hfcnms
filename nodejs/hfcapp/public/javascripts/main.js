@@ -8,7 +8,7 @@
     	
     	window.__globalobj__ = {
     		    _webSocket:webSocket,
-    		    _realDevice:"",
+    		    _realDevice:undefined,
     		    _send:function(datastring) {  
     		    	if (webSocket.readyState !== 1) {
     		            setTimeout(function() {
@@ -255,46 +255,46 @@
         		if(jsonobj.isonline == true){
         			node.data.isonline = true;
         			node.icon = "../images/device.png";
-        			if(realdevice != undefined && realdevice != null){
-            			if(jsonobj.key == realdevice.key){
+        			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
+            			if(jsonobj.key == __globalobj__._realDevice.key){
             				$(".dev-status").css("color", "lightgreen");
             			}
             		}
         		}else{
         			node.data.isonline = false;
         			node.icon = "../images/devoff.png";
-        			if(realdevice != undefined && realdevice != null){
-            			if(jsonobj.key == realdevice.key){
+        			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
+            			if(jsonobj.key == __globalobj__._realDevice.key){
             				$(".dev-status").css("color", "red");
             			}
             		}
         		}
-        		node.render();        		
+        		node.render(true,false);        		
         	}
         	showHfcDevice(jsonobj);
         }else if(jsonobj.cmd == "hfcvalueset"){
         	parseHfcValueSet(jsonobj);        	   	 
         }else if(jsonobj.cmd == "devstatus"){
-        	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
+        	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.ip);
         	if(node != undefined){
         		if(jsonobj.isonline == true){
         			node.data.isonline = true;
         			node.icon = "../images/device.png";
-        			if(realdevice != undefined && realdevice != null){
-            			if(jsonobj.key == realdevice.key){
+        			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
+            			if(jsonobj.ip == __globalobj__._realDevice.key){
             				$(".dev-status").css("color", "lightgreen");
             			}
             		}
         		}else{
         			node.data.isonline = false;
         			node.icon = "../images/devoff.png";
-        			if(realdevice != undefined && realdevice != null){
-            			if(jsonobj.key == realdevice.key){
+        			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
+            			if(jsonobj.ip == __globalobj__._realDevice.key){
             				$(".dev-status").css("color", "red");
             			}
             		}
         		}
-        		node.render();        		
+        		node.render(true,false);        		
         	}
         }else{
         	document.getElementById('messages').innerHTML
@@ -642,7 +642,8 @@
     		$(".candile").load("/rece_workstation");
     		break;
     	}
-    	var datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().key + '"}';
+    	var datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().key 
+    	+ '","rcommunity":"' + devnode.data.rcommunity + '","wcommunity":"' + devnode.data.wcommunity + '"}';
     	send(datastring);
     	/*if(!devnode.data.isonline){
 			$("dev-status").css("color", "red");

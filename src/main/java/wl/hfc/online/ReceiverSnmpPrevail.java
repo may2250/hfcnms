@@ -2,6 +2,7 @@ package wl.hfc.online;
 
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.VariableBinding;
@@ -11,10 +12,11 @@ import org.snmp4j.CommunityTarget;
 import wl.hfc.common.SnmpTableInfo;
 import wl.hfc.common.VariableSnmpVar;
 import wl.hfc.common.nojuParmsTableRow;
+import wl.hfc.topd.MainKernel;
 
 public class ReceiverSnmpPrevail extends WosBaseSnmp {
 	// 0����snmpv1��1����snmpv2
-
+	private static Logger log = Logger.getLogger(ReceiverSnmpPrevail.class);
 	// VariableSnmpVars
 	public VariableSnmpVar[] mjVariables;
 	public VariableSnmpVar[] commonVariables;
@@ -140,7 +142,7 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 		SnmpEngine.ParseBasicVars(this.mjVariables, inPDU);
 
 		SnmpEngine.snmpVarToJason(mjVariables, pJson);
-
+		log.info("---基本参数---"+ pJson.toJSONString());
 		for (int i = 0; i < this.mjVariables.length; i++) {
 			if (this.mjVariables[i].withNoThreashold) {
 				getSubVarsWithTagInfo(this.mjVariables[i]);
@@ -151,7 +153,7 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 		for (int i = 0; i < mjVariables.length; i++) {
 			if (this.mjVariables[i].withNoThreashold) {
 				SnmpEngine.ThreadPramVarToJason(mjVariables[i], pJson, true);
-
+				log.info("---基本参数---"+i + "===" + pJson.toJSONString());
 			}
 
 		}

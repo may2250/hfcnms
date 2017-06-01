@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 import javax.websocket.Session;
 
@@ -29,11 +30,11 @@ import wl.hfc.topd.MainKernel;
 public class ParamKernel {
 	private static final String  PARAMKERNEL_MESSAGE =  "paramkernel.message";
 	private static Logger log = Logger.getLogger(ParamKernel.class);
-	private Hashtable<String, CDevForCMD> realTimeDevHashtable=new Hashtable<String, CDevForCMD>();
+	
 
     public ParamKernel()
     {
-    	new pmls();  
+    	  
     }
 
 	private static RedisUtil redisUtil;
@@ -199,6 +200,7 @@ public class ParamKernel {
 		log.info("[#3] .....ParamKernel starting.......");
 		Jedis jedis=null;
 		try {		
+			new pmls();
 			jedis = redisUtil.getConnection();		 
 			jedis.psubscribe(jedissubSub, PARAMKERNEL_MESSAGE);
 			redisUtil.getJedisPool().returnResource(jedis); 
@@ -210,29 +212,27 @@ public class ParamKernel {
 		}
 		
 		while (true) {
-    		
-    		System.out.println("-------------------while start----");
-    		CDevForCMD cDevForCMD1=new CDevForCMD();
-			JSONObject json = new JSONObject();
-			ReceiverSnmpPrevail receiverSnmpPrevail1Prevai11ll = new ReceiverSnmpPrevail(".1");
-			receiverSnmpPrevail1Prevai11ll.thisDev = new CDevForCMD(cDevForCMD1.ROCommunity, cDevForCMD1.RWCommunity,cDevForCMD1.mNetAddress);
-			receiverSnmpPrevail1Prevai11ll.sver = new PDUServerForOneDev(0);
-			try {
-				System.out.println(json.toString());
-				json = receiverSnmpPrevail1Prevai11ll.getPmWithModelNumber(json);
-				System.out.println(json.toString());
-	
-			    Thread.sleep(3000);
-	
+			for (Map.Entry<String, CDevForCMD> entry : staticmemory.getAllRealTimeDev().entrySet()) {
+				JSONObject json = new JSONObject();
+				ReceiverSnmpPrevail receiverSnmpPrevail1Prevai11ll = new ReceiverSnmpPrevail(".1");
+				receiverSnmpPrevail1Prevai11ll.thisDev = (CDevForCMD)entry.getValue();
+				receiverSnmpPrevail1Prevai11ll.sver = new PDUServerForOneDev(0);
+				try {
+					System.out.println(json.toString());
+					json = receiverSnmpPrevail1Prevai11ll.getPmWithModelNumber(json);
+					System.out.println(json.toString());
+		
+				    Thread.sleep(3000);
+		
 
-			} catch (Exception e) {
-				e.printStackTrace();
-				return;
+				} catch (Exception e) {
+					e.printStackTrace();
+					return;
 
-			}
-    		
-    		
-    		
+				}
+			    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+
+			}    		
 			
 		}
 		

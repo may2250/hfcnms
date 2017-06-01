@@ -3,9 +3,11 @@ package wl.hfc.online;
 
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import java.util.Hashtable;
 
@@ -13,13 +15,21 @@ import java.util.Hashtable;
 
 
 
+
+
+
+
+
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 import wl.hfc.common.PduSevr;
 
 
 import wl.hfc.common.nojuParmsTableRow;
+import wl.hfc.topd.MainKernel;
 
+import org.apache.log4j.Logger;
 import org.snmp4j.PDU;
 
 
@@ -30,7 +40,7 @@ public class pmls {
 	public static pmls paramxml1;
 	public static Hashtable<String, nojuParmsTableRow> tab1;
 	private static Document doc;
-
+	private static Logger log = Logger.getLogger(pmls.class);
 	public PduSevr sver;
 	private static SnmpUtil util;
 	public static PDU recePDU;
@@ -40,22 +50,30 @@ public class pmls {
 		loadDXml();
 	}
 
-	public static void loadDXml() {
+	public void loadDXml() {
 		long lasting = System.currentTimeMillis();
-		File f = new File("D:\\phs.xml");
+		String filePath = pmls.class.getResource("/").toString();
+		filePath = filePath.substring(filePath.indexOf("file:") + 5);
+		log.info("----------------path--->>>" + filePath+ "phs.xml");
+		File f = new File(filePath + "phs.xml");
+	    	
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			doc = builder.parse(f);
 
-		} catch (Exception ex) {
-
-			// write the log to the log4nert
-
-			// set it to the loginformation
-		}
-
-		NodeList rootNode = doc.getChildNodes();
+		}catch (ParserConfigurationException e) { 
+	         e.printStackTrace();  
+	         log.info(e.getMessage());
+	    } catch (SAXException e) { 
+	         e.printStackTrace(); 
+	         log.info(e.getMessage());
+	    } catch (IOException e) { 
+	         e.printStackTrace(); 
+	         log.info(e.getMessage());
+	    } 
+		Element rootElement = doc.getDocumentElement();
+		NodeList rootNode = rootElement.getChildNodes();
 		NodeList rootNodeChilds = rootNode.item(0).getChildNodes();
 
 		boolean IsFormatEnable;

@@ -37,7 +37,7 @@ public class MainKernel {
     public static MainKernel me;
     public MainKernel()
     {
-
+    	me = this;
     }
     public MainKernel(CDatabaseEngine pICDatabaseEngine)
     {
@@ -674,8 +674,9 @@ public class MainKernel {
     		subjson.put("title", dev._NetAddress);	
 			subjson.put("icon", "images/net_info.png");
 			subjsonarray.add(subjson);
-			subjson = new JSONObject();
-			subjson.put("title", dev.mNetType.toString());	
+			subjson = new JSONObject();	
+			subjson.put("key", dev.mNetType.toString());
+			subjson.put("title", getNetTypeTostring(dev.mNetType));
 			subjson.put("icon", "images/net_info.png");
 			subjsonarray.add(subjson);
 			rootnodejson.put("children", subjsonarray);
@@ -806,6 +807,7 @@ public class MainKernel {
         jsondata.put("id", lNode.ID);
         jsondata.put("md", lNode.MD);
         jsondata.put("sn", lNode.SN);
+        log.info("------->>>" + jsondata.toJSONString());
         return jsondata.toJSONString();
     }
     

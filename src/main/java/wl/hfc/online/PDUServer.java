@@ -31,7 +31,7 @@ import wl.hfc.topd.MainKernel;
 
 public class PDUServer {
 	// config
-	public static int OnlineInterval=0;// 单位:S;设备树在线轮询一遍总时间
+	public static int OnlineInterval=3;// 单位:S;设备树在线轮询一遍总时间
 	public int MinInterval; // 设备数量所决定的最低轮询一遍的时间；
 	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
 	private static Logger log = Logger.getLogger(PDUServer.class);
@@ -116,7 +116,7 @@ public class PDUServer {
 
 		ResponseListener listener = new ResponseListener() {
 			public void onResponse(ResponseEvent event) {
-				System.out.println("---------->开始异步解析<------------");
+				//System.out.println("---------->开始异步解析<------------");
 				if (event != null && event.getResponse() != null) {
 					try {
 						readResponse(event);
@@ -186,6 +186,7 @@ public class PDUServer {
 
 			if (lNode.mNetType != DProcess.getNetTypes(lNode.HFCType1) && lNode.mNetType != NetTypes.other)// 和数据库指定的不匹配
 			{
+				//System.out.println("----lnode.type==" + lNode.mNetType + "-----hfctype---" + DProcess.getNetTypes(lNode.HFCType1));
 				return;
 			}
 
@@ -212,7 +213,7 @@ public class PDUServer {
 				}
 
 				lNode.isOline = true;
-				
+				log.info("[#3] .....have device online.......");
 				//hi,xinglong ,send to Mainkernel ip+isonline?  message		
 				JSONObject rootjson = new JSONObject();
 		    	rootjson.put("cmd", "devstatus");
@@ -229,124 +230,141 @@ public class PDUServer {
 	}
 
 	@SuppressWarnings("static-access")
-	private void OnlineTestThread() {
-		log.info("[#3] .....OnlineTestThread starting.......");
-		LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
+	private void OnlineTestThread() {		
+		try {			
+			initSnmpAPI();
+			//OnlineTestThread();
+			log.info("[#3] .....OnlineTestThread starting.......");
+			LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
 
-		PDU outpdu = new PDU();
-		outpdu.setType(PDU.GET);
-		outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0"))); // mac
-		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.1.0")));
-		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.3.0")));
-		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.4.0")));
-		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));
-		outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
-		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
+			PDU outpdu = new PDU();
+			outpdu.setType(PDU.GET);
+			outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0"))); // mac
+			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.1.0")));
+			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.3.0")));
+			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.4.0")));
+			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));
+			outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
+			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
 
-		while (true) {		
-			
-		
-			try {
-				
-				
-				testdevlist.clear();
-
-				Enumeration e = this.listDevHash.elements();
-
-				while (e.hasMoreElements()) {
-
-					DevTopd item = (DevTopd) e.nextElement();
-					testdevlist.add(item);
-
-				}
-
-				if (testdevlist == null || testdevlist.size() == 0) {
-					
-					Thread.currentThread().sleep(1000);
+			while (true) {		
+				if(MainKernel.me.listDevHash != null){
+					this.listDevHash = MainKernel.me.listDevHash;
+				}else{
+					Thread.currentThread().sleep(3000);
 					continue;
 				}
+			
+				try {
+					
+					
+					testdevlist.clear();
 
-				// if (OnlineInterval==0)
-				// {
-				// OnlineInterval = 2;//设备数量过少的时候
-				// }
+					Enumeration e = this.listDevHash.elements();
 
-				// 不管多少台设备，每台设备被轮到之上间隔2秒，
-				// dev.OnlineCount1=3初始值，也就是2*3，每台设备要被询问3次后无回包才判断下线
+					while (e.hasMoreElements()) {
 
-				int intervel1 = (OnlineInterval + 1) * 1000 / testdevlist.size();// +`1是因为默认值0的时候，如果设备很少，太过敏捷了
+						DevTopd item = (DevTopd) e.nextElement();
+						testdevlist.add(item);
 
-				if (intervel1 < 100)
-					intervel1 = 100;
+					}
 
-				if (intervel1 > 10000)
-					intervel1 = 10000;
-				int psrint = 0;
+					if (testdevlist == null || testdevlist.size() == 0) {
+						
+						Thread.currentThread().sleep(1000);
+						continue;
+					}
 
-				for (Iterator iter = testdevlist.iterator(); iter.hasNext();) {
-					DevTopd lNode = (DevTopd) iter.next();
+					// if (OnlineInterval==0)
+					// {
+					// OnlineInterval = 2;//设备数量过少的时候
+					// }
 
-					AyncSendSnmpPdu(outpdu, lNode._NetAddress, lNode.BindnojuDeviceTableRow._ROCommunity);
+					// 不管多少台设备，每台设备被轮到之上间隔2秒，
+					// dev.OnlineCount1=3初始值，也就是2*3，每台设备要被询问3次后无回包才判断下线
 
-					Thread.currentThread().sleep(intervel1);
-					lNode.OnlineCount--;
+					int intervel1 = (OnlineInterval + 1) * 1000 / testdevlist.size();// +`1是因为默认值0的时候，如果设备很少，太过敏捷了
 
-				}
+					if (intervel1 < 100)
+						intervel1 = 100;
 
-				if (!isOnlineThreadRun) {
-					Thread.currentThread().sleep(3000);
-				}
-				else {
+					if (intervel1 > 10000)
+						intervel1 = 10000;
+					int psrint = 0;
 
 					for (Iterator iter = testdevlist.iterator(); iter.hasNext();) {
-						DevTopd dev = (DevTopd) iter.next();
+						DevTopd lNode = (DevTopd) iter.next();
+
+						AyncSendSnmpPdu(outpdu, lNode._NetAddress, lNode.BindnojuDeviceTableRow._ROCommunity);
+
+						Thread.currentThread().sleep(intervel1);
+						lNode.OnlineCount--;
+
+					}
+
+					if (!isOnlineThreadRun) {
+						Thread.currentThread().sleep(3000);
+					}
+					else {
+
+						for (Iterator iter = testdevlist.iterator(); iter.hasNext();) {
+							DevTopd dev = (DevTopd) iter.next();
 
 
-						// notify runtime data
-						if (dev.OnlineCount <= 0) {
-							if (dev.isOline) {
-								dev.isOline = false;						
-								
-								//hi,xinglong ,send to Mainkernel ip+isonline?  message	
-								JSONObject rootjson = new JSONObject();
-						    	rootjson.put("cmd", "devstatus");
-						    	rootjson.put("ip", dev._NetAddress);
-						    	rootjson.put("isonline", false);
-								sendToSub(rootjson.toJSONString());
+							// notify runtime data
+							if (dev.OnlineCount <= 0) {
+								if (dev.isOline) {
+									dev.isOline = false;						
+									
+									//hi,xinglong ,send to Mainkernel ip+isonline?  message	
+									JSONObject rootjson = new JSONObject();
+							    	rootjson.put("cmd", "devstatus");
+							    	rootjson.put("ip", dev._NetAddress);
+							    	rootjson.put("isonline", false);
+									sendToSub(rootjson.toJSONString());
 
+
+								}
+
+								dev.OnlineCount = 0;
 
 							}
-
-							dev.OnlineCount = 0;
 
 						}
 
 					}
-
+				} catch (Exception ex1) {
+					// log4net.LogManager.GetLogger("prgLog").Info("Exception from the OnlineTestThread");
+					// log4net.LogManager.GetLogger("prgLog").Info(ex1.ToString() +
+					// ex1.Message);
+					ex1.printStackTrace();
+					log.info(ex1.getMessage());
 				}
-			} catch (Exception ex1) {
-				// log4net.LogManager.GetLogger("prgLog").Info("Exception from the OnlineTestThread");
-				// log4net.LogManager.GetLogger("prgLog").Info(ex1.ToString() +
-				// ex1.Message);
+	/*
+				try {
+					Thread.currentThread().sleep(10000);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}*/
+				
+
+				// stopwatch.Stop(); // 停止监视
+				// TimeSpan timeSpan = stopwatch.Elapsed; // 获取总时间
+				// this.MinInterval = timeSpan.Seconds;
+				// int rstSC = timeSpan.Minutes;
+				// Console.WriteLine(MinInterval +
+				// "                    pdu server  askwhile min second   " +
+				// rstSC.ToString());
+
 			}
-/*
-			try {
-				Thread.currentThread().sleep(10000);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}*/
-			
 
-			// stopwatch.Stop(); // 停止监视
-			// TimeSpan timeSpan = stopwatch.Elapsed; // 获取总时间
-			// this.MinInterval = timeSpan.Seconds;
-			// int rstSC = timeSpan.Minutes;
-			// Console.WriteLine(MinInterval +
-			// "                    pdu server  askwhile min second   " +
-			// rstSC.ToString());
-
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			log.info(e.getMessage());
+			log.info("[#3] .....OnlineTestThread Done.......");
 		}
-
+		
 	}
 	
 	private void sendToSub(String msg) {
