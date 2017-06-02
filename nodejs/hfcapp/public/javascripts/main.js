@@ -296,6 +296,8 @@
         		}
         		node.render(true,false);        		
         	}
+        }else if(jsonobj.cmd == "realtime-device"){
+        	showHfcDevice(jsonobj);
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;

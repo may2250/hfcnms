@@ -23,13 +23,13 @@ public class VariableSnmpVar {
 	public String HiOid;
 
 	// ����Ӧ�ó����ʱ����snmpEngine�б�ָ��
-	public static String analogAlarmHIHI;
-	public static String analogAlarmHI;
-	public static String analogAlarmLo;
-	public static String analogAlarmLoLo;
-	public static String analogAlarmDeadband;
-	public static String AlarmEnOidStr;
-	public static String AlarmSatOidStr;
+	public static String analogAlarmHIHI = ".1.3.6.1.4.1.17409.1.1.1.1.4";
+	public static String analogAlarmHI = ".1.3.6.1.4.1.17409.1.1.1.1.5";
+	public static String analogAlarmLo = ".1.3.6.1.4.1.17409.1.1.1.1.6";
+	public static String analogAlarmLoLo = ".1.3.6.1.4.1.17409.1.1.1.1.7";
+	public static String analogAlarmDeadband = ".1.3.6.1.4.1.17409.1.1.1.1.8";
+	public static String AlarmEnOidStr = ".1.3.6.1.4.1.17409.1.1.1.1.2";
+	public static String AlarmSatOidStr = ".1.3.6.1.4.1.17409.1.1.1.1.3";
 
 	public int maxValue = 0;
 	public int minValue = 0;
@@ -47,13 +47,10 @@ public class VariableSnmpVar {
 
 	   public ToValueMode ToValueMode1;
  
-	public VariableSnmpVar(nojuParmsTableRow varinfo) {
-		// if (varinfo == null)
-		// throw new Exception("create VariableTagInfo Failed!");
+	public VariableSnmpVar(nojuParmsTableRow varinfo) {		
 		this.VarInfo = varinfo;
 		this.MibDefinedOid = new OID(varinfo.ParamMibOID);
 		this.FullSnmpOid = new OID(varinfo.ParamMibOID + ExtraOidString);
-
 	
 	}
 
@@ -70,20 +67,16 @@ public class VariableSnmpVar {
           this.ToValueMode1 = PmODE;
 
           //����
-
           paramInfor newParamInfor = new paramInfor(this.VarInfo.IsFormatEnable,this.VarInfo.FormatCoff,this.VarInfo.FormatText,"");
           int vIns = 0;
           subVariableSnmpVarS = new VariableSnmpVar[7];
-
           OID tmpOID=new OID(this.VarInfo.ParamMibOID);          
           int OIDlgth=tmpOID.toByteArray().length+1;
           String extraoid = "." +OIDlgth+this.VarInfo.ParamMibOID;
-          
           subVariableSnmpVarS[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmHIHI + extraoid, newParamInfor));
           subVariableSnmpVarS[vIns].ToValueMode1 = PmODE;
           subVariableSnmpVarS[vIns].ExtraOidString = pExtraOidString;
           vIns++;
-
 
           subVariableSnmpVarS[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmHI + extraoid, newParamInfor));
           subVariableSnmpVarS[vIns].ToValueMode1 = PmODE;
@@ -123,7 +116,6 @@ public class VariableSnmpVar {
           
           subTableVariableSnmpVarSS = new  ArrayList<VariableSnmpVar[]>();
 
-          
   		for (int i = 0; i < 4; i++) {
   		      vIns = 0;
   			  VariableSnmpVar[] itemSnmpVars= new VariableSnmpVar[7];

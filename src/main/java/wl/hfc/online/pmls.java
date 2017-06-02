@@ -48,6 +48,7 @@ public class pmls {
 	public pmls() {
 		tab1 = new Hashtable<String, nojuParmsTableRow>();
 		loadDXml();
+		paramxml1 = this;
 	}
 
 	public void loadDXml() {
@@ -74,11 +75,12 @@ public class pmls {
 	    } 
 		Element rootElement = doc.getDocumentElement();
 		NodeList rootNode = rootElement.getChildNodes();
-		NodeList rootNodeChilds = rootNode.item(0).getChildNodes();
+		
+		//NodeList rootNodeChilds = rootNode.item(0).getChildNodes();
 
 		boolean IsFormatEnable;
-		for (int i = 0; i < rootNodeChilds.getLength(); i++) {
-			Node node = rootNodeChilds.item(i);
+		for (int i = 0; i < rootNode.getLength(); i++) {
+			Node node = rootNode.item(i);
 			if (node instanceof Element) {
 				Element elt = (Element) node;
 				String TagName1 = elt.getTagName();
@@ -98,7 +100,7 @@ public class pmls {
 						fmtcoff, elt.getAttribute("FormatText"),
 						elt.getAttribute("FormatUnit"));
 				tab1.put(TagName1, resRow);
-				// System.out.println(TagName1);
+				//System.out.println("----------" + TagName1);
 
 			}
 

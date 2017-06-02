@@ -92,6 +92,9 @@
 		<property name="redisUtil" ref="redisUtil" />
 		<property name="staticMemory" ref="staticMemory" />
 	</bean>
+	<bean id="realreading" class="wl.hfc.online.Realtime_param_call" >
+		<property name="staticMemory" ref="staticMemory" />
+	</bean>
 	
 	<!-- 调度业务 -->
 
@@ -117,6 +120,11 @@
 	</bean>
 	<bean id="paramKernelJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="paramKernel" />
+	 <property name="targetMethod"  value="start"/>
+	 <property name="concurrent" value="true" />	 	
+	</bean>
+	<bean id="realreadingJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	 <property name="targetObject" ref="realreading" />
 	 <property name="targetMethod"  value="start"/>
 	 <property name="concurrent" value="true" />	 	
 	</bean>
@@ -152,6 +160,12 @@
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
+	<bean id="realreadingTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+	 <property name="jobDetail" ref="realreadingJob" />
+	 <property name="startDelay" value="4000" />
+	 <property name="repeatInterval" value="5" />
+	 <property name="repeatCount" value="0" />		  	 
+	</bean>
 	
 	<!-- 设置调度 -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -162,6 +176,7 @@
 	            <ref bean="hfcAlarmJob" /> 
 	            <ref bean="mainKernelJob" />
 	            <ref bean="paramKernelJob" />
+	            <ref bean="realreadingJob" />
 	        </list>  
 	    </property>  
 	   
@@ -172,6 +187,7 @@
 	            <ref bean="hfcAlarmTrigger" /> 
 	            <ref bean="mainKernelTrigger" /> 
 	            <ref bean="paramKernelTrigger" />
+	            <ref bean="realreadingTrigger" />
 	        </list>  
 	    </property>  
 	</bean>

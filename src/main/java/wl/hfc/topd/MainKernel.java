@@ -296,6 +296,7 @@ public class MainKernel {
 				subjson.put("isonline", dev.isOline);
 				subjson.put("icon", dev.isOline?"images/device.png":"images/devoff.png");         	
 				infojson.put("title", dev._NetAddress);	
+				infojson.put("hfctype", dev.HFCType1.toString());	
 				infojson.put("icon", "images/net_info.png");
 				subjsonarray.add(infojson);
 				infojson = new JSONObject();
@@ -672,6 +673,7 @@ public class MainKernel {
         	rootnodejson.put("isonline", dev.isOline);
         	rootnodejson.put("icon", dev.isOline?"images/device.png":"images/devoff.png");         	
     		subjson.put("title", dev._NetAddress);	
+    		subjson.put("hfctype", dev.HFCType1.toString());	
 			subjson.put("icon", "images/net_info.png");
 			subjsonarray.add(subjson);
 			subjson = new JSONObject();	

@@ -29,8 +29,7 @@ import wl.hfc.topd.MainKernel;
 //DevGrpModel将承担拓扑的组建，维护，以及组，设备的增删查改的响应
 public class ParamKernel {
 	private static final String  PARAMKERNEL_MESSAGE =  "paramkernel.message";
-	private static Logger log = Logger.getLogger(ParamKernel.class);
-	
+	private static Logger log = Logger.getLogger(ParamKernel.class);	
 
     public ParamKernel()
     {
@@ -85,46 +84,15 @@ public class ParamKernel {
 		if(cmd.equalsIgnoreCase("hfcvalueset")){
 			hfcValueSet(jsondata);			
 		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
-			staticmemory.sendRemoteStr(hfcDeviceDetail(jsondata), jsondata.get("sessionid").toString());				
+			hfcDeviceDetail(jsondata);				
 		}
 	}
 	
 
 	
-	private String hfcDeviceDetail(JSONObject jsondata){
+	private void hfcDeviceDetail(JSONObject jsondata){
 		//获取设备详细信息		
-		String netaddr = jsondata.get("ip").toString();
-		String devtype = jsondata.get("devtype").toString();		 
-		JSONObject rootjson = new JSONObject();
-    	rootjson.put("cmd", "getdevicedetail");
-    	
-    	DevTopd dev = (DevTopd)MainKernel.me.listDevHash.get(netaddr);
-    	rootjson.put("key", netaddr);
-      	if (dev==null) {   
-      		rootjson.put("isonline", false);
-      		return rootjson.toJSONString();			
-		}
-      	
-    	nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;
-    	rootjson.put("isonline", dev.isOline);
-		if(devtype.equalsIgnoreCase("other")){
-			
-		}else if(devtype.equalsIgnoreCase("EDFA")){
-			
-		}else if(devtype.equalsIgnoreCase("Trans")){
-			
-		}else if(devtype.equalsIgnoreCase("rece_workstation")){
-			
-		}else if(devtype.equalsIgnoreCase("OSW")){
-			
-		}else if(devtype.equalsIgnoreCase("RFSW")){
-			
-		}else if(devtype.equalsIgnoreCase("PreAMP")){
-			
-		}else if(devtype.equalsIgnoreCase("wos")){
-			
-		}
-		return rootjson.toJSONString();
+		staticmemory.addRealTimeDev(jsondata);
 	}
 	
 	private void hfcValueSet(JSONObject jsondata){
@@ -195,7 +163,7 @@ public class ParamKernel {
   	
     
     @SuppressWarnings("static-access")
-	public void start(){
+	public void start() throws InterruptedException{
 		
 		log.info("[#3] .....ParamKernel starting.......");
 		Jedis jedis=null;
@@ -208,31 +176,6 @@ public class ParamKernel {
 		}catch(Exception e){
 			e.printStackTrace();
 			redisUtil.getJedisPool().returnBrokenResource(jedis);
-			
-		}
-		
-		while (true) {
-			for (Map.Entry<String, CDevForCMD> entry : staticmemory.getAllRealTimeDev().entrySet()) {
-				JSONObject json = new JSONObject();
-				ReceiverSnmpPrevail receiverSnmpPrevail1Prevai11ll = new ReceiverSnmpPrevail(".1");
-				receiverSnmpPrevail1Prevai11ll.thisDev = (CDevForCMD)entry.getValue();
-				receiverSnmpPrevail1Prevai11ll.sver = new PDUServerForOneDev(0);
-				try {
-					System.out.println(json.toString());
-					json = receiverSnmpPrevail1Prevai11ll.getPmWithModelNumber(json);
-					System.out.println(json.toString());
-		
-				    Thread.sleep(3000);
-		
-
-				} catch (Exception e) {
-					e.printStackTrace();
-					return;
-
-				}
-			    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-
-			}    		
 			
 		}
 		

@@ -2,12 +2,14 @@ package wl.hfc.online;
 
 
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.UdpAddress;
 import org.snmp4j.smi.VariableBinding;
+
 
 
 
@@ -191,27 +193,30 @@ public class SnmpEngine {
 	public  static JSONObject tabVarToJason( VariableSnmpVar[] cInputVariables,VariableSnmpVar[] cOutputVariables,SnmpTableInfo tabVariables, SnmpTableInfo pOutVariables, JSONObject pJson) {
 		int enumi, enumj;
 		int i = 0;
-
+		JSONArray al = new JSONArray();
+		JSONObject itemjson;
 		for (enumi = 0; enumi < tabVariables.RowNum; enumi++) {
+			itemjson = new JSONObject();
 			for (enumj = 0; enumj < tabVariables.ColNum; enumj++) {
-
-				String vale = cInputVariables[enumj].ToDispString(tabVariables.TableCells.get(i));
-				pJson.put(cInputVariables[enumj].VarInfo.ParamMibLabel + "_row" + enumi, vale);
+				String vale = cInputVariables[enumj].ToDispString(tabVariables.TableCells.get(i));				
+				itemjson.put(cInputVariables[enumj].VarInfo.ParamMibLabel + "_row", vale);
 				i++;
 			}
+			al.add(itemjson);
 		}
-
+		pJson.put("powertbl", al);
 		i = 0;
-
+		al = new JSONArray();
 		for (enumi = 0; enumi < pOutVariables.RowNum; enumi++) {
+			itemjson = new JSONObject();
 			for (enumj = 0; enumj < pOutVariables.ColNum; enumj++) {
-
 				String vale = cOutputVariables[enumj].ToDispString(pOutVariables.TableCells.get(i));
-				pJson.put(cOutputVariables[enumj].VarInfo.ParamMibLabel + "_row" + enumi, vale);
+				itemjson.put(cOutputVariables[enumj].VarInfo.ParamMibLabel + "_row", vale);
 				i++;
 			}
+			al.add(itemjson);
 		}
-
+		pJson.put("pumptbl", al);
 		return pJson;
 
 	}

@@ -2,6 +2,7 @@ package com.xinlong.util;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.websocket.Session;
@@ -27,6 +28,7 @@ public class StaticMemory {
 	public void RemoveSession(Session session){
 		synchronized(this) { 
 			webSocketClients.remove(session);
+			removeRealTimeDev(session.getId());
 		}		
 	}
 	
@@ -79,6 +81,18 @@ public class StaticMemory {
 		}		
 	}
 	
+	public synchronized void removeRealTimeDev(String sessionID){
+		for (Map.Entry<String, CDevForCMD> entry : realTimeDevHashtable.entrySet()) {
+			CDevForCMD cfc = (CDevForCMD)entry.getValue();
+			if(cfc.sessionList.size() > 0){
+				cfc.sessionList.remove(sessionID);
+				if(cfc.sessionList.size() == 0){
+					realTimeDevHashtable.remove(entry.getKey());
+				}
+			}
+		}		
+	}
+	
 	public Session getSessionByID(String sessionid){
 		synchronized(this) {
 			for (Session session : webSocketClients) {
@@ -92,6 +106,7 @@ public class StaticMemory {
 	                }
 	            } catch (Exception ex) {
 	            	webSocketClients.remove(session);
+	            	removeRealTimeDev(sessionid);
 	            	System.out.println("Connection closed::::" + webSocketClients.size());
 	            	ex.printStackTrace();
 	                try {
@@ -129,7 +144,8 @@ public class StaticMemory {
 	                    session.getBasicRemote().sendText(message);
 	                }
 	            } catch (IOException e) {
-	            	webSocketClients.remove(session);;
+	            	webSocketClients.remove(session);
+	            	removeRealTimeDev(session.getId());
 	            	System.out.println("Connection closed::::" + webSocketClients.size());
 	                try {
 	                    session.close();

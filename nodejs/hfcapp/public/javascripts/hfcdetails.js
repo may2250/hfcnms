@@ -15,7 +15,7 @@ function showHfcDevice(jsonobj){
 		
 		break;
 	case "rece_workstation":
-		
+		parse_rece_workstation(jsonobj);
 		break;
 	case "OSW":
 		
@@ -34,6 +34,24 @@ function showHfcDevice(jsonobj){
 			break;
 		
 	}
+}
+
+function parse_rece_workstation(jsonobj){
+	$('#detail_channel').val(jsonobj.fnRFChannelNum);
+	$('#detail_inoptical').val(jsonobj.fnOpticalReceiverPower);
+	var groupval = [];
+	var table1 = $('.tbl_power'); 
+	var firstTr = table1.find('tbody>tr:first'); 
+	var row = $("<tr></tr>"); 
+	var td = $("<td></td>");  
+	$.each(jsonobj.powertbl, function(key, itemv) {
+		var item = [itemv.fnDCPowerName_row,itemv.fnDCPowerVoltage_row];
+		groupval[groupval.length] = item;
+		td.append(itemv.fnDCPowerName_row);
+		td.append(itemv.fnDCPowerVoltage_row);
+		row.append(td);
+		table1.append(row);
+	});
 }
 
 function parseHfcValueSet(jsonobj){
