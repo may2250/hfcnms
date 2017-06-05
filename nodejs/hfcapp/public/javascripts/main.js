@@ -328,8 +328,9 @@
             dblclick: function(event, data) {
             	if(data.node.data.type == "device"){
             		//show deivce detail
+            		var preDevice = __globalobj__._realDevice;
             		__globalobj__._realDevice = data.node;
-            		getDeviceDetail(data.node);
+            		getDeviceDetail(data.node,preDevice);
             	}
             	
             },
@@ -614,7 +615,7 @@
         });
     }
     
-    function getDeviceDetail(devnode){
+    function getDeviceDetail(devnode,preDevice){
     	switch(devnode.getLastChild().key){
     	case "Trans":
     		$(".candile").load("/opticalTran");
@@ -644,12 +645,15 @@
     		$(".candile").load("/rece_workstation");
     		break;
     	}
-    	var datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().key 
-    	+ '","rcommunity":"' + devnode.data.rcommunity + '","wcommunity":"' + devnode.data.wcommunity + '"}';
+    	var datastring;
+    	if(preDevice == undefined){
+    		datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().key 
+        	+ '","rcommunity":"' + devnode.data.rcommunity + '","wcommunity":"' + devnode.data.wcommunity + '","predev":""}';
+    	}else{
+    		datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().key 
+        	+ '","rcommunity":"' + devnode.data.rcommunity + '","wcommunity":"' + devnode.data.wcommunity + '","predev":"' + preDevice.key + '"}';
+    	}    	
     	send(datastring);
-    	/*if(!devnode.data.isonline){
-			$("dev-status").css("color", "red");
-		}*/
     }  
     
     

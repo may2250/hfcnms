@@ -139,7 +139,8 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 
 		inPDU = sver.SyncSendSnmpPdu(this.majorVarPdu, cTgt);
 		if (inPDU == null) {
-			throw new Exception("paramGetException,Failed!");
+			//throw new Exception("paramGetException,Failed!");
+			return null;
 		}
 		SnmpEngine.ParseBasicVars(this.mjVariables, inPDU);
 

@@ -17,7 +17,7 @@ public class StaticMemory {
 	//save web sessions
 	public static CopyOnWriteArraySet<Session> webSocketClients = new CopyOnWriteArraySet<Session>();
 	//客户端需求实时数据的设备列表
-	private Hashtable<String, CDevForCMD> realTimeDevHashtable=new Hashtable<String, CDevForCMD>();
+	private Hashtable<String, CDevForCMD> realTimeDevHashtable= new Hashtable<String, CDevForCMD>();
 	private static Logger log = Logger.getLogger(StaticMemory.class);
 	public void AddSession(Session session){
 		synchronized(this) { 
@@ -53,7 +53,7 @@ public class StaticMemory {
 			cfc.RWCommunity = jsondata.get("wcommunity").toString();
 			cfc.sessionList.add(sessionID);
 			realTimeDevHashtable.put(cfc.mNetAddress, cfc);
-			System.out.println("----add new RealTimeDev");
+			System.out.println("----add new RealTimeDev=="+ realTimeDevHashtable.size());
 		}		
 	}
 	
@@ -76,6 +76,7 @@ public class StaticMemory {
 				cfc.sessionList.remove(sessionID);
 				if(cfc.sessionList.size() == 0){
 					realTimeDevHashtable.remove(netaddr);
+					System.out.println("----del RealTimeDev==" + realTimeDevHashtable.size());
 				}
 			}
 		}		
@@ -88,6 +89,7 @@ public class StaticMemory {
 				cfc.sessionList.remove(sessionID);
 				if(cfc.sessionList.size() == 0){
 					realTimeDevHashtable.remove(entry.getKey());
+					System.out.println("----del RealTimeDev==" + realTimeDevHashtable.size());
 				}
 			}
 		}		

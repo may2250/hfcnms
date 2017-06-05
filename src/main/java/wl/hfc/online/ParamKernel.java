@@ -91,7 +91,11 @@ public class ParamKernel {
 
 	
 	private void hfcDeviceDetail(JSONObject jsondata){
-		//获取设备详细信息		
+		//获取设备详细信息	
+		//每个客户端只能打开一台设备，删除原来打开设备记录	
+		if(!jsondata.get("predev").toString().equalsIgnoreCase("")){
+			staticmemory.removeRealTimeDev(jsondata.get("predev").toString(),jsondata.get("sessionid").toString());
+		}		
 		staticmemory.addRealTimeDev(jsondata);
 	}
 	
