@@ -139,28 +139,47 @@ public class ParamKernel {
 		String netaddr = jsondata.get("ip").toString();
 		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
 			//获取温度相关门限信息
-			//TODO
-			//test
-			rootjson.put("HIHI", "60");
-			rootjson.put("HI", "55");
-			rootjson.put("LO", "30");
-			rootjson.put("LOLO", "10");
-			rootjson.put("DEAD", "0");
+			
+		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("tbl_powerv1")){
+			
+		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("tbl_powerv2")){
+			
 		}
+		//TODO
+		//test
+		rootjson.put("ISHIHI", true);
+		rootjson.put("HIHI", "60");
+		rootjson.put("ISHI", true);
+		rootjson.put("HI", "55");
+		rootjson.put("ISLO", true);
+		rootjson.put("LO", "30");
+		rootjson.put("ISLOLO", true);
+		rootjson.put("LOLO", "10");
+		rootjson.put("ISDEAD", true);
+		rootjson.put("DEAD", "0");
 		jsondata.put("detail", rootjson);
 		return jsondata.toJSONString();
 	}
 	
 	private void setAlarmThreshold(JSONObject jsondata){
 		String netaddr = jsondata.get("ip").toString();
+		String ISHIHI = jsondata.get("ISHIHI").toString();
 		String HIHI = jsondata.get("HIHI").toString();
+		String ISHI = jsondata.get("ISHI").toString();
 		String HI = jsondata.get("HI").toString();
+		String ISLO = jsondata.get("ISLO").toString();
 		String LO = jsondata.get("LO").toString();
+		String ISLOLO = jsondata.get("ISLOLO").toString();
 		String LOLO = jsondata.get("LOLO").toString();
+		String ISDEAD = jsondata.get("ISDEAD").toString();
 		String DEAD = jsondata.get("DEAD").toString();
 		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
 			//设置温度相关门限信息
 			//TODO
+			
+		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("tbl_powerv1")){
+			
+		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("tbl_powerv2")){
 			
 		}
 	}

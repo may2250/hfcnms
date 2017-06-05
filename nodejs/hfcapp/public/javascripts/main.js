@@ -616,35 +616,7 @@
     }
     
     function getDeviceDetail(devnode,preDevice){
-    	switch(devnode.getLastChild().key){
-    	case "Trans":
-    		$(".candile").load("/opticalTran");
-    		break;
-    	case "other":
-    		$(".candile").load("/rece_workstation");
-    		break;
-    	case "EDFA":
-    		$(".candile").load("/opticalTran");
-    		break;
-    	case "rece_workstation":
-    		$(".candile").load("/rece_workstation");
-    		break;
-    	case "OSW":
-    		$(".candile").load("/opticalTran");
-    		break;
-    	case "RFSW":
-    		$(".candile").load("/opticalTran");
-    		break;
-    	case "PreAMP":
-    		$(".candile").load("/opticalTran");
-    		break;
-    	case "wos":
-    		$(".candile").load("/opticalTran");
-    		break;
-    	default:
-    		$(".candile").load("/rece_workstation");
-    		break;
-    	}
+    	__getDeviceDetail(devnode);
     	var datastring;
     	if(preDevice == undefined){
     		datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().key 

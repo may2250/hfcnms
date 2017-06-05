@@ -151,7 +151,6 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			}
 
 		}
-
 		for (int i = 0; i < mjVariables.length; i++) {
 			if (this.mjVariables[i].withNoThreashold) {
 				SnmpEngine.ThreadPramVarToJason(mjVariables[i], pJson, true);
@@ -177,9 +176,7 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 					this.getSubVarsWithTagInfo(this.cInputVariables[j], i);
 					SnmpEngine.ThreadPramVarToJason(this.cInputVariables[j], pJson, i, true);
 				}
-
 			}
-
 		}
 		for (int j = 0; j < this.cOutputVariables.length; j++) {
 
@@ -192,7 +189,6 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			}
 
 		}
-
 		return pJson;
 	}
 

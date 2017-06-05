@@ -1,7 +1,7 @@
 html, body{
 	font-family: 'Roboto', sans-serif;
     font-size: 100%;
-  	/*overflow-x: hidden;*/
+  	overflow-x: hidden;
 	background: lightgray;
 }
 body a{
@@ -272,6 +272,14 @@ div.dataTables_wrapper {
 	margin: 8px auto 0px auto;
     width: 80%;
     min-width:750px;
+}
+
+.tbl_detail td input{
+    width: 150px;
+}
+
+.tbl_detail td{
+    border-top: 0px !important;
 }
 
 .devdetail-public {
@@ -644,7 +652,7 @@ span#logo h1 {
 }
 footer {
     background:#00C6D7;
-    padding: 12px;
+    padding: 8px;
     width: 100%;
     position: fixed;
     bottom: 0;

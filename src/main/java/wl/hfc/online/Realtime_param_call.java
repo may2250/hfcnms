@@ -32,7 +32,7 @@ public class Realtime_param_call {
 		
 		while (true) {
 			if(!staticmemory.getAllRealTimeDev().isEmpty()){
-				System.out.println("=====begin to realtime process=====");
+				//System.out.println("=====begin to realtime process=====");
 				Enumeration<String> e1 = staticmemory.getAllRealTimeDev().keys();
 				while (e1.hasMoreElements()) {   
 					String key = e1.nextElement();  
@@ -50,7 +50,7 @@ public class Realtime_param_call {
 							if(json == null)
 								continue;
 							String jsonstr = json.toJSONString();
-							System.out.println(jsonstr);
+							//System.out.println(jsonstr);
 							for(Iterator it2 = cfc.sessionList.iterator();it2.hasNext();){
 								 staticmemory.sendRemoteStr(jsonstr, it2.next().toString());
 					        }

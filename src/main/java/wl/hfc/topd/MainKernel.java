@@ -295,13 +295,13 @@ public class MainKernel {
 				subjson.put("wcommunity", dev.BindnojuDeviceTableRow._RWCommunity);
 				subjson.put("isonline", dev.isOline);
 				subjson.put("icon", dev.isOline?"images/device.png":"images/devoff.png");         	
-				infojson.put("title", dev._NetAddress);	
-				infojson.put("hfctype", dev.HFCType1.toString());	
+				infojson.put("title", dev._NetAddress);						
 				infojson.put("icon", "images/net_info.png");
 				subjsonarray.add(infojson);
 				infojson = new JSONObject();
 				infojson.put("key", dev.mNetType.toString());
-				infojson.put("title", getNetTypeTostring(dev.mNetType));	
+				infojson.put("title", getNetTypeTostring(dev.mNetType));
+				infojson.put("hfctype", dev.HFCType1.toString());
 				infojson.put("icon", "images/net_info.png");
 				subjsonarray.add(infojson);
 				subjson.put("children", subjsonarray);
