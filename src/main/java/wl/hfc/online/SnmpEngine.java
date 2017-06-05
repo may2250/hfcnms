@@ -228,10 +228,8 @@ public class SnmpEngine {
 		String vale;
 		if (pMjVariable.withNoThreashold) {
 			for (int j = 0; j < pMjVariable.subVariableSnmpVarS.length; j++) {
-				vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
-				pJson.put(pMjVariable.VarInfo.ParamMibLabel + j, vale);
-				/*if (j == 5) {
-					vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
+				if (j == 5) {
+					/*vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
 					byte brst = (byte) Integer.parseInt(vale, 16);
 					if ((brst & 0x08) != 0)
 						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "HIHI", "1");
@@ -249,12 +247,12 @@ public class SnmpEngine {
 						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "LOLO", "1");
 					else
 						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "LOLO", "0");
-
+					*/
 				} else{
 					vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
 					pJson.put(pMjVariable.VarInfo.ParamMibLabel + j, vale);
 				}
-				*/
+				
 			}
 
 		}
@@ -272,10 +270,8 @@ public class SnmpEngine {
 		if (tableVariable.withNoThreashold) {
 			VariableSnmpVar[] subVariableSnmpVarS = tableVariable.subTableVariableSnmpVarSS.get(row);
 			for (int j = 0; j < subVariableSnmpVarS.length; j++) {
-				vale = subVariableSnmpVarS[j].ToDispString();
-				pJson.put(tableVariable.VarInfo.ParamMibLabel + row + j, vale);
-				/*if (j == 5) {
-					vale = subVariableSnmpVarS[j].ToDispString();
+				if (j == 5) {
+					/*vale = subVariableSnmpVarS[j].ToDispString();
 					byte brst = (byte) Integer.parseInt(vale, 16);
 					if ((brst & 0x08) != 0)
 						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "HIHI", "1");
@@ -293,7 +289,7 @@ public class SnmpEngine {
 						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "LOLO", "1");
 					else
 						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "LOLO", "0");
-
+					*/
 				} else
 
 				{
@@ -301,7 +297,7 @@ public class SnmpEngine {
 					pJson.put(tableVariable.VarInfo.ParamMibLabel + row + j, vale);
 
 				}
-				*/
+				
 			}
 
 		}
@@ -316,10 +312,8 @@ public class SnmpEngine {
 		String vale;
 		if (pMjVariable.withNoThreashold) {
 			for (int j = 0; j < pMjVariable.subVariableSnmpVarS.length; j++) {
-				vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
-				pJson.put("value" + j, vale);
-				/*if (j == 5) {
-					vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
+				if (j == 5) {
+					/*vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
 					byte brst = (byte) Integer.parseInt(vale, 16);
 					if ((brst & 0x08) != 0)
 						pJson.put("HIHI", "1");
@@ -337,7 +331,7 @@ public class SnmpEngine {
 						pJson.put("LOLO", "1");
 					else
 						pJson.put("LOLO", "0");
-
+					*/
 				} else
 
 				{
@@ -345,7 +339,7 @@ public class SnmpEngine {
 					pJson.put("value" + j, vale);
 
 				}
-				*/
+				
 			}
 
 		}
@@ -361,10 +355,8 @@ public class SnmpEngine {
 		if (tableVariable.withNoThreashold) {
 			VariableSnmpVar[] subVariableSnmpVarS = tableVariable.subTableVariableSnmpVarSS.get(row);
 			for (int j = 0; j < subVariableSnmpVarS.length; j++) {
-				vale = subVariableSnmpVarS[j].ToDispString();
-				pJson.put("value" + j, vale);
-				/*if (j == 5) {
-					vale = subVariableSnmpVarS[j].ToDispString();
+				if (j == 5) {
+					/*vale = subVariableSnmpVarS[j].ToDispString();
 					byte brst = (byte) Integer.parseInt(vale, 16);
 					if ((brst & 0x08) != 0)
 						pJson.put("HIHI", "1");
@@ -382,7 +374,7 @@ public class SnmpEngine {
 						pJson.put("LOLO", "1");
 					else
 						pJson.put("LOLO", "0");
-
+					*/
 				} else
 
 				{
@@ -390,7 +382,7 @@ public class SnmpEngine {
 					pJson.put("value" + j, vale);
 
 				}
-				*/
+				
 			}
 
 		}

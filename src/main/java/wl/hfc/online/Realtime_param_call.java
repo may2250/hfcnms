@@ -41,7 +41,7 @@ public class Realtime_param_call {
 						receiverSnmpPrevail1Prevai11ll.thisDev = cfc;
 						receiverSnmpPrevail1Prevai11ll.sver = new PDUServerForOneDev(0);
 						json.put("cmd", "realtime-device");
-						json.put("devtype", cfc.mNetAddress);
+						json.put("devtype", cfc.mNetType.toString());
 						json = receiverSnmpPrevail1Prevai11ll.getPmWithModelNumber(json);
 						System.out.println(json.toJSONString());
 						for(Iterator it2 = cfc.sessionList.iterator();it2.hasNext();){

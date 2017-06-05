@@ -38,19 +38,20 @@ function showHfcDevice(jsonobj){
 
 function parse_rece_workstation(jsonobj){
 	$('#detail_channel').val(jsonobj.fnRFChannelNum);
-	$('#detail_inoptical').val(jsonobj.fnOpticalReceiverPower);
-	var groupval = [];
-	var table1 = $('.tbl_power'); 
-	var firstTr = table1.find('tbody>tr:first'); 
-	var row = $("<tr></tr>"); 
-	var td = $("<td></td>");  
+	$('#detail_inoptical').val(jsonobj.fnOpticalReceiverPower);  
+	var i = 1;
 	$.each(jsonobj.powertbl, function(key, itemv) {
-		var item = [itemv.fnDCPowerName_row,itemv.fnDCPowerVoltage_row];
-		groupval[groupval.length] = item;
-		td.append(itemv.fnDCPowerName_row);
-		td.append(itemv.fnDCPowerVoltage_row);
-		row.append(td);
-		table1.append(row);
+		$('#power_vn' + i).textContent = itemv.fnDCPowerName_row;
+		$('#power_v' + i).textContent = itemv.fnDCPowerVoltage_row;
+		i++;
+	});
+	i = 1;
+	$.each(jsonobj.pumptbl, function(key, itemv) {
+		$('#pump_pname' + i).textContent = itemv.fnRFPortName_row;
+		$('#pump_att' + i).textContent = itemv.fnOutputRFlevelatt_row;
+		$('#pump_eq' + i).textContent = itemv.fnOutputRFleveleq_row;
+		$('#pump_level' + i).textContent = itemv.fnRFPortOutputRFLevel_row;
+		i++;
 	});
 }
 
