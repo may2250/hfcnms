@@ -87,10 +87,13 @@ public class Services_Websocket {
 				sendToQueue(jsondata.toJSONString(), PARAMKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("getdevicedetail")){
 				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
+				sendToQueue(jsondata.toJSONString(), PARAMKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("devsearch")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
+			}else if(cmd.equalsIgnoreCase("deviceclose")){
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString(), PARAMKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("test")){
 				// Send the first message to the client
 				rootjson.put("cmd", "test");

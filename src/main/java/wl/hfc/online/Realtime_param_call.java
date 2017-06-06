@@ -63,7 +63,7 @@ public class Realtime_param_call {
 					}
 				}
 			}			
-			Thread.sleep(3000);
+			Thread.sleep(1500);
 		}
 	}
 }

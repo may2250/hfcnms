@@ -199,7 +199,7 @@ a:hover { transition: all 200ms ease-in-out; }
 
 .users_details_left {
 	float: right;
-    width: 10%;
+    width: 13%;
     padding-top: 10px;
     height: 52.6px;	
     margin-right: 20px;
@@ -740,7 +740,7 @@ footer  p a:hover ,.footer p a:hover{
 @media (max-width:1280px){
 	.users_details_left {
 		float: right;
-		width: 20%;
+		width: 30%;
 	}
 	.left-content {
 		float: right;

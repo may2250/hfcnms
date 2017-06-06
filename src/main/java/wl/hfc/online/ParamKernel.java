@@ -85,6 +85,8 @@ public class ParamKernel {
 			hfcValueSet(jsondata);			
 		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
 			hfcDeviceDetail(jsondata);				
+		}else if(cmd.equalsIgnoreCase("deviceclose")){			
+			staticmemory.removeRealTimeDev(jsondata.get("ip").toString(),jsondata.get("sessionid").toString());
 		}
 	}
 	

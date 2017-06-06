@@ -115,9 +115,6 @@ public class MainKernel {
 			handleInsertDev(jsondata);
 		}else if(cmd.equalsIgnoreCase("lazyLoad")){
 			staticmemory.sendRemoteStr(getLazyNodes(jsondata), jsondata.get("sessionid").toString());					
-		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
-			//转发到paramkernel进程处理
-			sendToQueue(message, PARAMKERNEL_MESSAGE);				
 		}else if(cmd.equalsIgnoreCase("devstatus")){			
 			staticmemory.broadCast(handleOnlineInfo(jsondata));				
 		}

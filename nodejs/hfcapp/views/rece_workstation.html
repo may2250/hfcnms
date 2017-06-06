@@ -63,13 +63,21 @@
 		$(".isalarmThreshold").dblclick(function(){
 			var node = __globalobj__._realDevice.getFirstChild();
 			var domstr = $(this)[0].id;
-			var datastring = '{"cmd":"hfcvalueset","target":"getalarmThreshold","ip":"' + node.title +'","domstr":"'+ domstr + '"}';
+			var datastring = '{"cmd":"hfcvalueset","target":"getalarmThreshold","ip":"' + node.title +'","domstr":"'+ domstr +'","devtype":"'+ __globalobj__._realDevice.getLastChild().key + '"}';
   		  	__globalobj__._send(datastring);			
 		}); 
+		
+		$('.device-close').click(function(){
+			var node = __globalobj__._realDevice.getFirstChild();
+			var datastring = '{"cmd":"deviceclose","ip":"' + node.title + '"}';
+  		  	__globalobj__._send(datastring);
+  		  	$('.candile').empty();
+		});
 	</script>
 </head>
 <body>
 	<div class="devdetail">
+		<button type="button" class="close device-close" aria-hidden="true">&times;</button>
 		<ul class = "devdetail-header">
 			<li class="dev-img"><img src = "../images/oprv8604jl.png" /></li>
 			<li class="dev-status"><span>设备连接正常...</span></li>

@@ -212,9 +212,9 @@ function parseHfcValueSet(jsonobj){
 	   	    		  }
 	   	    		  var node = __globalobj__._realDevice.getFirstChild();
      	    		  var datastring = '{"cmd":"hfcvalueset","target":"setalarmThreshold","ip":"' + node.title +'","domstr":"'+ jsonobj.domstr +'","HIHI":"'+ $("#hihi").val()
-     	    		  	+'","HI":"'+ $("#hi").val() +'","LO":"'+ $("#lo").val() +'","LOLO":"'+ $("#lolo").val() +'","DEAD":"'+ $("#dead").val() +'","ISHIHI":"'+ $('#ishihi').attr('checked') ==true?true:false
-     	    		  	+'","ISHI":"'+ $('#ishi').attr('checked') ==true?true:false +'","ISLO":"'+ $('#islo').attr('checked') ==true?true:false +'","ISLOLO":"'+ $('#islolo').attr('checked') ==true?true:false
-     	    		  	+'","ISDEAD":"'+ $('#isdead').attr('checked') ==true?true:false+'"}';
+     	    		  	+'","HI":"'+ $("#hi").val() +'","LO":"'+ $("#lo").val() +'","LOLO":"'+ $("#lolo").val() +'","DEAD":"'+ $("#dead").val() +'","ISHIHI":"'+ ($('#ishihi').attr('checked') ==true?true:false)
+     	    		  	+'","ISHI":"'+ ($('#ishi').attr('checked') ==true?true:false) +'","ISLO":"'+ ($('#islo').attr('checked') ==true?true:false) +'","ISLOLO":"'+ ($('#islolo').attr('checked') ==true?true:false)
+     	    		  	+'","ISDEAD":"'+ ($('#isdead').attr('checked') ==true?true:false) +'"}';
      	    		  __globalobj__._send(datastring);
      	              $( this ).dialog( "close" );
 	   	          }
