@@ -11,13 +11,16 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import wl.hfc.common.CDevForCMD;
+import wl.hfc.common.NetTypes;
+import wl.hfc.online.PDUServerForOneDev;
+import wl.hfc.online.ReceiverSnmpPrevail;
 import wl.hfc.topd.MainKernel;
 
 public class StaticMemory {
 	//save web sessions
 	public static CopyOnWriteArraySet<Session> webSocketClients = new CopyOnWriteArraySet<Session>();
 	//客户端需求实时数据的设备列表
-	private Hashtable<String, CDevForCMD> realTimeDevHashtable= new Hashtable<String, CDevForCMD>();
+	private Hashtable<String, ObjSnmpPreail> realTimeDevHashtable= new Hashtable<String, ObjSnmpPreail>();
 	private static Logger log = Logger.getLogger(StaticMemory.class);
 	public void AddSession(Session session){
 		synchronized(this) { 
@@ -39,25 +42,45 @@ public class StaticMemory {
 	public synchronized void addRealTimeDev(JSONObject jsondata){
 		String netaddr = jsondata.get("ip").toString();
 		String sessionID = jsondata.get("sessionid").toString();
+		String devtype = jsondata.get("devtype").toString();
 		if(realTimeDevHashtable.containsKey(netaddr)){
-			CDevForCMD cfc = realTimeDevHashtable.get(netaddr);
-			if(!cfc.sessionList.contains(sessionID)){
-				cfc.sessionList.add(sessionID);
+			ObjSnmpPreail osp = realTimeDevHashtable.get(netaddr);
+			if(!osp.sessionList.contains(sessionID)){
+				osp.sessionList.add(sessionID);
 				System.out.println("----add new SessionID");
 			}
 		}else{
-			CDevForCMD cfc = new CDevForCMD();
-			cfc.mNetAddress = netaddr;
-			cfc.mNetType = MainKernel.me.getStringToNetType(jsondata.get("devtype").toString());
-			cfc.ROCommunity = jsondata.get("rcommunity").toString();
-			cfc.RWCommunity = jsondata.get("wcommunity").toString();
-			cfc.sessionList.add(sessionID);
-			realTimeDevHashtable.put(cfc.mNetAddress, cfc);
+			ObjSnmpPreail osp = new ObjSnmpPreail();
+			if(devtype.equalsIgnoreCase("EDFA")){
+				
+			}else if(devtype.equalsIgnoreCase("Trans")){
+				
+			}else if(devtype.equalsIgnoreCase("rece_workstation")){
+				osp.snmpPreail = new ReceiverSnmpPrevail(".1");
+			}else if(devtype.equalsIgnoreCase("OSW")){
+				
+			}else if(devtype.equalsIgnoreCase("RFSW")){
+				
+			}else if(devtype.equalsIgnoreCase("PreAMP")){
+				
+			}else if(devtype.equalsIgnoreCase("wos")){
+				
+			}else{
+				osp.snmpPreail = new ReceiverSnmpPrevail(".1");
+			}			
+			osp.snmpPreail.thisDev = new CDevForCMD();
+			osp.snmpPreail.sver = new PDUServerForOneDev(0);
+			osp.snmpPreail.thisDev.mNetAddress = netaddr;
+			osp.snmpPreail.thisDev.mNetType = MainKernel.me.getStringToNetType(jsondata.get("devtype").toString());
+			osp.snmpPreail.thisDev.ROCommunity = jsondata.get("rcommunity").toString();
+			osp.snmpPreail.thisDev.RWCommunity = jsondata.get("wcommunity").toString();
+			osp.sessionList.add(sessionID);
+			realTimeDevHashtable.put(netaddr, osp);
 			System.out.println("----add new RealTimeDev=="+ realTimeDevHashtable.size());
 		}		
 	}
 	
-	public synchronized CDevForCMD getRealTimeDev(String netaddr){
+	public synchronized ObjSnmpPreail getRealTimeDev(String netaddr){
 		if(realTimeDevHashtable.containsKey(netaddr)){
 			return realTimeDevHashtable.get(netaddr);
 		}else{
@@ -65,16 +88,16 @@ public class StaticMemory {
 		}		
 	}
 	
-	public synchronized Hashtable<String, CDevForCMD> getAllRealTimeDev(){
+	public synchronized Hashtable<String, ObjSnmpPreail> getAllRealTimeDev(){
 		return this.realTimeDevHashtable;
 	}
 	
 	public synchronized void removeRealTimeDev(String netaddr, String sessionID){
 		if(realTimeDevHashtable.containsKey(netaddr)){
-			CDevForCMD cfc = realTimeDevHashtable.get(netaddr);
-			if(cfc.sessionList.size() > 0){
-				cfc.sessionList.remove(sessionID);
-				if(cfc.sessionList.size() == 0){
+			ObjSnmpPreail osp = realTimeDevHashtable.get(netaddr);
+			if(osp.sessionList.size() > 0){
+				osp.sessionList.remove(sessionID);
+				if(osp.sessionList.size() == 0){
 					realTimeDevHashtable.remove(netaddr);
 					System.out.println("----del RealTimeDev==" + realTimeDevHashtable.size());
 				}
@@ -83,11 +106,11 @@ public class StaticMemory {
 	}
 	
 	public synchronized void removeRealTimeDev(String sessionID){
-		for (Map.Entry<String, CDevForCMD> entry : realTimeDevHashtable.entrySet()) {
-			CDevForCMD cfc = (CDevForCMD)entry.getValue();
-			if(cfc.sessionList.size() > 0){
-				cfc.sessionList.remove(sessionID);
-				if(cfc.sessionList.size() == 0){
+		for (Map.Entry<String, ObjSnmpPreail> entry : realTimeDevHashtable.entrySet()) {
+			ObjSnmpPreail osp = (ObjSnmpPreail)entry.getValue();
+			if(osp.sessionList.size() > 0){
+				osp.sessionList.remove(sessionID);
+				if(osp.sessionList.size() == 0){
 					realTimeDevHashtable.remove(entry.getKey());
 					System.out.println("----del RealTimeDev==" + realTimeDevHashtable.size());
 				}

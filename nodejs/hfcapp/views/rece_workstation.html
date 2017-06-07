@@ -63,7 +63,8 @@
 		$(".isalarmThreshold").dblclick(function(){
 			var node = __globalobj__._realDevice.getFirstChild();
 			var domstr = $(this)[0].id;
-			var datastring = '{"cmd":"hfcvalueset","target":"getalarmThreshold","ip":"' + node.title +'","domstr":"'+ domstr +'","devtype":"'+ __globalobj__._realDevice.getLastChild().key + '"}';
+			var datastring = '{"cmd":"hfcvalueset","target":"getalarmThreshold","ip":"' + node.title +'","domstr":"'+ domstr 
+			+'","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity + '","devtype":"'+ __globalobj__._realDevice.getLastChild().key + '"}';
   		  	__globalobj__._send(datastring);			
 		}); 
 		

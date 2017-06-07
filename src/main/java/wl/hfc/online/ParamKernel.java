@@ -136,6 +136,7 @@ public class ParamKernel {
 		}
 	}
 	
+	/*jsondata: ip,devtype,rcommunity*/
 	private String getAlarmThreshold(JSONObject jsondata){
 		JSONObject rootjson = new JSONObject();
 		String netaddr = jsondata.get("ip").toString();
@@ -163,6 +164,7 @@ public class ParamKernel {
 		return jsondata.toJSONString();
 	}
 	
+	/*jsondata: ip,devtype,rcommunity,wcommunity*/
 	private void setAlarmThreshold(JSONObject jsondata){
 		String netaddr = jsondata.get("ip").toString();
 		String ISHIHI = jsondata.get("ISHIHI").toString();

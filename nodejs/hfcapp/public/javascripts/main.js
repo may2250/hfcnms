@@ -4,7 +4,8 @@
 	var tbl_optlog;
 	var lazyLoadData = null;
 	$(function() {
-		initWebSocket();	   	
+		var encstr = 'username='+sessionStorage.userName+'&password='+ sessionStorage.passWord;
+		initWebSocket(encstr);	   	
     	
     	window.__globalobj__ = {
     		    _webSocket:webSocket,
@@ -19,10 +20,10 @@
     		        };
     		    	
     		    },
-    		    _initWebSocket:function(){
+    		    _initWebSocket:function(str){
     				var hostip = window.location.hostname;
     		        if (window.WebSocket) {
-    		        	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice');
+    		        	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice?'+str);
     		        	webSocket.onmessage = function(event) {
     		        		onMessage(event);
     		            };
@@ -179,10 +180,10 @@
     	});
 	});
 	
-	function initWebSocket() {
+	function initWebSocket(encstr) {
 		var hostip = window.location.hostname;
         if (window.WebSocket) {
-        	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice');
+        	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice?' + encstr);
         	webSocket.onmessage = function(event) {
         		onMessage(event);
             };
@@ -663,7 +664,28 @@
     	
     };
     
-       
+    function encryptByDES(message, key) {    
+        
+        var keyHex = CryptoJS.enc.Utf8.parse(key);  
+        var encrypted = CryptoJS.DES.encrypt(message, keyHex, {    
+        mode: CryptoJS.mode.ECB,    
+        padding: CryptoJS.pad.Pkcs7    
+        });   
+        return encrypted.toString();    
+    }    
+    function decryptByDES(ciphertext, key) {    
+        var keyHex = CryptoJS.enc.Utf8.parse(key);    
+         
+        // direct decrypt ciphertext  
+        var decrypted = CryptoJS.DES.decrypt({    
+            ciphertext: CryptoJS.enc.Base64.parse(ciphertext)    
+        }, keyHex, {    
+            mode: CryptoJS.mode.ECB,    
+            padding: CryptoJS.pad.Pkcs7    
+        });    
+         
+        return decrypted.toString(CryptoJS.enc.Utf8);    
+    }            
  
     
     

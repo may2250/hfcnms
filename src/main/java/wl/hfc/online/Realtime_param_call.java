@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 
 import wl.hfc.common.CDevForCMD;
 
+import com.xinlong.util.ObjSnmpPreail;
 import com.xinlong.util.StaticMemory;
 
 
@@ -38,20 +39,38 @@ public class Realtime_param_call {
 					String key = e1.nextElement();  
 					try {
 						JSONObject json = new JSONObject();
-						CDevForCMD cfc = staticmemory.getRealTimeDev(key);
-						if(cfc != null){
-							System.out.println("=====netaddr====="+ cfc.mNetAddress);
-							ReceiverSnmpPrevail receiverSnmpPrevail1Prevai11ll = new ReceiverSnmpPrevail(".1");
-							receiverSnmpPrevail1Prevai11ll.thisDev = cfc;
-							receiverSnmpPrevail1Prevai11ll.sver = new PDUServerForOneDev(0);
+						ObjSnmpPreail osp = staticmemory.getRealTimeDev(key);
+						if(osp != null){
+							System.out.println("=====netaddr====="+ osp.snmpPreail.thisDev.mNetAddress);
+							//ReceiverSnmpPrevail receiverSnmpPrevail1Prevai11ll = new ReceiverSnmpPrevail(".1");
+							//receiverSnmpPrevail1Prevai11ll.thisDev = cfc;
+							//receiverSnmpPrevail1Prevai11ll.sver = new PDUServerForOneDev(0);
 							json.put("cmd", "realtime-device");
-							json.put("devtype", cfc.mNetType.toString());
-							json = receiverSnmpPrevail1Prevai11ll.getPmWithModelNumber(json);
+							String devtype = osp.snmpPreail.thisDev.mNetType.toString();
+							json.put("devtype", osp.snmpPreail.thisDev.mNetType.toString());
+							if(devtype.equalsIgnoreCase("EDFA")){
+								
+							}else if(devtype.equalsIgnoreCase("Trans")){
+								
+							}else if(devtype.equalsIgnoreCase("rece_workstation")){
+								json = ((ReceiverSnmpPrevail)osp.snmpPreail).getPmWithModelNumber(json);
+							}else if(devtype.equalsIgnoreCase("OSW")){
+								
+							}else if(devtype.equalsIgnoreCase("RFSW")){
+								
+							}else if(devtype.equalsIgnoreCase("PreAMP")){
+								
+							}else if(devtype.equalsIgnoreCase("wos")){
+								
+							}else{
+								json = ((ReceiverSnmpPrevail)osp.snmpPreail).getPmWithModelNumber(json);
+							}			
+							
 							if(json == null)
 								continue;
 							String jsonstr = json.toJSONString();
 							//System.out.println(jsonstr);
-							for(Iterator it2 = cfc.sessionList.iterator();it2.hasNext();){
+							for(Iterator it2 = osp.sessionList.iterator();it2.hasNext();){
 								 staticmemory.sendRemoteStr(jsonstr, it2.next().toString());
 					        }
 						}
