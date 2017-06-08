@@ -474,6 +474,11 @@ li#menu-academico{
     font-size: 63%;
     z-index: 3; /* over ext-wide titles */
 }
+
+#username {
+	padding-left: 8px;
+    padding-bottom: 3px;
+}
   
 #dev-fancytree {
 	width: 220px;

@@ -161,9 +161,8 @@ public class Services_Websocket {
     	}else{    		
     		try {
     			//解密
-				String userName = decrypt(username, deskey);
 				String passWord = decrypt(password, deskey);
-				System.out.println("username::des::" + userName + ":::password:des::"+ passWord);
+				System.out.println("username::des::" + username + ":::password:des::"+ passWord);
 				//用户认证
 	    		//TODO
 				

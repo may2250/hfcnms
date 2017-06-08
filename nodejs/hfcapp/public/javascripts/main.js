@@ -209,6 +209,7 @@
 	function onMessage(event) {
     	var jsonobj =  eval('(' + event.data + ')');
         if(jsonobj.cmd == "getInitTree"){
+        	$('#username')[0].textContent = localStorage.userName;
         	initTree(jsonobj.treenodes);        
         }else if(jsonobj.cmd == "loginAuth"){
         	if(!jsonobj.Authed){

@@ -80,9 +80,9 @@
 	<script type="text/javascript">
 		var enc_key = "prevail0";
 		$(function() {
-			$('#user').val(decryptByDES(localStorage.userName, enc_key));
+			$('#user').val(localStorage.userName);
 			$('#btn-login').click(function(){				
-				localStorage.userName = encryptByDES($('#user').val(),enc_key);
+				localStorage.userName = $('#user').val();
 				sessionStorage.passWord = encryptByDES($('#password').val(),enc_key);
 				var encstr = localStorage.userName+'/'+ sessionStorage.passWord;
 				initWebSocket(encstr);				

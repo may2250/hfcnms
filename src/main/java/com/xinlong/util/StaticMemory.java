@@ -153,7 +153,7 @@ public class StaticMemory {
 				ses.getBasicRemote().sendText(message);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 				log.info(e.getMessage());
 			}
 		}else{

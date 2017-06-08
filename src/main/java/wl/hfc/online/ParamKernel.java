@@ -7,23 +7,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import javax.websocket.Session;
-
 import org.apache.log4j.Logger;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.xinlong.Services.ServiceHfcAlarmProcessor;
-import com.xinlong.Services.Services_Websocket;
+import com.xinlong.util.ObjSnmpPreail;
 import com.xinlong.util.RedisUtil;
 import com.xinlong.util.StaticMemory;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
-import wl.hfc.common.*;
-import wl.hfc.topd.MainKernel;
 
 
 //DevGrpModel将承担拓扑的组建，维护，以及组，设备的增删查改的响应
@@ -140,6 +134,8 @@ public class ParamKernel {
 	private String getAlarmThreshold(JSONObject jsondata){
 		JSONObject rootjson = new JSONObject();
 		String netaddr = jsondata.get("ip").toString();
+		ObjSnmpPreail osp = staticmemory.getRealTimeDev(netaddr);
+		WosBaseSnmp snmpPreail = osp.snmpPreail;
 		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
 			//获取温度相关门限信息
 			

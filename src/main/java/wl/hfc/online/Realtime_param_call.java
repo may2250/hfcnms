@@ -2,12 +2,9 @@ package wl.hfc.online;
 
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
-
-import wl.hfc.common.CDevForCMD;
 
 import com.xinlong.util.ObjSnmpPreail;
 import com.xinlong.util.StaticMemory;
