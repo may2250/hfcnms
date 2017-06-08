@@ -4,7 +4,7 @@
 	var tbl_optlog;
 	var lazyLoadData = null;
 	$(function() {
-		var encstr = 'username='+sessionStorage.userName+'&password='+ sessionStorage.passWord;
+		var encstr = 'username='+localStorage.userName+'&password='+ sessionStorage.passWord;
 		initWebSocket(encstr);	   	
     	
     	window.__globalobj__ = {
