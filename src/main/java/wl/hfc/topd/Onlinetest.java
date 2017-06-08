@@ -6,6 +6,9 @@ import org.json.simple.JSONObject;
 
 
 
+
+
+
 import wl.hfc.common.CDevForCMD;
 import wl.hfc.common.SnmpTableInfo;
 import wl.hfc.common.VariableSnmpVar;
@@ -13,6 +16,8 @@ import wl.hfc.online.PDUServer;
 import wl.hfc.online.PDUServerForOneDev;
 import wl.hfc.online.ReceiverSnmpPrevail;
 import wl.hfc.online.pmls;
+import wl.hfc.traprcss.TrapPduServer;
+import wl.hfc.traprcss.TrapProCenter;
 
 
 public class Onlinetest {
@@ -93,11 +98,27 @@ public class Onlinetest {
 			nowpath = System.getProperty("user.dir");
 			nowpath = nowpath + "\\" + "mibs";
 
-	/*		TrapProCenter trpcss = new TrapProCenter(true, nowpath);
+			TrapProCenter trpcss = new TrapProCenter(true, nowpath);
 			TrapPduServer.trpcss = trpcss;
-			new TrapPduServer();*/
+			new TrapPduServer();
+			
+			
+			
+			while (true) {
+				try {
+					Thread.sleep(1000);
+					System.out.println("123123123");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			
+			
+			
+			
 
-		  RECEIVERTEST();
+		//  RECEIVERTEST();
 		//	CommonVariablesGetTest();
 
 			// ReceiverSnmpPrevail.me.getSubVarsWithTagInfoBYparamname(
@@ -109,10 +130,8 @@ public class Onlinetest {
 			// ReceiverSnmpPrevail.me.ThreadTablePramVarToJasonWithParamString(ReceiverSnmpPrevail.me.cInputVariables[1],
 			// json,1);
 
-			// // �������޲���
-			JSONObject json = new JSONObject();
-			byte bytesss = 4;
-			json.put("en", bytesss);
+
+		
 			// ReceiverSnmpPrevail.me.setSubVarsWithTagInfoBYparamnameFromJson(
 			// "hfc_ingonglv", json);
 

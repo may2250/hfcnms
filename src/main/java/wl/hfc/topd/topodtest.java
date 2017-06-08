@@ -1,11 +1,14 @@
 package wl.hfc.topd;
 
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.concurrent.Delayed;
 
 import org.json.simple.JSONObject;
 
+import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.*;
+import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.online.PDUServer;
 
 
@@ -44,10 +47,20 @@ public class topodtest {
 	
 	//ICDatabaseEngine1.DeviceTableDeleteRow(row);
 	
+		
+		
+		
+		//log test
+    //nojuTrapLogTableRow aCurrentrow = new nojuTrapLogTableRow(1, TrapLogTypes.Lo, "1.1.1.1", "Nename", "content", new Date(), "", "", "paramName", "pvalue");
+	//ICDatabaseEngine1.trapLogInsertRow(aCurrentrow);
 	
 	
-	MainKernel md1DevGrpModel=new MainKernel(ICDatabaseEngine1);
-	md1DevGrpModel.initTopodData();
+	CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1);
+	//CurrentAlarmModel1.insertTrapLog( TrapLogTypes.Lo, "1.1.1.1", "neName", "content", new Date());
+	
+	//CurrentAlarmModel1.insertTrapLog( TrapLogTypes.Lo, "1.1.1.1", "neName", "content", new Date());
+//	MainKernel md1DevGrpModel=new MainKernel(ICDatabaseEngine1);
+	//md1DevGrpModel.initTopodData();
 	
 	
 	//md1DevGrpModel.handleInsertGrp(new JSONObject());
@@ -62,6 +75,7 @@ public class topodtest {
 	//md1DevGrpModel.handleDeleteDev(new JSONObject());
 	
 	
+
 
 	}
 
