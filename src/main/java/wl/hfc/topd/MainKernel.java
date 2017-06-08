@@ -93,9 +93,8 @@ public class MainKernel {
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
 		JSONObject rootjson = new JSONObject();
-		if(cmd.equalsIgnoreCase("getInitTree")){	
-			staticmemory.sendRemoteStr(getInitTree(rootjson), jsondata.get("sessionid").toString());			
-		}else if(cmd.equalsIgnoreCase("getInitLog")){
+		if(cmd.equalsIgnoreCase("getLoginInit")){	
+			staticmemory.sendRemoteStr(getInitTree(rootjson), jsondata.get("sessionid").toString());	
 			staticmemory.sendRemoteStr(getInitLog(rootjson), jsondata.get("sessionid").toString());	
 		}else if(cmd.equalsIgnoreCase("nodeadd")){
 			handleInsertGrp(jsondata);			

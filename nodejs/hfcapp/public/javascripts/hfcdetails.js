@@ -102,16 +102,16 @@ function parse_rece_workstation(jsonobj){
 	}
 	var i = 1;
 	$.each(jsonobj.powertbl, function(key, itemv) {
-		$('.power_vn' + i)[0].innerText = itemv.fnDCPowerName_row;
-		$('.power_v' + i)[0].innerText = itemv.fnDCPowerVoltage_row;
+		$('.power_vn' + i)[0].textContent = itemv.fnDCPowerName_row;
+		$('.power_v' + i)[0].textContent = itemv.fnDCPowerVoltage_row;
 		i++;
 	});	
 	i = 1;
 	$.each(jsonobj.pumptbl, function(key, itemv) {
-		$('.pump_pname' + i)[0].innerText = itemv.fnRFPortName_row;
-		$('.pump_att' + i)[0].innerText = itemv.fnOutputRFlevelatt_row;
-		$('.pump_eq' + i)[0].innerText = itemv.fnOutputRFleveleq_row;
-		$('.pump_level' + i)[0].innerText = itemv.fnRFPortOutputRFLevel_row;
+		$('.pump_pname' + i)[0].textContent = itemv.fnRFPortName_row;
+		$('.pump_att' + i)[0].textContent = itemv.fnOutputRFlevelatt_row;
+		$('.pump_eq' + i)[0].textContent = itemv.fnOutputRFleveleq_row;
+		$('.pump_level' + i)[0].textContent = itemv.fnRFPortOutputRFLevel_row;
 		i++;
 	});
 	switch(jsonobj.fnDCPowerVoltage06){

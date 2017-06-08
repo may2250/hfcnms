@@ -4,7 +4,7 @@
 	var tbl_optlog;
 	var lazyLoadData = null;
 	$(function() {
-		var encstr = 'username='+localStorage.userName+'&password='+ sessionStorage.passWord;
+		var encstr = localStorage.userName+'/'+ sessionStorage.passWord;
 		initWebSocket(encstr);	   	
     	
     	window.__globalobj__ = {
@@ -23,7 +23,7 @@
     		    _initWebSocket:function(str){
     				var hostip = window.location.hostname;
     		        if (window.WebSocket) {
-    		        	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice?'+str);
+    		        	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice/'+str);
     		        	webSocket.onmessage = function(event) {
     		        		onMessage(event);
     		            };
@@ -178,12 +178,17 @@
     	$('#needtype').change(function(){ 
     		$('#salutation').attr("disabled", !$(this).is(':checked'));    		
     	});
+    	
+    	$('#user-logout').click(function(){
+    		sessionStorage.passWord = undefined;
+    		window.location.href="/login";
+    	});
 	});
 	
 	function initWebSocket(encstr) {
 		var hostip = window.location.hostname;
         if (window.WebSocket) {
-        	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice?' + encstr);
+        	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice/' + encstr);
         	webSocket.onmessage = function(event) {
         		onMessage(event);
             };
@@ -205,6 +210,10 @@
     	var jsonobj =  eval('(' + event.data + ')');
         if(jsonobj.cmd == "getInitTree"){
         	initTree(jsonobj.treenodes);        
+        }else if(jsonobj.cmd == "loginAuth"){
+        	if(!jsonobj.Authed){
+        		window.location.href="/login";
+        	}
         }else if(jsonobj.cmd == "getInitLog"){
         	//解析日志并显示
         	parseLogs(jsonobj);
@@ -281,6 +290,7 @@
         		if(jsonobj.isonline == true){
         			node.data.isonline = true;
         			node.icon = "../images/device.png";
+        			node.getLastChild().data.hfctype = jsonobj.hfctype;
         			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
             			if(jsonobj.ip == __globalobj__._realDevice.key){
             				$(".dev-status").css("color", "lightgreen");
@@ -307,10 +317,10 @@
 
  
     function onOpen(event) {
-    	var datastring = '{"cmd":"getInitTree","message":""}';
+    	/*var datastring = '{"cmd":"getInitTree","message":""}';
     	send(datastring);
     	var datastring = '{"cmd":"getInitLog","message":""}';
-    	send(datastring);
+    	send(datastring);*/
     }
  
     function onError(event) {
