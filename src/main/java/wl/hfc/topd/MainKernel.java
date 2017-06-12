@@ -96,6 +96,8 @@ public class MainKernel {
 		if(cmd.equalsIgnoreCase("getLoginInit")){	
 			staticmemory.sendRemoteStr(getInitTree(rootjson), jsondata.get("sessionid").toString());	
 			staticmemory.sendRemoteStr(getInitLog(rootjson), jsondata.get("sessionid").toString());	
+		}else if(cmd.equalsIgnoreCase("getgrouptree")){
+			staticmemory.sendRemoteStr(getGroupTree(rootjson), jsondata.get("sessionid").toString());
 		}else if(cmd.equalsIgnoreCase("nodeadd")){
 			handleInsertGrp(jsondata);			
 		}else if(cmd.equalsIgnoreCase("nodeedit")){
@@ -203,6 +205,45 @@ public class MainKernel {
 		String jsonString = rootjson.toJSONString();
 		System.out.println("jsonString==" + jsonString);
 		return jsonString;
+    }
+    
+    private String getGroupTree(JSONObject rootjson){
+    	rootjson.put("cmd", "getgrouptree");
+		JSONArray jsonarray = new JSONArray();
+		//获取设备树结构
+		jsonarray = getSubGroup(rootListNode);
+		rootjson.put("treenodes", jsonarray);
+		String jsonString = rootjson.toJSONString();
+		System.out.println("jsonString==" + jsonString);
+		return jsonString;
+    }
+    
+    private JSONArray getSubGroup(LNode pnode){
+    	JSONObject subjson;
+    	JSONArray jsonarray = new JSONArray();
+    	for(Iterator iter = pnode.Nodes.iterator(); iter.hasNext();){
+			LNode node = (LNode)iter.next();
+			InodeInterface InodeInterface1 = (InodeInterface)node;
+			if (InodeInterface1.isGroup())
+            {
+				subjson = new JSONObject();
+				devGroup group = (devGroup)InodeInterface1;
+				UserGroupTableRow usergroup = group.BindUserGroupTableRow;
+				subjson.put("key", usergroup.UserGroupID);
+				subjson.put("pkey", usergroup.ParentGroupID);
+				subjson.put("title", usergroup.UserGroupName);
+				subjson.put("type", "group");
+				subjson.put("isFolder", true);
+				subjson.put("expand", true);
+				subjson.put("icon", "images/net_center.png");	
+
+				JSONArray subjsonarray = new JSONArray();
+				subjsonarray = getSubGroup(node);
+				subjson.put("children", subjsonarray);			
+				jsonarray.add(subjson);
+            }
+		}
+    	return jsonarray;
     }
     
     private String getInitLog(JSONObject rootjson){

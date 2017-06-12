@@ -1,5 +1,6 @@
 (function($) {
 	var webSocket;
+	var regtree;
 	var tbl_devalarm;
 	var tbl_optlog;
 	var lazyLoadData = null;
@@ -139,7 +140,8 @@
 		        	            	  $("#search-eip").addClass( "ui-state-error-custom" );
 		        	    			  return;
 		        	              };  
-		        	              var datastring = '{"cmd":"devsearch","community":"'+$("#search-community").val() +'","startip":"'+ $("#search-sip").val()+'","endip":"'+ $("#search-eip").val() +'","target":"start"}';
+		        	              
+		        	              var datastring = '{"cmd":"devsearch","community":"'+$("#search-community").val() +'","devtype":"'+ $("#search-stype").prop('selectedIndex') +'","startip":"'+ $("#search-sip").val()+'","endip":"'+ $("#search-eip").val() +'","target":"start"}';
 	      	        	    	  webSocket.send(datastring);
 	        	            },
 	        	            "结束": function(){
@@ -182,6 +184,32 @@
     	$('#user-logout').click(function(){
     		sessionStorage.passWord = undefined;
     		window.location.href="/login";
+    	});
+    	
+    	$('#modal_searchresult').on('hidden.bs.modal', function (e) {
+    		$('#list-newdevs').empty();
+    	})
+    	
+    	$('#btn-regdev').click(function(){
+    		var node = $("#reg-grouptree").fancytree("getActiveNode");
+    		if(node == null || node == undefined){
+    			alert("请指定要注册设备的组!");
+    			return;
+    		}
+    		if($('input:checkbox[name=dev]:checked').length < 1){
+    			alert("请指定要注册设备!");
+    			return;
+    		}
+    		$('input:checkbox[name=dev]:checked').each(function(i){
+    			 var strs = new Array(); //定义一数组 
+    			 strs = $(this).val().split("/"); //字符分割 
+    			 //发送到服务端注册设备
+    			 var datastring = '{"cmd":"deviceadd","key":"'+ node.key + '","devtype":"'+ strs[1] + '","rcommunity":"public","wcommunity":"public","devname":"'+ strs[0] + '","netip":"'+ strs[0] +'"}';
+ 	    		 webSocket.send(datastring);
+    			 
+    		     //删除该行
+    			 $(this).parent().parent().remove();
+    		});
     	});
 	});
 	
@@ -310,6 +338,24 @@
         	}
         }else if(jsonobj.cmd == "realtime-device"){
         	showHfcDevice(jsonobj);
+        }else if(jsonobj.cmd == "devsearchprocess"){
+        	if(jsonobj.process == 100){
+        		$("#dialog-devsearch").dialog("close");
+        		$(".progress-bar").width( "0%");
+        		var datastring = '{"cmd":"getgrouptree"}';
+    	    	webSocket.send(datastring);
+    	    	$("#modal_searchresult").modal();
+        	}
+        	$(".progress-bar").width(jsonobj.process+ "%");
+        }else if(jsonobj.cmd == "getgrouptree"){
+        	regtree = $("#reg-grouptree").fancytree({
+                source: jsonobj.treenodes,
+                clickFolderMode: 1,
+                minExpandLevel: 2
+              });
+        }else if(jsonobj.cmd == "devsearch-result"){
+        	var paramstr = jsonobj.ipaddr+ '/' + jsonobj.devtype +'/'+jsonobj.hfctype;
+        	$('#list-newdevs').append('<li class="list-group-item"><label><input name="dev" type="checkbox" value="'+ paramstr + '" />'+jsonobj.ipaddr+ '/' + getNetTypeTostring(jsonobj.devtype)+'/'+jsonobj.hfctype+'</label></li>');
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;

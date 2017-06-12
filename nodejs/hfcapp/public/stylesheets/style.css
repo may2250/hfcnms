@@ -493,6 +493,32 @@ li#menu-academico{
     text-align: left;
 }
 
+.modal-newdevs {
+	float: left;
+    margin-left: 10px;
+    width: 70%;
+    height: 280px;
+    overflow: auto;
+}
+
+.modal-newdevs label {
+	font-size: 14px;
+	font-weight: 400 !important;
+}
+
+#reg-grouptree {
+	height: 280px;
+}
+
+.modal-search-content {
+	height: 300px;
+}
+
+.modal-tree {
+	float: left;
+    width: 26%;
+}
+
 .devdetail {
 	min-width:800px;
 	max-width:1100px;

@@ -75,6 +75,9 @@ public class Services_Websocket {
 				//获取设备数结构
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);				
+			}else if(cmd.equalsIgnoreCase("getgrouptree")){
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("getInitLog")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
@@ -97,7 +100,7 @@ public class Services_Websocket {
 				sendToQueue(jsondata.toJSONString(), PARAMKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("devsearch")){
 				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
+				sendToQueue(jsondata.toJSONString(), PARAMKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("deviceclose")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), PARAMKERNEL_MESSAGE);

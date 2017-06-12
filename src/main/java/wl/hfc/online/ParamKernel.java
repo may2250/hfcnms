@@ -1,6 +1,8 @@
 package wl.hfc.online;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -14,10 +16,12 @@ import org.json.simple.parser.ParseException;
 
 import com.xinlong.util.ObjSnmpPreail;
 import com.xinlong.util.RedisUtil;
+import com.xinlong.util.SearchIpInfo;
 import com.xinlong.util.StaticMemory;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
+import wl.commonComponent.DeviceSearchEngine;
 
 
 //DevGrpModel将承担拓扑的组建，维护，以及组，设备的增删查改的响应
@@ -81,6 +85,8 @@ public class ParamKernel {
 			hfcDeviceDetail(jsondata);				
 		}else if(cmd.equalsIgnoreCase("deviceclose")){			
 			staticmemory.removeRealTimeDev(jsondata.get("ip").toString(),jsondata.get("sessionid").toString());
+		}else if(cmd.equalsIgnoreCase("devsearch")){
+			devSerach(jsondata);
 		}
 	}
 	
@@ -139,9 +145,9 @@ public class ParamKernel {
 		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
 			//获取温度相关门限信息
 			
-		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("tbl_powerv1")){
+		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("fnDCPowerVoltage_row0")){
 			
-		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("tbl_powerv2")){
+		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("fnDCPowerVoltage_row1")){
 			
 		}
 		//TODO
@@ -182,6 +188,15 @@ public class ParamKernel {
 		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("tbl_powerv2")){
 			
 		}
+	}
+	
+	private void devSerach(JSONObject jsondata) throws NumberFormatException, IOException{
+		String devtype = jsondata.get("devtype").toString();
+		
+		SearchIpInfo searchinfo = new SearchIpInfo(InetAddress.getByName(jsondata.get("startip").toString()) , InetAddress.getByName(jsondata.get("endip").toString()),false, Integer.parseInt(devtype));
+		searchinfo.sessionid = jsondata.get("sessionid").toString();
+		DeviceSearchEngine dse = new DeviceSearchEngine(searchinfo, staticmemory);
+		dse.start();
 	}
   	
     

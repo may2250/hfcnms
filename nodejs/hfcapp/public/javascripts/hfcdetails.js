@@ -79,77 +79,77 @@ function parse_rece_workstation(jsonobj){
 		$("#detail_minerelectric").parent().parent().css("display", "none");
 		$("#detail_minieratt").parent().parent().css("display", "none");
 	}	
-	$('#detail_channel').val(jsonobj.fnRFChannelNum);
-	$('#detail_inoptical').val(jsonobj.fnOpticalReceiverPower);  
+	$('#fnRFChannelNum').val(jsonobj.fnRFChannelNum);
+	$('#fnOpticalReceiverPower').val(jsonobj.fnOpticalReceiverPower);  
 	switch(jsonobj.fnOpticalReceiverPower6){
 	case "1":
         //normal
-		$('#detail_inoptical').css("background-color", "green");
+		$('#fnOpticalReceiverPower').css("background-color", "green");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
     //hihi
     case "5":
         //lolo
-    	$('#detail_inoptical').css("background-color", "red");
+    	$('#fnOpticalReceiverPower').css("background-color", "red");
         break;
     case "3":
     //hi
     case "4":
         //lo
-    	$('#detail_inoptical').css("background-color", "yellow");
+    	$('#fnOpticalReceiverPower').css("background-color", "yellow");
         break;
 	}
-	var i = 1;
+	var i = 0;
 	$.each(jsonobj.powertbl, function(key, itemv) {
-		$('.power_vn' + i)[0].textContent = itemv.fnDCPowerName_row;
-		$('.power_v' + i)[0].textContent = itemv.fnDCPowerVoltage_row;
+		$('.fnDCPowerName_row' + i)[0].textContent = itemv.fnDCPowerName_row;
+		$('.fnDCPowerVoltage_row' + i)[0].textContent = itemv.fnDCPowerVoltage_row;
 		i++;
 	});	
-	i = 1;
+	i = 0;
 	$.each(jsonobj.pumptbl, function(key, itemv) {
-		$('.pump_pname' + i)[0].textContent = itemv.fnRFPortName_row;
-		$('.pump_att' + i)[0].textContent = itemv.fnOutputRFlevelatt_row;
-		$('.pump_eq' + i)[0].textContent = itemv.fnOutputRFleveleq_row;
-		$('.pump_level' + i)[0].textContent = itemv.fnRFPortOutputRFLevel_row;
+		$('.fnRFPortName_row' + i)[0].textContent = itemv.fnRFPortName_row;
+		$('.fnOutputRFlevelatt_row' + i)[0].textContent = itemv.fnOutputRFlevelatt_row;
+		$('.fnOutputRFleveleq_row' + i)[0].textContent = itemv.fnOutputRFleveleq_row;
+		$('.fnRFPortOutputRFLevel_row' + i)[0].textContent = itemv.fnRFPortOutputRFLevel_row;
 		i++;
 	});
 	switch(jsonobj.fnDCPowerVoltage06){
 	case "1":
         //normal
-		$('.power_v1').css("background-color", "green");
+		$('.fnDCPowerVoltage_row0').css("background-color", "green");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
     //hihi
     case "5":
         //lolo
-    	$('.power_v1').css("background-color", "red");
+    	$('.fnDCPowerVoltage_row0').css("background-color", "red");
         break;
     case "3":
     //hi
     case "4":
         //lo
-    	$('.power_v1').css("background-color", "yellow");
+    	$('.fnDCPowerVoltage_row0').css("background-color", "yellow");
         break;
 	}
 	switch(jsonobj.fnDCPowerVoltage16){
 	case "1":
         //normal
-		$('.power_v2').css("background-color", "green");
+		$('.fnDCPowerVoltage_row1').css("background-color", "green");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
     //hihi
     case "5":
         //lolo
-    	$('.power_v2').css("background-color", "red");
+    	$('.fnDCPowerVoltage_row1').css("background-color", "red");
         break;
     case "3":
     //hi
     case "4":
         //lo
-    	$('.power_v2').css("background-color", "yellow");
+    	$('.fnDCPowerVoltage_row1').css("background-color", "yellow");
         break;
 	}
 }
@@ -231,6 +231,32 @@ function parseHfcValueSet(jsonobj){
 		 $("#dialog-alarmThreshold").dialog("open");
 		 break;
 	 }	     
+}
+
+function getNetTypeTostring(pNetTypes)
+{
+    switch (pNetTypes)
+    {
+        case "other":
+            return "其他设备";
+        case "EDFA":
+            return "EDFA";
+        case "Trans":
+            return "光发射机";
+        case "rece_workstation":
+            return "光接收机/光工作站";
+        case "OSW":
+            return "光切换开关";
+        case "RFSW":
+            return "射频切换开关";
+        case "PreAMP":
+            return "前置放大器";
+        case "wos":
+            return "光平台";
+        default:
+            return "其他设备";
+
+    }
 }
 
 function updateTips( t ) {

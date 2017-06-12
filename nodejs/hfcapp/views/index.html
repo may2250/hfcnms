@@ -53,6 +53,10 @@
 									<i class="icon-lock icon-2x" ></i>
 									<p>权限管理</p>
 								</li>
+								<li class="nav_manageralarm">
+									<i class="icon-bell-alt icon-2x" ></i>
+									<p>告警管理</p>
+								</li>
 								<li class="nav_managerlog">
 									<i class="icon-calendar icon-2x" ></i>
 									<p>日志管理</p>
@@ -313,7 +317,9 @@
   				<td>
 					<select name="search-stype" id="search-stype">
 				      <option selected>国标设备</option>
-				      <option>Wos4000</option>
+				      <option>Wos4000,Wos3000_SCTE</option>
+				      <option>AOB01SMM</option>
+				      <option>MTRAN 2000</option>
 				    </select>
   				</td>
   				<td>
@@ -331,6 +337,37 @@
 		        <span class="sr-only">0%</span>
 		    </div>
 		</div>
+	</div>
+	<!-- 模态框（Modal） -->
+	<div class="modal fade bs-example-modal-lg" id="modal_searchresult" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						新发现设备注册
+					</h4>
+				</div>
+				<div class="modal-body modal-search-content">
+					<div class="modal-tree">
+		 				<div id="reg-grouptree"></div>
+		 			</div>
+		 			<div class="modal-newdevs">	
+		 				<ul class="list-group" id="list-newdevs">
+							<li class="list-group-item"><label><input name="dev" type="checkbox" value="" />苹果 /xxxxxxxxxxxxx/hfc device</label></li>
+						</ul>
+		 			</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="btn-regdev" >注册
+					</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
 	</div>
    <script src="/javascripts/hfcdetails.js"></script>
    <script src="/javascripts/main.js"></script>

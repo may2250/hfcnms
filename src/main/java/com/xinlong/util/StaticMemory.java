@@ -41,8 +41,7 @@ public class StaticMemory {
 	
 	public synchronized void addRealTimeDev(JSONObject jsondata){
 		String netaddr = jsondata.get("ip").toString();
-		String sessionID = jsondata.get("sessionid").toString();
-		String devtype = jsondata.get("devtype").toString();
+		String sessionID = jsondata.get("sessionid").toString();		
 		if(realTimeDevHashtable.containsKey(netaddr)){
 			ObjSnmpPreail osp = realTimeDevHashtable.get(netaddr);
 			if(!osp.sessionList.contains(sessionID)){
@@ -51,6 +50,7 @@ public class StaticMemory {
 			}
 		}else{
 			ObjSnmpPreail osp = new ObjSnmpPreail();
+			String devtype = jsondata.get("devtype").toString();
 			if(devtype.equalsIgnoreCase("EDFA")){
 				
 			}else if(devtype.equalsIgnoreCase("Trans")){
@@ -123,9 +123,8 @@ public class StaticMemory {
 			for (Session session : webSocketClients) {
 	            try {
 	                synchronized (session) {
-	                	System.out.println("SessionID::::" + session.getId() + "::id::" + sessionid);
 	                    if(session.getId().equalsIgnoreCase(sessionid)){
-	                    	System.out.println("Session Got!");
+	                    	System.out.println("Session Got::" + sessionid);
 	                    	return session;
 	                    }
 	                }

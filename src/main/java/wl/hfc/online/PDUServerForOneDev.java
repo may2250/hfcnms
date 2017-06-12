@@ -7,6 +7,8 @@ import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
+import com.adventnet.snmp.snmp2.SnmpPDU;
+
 import wl.hfc.common.PduSevr;
 
 public class PDUServerForOneDev implements PduSevr {
@@ -74,6 +76,18 @@ public class PDUServerForOneDev implements PduSevr {
 	}
 
 	public boolean AyncSendSnmpPdu(PDU outpdu,CommunityTarget cTgt) {
+//		try {
+//			this._session.send(outpdu);
+//
+//		} catch (Exception ex) {
+//			// Console.Write(ex.Source);
+//			return false;
+//		}
+		return true;
+
+	}
+	
+	public boolean AyncSendSnmpPdu(SnmpPDU outpdu) {
 //		try {
 //			this._session.send(outpdu);
 //
