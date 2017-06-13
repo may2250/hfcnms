@@ -195,45 +195,23 @@ public class WosBaseSnmp {
 
 	// get sigle param variable
 	public void setVars(String paramname, String pValue) {
-
+		VariableSnmpVar tmpTagInfo = paramHashTable.get(paramname);
 		WosParamForSetInfo wosParamForSetInfo1 = new WosParamForSetInfo();
-		wosParamForSetInfo1.pmSetList[0] = Integer.parseInt(pValue);
-		ArrayList<VariableBinding> lists = SnmpEngine.cutMajorVaribaleSingle(wosParamForSetInfo1, paramHashTable.get(paramname));
-
-		this.setParam(lists);
-
-	}
-
-	public void setDBVars(String paramname, String pValue) {
-
-		pValue = pValue.substring(0, pValue.length() - 2);
-
-		WosParamForSetInfo wosParamForSetInfo1 = new WosParamForSetInfo();
-		wosParamForSetInfo1.pmSetList[0] = Integer.parseInt(pValue);
-		ArrayList<VariableBinding> lists = SnmpEngine.cutMajorVaribaleSingle(wosParamForSetInfo1, paramHashTable.get(paramname));
-
-		this.setParam(lists);
-
-	}
-
-	public void setDBTableVars(String paramname, String pValue, int row) {
-
-		pValue = pValue.substring(0, pValue.length() - 2);
-		WosParamForSetInfo wosParamForSetInfo1 = new WosParamForSetInfo();
-		wosParamForSetInfo1.pmSetList[0] = Integer.parseInt(pValue);
-
-		ArrayList<VariableBinding> lists = SnmpEngine.cutTableVaribaleSingle(wosParamForSetInfo1, paramHashTable.get(paramname), row);
+		Float rest = Float.valueOf(pValue) / tmpTagInfo.VarInfo.FormatCoff;
+		wosParamForSetInfo1.pmSetList[0] = rest.intValue();
+		ArrayList<VariableBinding> lists = SnmpEngine.cutMajorVaribaleSingle(wosParamForSetInfo1,tmpTagInfo);
 
 		this.setParam(lists);
 
 	}
 
 	public void setTableVars(String paramname, String pValue, int row) {
-
+		VariableSnmpVar tmpTagInfo = paramHashTable.get(paramname);
 		WosParamForSetInfo wosParamForSetInfo1 = new WosParamForSetInfo();
-		wosParamForSetInfo1.pmSetList[0] = Integer.parseInt(pValue);
+		Float rest = Float.valueOf(pValue) / tmpTagInfo.VarInfo.FormatCoff;
+		wosParamForSetInfo1.pmSetList[0] = rest.intValue();
 
-		ArrayList<VariableBinding> lists = SnmpEngine.cutTableVaribaleSingle(wosParamForSetInfo1, paramHashTable.get(paramname), row);
+		ArrayList<VariableBinding> lists = SnmpEngine.cutTableVaribaleSingle(wosParamForSetInfo1, tmpTagInfo, row);
 
 		this.setParam(lists);
 

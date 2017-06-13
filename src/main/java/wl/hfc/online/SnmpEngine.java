@@ -407,7 +407,7 @@ public class SnmpEngine {
 		String oidrs;
 		ArrayList<VariableBinding> result = new ArrayList<VariableBinding>();
 		if (tmpTagInfo.CurrentVarBind != null) {
-			oidrs = tmpTagInfo.VarInfo.ParamMibOID.toString() + "." + rowNumber;
+			oidrs = tmpTagInfo.VarInfo.ParamMibOID.toString() + "." + (rowNumber+1);
 			result.add(new VariableBinding(new OID(oidrs), new Integer32(paramSetList.pmSetList[0])));
 		}
 

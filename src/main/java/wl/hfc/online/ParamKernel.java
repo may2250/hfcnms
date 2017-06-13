@@ -104,99 +104,75 @@ public class ParamKernel {
 	private void hfcValueSet(JSONObject jsondata){
 		JSONObject rootjson = new JSONObject();
 		String target = jsondata.get("target").toString();
-		if(target.equalsIgnoreCase("devicetrapedit")){
-			//修改设备Trap主机地址
-			rootjson.put("cmd", "hfcvalueset");
-			rootjson.put("target", "devicetrapedit");
-			rootjson.put("domstr", jsondata.get("domstr").toString());
-			rootjson.put("value", jsondata.get("value").toString());
-			//TODO
-			//发送到设备
-			
-			
-			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
-		}else if(target.equalsIgnoreCase("devicechannel")){
-			//修改设备频道数
-			rootjson.put("cmd", "hfcvalueset");
-			rootjson.put("target", "devicechannel");
-			rootjson.put("domstr", jsondata.get("domstr").toString());
-			rootjson.put("value", jsondata.get("value").toString());
-			//TODO
-			//发送到设备
-			
-			
-			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
-		}else if(target.equalsIgnoreCase("getalarmThreshold")){
-			//获取告警门限			
-			staticmemory.sendRemoteStr(getAlarmThreshold(jsondata), jsondata.get("sessionid").toString());
-		}else if(target.equalsIgnoreCase("setalarmThreshold")){
-			//设置告警门限	
-			setAlarmThreshold(jsondata);
-			//staticmemory.sendRemoteStr(getAlarmThreshold(jsondata), jsondata.get("sessionid").toString());
-		}
-	}
-	
-	/*jsondata: ip,devtype,rcommunity*/
-	private String getAlarmThreshold(JSONObject jsondata){
-		JSONObject rootjson = new JSONObject();
 		String netaddr = jsondata.get("ip").toString();
 		ObjSnmpPreail osp = staticmemory.getRealTimeDev(netaddr);
 		WosBaseSnmp snmpPreail = osp.snmpPreail;
-		if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
-			
-			snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
-		}
-		else//表内参数
-		{			
-			String rowString = jsondata.get("rowNum").toString();
-			int row = Integer.parseInt(rowString);
-			snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson,row);
-			
-		}		
+		if(target.equalsIgnoreCase("setVars")){
 
-		jsondata.put("detail", rootjson);
-		return jsondata.toJSONString();
+			if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
+				
+				snmpPreail.setVars(jsondata.get("domstr").toString(),jsondata.get("value").toString());
+			}
+			else//表内参数
+			{			
+				String rowString = jsondata.get("rowNum").toString();
+				int row = Integer.parseInt(rowString);
+				snmpPreail.setTableVars(jsondata.get("domstr").toString(),jsondata.get("value").toString(),row);
+				
+			}
+			//staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
+		}else if(target.equalsIgnoreCase("getalarmThreshold")){
+
+			if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
+				
+				snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
+			}
+			else//表内参数
+			{			
+				String rowString = jsondata.get("rowNum").toString();
+				int row = Integer.parseInt(rowString);
+				snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson,row);
+				
+			}		
+			jsondata.put("detail", rootjson);		
+			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
+		}else if(target.equalsIgnoreCase("setalarmThreshold")){			
+
+			rootjson.put("hihi", jsondata.get("HIHI").toString());
+			rootjson.put("hi", jsondata.get("HI").toString());
+			rootjson.put("lo", jsondata.get("LO").toString());
+			rootjson.put("lolo", jsondata.get("LOLO").toString());
+			rootjson.put("deadb", jsondata.get("DEAD").toString());
+			byte en = 0;
+			if(jsondata.get("ISLOLO").toString().equalsIgnoreCase("true")){
+				en = (byte)(en | 0x01);
+			}
+			if(jsondata.get("ISLO").toString().equalsIgnoreCase("true")){
+				en = (byte)(en | 0x02);
+			}
+			if(jsondata.get("ISHI").toString().equalsIgnoreCase("true")){
+				en = (byte)(en | 0x04);
+			}
+			if(jsondata.get("ISHIHI").toString().equalsIgnoreCase("true")){
+				en = (byte)(en | 0x08);
+			}
+			rootjson.put("en", en);
+			if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
+				
+				snmpPreail.setSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
+			}
+			else//表内参数
+			{			
+				String rowString = jsondata.get("rowNum").toString();
+				int row = Integer.parseInt(rowString);
+				snmpPreail.setSubVarsTableBYparamname(jsondata.get("domstr").toString(),rootjson,row);
+				
+			}
+		}
 	}
 	
-	/*jsondata: ip,devtype,rcommunity,wcommunity*/
-	private void setAlarmThreshold(JSONObject jsondata){
-		
-		
-		JSONObject rootjson = new JSONObject();
-		String netaddr = jsondata.get("ip").toString();
-		ObjSnmpPreail osp = staticmemory.getRealTimeDev(netaddr);
-		WosBaseSnmp snmpPreail = osp.snmpPreail;
-		rootjson.put("hihi", jsondata.get("HIHI").toString());
-		rootjson.put("hi", jsondata.get("HI").toString());
-		rootjson.put("lo", jsondata.get("LO").toString());
-		rootjson.put("lolo", jsondata.get("LOLO").toString());
-		rootjson.put("deadb", jsondata.get("DEAD").toString());
-		byte en = 0;
-		if(jsondata.get("ISLOLO").toString().equalsIgnoreCase("true")){
-			en = (byte)(en | 0x01);
-		}
-		if(jsondata.get("ISLO").toString().equalsIgnoreCase("true")){
-			en = (byte)(en | 0x02);
-		}
-		if(jsondata.get("ISHI").toString().equalsIgnoreCase("true")){
-			en = (byte)(en | 0x04);
-		}
-		if(jsondata.get("ISHIHI").toString().equalsIgnoreCase("true")){
-			en = (byte)(en | 0x08);
-		}
-		rootjson.put("en", en);
-		if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
-			
-			snmpPreail.setSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
-		}
-		else//表内参数
-		{			
-			String rowString = jsondata.get("rowNum").toString();
-			int row = Integer.parseInt(rowString);
-			snmpPreail.setSubVarsTableBYparamname(jsondata.get("domstr").toString(),rootjson,row);
-			
-		}
-	}
+
+
 	
 	private void devSerach(JSONObject jsondata) throws NumberFormatException, IOException{
 		String devtype = jsondata.get("devtype").toString();
