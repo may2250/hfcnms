@@ -315,21 +315,21 @@ public class SnmpEngine {
 					vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
 					byte brst = (byte) Integer.parseInt(vale, 16);
 					if ((brst & 0x08) != 0)
-						pJson.put("HIHI", "1");
+						pJson.put("HIHIen", "1");
 					else
-						pJson.put("HIHI", "0");
+						pJson.put("HIHIen", "0");
 					if ((brst & 0x04) != 0)
-						pJson.put("HI", "1");
+						pJson.put("HIen", "1");
 					else
-						pJson.put("HI", "0");
+						pJson.put("HIen", "0");
 					if ((brst & 0x02) != 0)
-						pJson.put("LO", "1");
+						pJson.put("LOen", "1");
 					else
-						pJson.put("LO", "0");
+						pJson.put("LOen", "0");
 					if ((brst & 0x01) != 0)
-						pJson.put("LOLO", "1");
+						pJson.put("LOLOen", "1");
 					else
-						pJson.put("LOLO", "0");
+						pJson.put("LOLOen", "0");
 					
 				} else
 
@@ -358,21 +358,21 @@ public class SnmpEngine {
 					vale = subVariableSnmpVarS[j].ToDispString();
 					byte brst = (byte) Integer.parseInt(vale, 16);
 					if ((brst & 0x08) != 0)
-						pJson.put("HIHI", "1");
+						pJson.put("HIHIen", "1");
 					else
-						pJson.put("HIHI", "0");
+						pJson.put("HIHIen", "0");
 					if ((brst & 0x04) != 0)
-						pJson.put("HI", "1");
+						pJson.put("HIen", "1");
 					else
-						pJson.put("HI", "0");
+						pJson.put("HIen", "0");
 					if ((brst & 0x02) != 0)
-						pJson.put("LO", "1");
+						pJson.put("LOen", "1");
 					else
-						pJson.put("LO", "0");
+						pJson.put("LOen", "0");
 					if ((brst & 0x01) != 0)
-						pJson.put("LOLO", "1");
+						pJson.put("LOLOen", "1");
 					else
-						pJson.put("LOLO", "0");
+						pJson.put("LOLOen", "0");
 					
 				} else
 

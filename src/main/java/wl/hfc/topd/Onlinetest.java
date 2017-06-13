@@ -48,18 +48,20 @@ public class Onlinetest {
 
 		JSONObject json = new JSONObject();
 		ReceiverSnmpPrevail snmpInstance7 = new ReceiverSnmpPrevail(".1");
-		snmpInstance7.thisDev = new CDevForCMD("public", "public", "192.168.1.236");
+		snmpInstance7.thisDev = new CDevForCMD("public", "public", "192.168.1.243");
 		snmpInstance7.sver = new PDUServerForOneDev(0);
 		try {
 			System.out.println(json.toString());
 			json = snmpInstance7.getPmWithModelNumber(json);
 
-			// ReceiverSnmpPrevail.me.getSubvarsTableWithTagInfo(ReceiverSnmpPrevail.me.cInputVariables[1],
-			// 1);
-		// SnmpEngine.ThreadPramVarToJason(ReceiverSnmpPrevail.me.cInputVariables[1],
-			//json);
-			System.out.println(json.toString());
+			JSONObject rootjson = new JSONObject();
+			//ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnOpticalReceiverPower",rootjson);
+			//ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnDCPowerVoltage",rootjson,0);
+			ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnRFPortOutputRFLevel",rootjson,0);
 
+
+			System.out.println(json.toString());
+			System.out.println(rootjson.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -97,7 +99,7 @@ public class Onlinetest {
 		new pmls();
 		//CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1);
 		try {
-			String nowpath; // ��ǰtomcat��binĿ¼��·��
+	/*		String nowpath; // ��ǰtomcat��binĿ¼��·��
 			nowpath = System.getProperty("user.dir");
 			nowpath = nowpath + "\\" + "mibs";
 
@@ -117,12 +119,12 @@ public class Onlinetest {
 				}
 			}
 			
-			
+			*/
 			
 			
 			
 
-		//  RECEIVERTEST();
+		  RECEIVERTEST();
 		//	CommonVariablesGetTest();
 
 			// ReceiverSnmpPrevail.me.getSubVarsWithTagInfoBYparamname(

@@ -12,6 +12,7 @@ import org.snmp4j.CommunityTarget;
 import wl.hfc.common.SnmpTableInfo;
 import wl.hfc.common.VariableSnmpVar;
 import wl.hfc.common.nojuParmsTableRow;
+import wl.hfc.common.VariableSnmpVar.ToValueMode;
 import wl.hfc.topd.MainKernel;
 
 public class ReceiverSnmpPrevail extends WosBaseSnmp {
@@ -109,7 +110,7 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			cOutputVariables[2].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
 
 			row1 = pmls.paramxml1.tab1.get("fnRFPortOutputRFLevel");
-			cOutputVariables[3] = new VariableSnmpVar(row1);
+			cOutputVariables[3] = new VariableSnmpVar(row1, ".1",ToValueMode.FmtInteger, true);
 			cOutputVariables[3].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
 			paramHashTable.put(row1.ParamMibLabel, cOutputVariables[3]);
 
