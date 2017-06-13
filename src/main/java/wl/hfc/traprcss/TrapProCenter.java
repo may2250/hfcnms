@@ -251,7 +251,9 @@ public class TrapProCenter {
 /*			return new CTrap(NlogType.GetTrapLogType(alarminfo[4]), pAddress,
 					trapstring, new Date(), paramName);*/
 			TrapLogTypes type=NlogType.GetTrapLogType(alarminfo[4]);
-			new nojuTrapLogTableRow(NlogType.getAlarmLevel(type), type, pAddress, "neName", trapstring, new Date(), "", "", paramName, "");
+			
+			
+			return new nojuTrapLogTableRow(NlogType.getAlarmLevel(type), type, pAddress, "neName", trapstring, new Date(), "", "", paramName, "");
 		}
 
 		return new nojuTrapLogTableRow(false);

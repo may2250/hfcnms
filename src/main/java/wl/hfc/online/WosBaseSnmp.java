@@ -140,13 +140,13 @@ public class WosBaseSnmp {
 
 	public void getSubVarsBYparamname(String paramname, JSONObject jsobj) {
 
-		//SnmpEngine.ThreadPramVarToJason(paramHashTable.get(paramname), jsobj);
+	  SnmpEngine.ThreadPramVarToJason(paramHashTable.get(paramname), jsobj);
 
 	}
 
 	public void getSubVarsBYparamname(String paramname, JSONObject jsobj, int rowNumber) {
 
-		//SnmpEngine.ThreadPramVarToJason(paramHashTable.get(paramname), jsobj, rowNumber);
+		SnmpEngine.ThreadPramVarToJason(paramHashTable.get(paramname), jsobj, rowNumber);
 
 	}
 

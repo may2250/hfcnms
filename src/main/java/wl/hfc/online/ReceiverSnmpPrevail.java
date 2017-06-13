@@ -220,6 +220,8 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 
 	}
 
+	
+
 	private void setSubVarsWithTagInfoBYparamname(String paramname, WosParamForSetInfo wosParamForSetInfo1) {
 
 		if (paramname.equalsIgnoreCase("hfc_ingonglv")) {

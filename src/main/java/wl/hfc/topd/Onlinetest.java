@@ -9,6 +9,8 @@ import org.json.simple.JSONObject;
 
 
 
+
+import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.CDevForCMD;
 import wl.hfc.common.SnmpTableInfo;
 import wl.hfc.common.VariableSnmpVar;
@@ -93,6 +95,7 @@ public class Onlinetest {
 		// searchTest();
 		// loadDXml();
 		new pmls();
+		//CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1);
 		try {
 			String nowpath; // ��ǰtomcat��binĿ¼��·��
 			nowpath = System.getProperty("user.dir");
@@ -100,6 +103,7 @@ public class Onlinetest {
 
 			TrapProCenter trpcss = new TrapProCenter(true, nowpath);
 			TrapPduServer.trpcss = trpcss;
+			//TrapPduServer.realTrapResponder=CurrentAlarmModel1;
 			new TrapPduServer();
 			
 			

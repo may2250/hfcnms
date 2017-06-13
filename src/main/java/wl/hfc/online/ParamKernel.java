@@ -142,6 +142,20 @@ public class ParamKernel {
 		String netaddr = jsondata.get("ip").toString();
 		ObjSnmpPreail osp = staticmemory.getRealTimeDev(netaddr);
 		WosBaseSnmp snmpPreail = osp.snmpPreail;
+		if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
+			
+			snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
+		}
+		else//表内参数
+		{			
+			String rowString = jsondata.get("rowNum").toString();
+			int row = Integer.parseInt(rowString);
+			snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson,row);
+			
+		}		
+			//获取温度相关门限信息
+			
+	/*	
 		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
 			//获取温度相关门限信息
 			
@@ -149,26 +163,33 @@ public class ParamKernel {
 			
 		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("fnDCPowerVoltage_row1")){
 			
-		}
-		//TODO
-		//test
-		rootjson.put("ISHIHI", true);
-		rootjson.put("HIHI", "60");
-		rootjson.put("ISHI", true);
-		rootjson.put("HI", "55");
-		rootjson.put("ISLO", true);
-		rootjson.put("LO", "30");
-		rootjson.put("ISLOLO", true);
-		rootjson.put("LOLO", "10");
-		rootjson.put("ISDEAD", true);
-		rootjson.put("DEAD", "0");
+		}*/
+
 		jsondata.put("detail", rootjson);
 		return jsondata.toJSONString();
 	}
 	
 	/*jsondata: ip,devtype,rcommunity,wcommunity*/
 	private void setAlarmThreshold(JSONObject jsondata){
+		
+		
+		JSONObject rootjson = new JSONObject();
 		String netaddr = jsondata.get("ip").toString();
+		ObjSnmpPreail osp = staticmemory.getRealTimeDev(netaddr);
+		WosBaseSnmp snmpPreail = osp.snmpPreail;
+		if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
+			
+			snmpPreail.setSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
+		}
+		else//表内参数
+		{			
+			String rowString = jsondata.get("rowNum").toString();
+			int row = Integer.parseInt(rowString);
+			snmpPreail.setSubVarsTableBYparamname(jsondata.get("domstr").toString(),rootjson,row);
+			
+		}
+		
+	/*	String netaddr = jsondata.get("ip").toString();
 		String ISHIHI = jsondata.get("ISHIHI").toString();
 		String HIHI = jsondata.get("HIHI").toString();
 		String ISHI = jsondata.get("ISHI").toString();
@@ -187,7 +208,7 @@ public class ParamKernel {
 			
 		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("tbl_powerv2")){
 			
-		}
+		}*/
 	}
 	
 	private void devSerach(JSONObject jsondata) throws NumberFormatException, IOException{
