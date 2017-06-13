@@ -152,6 +152,45 @@ function parse_rece_workstation(jsonobj){
     	$('.fnDCPowerVoltage_row1').css("background-color", "yellow");
         break;
 	}
+	switch(jsonobj.fnRFPortOutputRFLevel06){
+	case "1":
+        //normal
+		$('.fnRFPortOutputRFLevel_row0').css("background-color", "green");
+        //textBoxVariable.BackColor = Color.LightGreen;
+        break;
+    case "2":
+    //hihi
+    case "5":
+        //lolo
+    	$('.fnRFPortOutputRFLevel_row0').css("background-color", "red");
+        break;
+    case "3":
+    //hi
+    case "4":
+        //lo
+    	$('.fnRFPortOutputRFLevel_row0').css("background-color", "yellow");
+        break;
+	}
+	switch(jsonobj.fnRFPortOutputRFLevel16){
+	case "1":
+        //normal
+		$('.fnRFPortOutputRFLevel_row1').css("background-color", "green");
+        //textBoxVariable.BackColor = Color.LightGreen;
+        break;
+    case "2":
+    //hihi
+    case "5":
+        //lolo
+    	$('.fnRFPortOutputRFLevel_row1').css("background-color", "red");
+        break;
+    case "3":
+    //hi
+    case "4":
+        //lo
+    	$('.fnRFPortOutputRFLevel_row1').css("background-color", "yellow");
+        break;
+	}
+	
 }
 
 function parseHfcValueSet(jsonobj){

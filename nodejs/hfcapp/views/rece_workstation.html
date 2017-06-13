@@ -4,7 +4,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript">		
 		$(".trapaddr").dblclick(function(){
-			var domstr = $(this)[0].id;
+			var domstr = $(this).data("paramname");
+			var rownum = $(this).data("rownum");
 			$( "#dialog-form" ).dialog({
         	      autoOpen: false,
         	      height: 240,
@@ -14,7 +15,7 @@
         	    	  Ok: function() {	   
         	    		  if(ipvalidate($("#set_value").val())){
         	    			  var node = __globalobj__._realDevice.getFirstChild();
-            	    		  var datastring = '{"cmd":"hfcvalueset","target":"devicetrapedit","ip":"' + node.title +'","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
+            	    		  var datastring = '{"cmd":"hfcvalueset","target":"setVars","ip":"' + node.title +'","domstr":"'+ domstr +'","isRow":"true","rowNum":"'+ rownum+'","value":"'+ $("#set_value").val()+'"}';
             	    		  __globalobj__._send(datastring);
             	              $( this ).dialog( "close" );
         	    		  }else{
@@ -42,7 +43,7 @@
         	    	  Ok: function() {
         	    		  if(checkInt($("#set_value").val())){
         	    			  var node = __globalobj__._realDevice.getFirstChild();
-            	    		  var datastring = '{"cmd":"hfcvalueset","target":"devicechannel","ip":"' + node.title +'","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
+            	    		  var datastring = '{"cmd":"hfcvalueset","target":"setVars","ip":"' + node.title+'","isRow":"false","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
             	    		  __globalobj__._send(datastring);
             	              $( this ).dialog( "close" );
         	    		  }else{
@@ -153,13 +154,13 @@
 										<td><label class="fnRFPortName_row0"></label></td>
 										<td><label class="fnOutputRFlevelatt_row0"></label></td>
 										<td><label class="fnOutputRFleveleq_row0"></label></td>
-										<td><label class="fnRFPortOutputRFLevel_row0"></label></td>
+										<td><label class="fnRFPortOutputRFLevel_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="fnRFPortOutputRFLevel" id="fnRFPortOutputRFLevel_row0"></label></td>
 									</tr>
 									<tr>
 										<td><label class="fnRFPortName_row1"></label></td>
 										<td><label class="fnOutputRFlevelatt_row1"></label></td>
 										<td><label class="fnOutputRFleveleq_row1"></label></td>
-										<td><label class="fnRFPortOutputRFLevel_row1"></label></td>
+										<td><label class="fnRFPortOutputRFLevel_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="fnRFPortOutputRFLevel" id="fnRFPortOutputRFLevel_row1"></label></td>
 									</tr>
 							  </tbody>
 							</table>
@@ -179,23 +180,23 @@
 								  <tbody>
 									    <tr>
 									      <td>1.</td>
-									      <td class="trapaddr" id="commonAgentTrapIP0">0.0.0.0</td>
+									      <td class="trapaddr" data-rownum="0" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP0">0.0.0.0</td>
 									    </tr>
 									    <tr>
 									      <td>2.</td>
-									      <td class="trapaddr" id="commonAgentTrapIP1">0.0.0.0</td>
+									      <td class="trapaddr" data-rownum="1" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP1">0.0.0.0</td>
 									    </tr>
 									    <tr>
 									      <td>3.</td>
-									      <td class="trapaddr" id="commonAgentTrapIP2">0.0.0.0</td>
+									      <td class="trapaddr" data-rownum="2" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP2">0.0.0.0</td>
 									    </tr>
 									    <tr>
 									      <td>4.</td>
-									      <td class="trapaddr" id="commonAgentTrapIP3">0.0.0.0</td>
+									      <td class="trapaddr" data-rownum="3" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP3">0.0.0.0</td>
 									    </tr>
 									    <tr>
 									      <td>5.</td>
-									      <td class="trapaddr" id="commonAgentTrapIP4">0.0.0.0</td>
+									      <td class="trapaddr" data-rownum="4" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP4">0.0.0.0</td>
 									    </tr>
 								  </tbody>
 								</table>
