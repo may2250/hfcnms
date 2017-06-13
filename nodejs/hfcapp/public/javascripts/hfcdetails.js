@@ -163,26 +163,26 @@ function parseHfcValueSet(jsonobj){
 		 $("#" + jsonobj.domstr).val(jsonobj.value);
 		 break;
 	 case "getalarmThreshold":
-		 if(jsonobj.detail.ISHIHI){
+		 if(jsonobj.detail.HIHIen == '1'){
 			 $('#ishihi').attr('checked', 'checked');
 		 }
-		 $("#hihi").val(jsonobj.detail.HIHI);
-		 if(jsonobj.detail.ISHI){
+		 $("#hihi").val(jsonobj.detail.value0);
+		 if(jsonobj.detail.HIen == '1'){
 			 $('#ishi').attr('checked', 'checked');
 		 }
-		 $("#hi").val(jsonobj.detail.HI);
-		 if(jsonobj.detail.ISLO){
+		 $("#hi").val(jsonobj.detail.value1);
+		 if(jsonobj.detail.LOen == '1'){
 			 $('#islo').attr('checked', 'checked');
 		 }
-		 $("#lo").val(jsonobj.detail.LO);
-		 if(jsonobj.detail.ISLOLO){
+		 $("#lo").val(jsonobj.detail.value2);
+		 if(jsonobj.detail.LOLOen == '1'){
 			 $('#islolo').attr('checked', 'checked');
 		 }
-		 $("#lolo").val(jsonobj.detail.LOLO);
-		 if(jsonobj.detail.ISDEAD){
-			 $('#isdead').attr('checked', 'checked');
-		 }
-		 $("#dead").val(jsonobj.detail.DEAD);
+		 $("#lolo").val(jsonobj.detail.value3);
+		 //if(jsonobj.detail.ISDEAD){
+		//	 $('#isdead').attr('checked', 'checked');
+		 //}
+		 $("#dead").val(jsonobj.detail.value4);
 		 $( "#dialog-alarmThreshold" ).dialog({
 	   	      autoOpen: false,
 	   	      height: 393,
@@ -213,9 +213,9 @@ function parseHfcValueSet(jsonobj){
 	   	    		  var node = __globalobj__._realDevice.getFirstChild();
      	    		  var datastring = '{"cmd":"hfcvalueset","target":"setalarmThreshold","ip":"' + node.title +'","domstr":"'+ jsonobj.domstr +'","devtype":"'+ __globalobj__._realDevice.getLastChild().key
      	    		  	+'","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity +'","wcommunity":"'+ __globalobj__._realDevice.data.wcommunity +'","HIHI":"'+ $("#hihi").val()
-     	    		  	+'","HI":"'+ $("#hi").val() +'","LO":"'+ $("#lo").val() +'","LOLO":"'+ $("#lolo").val() +'","DEAD":"'+ $("#dead").val() +'","ISHIHI":"'+ ($('#ishihi').attr('checked') ==true?true:false)
-     	    		  	+'","ISHI":"'+ ($('#ishi').attr('checked') ==true?true:false) +'","ISLO":"'+ ($('#islo').attr('checked') ==true?true:false) +'","ISLOLO":"'+ ($('#islolo').attr('checked') ==true?true:false)
-     	    		  	+'","ISDEAD":"'+ ($('#isdead').attr('checked') ==true?true:false) +'"}';
+     	    		  	+'","HI":"'+ $("#hi").val() +'","LO":"'+ $("#lo").val() +'","LOLO":"'+ $("#lolo").val() +'","DEAD":"'+ $("#dead").val() +'","ISHIHI":"'+ ($('#ishihi').attr('checked') =='checked'?true:false)
+     	    		  	+'","ISHI":"'+ ($('#ishi').attr('checked') =='checked'?true:false) +'","ISLO":"'+ ($('#islo').attr('checked') =='checked'?true:false) +'","ISLOLO":"'+ ($('#islolo').attr('checked') =='checked'?true:false)
+     	    		  	+'","isRow":"'+ jsonobj.isRow +'","rowNum":"'+ jsonobj.rowNum+'"}';
      	    		  __globalobj__._send(datastring);
      	              $( this ).dialog( "close" );
 	   	          }

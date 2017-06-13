@@ -161,12 +161,12 @@ public class SnmpEngine {
 		String oidrs;
 		for (int k = 0; k < 5; k++) {
 
-			oidrs = tmpTagInfo.subVariableSnmpVarS[k].VarInfo.ParamMibOID.toString() + "." + rowNumber;
+			oidrs = tmpTagInfo.subVariableSnmpVarS[k].VarInfo.ParamMibOID.toString() + "." + (rowNumber+1);
 			result.add(new VariableBinding(new OID(oidrs), new Integer32(paramSetList.pmSetList[k])));
 
 		}
 
-		oidrs = tmpTagInfo.subVariableSnmpVarS[5].VarInfo.ParamMibOID.toString() + "." + rowNumber;
+		oidrs = tmpTagInfo.subVariableSnmpVarS[5].VarInfo.ParamMibOID.toString() + "." + (rowNumber+1);
 		result.add(new VariableBinding(new OID(oidrs), new OctetString(new byte[] { paramSetList.sByte })));
 		return result;
 

@@ -153,17 +153,6 @@ public class ParamKernel {
 			snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson,row);
 			
 		}		
-			//获取温度相关门限信息
-			
-	/*	
-		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
-			//获取温度相关门限信息
-			
-		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("fnDCPowerVoltage_row0")){
-			
-		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("fnDCPowerVoltage_row1")){
-			
-		}*/
 
 		jsondata.put("detail", rootjson);
 		return jsondata.toJSONString();
@@ -177,6 +166,25 @@ public class ParamKernel {
 		String netaddr = jsondata.get("ip").toString();
 		ObjSnmpPreail osp = staticmemory.getRealTimeDev(netaddr);
 		WosBaseSnmp snmpPreail = osp.snmpPreail;
+		rootjson.put("hihi", jsondata.get("HIHI").toString());
+		rootjson.put("hi", jsondata.get("HI").toString());
+		rootjson.put("lo", jsondata.get("LO").toString());
+		rootjson.put("lolo", jsondata.get("LOLO").toString());
+		rootjson.put("deadb", jsondata.get("DEAD").toString());
+		byte en = 0;
+		if(jsondata.get("ISLOLO").toString().equalsIgnoreCase("true")){
+			en = (byte)(en | 0x01);
+		}
+		if(jsondata.get("ISLO").toString().equalsIgnoreCase("true")){
+			en = (byte)(en | 0x02);
+		}
+		if(jsondata.get("ISHI").toString().equalsIgnoreCase("true")){
+			en = (byte)(en | 0x04);
+		}
+		if(jsondata.get("ISHIHI").toString().equalsIgnoreCase("true")){
+			en = (byte)(en | 0x08);
+		}
+		rootjson.put("en", en);
 		if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
 			
 			snmpPreail.setSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
@@ -188,27 +196,6 @@ public class ParamKernel {
 			snmpPreail.setSubVarsTableBYparamname(jsondata.get("domstr").toString(),rootjson,row);
 			
 		}
-		
-	/*	String netaddr = jsondata.get("ip").toString();
-		String ISHIHI = jsondata.get("ISHIHI").toString();
-		String HIHI = jsondata.get("HIHI").toString();
-		String ISHI = jsondata.get("ISHI").toString();
-		String HI = jsondata.get("HI").toString();
-		String ISLO = jsondata.get("ISLO").toString();
-		String LO = jsondata.get("LO").toString();
-		String ISLOLO = jsondata.get("ISLOLO").toString();
-		String LOLO = jsondata.get("LOLO").toString();
-		String ISDEAD = jsondata.get("ISDEAD").toString();
-		String DEAD = jsondata.get("DEAD").toString();
-		if(jsondata.get("domstr").toString().equalsIgnoreCase("detail_temper")){
-			//设置温度相关门限信息
-			//TODO
-			
-		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("tbl_powerv1")){
-			
-		}else if(jsondata.get("domstr").toString().equalsIgnoreCase("tbl_powerv2")){
-			
-		}*/
 	}
 	
 	private void devSerach(JSONObject jsondata) throws NumberFormatException, IOException{

@@ -64,7 +64,16 @@
 			var node = __globalobj__._realDevice.getFirstChild();
 			var domstr = $(this)[0].id;
 			var datastring = '{"cmd":"hfcvalueset","target":"getalarmThreshold","ip":"' + node.title +'","domstr":"'+ domstr 
-			+'","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity + '","devtype":"'+ __globalobj__._realDevice.getLastChild().key + '"}';
+			+'","isRow":"false","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity + '","devtype":"'+ __globalobj__._realDevice.getLastChild().key + '"}';
+  		  	__globalobj__._send(datastring);			
+		}); 
+		
+		$(".tbl_isalarmThreshold").dblclick(function(){
+			var node = __globalobj__._realDevice.getFirstChild();
+			var domstr = $(this).data("paramname");			
+			var rownum = $(this).data("rownum");
+			var datastring = '{"cmd":"hfcvalueset","target":"getalarmThreshold","ip":"' + node.title +'","domstr":"'+ domstr +'","rowNum":"'+ rownum 
+				+'","isRow":"true","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity + '","devtype":"'+ __globalobj__._realDevice.getLastChild().key + '"}';
   		  	__globalobj__._send(datastring);			
 		}); 
 		
@@ -122,11 +131,11 @@
 							  <tbody>
 									<tr>
 										<td><label class="fnDCPowerName_row0"></label></td>
-										<td><label class="fnDCPowerVoltage_row0 isalarmThreshold" id="fnDCPowerVoltage_row0"></label></td>
+										<td><label class="fnDCPowerVoltage_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="fnDCPowerVoltage" id="fnDCPowerVoltage_row0"></label></td>
 									</tr>
 									<tr>
 										<td><label class="fnDCPowerName_row1"></label></td>
-										<td><label class="fnDCPowerVoltage_row1 isalarmThreshold" id="fnDCPowerVoltage_row1"></label></td>
+										<td><label class="fnDCPowerVoltage_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="fnDCPowerVoltage" id="fnDCPowerVoltage_row1"></label></td>
 									</tr>
 							  </tbody>
 							</table>
