@@ -9,6 +9,8 @@ import java.util.Iterator;
 import wl.hfc.common.*;
 import wl.hfc.common.NlogType.TrapLogTypes;
 
+
+//CurrentAlarmModel负责告警的插入，历史告警的查询，并向前端推送
 public class CurrentAlarmModel 
 {
     public static CurrentAlarmModel me;
@@ -53,7 +55,7 @@ public class CurrentAlarmModel
 
     public nojuTrapLogTableRow insertTrapLog(nojuTrapLogTableRow pRow)
     {
-        return insertTrapLog(pRow.TrapLogType, pRow.TrapDevAddress, pRow.neName, pRow.TrapLogContent, pRow.TrapLogTime, "", "", 0);
+        return insertTrapLog(pRow.TrapLogType, pRow.TrapDevAddress, pRow.neName, pRow.TrapLogContent, pRow.TrapLogTime,pRow.parmName, pRow.paramValue, 0);
 
     }
 
@@ -217,7 +219,8 @@ public class CurrentAlarmModel
                 editTreatMent(allRows.get(0).TrapLogID, ClsLanguageExmp.commonGet("超时默认失效"));
             }
 
-        
+            
+            //hi ,xinglong ,把该新告警发送到前端，在客户端的告警列表增加该告警
             
             //通知 客户端
  /*           if (view1 != null)
@@ -293,10 +296,7 @@ public class CurrentAlarmModel
                     item.TrapTreatMent = content;
                     
                     
-                    //通知告警日志新增该无效告警                 
-/*                    if (view3 != null)
-                        view3.appendOneInvalidTrap(item);*/
-
+                    //hi ,xinglong ,把该失效（过时）的告警发送到前端，在客户端的告警列表中删除对应ID的告警
               
                 break;
             }

@@ -31,6 +31,8 @@ import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
 import org.snmp4j.smi.*;
 
+
+//TrapPduServer 只负责告警监听，不响应发布订阅消息机制。
 public class TrapPduServer {
 
 	public static TrapProCenter trpcss;
@@ -116,9 +118,16 @@ public class TrapPduServer {
 				hfcalarmhash.put("ip", event.getPeerAddress().toString());
 				try {
 					nojuTrapLogTableRow traprst = trpcss.ProcessTrapRequestPduHandler(hfcalarmhash, 0, inPdu);
-					realTrapResponder.insertTrapLog(traprst);
-
-					// trpcss.ProcessHFCTraps(hfcalarmhash, inPdu);
+					if (traprst.isValid) {
+						
+					       //hi ,xinglong ,讲该trap推送到CurrentAlarmModel
+						
+					}
+	           
+					//realTrapResponder.insertTrapLog(traprst);
+					   
+  
+		
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

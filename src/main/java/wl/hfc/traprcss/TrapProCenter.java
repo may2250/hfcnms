@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.snmp4j.PDU;
 import org.snmp4j.smi.*;
+import org.springframework.context.support.StaticApplicationContext;
 
 import wl.hfc.common.ClsLanguageExmp;
 import wl.hfc.common.NlogType;
@@ -48,10 +49,10 @@ public class TrapProCenter {
 	
 	
 	
-	
-	public static SnmpOID ParseAlarmInform(byte[] data, SnmpOID oid, int val) {
-		oid = null;
-		val = 0;
+	private  static int tmpVAL=0;
+	public static SnmpOID ParseAlarmInform(byte[] data) {
+		 SnmpOID oid = null;
+		tmpVAL = 0;
 		if (data.length < 2)
 			return null;
 		if (data[0] != 0x06)
@@ -76,7 +77,7 @@ public class TrapProCenter {
 			return null;
 		byte[] arrayval = new byte[data.length - oidindex];
 		System.arraycopy(data, oidindex, arrayval, 0, arrayval.length);
-		val = new ASN1Parser(arrayval).decodeInteger();
+		tmpVAL = new ASN1Parser(arrayval).decodeInteger();
 		return oid;
 	}
 
@@ -191,13 +192,14 @@ public class TrapProCenter {
 		byte[] alarminfo = hexStringToBytes(alarminfoss);
 		if (alarminfo.length < 6)
 			return new nojuTrapLogTableRow(false);
-		trapstring +=  ClsLanguageExmp.trapDiscrGet("类型") + GetAlarmEnumString(alarminfo[4]);
+		trapstring +=  ClsLanguageExmp.trapDiscrGet("类型") + GetAlarmEnumString(alarminfo[4])+" ";
 		byte[] alarmvb = new byte[alarminfo.length - 6];
 		System.arraycopy(alarminfo, 6, alarmvb, 0, alarmvb.length);
 		SnmpOID oid = null;
-		int val = 0;
+		 tmpVAL = 0;
+		String pValue = "";
        // string pValue = string.Empty;
-		if ((oid = ParseAlarmInform(alarmvb, oid, val)) != null) {
+		if ((oid = ParseAlarmInform(alarmvb)) != null) {
 			String plabel = MibProcess.getLabel(oid);
 			if (!plabel.equalsIgnoreCase("")) {
 				nojuParmsTableRow pararmrow = GetParamInfo(plabel);
@@ -206,7 +208,7 @@ public class TrapProCenter {
 				String exstr = "";
 				if (oidarray.length > nodeoid.length) {
 					for (int i = nodeoid.length; i < oidarray.length; i++) {
-						exstr += '.' + oidarray[i];
+						exstr += "." + oidarray[i];
 					}
 				}
 
@@ -221,30 +223,29 @@ public class TrapProCenter {
 				// }
 				//
 				// }
-				if (pararmrow != null) {
+				if (pararmrow != null)
+				{
 					paramName = pararmrow.ParamDispText + exstr;
-					trapstring += ClsLanguageExmp.trapDiscrGet("名称")  + paramName;
+					trapstring += ClsLanguageExmp.trapDiscrGet("名称")  + paramName+" ";
 
 					if (pararmrow.IsFormatEnable) {
-						if (pararmrow.ParamMibLabel == "fnReverseOpticalPower") {
-							float tmpf = val * pararmrow.FormatCoff;
-							trapstring += ClsLanguageExmp.trapDiscrGet("值")  + tmpf;// +pararmrow.FormatUnit;
-						} else {
-							float tmpf = val * pararmrow.FormatCoff;
-							trapstring += ClsLanguageExmp.trapDiscrGet("值") + tmpf + pararmrow.FormatUnit;
-						}
-					}
+	
+							float tmpf = tmpVAL * pararmrow.FormatCoff;
+							pValue=String.valueOf(tmpf);
+							trapstring += ClsLanguageExmp.trapDiscrGet("值") + tmpf + pararmrow.FormatUnit+" ";
+			
 
-				} else {
+				} 
+				else {
 					paramName = plabel + exstr;
-					trapstring += ClsLanguageExmp.trapDiscrGet("名称") + paramName;
-					trapstring += ClsLanguageExmp.trapDiscrGet("值") + val;
+					trapstring += ClsLanguageExmp.trapDiscrGet("值") + tmpVAL+" ";
 				}
 
 			} else {
 				paramName = oid.toString();
 				trapstring += ClsLanguageExmp.trapDiscrGet("名称") + paramName;
-				trapstring += ClsLanguageExmp.trapDiscrGet("值") + val;
+				trapstring += ClsLanguageExmp.trapDiscrGet("值") + tmpVAL+" ";
+				pValue=String.valueOf(tmpVAL);
 
 			}
 			System.out.println(trapstring);
@@ -253,9 +254,12 @@ public class TrapProCenter {
 			TrapLogTypes type=NlogType.GetTrapLogType(alarminfo[4]);
 			
 			
-			return new nojuTrapLogTableRow(NlogType.getAlarmLevel(type), type, pAddress, "neName", trapstring, new Date(), "", "", paramName, "");
+			return new nojuTrapLogTableRow(NlogType.getAlarmLevel(type), type, pAddress, "neName", trapstring, new Date(), "", "", paramName, pValue);
 		}
 
+
+	}
+		
 		return new nojuTrapLogTableRow(false);
 	}
 

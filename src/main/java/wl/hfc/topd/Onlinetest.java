@@ -1,5 +1,8 @@
 package wl.hfc.topd;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.json.simple.JSONObject;
 
 
@@ -10,7 +13,11 @@ import org.json.simple.JSONObject;
 
 
 
+
+
+
 import wl.hfc.alarmlog.CurrentAlarmModel;
+import wl.hfc.common.CDatabaseEngine;
 import wl.hfc.common.CDevForCMD;
 import wl.hfc.common.SnmpTableInfo;
 import wl.hfc.common.VariableSnmpVar;
@@ -79,6 +86,49 @@ public class Onlinetest {
 
 	}
 
+	public static void trapTest() {
+		
+		
+		
+		CDatabaseEngine	ICDatabaseEngine1=new CDatabaseEngine();
+		ICDatabaseEngine1.getConnection();
+		
+		Date dt=new Date();
+	    Calendar rightNow = Calendar.getInstance();
+        rightNow.setTime(dt);
+        rightNow.add(Calendar.DATE,-1);
+        Date dt2=rightNow.getTime();
+		ICDatabaseEngine1.getTrapRowsWithTime(dt2, dt, "");
+		
+		CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1);
+		String nowpath; // ��ǰtomcat��binĿ¼��·��
+		nowpath = System.getProperty("user.dir");
+		nowpath = nowpath + "\\" + "mibs";
+
+		TrapProCenter trpcss = new TrapProCenter(true, nowpath);
+		TrapPduServer.trpcss = trpcss;
+		TrapPduServer.realTrapResponder=CurrentAlarmModel1;
+		new TrapPduServer();
+		
+		
+		
+		while (true) {
+			try {
+				Thread.sleep(1000);
+				System.out.println("123123123");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		
+		
+
+
+	}
+
 
 	public static void main(String args[]) {
 		
@@ -94,37 +144,14 @@ public class Onlinetest {
 		VariableSnmpVar.analogAlarmLo = ".1.3.6.1.4.1.17409.1.1.1.1.6";
 		VariableSnmpVar.analogAlarmLoLo = ".1.3.6.1.4.1.17409.1.1.1.1.7";
 		
-		// searchTest();
+		 //searchTest();
 		// loadDXml();
 		new pmls();
-		//CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1);
+
 		try {
-	/*		String nowpath; // ��ǰtomcat��binĿ¼��·��
-			nowpath = System.getProperty("user.dir");
-			nowpath = nowpath + "\\" + "mibs";
 
-			TrapProCenter trpcss = new TrapProCenter(true, nowpath);
-			TrapPduServer.trpcss = trpcss;
-			//TrapPduServer.realTrapResponder=CurrentAlarmModel1;
-			new TrapPduServer();
-			
-			
-			
-			while (true) {
-				try {
-					Thread.sleep(1000);
-					System.out.println("123123123");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			
-			*/
-			
-			
-			
-
-		  RECEIVERTEST();
+          trapTest();
+		//  RECEIVERTEST();
 		//	CommonVariablesGetTest();
 
 			// ReceiverSnmpPrevail.me.getSubVarsWithTagInfoBYparamname(

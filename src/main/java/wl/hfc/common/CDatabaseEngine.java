@@ -332,11 +332,10 @@ public class CDatabaseEngine {
 		ResultSet rs = null;
 		int lastId = -1;
 
-		java.text.SimpleDateFormat sdf = 
-		     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String currentTime = sdf.format(row.TrapLogTime);
-		String sqlInsert = "insert into traplogtable values (" +null + "," + row.TrapLogType.ordinal() + ",'" + row.TrapLogType.toString() + "','"
+		String sqlInsert = "insert into traplogtable values (" + null + "," + row.TrapLogType.ordinal() + ",'" + row.TrapLogType.toString() + "','"
 				+ row.TrapDevAddress + "','" + row.neName + "','" + row.TrapLogContent + "','" + currentTime + "','" + row.TrapTreatMent + "','"
 				+ row.isTreated + "','" + row.parmName + "','" + row.paramValue + "')";
 
@@ -359,11 +358,29 @@ public class CDatabaseEngine {
 	}
 
 	public int trapLogEditRow(int TrapLogID, String treatment) {
-		return 1;
+
+		String IsTreatMent = new Date().toString();// 消失时间
+
+		String sqlInsert = "UPDATE TrapLogTable SET TrapTreatMent='" + treatment + "', IsTreatMent='" + IsTreatMent + "' WHERE TrapLogID='" + TrapLogID + "'";
+
+		PreparedStatement pstmt;
+		try {
+			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+			return pstmt.executeUpdate();
+
+		} catch (Exception EX) {
+			return -1;
+		}
+
 	}
 
-	public ArrayList<nojuTrapLogTableRow> getTrapRowsWithTime(Date beginTime, Date endTime, String ip, String typ, int type, int status, String NEname) {
+	public ArrayList<nojuTrapLogTableRow> getTrapRowsWithTime(Date beginTime, Date endTime, String ip) {
 
+		
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		String endString = sdf.format(endTime);
+		String bENGString = sdf.format(beginTime);
 		ArrayList<nojuTrapLogTableRow> results = new ArrayList<nojuTrapLogTableRow>();
 
 		PreparedStatement pstmt;
@@ -372,7 +389,7 @@ public class CDatabaseEngine {
 			String sqlInsert;
 
 			if (ip.equalsIgnoreCase("")) {
-				sqlInsert = "SELECT TrapLogTable.*FROM TrapLogTable WHERE TrapLogTime>'" + beginTime + "' AND TrapLogTime<'" + endTime + "';";
+				sqlInsert = "SELECT TrapLogTable.*FROM TrapLogTable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString + "';";
 			} else {
 				sqlInsert = "SELECT TrapLogTable.*FROM TrapLogTable WHERE TrapLogTime>'" + beginTime + "' AND TrapLogTime<'" + endTime
 						+ "' AND TrapDevAddress='" + ip + "';";
@@ -386,16 +403,11 @@ public class CDatabaseEngine {
 				// 通过reader["列名"]来取得值
 				TrapLogTypes type1 = TrapLogTypes.values()[rs.getInt(2)];
 				int i = 4;
-	   	nojuTrapLogTableRow newURow = new nojuTrapLogTableRow(NlogType.getAlarmLevel(type1), type1, rs.getString(i++), rs.getString(i++),
+				nojuTrapLogTableRow newURow = new nojuTrapLogTableRow(NlogType.getAlarmLevel(type1), type1, rs.getString(i++), rs.getString(i++),
 						rs.getString(i++), rs.getDate(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++));
 				newURow.TrapLogID = rs.getInt(1);
-				/*
-				 * if (LogDatabaseEngine.passType(type, newURow) &&
-				 * LogDatabaseEngine.passStatus(status, newURow) &&
-				 * LogDatabaseEngine.passNename(NEname, newURow))//未处理 {
-				 * results.Add(newURow); }
-				 */
 
+				results.add(newURow);
 			}
 
 		} catch (Exception ex) {
