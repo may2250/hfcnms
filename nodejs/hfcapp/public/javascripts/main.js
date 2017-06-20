@@ -311,7 +311,15 @@
         	if(node != undefined){
         		if(jsonobj.isonline == true){
         			node.data.isonline = true;
-        			node.icon = "../images/device.png";
+        			if(node.getLastChild().key == "rece_workstation"){
+        				node.icon = "../images/treeRece.png";
+        			}else if(node.getLastChild().key == "EDFA"){
+        				node.icon = "../images/treeEDFA.png";
+        			}else if(node.getLastChild().key == "Trans"){
+        				node.icon = "../images/treeTrans.png";
+        			}else{
+        				node.icon = "../images/device.png";
+        			}        			
         			node.getLastChild().data.hfctype = jsonobj.hfctype;
         			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
             			if(jsonobj.ip == __globalobj__._realDevice.key){
@@ -350,7 +358,7 @@
         	var paramstr = jsonobj.ipaddr+ '/' + jsonobj.devtype +'/'+jsonobj.hfctype;
         	$('#list-newdevs').append('<li class="list-group-item"><label><input name="dev" type="checkbox" value="'+ paramstr + '" />'+jsonobj.ipaddr+ '/' + getNetTypeTostring(jsonobj.devtype)+'/'+jsonobj.hfctype+'</label></li>');
         }else if(jsonobj.cmd == "alarm_message"){
-        	if(jsonobj.opt == false){
+        	if(jsonobj.opt == false || jsonobj.solved == "过时失效"){
         		var xxx = tbl_devalarm.row("#" + jsonobj.id);
         		tbl_devalarm.row("#" + jsonobj.id).remove().draw(false);
         	}

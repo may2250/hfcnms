@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
@@ -42,7 +45,7 @@ public class CurrentAlarmModel extends Thread
    public CDatabaseEngine logEngine;
 
     //the real model,current trap rows
-    public ArrayList<nojuTrapLogTableRow> allRows;
+    public CopyOnWriteArrayList<nojuTrapLogTableRow> allRows;
     public Hashtable allRowsTable;
 
 
@@ -55,7 +58,7 @@ public class CurrentAlarmModel extends Thread
     public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil)
     {    	
         this.logEngine = dEngine;
-        allRows = new ArrayList<nojuTrapLogTableRow>();
+        allRows = new CopyOnWriteArrayList<nojuTrapLogTableRow>();
         allRowsTable = new Hashtable();
 
         invalidRows = new ArrayList<nojuTrapLogTableRow>();

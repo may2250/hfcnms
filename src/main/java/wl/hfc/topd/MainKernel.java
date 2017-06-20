@@ -1,6 +1,7 @@
 package wl.hfc.topd;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -208,7 +209,7 @@ public class MainKernel {
 		jsonarray = getSubTree(rootListNode);
 		rootjson.put("treenodes", jsonarray);
 		String jsonString = rootjson.toJSONString();
-		System.out.println("jsonString==" + jsonString);
+		//System.out.println("jsonString==" + jsonString);
 		return jsonString;
     }
     
@@ -219,7 +220,7 @@ public class MainKernel {
 		jsonarray = getSubGroup(rootListNode);
 		rootjson.put("treenodes", jsonarray);
 		String jsonString = rootjson.toJSONString();
-		System.out.println("jsonString==" + jsonString);
+		//System.out.println("jsonString==" + jsonString);
 		return jsonString;
     }
     
@@ -251,39 +252,28 @@ public class MainKernel {
     	return jsonarray;
     }
     
-    private String getInitLog(JSONObject rootjson){
-    	JSONObject logjson = new JSONObject();
+    private String getInitLog(JSONObject rootjson){  
+    	JSONObject logjson;
     	rootjson.put("cmd", "getInitLog");
 		JSONArray jsonarray = new JSONArray();
 		//获取发往WEB的设备告警及日志信息
 		//TODO
 		//test alarms
-		
-		logjson.put("DT_RowId", "row_1");
-		logjson.put("id", "1");
-		logjson.put("level", "1");
-		logjson.put("source", "grp1/xxxx");
-		logjson.put("path", "grp1/xxxx");
-		logjson.put("type", "warn");
-		logjson.put("paramname", "name");
-		logjson.put("paramvalue", "grp1");
-		logjson.put("eventtime", "2017-5-22");
-		logjson.put("solved", "yes");
-		logjson.put("solvetime", "2017-5-22");
-		jsonarray.add(logjson);
-		logjson = new JSONObject();
-		logjson.put("DT_RowId", "row_2");
-		logjson.put("id", "2");
-		logjson.put("level", "2");
-		logjson.put("source", "grp1/xxxx");
-		logjson.put("path", "grp1/xxxx");
-		logjson.put("type", "warn");
-		logjson.put("paramname", "name");
-		logjson.put("paramvalue", "grp1");
-		logjson.put("eventtime", "2017-5-22");
-		logjson.put("solved", "yes");
-		logjson.put("solvetime", "2017-5-22");
-		jsonarray.add(logjson);
+		System.out.println("CurrentAlarmModel.me.allRows.size()==" + CurrentAlarmModel.me.allRows.size());
+		for(nojuTrapLogTableRow prow:CurrentAlarmModel.me.allRows){  
+			logjson = new JSONObject();
+			logjson.put("id", prow.TrapLogID);
+			logjson.put("level", prow.level);
+			logjson.put("path", "grp1/xxxx");
+			logjson.put("type", prow.TrapLogType.toString());
+			logjson.put("paramname", prow.parmName);
+			logjson.put("paramvalue", prow.paramValue);
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");  
+    		logjson.put("eventtime", sdf.format(prow.TrapLogTime));
+    		logjson.put("solved", prow.TrapTreatMent);
+    		logjson.put("solvetime", prow.isTreated);
+			jsonarray.add(logjson);
+		}  
 		rootjson.put("alarms", jsonarray);
 		//test logs
 		logjson = new JSONObject();
@@ -339,7 +329,28 @@ public class MainKernel {
 				subjson.put("rcommunity", dev.BindnojuDeviceTableRow._ROCommunity);
 				subjson.put("wcommunity", dev.BindnojuDeviceTableRow._RWCommunity);
 				subjson.put("isonline", dev.isOline);
-				subjson.put("icon", dev.isOline?"images/device.png":"images/devoff.png");         	
+				String imgstr = "images/devoff.png";
+				switch(dev.mNetType){
+				case rece_workstation:
+					imgstr = "images/treeRece.png";
+					break;
+				case EDFA:
+					imgstr = "images/treeEDFA.png";
+					break;
+				case Trans:
+					imgstr = "images/treeTrans.png";
+					break;
+				case other:
+					imgstr = "images/device.png";
+					break;
+				case OSW:
+					imgstr = "images/device.png";
+					break;
+				default:
+					imgstr = "images/device.png";
+					break;
+				}
+				subjson.put("icon", dev.isOline?imgstr:"images/devoff.png");         	
 				infojson.put("title", dev._NetAddress);						
 				infojson.put("icon", "images/net_info.png");
 				subjsonarray.add(infojson);
