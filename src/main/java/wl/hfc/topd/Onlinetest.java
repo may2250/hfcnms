@@ -1,5 +1,6 @@
 package wl.hfc.topd;
 
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -7,24 +8,13 @@ import org.json.simple.JSONObject;
 
 
 
-
-
-
-
-
-
-
-
-
 import wl.hfc.alarmlog.CurrentAlarmModel;
-import wl.hfc.common.CDatabaseEngine;
-import wl.hfc.common.CDevForCMD;
-import wl.hfc.common.SnmpTableInfo;
-import wl.hfc.common.VariableSnmpVar;
+import wl.hfc.common.*;
+import wl.hfc.online.CommonSnmpPrevail;
 import wl.hfc.online.PDUServer;
 import wl.hfc.online.PDUServerForOneDev;
 import wl.hfc.online.ReceiverSnmpPrevail;
-import wl.hfc.online.pmls;
+import wl.hfc.online.*;
 import wl.hfc.traprcss.TrapPduServer;
 import wl.hfc.traprcss.TrapProCenter;
 
@@ -82,6 +72,33 @@ public class Onlinetest {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+
+	}
+
+	
+	public static void CommonVariablesGetTest() {
+
+		try {
+			// loadDXml();
+			new pmls();
+			JSONObject json = new JSONObject();
+			CommonSnmpPrevail snmpInstance7 = new CommonSnmpPrevail(".0");
+			snmpInstance7.thisDev = new CDevForCMD("public", "public", "192.168.1.243");
+			snmpInstance7.sver = new PDUServerForOneDev(0);
+
+			// get
+			snmpInstance7.getPmWithModelNumber(json);
+
+			// to view
+			//JSONObject json = new JSONObject();
+		//	SnmpEngine.snmpVarToJason(mjVariables, json);
+			System.out.println(json.toString());
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
 		}
 
 	}
@@ -150,9 +167,9 @@ public class Onlinetest {
 
 		try {
 
-          trapTest();
+         // trapTest();
 		//  RECEIVERTEST();
-		//	CommonVariablesGetTest();
+			CommonVariablesGetTest();
 
 			// ReceiverSnmpPrevail.me.getSubVarsWithTagInfoBYparamname(
 			// "hfc_ingonglv", json);

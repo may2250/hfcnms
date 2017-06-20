@@ -36,6 +36,7 @@ public class Realtime_param_call {
 					String key = e1.nextElement();  
 					try {
 						JSONObject json = new JSONObject();
+						JSONObject commonjson = new JSONObject();
 						ObjSnmpPreail osp = staticmemory.getRealTimeDev(key);
 						if(osp != null){
 							//System.out.println("=====netaddr====="+ osp.snmpPreail.thisDev.mNetAddress);
@@ -51,6 +52,7 @@ public class Realtime_param_call {
 								
 							}else if(devtype.equalsIgnoreCase("rece_workstation")){
 								json = ((ReceiverSnmpPrevail)osp.snmpPreail).getPmWithModelNumber(json);
+								commonjson=((CommonSnmpPrevail)osp.commonSnmpPreail).getPmWithModelNumber(commonjson);
 							}else if(devtype.equalsIgnoreCase("OSW")){
 								
 							}else if(devtype.equalsIgnoreCase("RFSW")){

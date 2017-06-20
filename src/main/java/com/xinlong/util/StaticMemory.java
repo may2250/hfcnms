@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 
 import wl.hfc.common.CDevForCMD;
 import wl.hfc.common.NetTypes;
+import wl.hfc.online.CommonSnmpPrevail;
 import wl.hfc.online.PDUServerForOneDev;
 import wl.hfc.online.ReceiverSnmpPrevail;
 import wl.hfc.topd.MainKernel;
@@ -57,6 +58,7 @@ public class StaticMemory {
 				
 			}else if(devtype.equalsIgnoreCase("rece_workstation")){
 				osp.snmpPreail = new ReceiverSnmpPrevail(".1");
+				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
 			}else if(devtype.equalsIgnoreCase("OSW")){
 				
 			}else if(devtype.equalsIgnoreCase("RFSW")){
@@ -67,13 +69,22 @@ public class StaticMemory {
 				
 			}else{
 				osp.snmpPreail = new ReceiverSnmpPrevail(".1");
-			}			
-			osp.snmpPreail.thisDev = new CDevForCMD();
-			osp.snmpPreail.sver = new PDUServerForOneDev(0);
-			osp.snmpPreail.thisDev.mNetAddress = netaddr;
-			osp.snmpPreail.thisDev.mNetType = MainKernel.me.getStringToNetType(jsondata.get("devtype").toString());
-			osp.snmpPreail.thisDev.ROCommunity = jsondata.get("rcommunity").toString();
-			osp.snmpPreail.thisDev.RWCommunity = jsondata.get("wcommunity").toString();
+				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
+			}		
+			CDevForCMD devmmd = new CDevForCMD(jsondata.get("rcommunity").toString(), jsondata.get("wcommunity").toString(),netaddr);
+			devmmd.mNetType=MainKernel.me.getStringToNetType(jsondata.get("devtype").toString());
+			
+			PDUServerForOneDev PDUServerForOneDev1=new PDUServerForOneDev(0);
+			osp.snmpPreail.thisDev = devmmd;
+			osp.snmpPreail.sver =PDUServerForOneDev1;
+			
+			
+	        osp.snmpPreail.thisDev	=devmmd;		
+		    osp.snmpPreail.sver =PDUServerForOneDev1;
+		
+			
+			
+			
 			osp.sessionList.add(sessionID);
 			realTimeDevHashtable.put(netaddr, osp);
 			System.out.println("----add new RealTimeDev=="+ realTimeDevHashtable.size());
