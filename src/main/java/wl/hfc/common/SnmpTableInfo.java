@@ -15,6 +15,7 @@ public class SnmpTableInfo  {
         ColNum = 0;
         RowNum = 0;
         IsNetErr = false;
+        
     }
 
 }
