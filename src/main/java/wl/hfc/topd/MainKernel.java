@@ -21,6 +21,7 @@ import com.xinlong.util.StaticMemory;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
+import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.*;
 
 
@@ -118,6 +119,8 @@ public class MainKernel {
 			staticmemory.sendRemoteStr(getLazyNodes(jsondata), jsondata.get("sessionid").toString());					
 		}else if(cmd.equalsIgnoreCase("devstatus")){			
 			staticmemory.broadCast(handleOnlineInfo(jsondata));				
+		}else if(cmd.equalsIgnoreCase("alarm_message")){			
+			staticmemory.broadCast(message);				
 		}
 	}
 	
@@ -183,6 +186,8 @@ public class MainKernel {
 			ICDatabaseEngine1=new CDatabaseEngine();
 			ICDatabaseEngine1.getConnection();
 			initTopodData();
+			CurrentAlarmModel cam = new CurrentAlarmModel(ICDatabaseEngine1, redisUtil);
+			cam.start();
 			jedis = redisUtil.getConnection();		 
 			jedis.psubscribe(jedissubSub, MAINKERNEL_MESSAGE);
 			redisUtil.getJedisPool().returnResource(jedis); 
@@ -253,6 +258,8 @@ public class MainKernel {
 		//获取发往WEB的设备告警及日志信息
 		//TODO
 		//test alarms
+		
+		logjson.put("DT_RowId", "row_1");
 		logjson.put("id", "1");
 		logjson.put("level", "1");
 		logjson.put("source", "grp1/xxxx");
@@ -265,6 +272,7 @@ public class MainKernel {
 		logjson.put("solvetime", "2017-5-22");
 		jsonarray.add(logjson);
 		logjson = new JSONObject();
+		logjson.put("DT_RowId", "row_2");
 		logjson.put("id", "2");
 		logjson.put("level", "2");
 		logjson.put("source", "grp1/xxxx");

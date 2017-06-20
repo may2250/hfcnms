@@ -75,7 +75,7 @@
 		<property name="redisUtil" ref="redisUtil" />
 		<property name="staticMemory" ref="staticMemory" />
 	</bean>
-	<bean id="trapReceiverBean" class="com.xinlong.Services.TrapReceiverBean" >
+	<bean id="trapReceiverBean" class="wl.hfc.traprcss.TrapPduServer" >
 		<property name="redisUtil" ref="redisUtil" />
 	</bean>
 	<bean id="hfcAlarmProcessor" class="com.xinlong.Services.ServiceHfcAlarmProcessor" >

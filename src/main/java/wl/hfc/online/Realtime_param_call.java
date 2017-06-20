@@ -38,7 +38,7 @@ public class Realtime_param_call {
 						JSONObject json = new JSONObject();
 						ObjSnmpPreail osp = staticmemory.getRealTimeDev(key);
 						if(osp != null){
-							System.out.println("=====netaddr====="+ osp.snmpPreail.thisDev.mNetAddress);
+							//System.out.println("=====netaddr====="+ osp.snmpPreail.thisDev.mNetAddress);
 							//ReceiverSnmpPrevail receiverSnmpPrevail1Prevai11ll = new ReceiverSnmpPrevail(".1");
 							//receiverSnmpPrevail1Prevai11ll.thisDev = cfc;
 							//receiverSnmpPrevail1Prevai11ll.sver = new PDUServerForOneDev(0);

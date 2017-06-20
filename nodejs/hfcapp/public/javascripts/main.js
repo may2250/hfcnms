@@ -54,7 +54,6 @@
             columns: [
                       { title: "ID" },
                       { title: "级别" },
-                      { title: "来源" },
                       { title: "路径" },
                       { title: "类型" },
                       { title: "参数名" },
@@ -80,14 +79,11 @@
         	    });
         	  },
         	  "createdRow": function ( row, data, index ) {
+        		  $(row).attr('id', data[0]);
                   if ( data[1] == "1" ) {
-                	  $('td', row).parent().addClass('alarm-danger');
-                  }else if(data[1] == "2"){
-                	  $('td', row).parent().addClass('alarm-major');
-                  }else if(data[1] == "3"){
                 	  $('td', row).parent().addClass('alarm-warning');
-                  }else if(data[1] == "4"){
-                	  $('td', row).parent().addClass('alarm-clear');
+                  }else if(data[1] == "2"){
+                	  $('td', row).parent().addClass('alarm-danger');                  
                   }
               }
         } );
@@ -143,10 +139,6 @@
 		        	              
 		        	              var datastring = '{"cmd":"devsearch","community":"'+$("#search-community").val() +'","devtype":"'+ $("#search-stype").prop('selectedIndex') +'","startip":"'+ $("#search-sip").val()+'","endip":"'+ $("#search-eip").val() +'","target":"start"}';
 	      	        	    	  webSocket.send(datastring);
-	        	            },
-	        	            "结束": function(){
-	        	            	var datastring = '{"cmd":"devsearch","community":"'+$("#search-community").val() +'","startip":"'+ $("#search-sip").val()+'","endip":"'+ $("#search-eip").val() +'","target":"stop"}';
-	      	        	    	webSocket.send(datastring);
 	        	            }
 	        	      },
 	        	      close: function() {
@@ -188,6 +180,7 @@
     	
     	$('#modal_searchresult').on('hidden.bs.modal', function (e) {
     		$('#list-newdevs').empty();
+    		$('#list-newdevs').append('<a class="list-group-item active"><h4 class="list-group-item-heading">新设备列表</h4></a>');
     	})
     	
     	$('#btn-regdev').click(function(){
@@ -356,6 +349,22 @@
         }else if(jsonobj.cmd == "devsearch-result"){
         	var paramstr = jsonobj.ipaddr+ '/' + jsonobj.devtype +'/'+jsonobj.hfctype;
         	$('#list-newdevs').append('<li class="list-group-item"><label><input name="dev" type="checkbox" value="'+ paramstr + '" />'+jsonobj.ipaddr+ '/' + getNetTypeTostring(jsonobj.devtype)+'/'+jsonobj.hfctype+'</label></li>');
+        }else if(jsonobj.cmd == "alarm_message"){
+        	if(jsonobj.opt == false){
+        		var xxx = tbl_devalarm.row("#" + jsonobj.id);
+        		tbl_devalarm.row("#" + jsonobj.id).remove().draw(false);
+        	}
+        	tbl_devalarm.row.add( [
+	            jsonobj.id,
+	            jsonobj.level,
+	            jsonobj.path,
+	            jsonobj.type,
+	            jsonobj.paramname,
+	            jsonobj.paramvalue,
+	            jsonobj.eventtime,
+	            jsonobj.solved,
+	            jsonobj.solvetime
+	        ] ).draw( false );
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;
@@ -385,7 +394,7 @@
             },
             dblclick: function(event, data) {
             	if(data.node.data.type == "device"){
-            		//show deivce detail
+            		//show deivce detail            		
             		var preDevice = __globalobj__._realDevice;
             		__globalobj__._realDevice = data.node;
             		getDeviceDetail(data.node,preDevice);
@@ -652,7 +661,6 @@
     		tbl_devalarm.row.add( [
     		            value.id,
     		            value.level,
-    		            value.source,
     		            value.path,
     		            value.type,
     		            value.paramname,

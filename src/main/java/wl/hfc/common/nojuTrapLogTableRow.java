@@ -1,8 +1,10 @@
 package wl.hfc.common;
 
+import java.io.Serializable;
+
 import wl.hfc.common.NlogType.TrapLogTypes;
 
-public class nojuTrapLogTableRow
+public class nojuTrapLogTableRow implements Serializable
 {
 
     public int TrapLogID;

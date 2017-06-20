@@ -1,0 +1,3746 @@
+CATV-WOS3000-MIB DEFINITIONS ::= BEGIN
+-- *****************************************************************************
+-- *                    MIB Basic Structure Defines
+-- *****************************************************************************
+
+IMPORTS
+    OBJECT-IDENTITY, MODULE-IDENTITY, OBJECT-TYPE, Unsigned32
+        FROM SNMPv2-SMI
+    IpAddress, Counter, Gauge, TimeTicks, enterprises
+        FROM RFC1155-SMI
+    DisplayString, PhysAddress
+        FROM RFC1213-MIB
+    TRAP-TYPE
+        FROM RFC-1215;
+    
+xuyaoHongRoot   OBJECT IDENTIFIER ::= { enterprises 2000 }
+prevailTree     OBJECT IDENTIFIER ::= { xuyaoHongRoot 1 }
+wos3000Ident    OBJECT-IDENTITY
+    STATUS  current
+    DESCRIPTION
+        " Defines the base OID for WOS3000, (Contact 13588838938). "
+    ::= { prevailTree 3000 }
+    
+slotDevices     OBJECT IDENTIFIER ::= { wos3000Ident 1 }
+
+-- *****************************************************************************
+-- *                    CATV WOS3000 Frame Variables
+-- *****************************************************************************
+wos3kPosixTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Get or set the posix time for WOS3000 system."
+    ::= { wos3000Ident 2 }
+    
+wos3kAlarmLastIndex OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "The last index of alarm log table."
+    ::= { wos3000Ident 3 }
+
+wos3kAlarmTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF Wos3kAlarmEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "Alarm log table."
+    ::= { wos3000Ident 4 }
+    
+wos3kAlarmEntry OBJECT-TYPE
+    SYNTAX Wos3kAlarmEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { wos3kAlarmIndex }
+    ::= { wos3kAlarmTable 1 }
+    
+Wos3kAlarmEntry ::= SEQUENCE
+{
+    wos3kAlarmIndex         INTEGER,
+    wos3kDeviceSlot         INTEGER,
+    wos3kDeviceType         Unsigned32,
+    wos3kAlarmText          DisplayString,
+    wos3kAlarmPosixTime     Unsigned32
+}
+    
+wos3kAlarmIndex OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Index of alarm log."
+    ::= { wos3kAlarmEntry 1 }
+    
+wos3kDeviceSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Slot number for alarm device."
+    ::= { wos3kAlarmEntry 2 }
+    
+wos3kDeviceType OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Type of alarm device."
+    ::= { wos3kAlarmEntry 3 }
+    
+wos3kAlarmText OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Text of alarm log."
+    ::= { wos3kAlarmEntry 4 }
+    
+wos3kAlarmPosixTime OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Posix time of the alarm log item."
+    ::= { wos3kAlarmEntry 5 }
+    
+wos3kTrapHostTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF Wos3kTrapHostEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "Trap Host IP table."
+    ::= { wos3000Ident 5 }
+    
+wos3kTrapHostEntry OBJECT-TYPE
+    SYNTAX Wos3kTrapHostEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { wos3kTrapHostIndex }
+    ::= { wos3kTrapHostTable 1 }
+    
+Wos3kTrapHostEntry ::= SEQUENCE
+{
+    wos3kTrapHostIndex         INTEGER,
+    wos3kTrapHostIPAddr        IpAddress,
+}
+    
+wos3kTrapHostIndex OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Index of Trap HostIP table."
+    ::= { wos3kTrapHostEntry 1 }
+    
+wos3kTrapHostIPAddr OBJECT-TYPE
+    SYNTAX IpAddress
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "IP Address of Trap Host."
+    ::= { wos3kTrapHostEntry 2 }
+    
+wos3kModuleAlarmSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "Used by Alarm Module."
+    ::= { wos3000Ident 6 }
+    
+wos3kModuleAlarmText OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "Used by Alarm Module."
+    ::= { wos3000Ident 7 }
+    
+wos3kModuleType OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "Used by Alarm Module,
+            1 - MANAGER;
+            2 - POWER;
+            3 - TRANSMITTER;
+            4 - RECEIVER;
+            5 - RETURN RECEIVER;
+            6 - OPTICAL SWITCHER;
+            7 - RF SWITCHER;
+            9 - EDFA;
+            10 - DOUBLE RECEIVER"
+    ::= { wos3000Ident 8 }
+    
+-- *****************************************************************************
+-- *                    CATV WOS3000 Module Manager (TypeID = 1)
+-- *****************************************************************************
+managerTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF ManagerEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module Manager"
+    ::= { slotDevices 1 }
+    
+managerEntry OBJECT-TYPE
+    SYNTAX ManagerEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { managerSlot }
+    ::= { managerTable 1 }
+
+ManagerEntry ::= SEQUENCE
+{
+    managerSlot             INTEGER,
+    managerFanCtrl          OCTET STRING,
+    managerIPAddr           IpAddress,
+    managerGateway          IpAddress,
+    managerNetmask          IpAddress,
+    managerMacAddr          PhysAddress,
+    managerCPUTemp          INTEGER,
+    managerSN               DisplayString,
+    managerVersion          Unsigned32,
+    managerWTimer           Unsigned32
+}
+
+managerSlot OBJECT-TYPE
+    SYNTAX INTEGER (11)
+    ACCESS read-only
+    STATUS mandatory
+    ::= { managerEntry 1 }
+
+managerFanCtrl OBJECT-TYPE
+    SYNTAX OCTET STRING (SIZE(5))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Fan status of wos3000, byte value is 0, the fan is ON; 
+            else the fan is OFF."
+    ::= { managerEntry 2 }
+
+managerIPAddr OBJECT-TYPE
+    SYNTAX IpAddress
+    ACCESS read-only
+    STATUS mandatory
+    ::= { managerEntry 3 }
+    
+managerGateway OBJECT-TYPE
+    SYNTAX IpAddress
+    ACCESS read-only
+    STATUS mandatory
+    ::= { managerEntry 4 }
+    
+managerNetmask OBJECT-TYPE
+    SYNTAX IpAddress
+    ACCESS read-only
+    STATUS mandatory
+    ::= { managerEntry 5 }
+    
+managerMacAddr OBJECT-TYPE
+    SYNTAX PhysAddress
+    ACCESS read-only
+    STATUS mandatory
+    ::= { managerEntry 6 }
+    
+managerCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { managerEntry 7 }
+    
+managerSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { managerEntry 8 }
+    
+managerVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { managerEntry 9 }
+    
+managerWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { managerEntry 10 }
+    
+-- *****************************************************************************
+-- *                    CATV WOS3000 Module Power (TypeID = 2)
+-- *****************************************************************************
+powerTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF PowerEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module Power"
+    ::= { slotDevices 2 }
+    
+powerEntry OBJECT-TYPE
+    SYNTAX PowerEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { powerSlot }
+    ::= { powerTable 1 }
+
+PowerEntry ::= SEQUENCE
+{
+    powerSlot               INTEGER,
+    
+    powerP5VTest            INTEGER,
+    powerP5VTestAlarmHi     INTEGER,
+    powerP5VTestAlarmLo     INTEGER,
+    
+    powerM5VTest            INTEGER,
+    powerM5VTestAlarmHi     INTEGER,
+    powerM5VTestAlarmLo     INTEGER,
+    
+    powerP24VTest           INTEGER,
+    powerP24VTestAlarmHi    INTEGER,
+    powerP24VTestAlarmLo    INTEGER,
+    
+    powerFanOnTemp          INTEGER,
+    powerFanOnTempMin       INTEGER,
+    powerFanOnTempMax       INTEGER,
+    
+    powerCPUTemp            INTEGER,
+    powerSN                 DisplayString,
+    powerVersion            Unsigned32,
+    powerWTimer             Unsigned32
+}
+
+powerSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { powerEntry 1 }
+    
+powerP5VTest OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 V"
+    ::= { powerEntry 2 }
+    
+powerP5VTestAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 V"
+    ::= { powerEntry 3 }
+    
+powerP5VTestAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 V"
+    ::= { powerEntry 4 }
+    
+    
+powerM5VTest OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 V"
+    ::= { powerEntry 5 }
+    
+powerM5VTestAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 V"
+    ::= { powerEntry 6 }
+    
+powerM5VTestAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 V"
+    ::= { powerEntry 7 }
+    
+    
+powerP24VTest OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 V"
+    ::= { powerEntry 8 }
+    
+powerP24VTestAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 V"
+    ::= { powerEntry 9 }
+    
+powerP24VTestAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 V"
+    ::= { powerEntry 10 }
+    
+    
+powerFanOnTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { powerEntry 11 }
+    
+powerFanOnTempMin OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { powerEntry 12 }
+    
+powerFanOnTempMax OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { powerEntry 13 }
+    
+powerCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { powerEntry 14 }
+    
+powerSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { powerEntry 15 }
+    
+powerVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { powerEntry 16 }
+    
+powerWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { powerEntry 17 }
+    
+-- *****************************************************************************
+-- *                    CATV WOS3000 Module Transmitter (TypeID = 3)
+-- *****************************************************************************
+transTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF TransEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module Transmitter"
+    ::= { slotDevices 3 }
+    
+transEntry OBJECT-TYPE
+    SYNTAX TransEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { transSlot }
+    ::= { transTable 1 }
+
+TransEntry ::= SEQUENCE
+{
+    transSlot               INTEGER,
+    
+    transOutPower           Unsigned32,
+    transOutPowerAlarmHi    Unsigned32,
+    transOutPowerAlarmLo    Unsigned32,
+    
+    transLaserBias          Unsigned32,
+    transLaserBiasAlarmHi   Unsigned32,
+    transLaserBiasAlarmLo   Unsigned32,
+    
+    transLaserTemp          Unsigned32,
+    transLaserTempAlarmHi   Unsigned32,
+    transLaserTempAlarmLo   Unsigned32,
+    
+    transLaserTec           INTEGER,
+    transLaserTecAlarmHi    INTEGER,
+    transLaserTecAlarmLo    INTEGER,
+    
+    transRFLevel            Unsigned32,
+    transRFLevelAlarmHi     Unsigned32,
+    transRFLevelAlarmLo     Unsigned32,
+    
+    transCurRFMode          Unsigned32,
+    
+    transAGCOffset          INTEGER,
+    transAGCOffsetMin       INTEGER,
+    transAGCOffsetMax       INTEGER,
+    
+    transMGCAtt             Unsigned32,
+    transMGCAttMin          Unsigned32,
+    transMGCAttMax          Unsigned32,
+    
+    transChanNum            Unsigned32,
+    transChanNumMin         Unsigned32,
+    transChanNumMax         Unsigned32,
+    
+    transLaserCtrl          Unsigned32,
+    
+    transCPUTemp            INTEGER,
+    transSN                 DisplayString,
+    transVersion            Unsigned32,
+    transWTimer             Unsigned32
+}
+
+transSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { transEntry 1 }
+
+transOutPower OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mW"
+    ::= { transEntry 2 }
+    
+transOutPowerAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mW"
+    ::= { transEntry 3 }
+    
+transOutPowerAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mW"
+    ::= { transEntry 4 }
+    
+transLaserBias OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { transEntry 5 }
+    
+transLaserBiasAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { transEntry 6 }
+    
+transLaserBiasAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { transEntry 7 }
+    
+transLaserTemp OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius"
+    ::= { transEntry 8 }
+    
+transLaserTempAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius"
+    ::= { transEntry 9 }
+    
+transLaserTempAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius"
+    ::= { transEntry 10 }
+    
+transLaserTec OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { transEntry 11 }
+    
+transLaserTecAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { transEntry 12 }
+    
+transLaserTecAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { transEntry 13 }
+    
+transRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { transEntry 14 }
+    
+transRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { transEntry 15 }
+    
+transRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { transEntry 16 }
+    
+transCurRFMode OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 = AGC; !0 = MGC"
+    ::= { transEntry 17 }
+    
+transAGCOffset OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transEntry 18 }
+    
+transAGCOffsetMin OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transEntry 19 }
+    
+transAGCOffsetMax OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transEntry 20 }
+    
+transMGCAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transEntry 21 }
+    
+transMGCAttMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transEntry 22 }
+    
+transMGCAttMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transEntry 23 }
+    
+transChanNum OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    ::= { transEntry 24 }
+    
+transChanNumMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    ::= { transEntry 25 }
+    
+transChanNumMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    ::= { transEntry 26 }
+    
+transLaserCtrl OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "bit7 = 1--with optical ATT TRANS moudle,bit7 = 0--NO otical ATT TRANS moudle,
+         bit6-bit2,otical ATT Value,range:10-44,unit:0.1v
+         bit0 = 0 LASER OFF; bit0 = 1 laser ON."
+    ::= { transEntry 27 }
+
+transCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { transEntry 28 }
+    
+transSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { transEntry 29 }
+    
+transVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { transEntry 30 }
+    
+transWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { transEntry 31 }
+    
+-- *****************************************************************************
+-- *                    CATV WOS3000 Module Receiver (TypeID = 4)
+-- *****************************************************************************
+recvTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF RecvEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module Receiver"
+    ::= { slotDevices 4 }
+    
+recvEntry OBJECT-TYPE
+    SYNTAX RecvEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { recvSlot }
+    ::= { recvTable 1 }
+    
+RecvEntry ::= SEQUENCE
+{
+    recvSlot                INTEGER,
+    
+    recvRecvPower           INTEGER,
+    recvRecvPowerAlarmHi    INTEGER,
+    recvRecvPowerAlarmLo    INTEGER,
+    
+    recvOutRFLevel          Unsigned32,
+    recvOutRFLevelAlarmHi   Unsigned32,
+    recvOutRFLevelAlarmLo   Unsigned32,
+    
+    recvOptAGCEn            Unsigned32,
+    
+    recvOptAGCOffset        INTEGER,
+    recvOptAGCOffsetMin     INTEGER,
+    recvOptAGCOffsetMax     INTEGER,
+    
+    recvAtt                 Unsigned32,
+    recvAttMin              Unsigned32,
+    recvAttMax              Unsigned32,
+    
+    recvEQ                  Unsigned32,
+    recvEQMin               Unsigned32,
+    recvEQMax               Unsigned32,
+    
+    recvChanNum             Unsigned32,
+    recvChanNumMin          Unsigned32,
+    recvChanNumMax          Unsigned32,
+    
+    recvCPUTemp             INTEGER,
+    recvSN                  DisplayString,
+    recvVersion             Unsigned32,
+    recvWTimer              Unsigned32
+}
+    
+recvSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { recvEntry 1 }
+
+recvRecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { recvEntry 2 }
+    
+recvRecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { recvEntry 3 }
+        
+recvRecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { recvEntry 4 }
+    
+    
+recvOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { recvEntry 5 }
+          
+recvOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { recvEntry 6 }
+    
+recvOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { recvEntry 7 }
+    
+    
+recvOptAGCEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; !0 == AGC OFF"
+    ::= { recvEntry 8 }
+            
+    
+recvOptAGCOffset OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 9 }
+         
+recvOptAGCOffsetMin OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 10 }
+      
+recvOptAGCOffsetMax OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 11 }
+     
+    
+recvAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 12 }
+                 
+recvAttMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 13 }
+               
+recvAttMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 14 }
+              
+    
+recvEQ OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 15 }
+                  
+recvEQMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 16 }
+               
+recvEQMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 17 }
+               
+    
+recvChanNum OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { recvEntry 18 }
+             
+recvChanNumMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { recvEntry 19 }
+          
+recvChanNumMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { recvEntry 20 }
+          
+recvCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { recvEntry 21 }
+    
+recvSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { recvEntry 22 }
+    
+recvVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { recvEntry 23 }
+    
+recvWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { recvEntry 24 }
+    
+-- *****************************************************************************
+-- *                    CATV WOS3000 Module Retrurn-Receiver (TypeID = 5)
+-- *****************************************************************************
+retRecvTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF RetRecvEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module Retrurn-Receiver"
+    ::= { slotDevices 5 }
+    
+retRecvEntry OBJECT-TYPE
+    SYNTAX RetRecvEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { retRecvSlot }
+    ::= { retRecvTable 1 }
+    
+RetRecvEntry ::= SEQUENCE
+{
+    retRecvSlot                 INTEGER,
+    
+    retRecvARecvPower           INTEGER,
+    retRecvARecvPowerAlarmHi    INTEGER,
+    retRecvARecvPowerAlarmLo    INTEGER,
+    
+    retRecvBRecvPower           INTEGER,
+    retRecvBRecvPowerAlarmHi    INTEGER,
+    retRecvBRecvPowerAlarmLo    INTEGER,
+    
+    retRecvCRecvPower           INTEGER,
+    retRecvCRecvPowerAlarmHi    INTEGER,
+    retRecvCRecvPowerAlarmLo    INTEGER,
+    
+    retRecvDRecvPower           INTEGER,
+    retRecvDRecvPowerAlarmHi    INTEGER,
+    retRecvDRecvPowerAlarmLo    INTEGER,
+    
+    retRecvAOutRFLevel          Unsigned32,
+    retRecvAOutRFLevelAlarmHi   Unsigned32,
+    retRecvAOutRFLevelAlarmLo   Unsigned32,
+    
+    retRecvBOutRFLevel          Unsigned32,
+    retRecvBOutRFLevelAlarmHi   Unsigned32,
+    retRecvBOutRFLevelAlarmLo   Unsigned32,
+    
+    retRecvCOutRFLevel          Unsigned32,
+    retRecvCOutRFLevelAlarmHi   Unsigned32,
+    retRecvCOutRFLevelAlarmLo   Unsigned32,
+    
+    retRecvDOutRFLevel          Unsigned32,
+    retRecvDOutRFLevelAlarmHi   Unsigned32,
+    retRecvDOutRFLevelAlarmLo   Unsigned32,
+    
+    retRecvAOptAGCCtrlEn        Unsigned32,
+    retRecvBOptAGCCtrlEn        Unsigned32,
+    retRecvCOptAGCCtrlEn        Unsigned32,
+    retRecvDOptAGCCtrlEn        Unsigned32,
+    
+    retRecvAAtt                 Unsigned32,
+    retRecvBAtt                 Unsigned32,
+    retRecvCAtt                 Unsigned32,
+    retRecvDAtt                 Unsigned32,
+    retRecvAttMin               Unsigned32,
+    retRecvAttMax               Unsigned32,
+    
+    retRecvChanNum              Unsigned32,
+    retRecvChanNumMin           Unsigned32,
+    retRecvChanNumMax           Unsigned32,
+    
+    retRecvCPUTemp              INTEGER,
+    retRecvSN                   DisplayString,
+    retRecvVersion              Unsigned32,
+    retRecvWTimer               Unsigned32
+}
+    
+retRecvSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { retRecvEntry 1 }
+
+retRecvARecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 2 }
+    
+retRecvARecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 3 }
+       
+retRecvARecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 4 }
+       
+    
+retRecvBRecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 5 }
+              
+retRecvBRecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 6 }
+       
+retRecvBRecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 7 }
+       
+    
+retRecvCRecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 8 }
+            
+retRecvCRecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 9 }
+      
+retRecvCRecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 10 }
+      
+    
+retRecvDRecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 11 }
+             
+retRecvDRecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 12 }
+      
+retRecvDRecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { retRecvEntry 13 }
+       
+    
+retRecvAOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 14 }
+            
+retRecvAOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 15 }
+     
+retRecvAOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 16 }
+     
+    
+retRecvBOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 17 }
+            
+retRecvBOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 18 }
+      
+retRecvBOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 19 }
+      
+    
+retRecvCOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 20 }
+            
+retRecvCOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 21 }
+      
+retRecvCOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 22 }
+      
+    
+retRecvDOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 23 }
+             
+retRecvDOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 24 }
+     
+retRecvDOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { retRecvEntry 25 }
+      
+    
+retRecvAOptAGCCtrlEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; 1 == AGC OFF"
+    ::= { retRecvEntry 26 }
+          
+retRecvBOptAGCCtrlEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; 1 == AGC OFF"
+    ::= { retRecvEntry 27 }
+           
+retRecvCOptAGCCtrlEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; 1 == AGC OFF"
+    ::= { retRecvEntry 28 }
+          
+retRecvDOptAGCCtrlEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; 1 == AGC OFF"
+    ::= { retRecvEntry 29 }
+           
+    
+retRecvAAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { retRecvEntry 30 }
+                    
+retRecvBAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { retRecvEntry 31 }
+                    
+retRecvCAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { retRecvEntry 32 }
+                    
+retRecvDAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { retRecvEntry 33 }
+                    
+retRecvAttMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { retRecvEntry 34 }
+                  
+retRecvAttMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { retRecvEntry 35 }
+                  
+    
+retRecvChanNum OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { retRecvEntry 36 }
+                 
+retRecvChanNumMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { retRecvEntry 37 }
+              
+retRecvChanNumMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { retRecvEntry 38 }
+              
+retRecvCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { retRecvEntry 39 }
+    
+retRecvSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { retRecvEntry 40 }
+    
+retRecvVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { retRecvEntry 41 }
+    
+retRecvWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { retRecvEntry 42 }
+    
+-- *****************************************************************************
+-- *                    CATV WOS3000 Module Optical-Switcher (TypeID = 6)
+-- *****************************************************************************
+optSwTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF OptSwEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module Optical-Switcher"
+    ::= { slotDevices 6 }
+    
+optSwEntry OBJECT-TYPE
+    SYNTAX OptSwEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { optSwSlot }
+    ::= { optSwTable 1 }
+
+OptSwEntry ::= SEQUENCE
+{
+    optSwSlot               INTEGER,
+    
+    optSwAInPower           INTEGER,
+    optSwAInPowerAlarmHi    INTEGER,
+    optSwAInPowerAlarmLo    INTEGER,
+    
+    optSwBInPower           INTEGER,
+    optSwBInPowerAlarmHi    INTEGER,
+    optSwBInPowerAlarmLo    INTEGER,
+    
+    optSwSWCtrlMode         Unsigned32,
+    optSwWorkChan           Unsigned32,
+    optSwSwitchPower        Unsigned32,
+    optSwSwitchPowerMin     Unsigned32,
+    optSwSwitchPowerMax     Unsigned32,
+    
+    optSwWaveLegth          Unsigned32,
+    
+    optSwCPUTemp            INTEGER,
+    optSwSN                 DisplayString,
+    optSwVersion            Unsigned32,
+    optSwWTimer             Unsigned32
+}
+    
+optSwSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { optSwEntry 1 }
+    
+optSwAInPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { optSwEntry 2 }
+    
+optSwAInPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { optSwEntry 3 }
+       
+optSwAInPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { optSwEntry 4 }
+       
+    
+optSwBInPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { optSwEntry 5 }
+              
+optSwBInPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { optSwEntry 6 }
+       
+optSwBInPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { optSwEntry 7 }
+       
+    
+optSwSWCtrlMode OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AUTO; !0 == MANUAL"
+    ::= { optSwEntry 8 }
+            
+optSwWorkChan OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == A; !0 == B"
+    ::= { optSwEntry 9 }
+              
+optSwSwitchPower OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { optSwEntry 10 }
+           
+optSwSwitchPowerMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { optSwEntry 11 }
+        
+optSwSwitchPowerMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { optSwEntry 12 }
+        
+    
+optSwWaveLegth OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 = 1310nm; 1 = 1490nm; 2 = 1550nm"
+    ::= { optSwEntry 13 }
+             
+optSwCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { optSwEntry 14 }
+    
+optSwSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { optSwEntry 15 }
+    
+optSwVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { optSwEntry 16 }
+    
+optSwWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { optSwEntry 17 }
+    
+-- *****************************************************************************
+-- *                    CATV WOS3000 Module RF-Switcher (TypeID = 7)
+-- *****************************************************************************
+rfSwTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF RfSwEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module RF-Switcher"
+    ::= { slotDevices 7 }
+    
+rfSwEntry OBJECT-TYPE
+    SYNTAX RfSwEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { rfSwSlot }
+    ::= { rfSwTable 1 }
+
+RfSwEntry ::= SEQUENCE
+{
+    rfSwSlot                INTEGER,
+    
+    rfSwAInRFLevel          Unsigned32,
+    rfSwAInRFLevelAlarmHi   Unsigned32,
+    rfSwAInRFLevelAlarmLo   Unsigned32,
+    
+    rfSwBInRFLevel          Unsigned32,
+    rfSwBInRFLevelAlarmHi   Unsigned32,
+    rfSwBInRFLevelAlarmLo   Unsigned32,
+    
+    rfSwSWCtrlMode          Unsigned32,
+    rfSwWorkChan            Unsigned32,
+    rfSwSwitchLevel         Unsigned32,
+    rfSwSwitchLevelMin      Unsigned32,
+    rfSwSwitchLevelMax      Unsigned32,
+    
+    rfSwChanNum             Unsigned32,
+    rfSwChanNumMin          Unsigned32,
+    rfSwChanNumMax          Unsigned32,
+    
+    optSwCPUTemp            INTEGER,
+    optSwSN                 DisplayString,
+    optSwVersion            Unsigned32,
+    optSwWTimer             Unsigned32
+}
+    
+rfSwSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { rfSwEntry 1 }
+    
+rfSwAInPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { rfSwEntry 2 }
+    
+rfSwAInRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { rfSwEntry 3 }
+      
+rfSwAInRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { rfSwEntry 4 }
+      
+    
+rfSwBInRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { rfSwEntry 5 }
+             
+rfSwBInRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { rfSwEntry 6 }
+      
+rfSwBInRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { rfSwEntry 7 }
+      
+    
+rfSwSWCtrlMode OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AUTO; !0 == MANUAL"
+    ::= { rfSwEntry 8 }
+             
+rfSwWorkChan OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == A; !0 == B"
+    ::= { rfSwEntry 9 }
+               
+rfSwSwitchLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { rfSwEntry 10 }
+            
+rfSwSwitchLevelMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { rfSwEntry 11 }
+         
+rfSwSwitchLevelMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { rfSwEntry 12 }
+         
+    
+rfSwChanNum OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { rfSwEntry 13 }
+                
+rfSwChanNumMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { rfSwEntry 14 }
+            
+rfSwChanNumMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { rfSwEntry 15 }
+             
+rfSwCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { rfSwEntry 16 }
+    
+rfSwSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { rfSwEntry 17 }
+    
+rfSwVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { rfSwEntry 18 }
+    
+rfSwWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { rfSwEntry 19 }
+   -- *****************************************************************************
+-- *                    CATV WOS3000 Module Retrurn-Receiver-with-RF-Switch (TypeID = 8)
+-- *****************************************************************************
+proretRecvTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF ProretRecvEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module Retrurn-Receiver"
+    ::= { slotDevices 8 }
+    
+proretRecvEntry OBJECT-TYPE
+    SYNTAX ProretRecvEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { proretRecvSlot }
+    ::= { proretRecvTable 1 }
+    
+ProretRecvEntry ::= SEQUENCE
+{
+    proretRecvSlot                 INTEGER,
+    
+    proretRecvARecvPower           INTEGER,
+    proretRecvARecvPowerAlarmHi    INTEGER,
+    proretRecvARecvPowerAlarmLo    INTEGER,
+    
+    proretRecvBRecvPower           INTEGER,
+    proretRecvBRecvPowerAlarmHi    INTEGER,
+    proretRecvBRecvPowerAlarmLo    INTEGER,
+    
+    proretRecvCRecvPower           INTEGER,
+    proretRecvCRecvPowerAlarmHi    INTEGER,
+    proretRecvCRecvPowerAlarmLo    INTEGER,
+    
+    proretRecvDRecvPower           INTEGER,
+    proretRecvDRecvPowerAlarmHi    INTEGER,
+    proretRecvDRecvPowerAlarmLo    INTEGER,
+    
+    proretRecvAOutRFLevel          Unsigned32,
+    proretRecvAOutRFLevelAlarmHi   Unsigned32,
+    proretRecvAOutRFLevelAlarmLo   Unsigned32,
+    
+    proretRecvBOutRFLevel          Unsigned32,
+    proretRecvBOutRFLevelAlarmHi   Unsigned32,
+    proretRecvBOutRFLevelAlarmLo   Unsigned32,
+    
+    proretRecvCOutRFLevel          Unsigned32,
+    proretRecvCOutRFLevelAlarmHi   Unsigned32,
+    proretRecvCOutRFLevelAlarmLo   Unsigned32,
+    
+    proretRecvDOutRFLevel          Unsigned32,
+    proretRecvDOutRFLevelAlarmHi   Unsigned32,
+    proretRecvDOutRFLevelAlarmLo   Unsigned32,
+    
+    proretRecvAOptAGCCtrlEn        Unsigned32,
+    proretRecvBOptAGCCtrlEn        Unsigned32,
+    proretRecvCOptAGCCtrlEn        Unsigned32,
+    proretRecvDOptAGCCtrlEn        Unsigned32,
+
+    proretRecvARFOUTCtrlMode        Unsigned32,
+    proretRecvBRFOUTCtrlMode        Unsigned32,
+    proretRecvCRFOUTCtrlMode        Unsigned32,
+    proretRecvDRFOUTCtrlMode        Unsigned32,
+
+    proretRecvARFOUTStatus        Unsigned32,
+    proretRecvBRFOUTStatus        Unsigned32,
+    proretRecvCRFOUTStatus        Unsigned32,
+    proretRecvDRFOUTStatus        Unsigned32,
+
+    
+    proretRecvAAtt                 Unsigned32,
+    proretRecvBAtt                 Unsigned32,
+    proretRecvCAtt                 Unsigned32,
+    proretRecvDAtt                 Unsigned32,
+    proretRecvAttMin               Unsigned32,
+    proretRecvAttMax               Unsigned32,
+    
+    proretRecvChanNum              Unsigned32,
+    proretRecvChanNumMin           Unsigned32,
+    proretRecvChanNumMax           Unsigned32,
+    
+    proretRecvCPUTemp              INTEGER,
+    proretRecvSN                   DisplayString,
+    proretRecvVersion              Unsigned32,
+    proretRecvWTimer               Unsigned32
+}
+    
+proretRecvSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { proretRecvEntry 1 }
+
+proretRecvARecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 2 }
+    
+proretRecvARecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 3 }
+       
+proretRecvARecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 4 }
+       
+    
+proretRecvBRecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 5 }
+              
+proretRecvBRecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 6 }
+       
+proretRecvBRecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 7 }
+       
+    
+proretRecvCRecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 8 }
+            
+proretRecvCRecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 9 }
+      
+proretRecvCRecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 10 }
+      
+    
+proretRecvDRecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 11 }
+             
+proretRecvDRecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 12 }
+      
+proretRecvDRecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { proretRecvEntry 13 }
+       
+    
+proretRecvAOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 14 }
+            
+proretRecvAOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 15 }
+     
+proretRecvAOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 16 }
+     
+    
+proretRecvBOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 17 }
+            
+proretRecvBOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 18 }
+      
+proretRecvBOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 19 }
+      
+    
+proretRecvCOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 20 }
+            
+proretRecvCOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 21 }
+      
+proretRecvCOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 22 }
+      
+    
+proretRecvDOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 23 }
+             
+proretRecvDOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 24 }
+     
+proretRecvDOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { proretRecvEntry 25 }
+      
+    
+proretRecvAOptAGCCtrlEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; 1 == AGC OFF"
+    ::= { proretRecvEntry 26 }
+          
+proretRecvBOptAGCCtrlEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; 1 == AGC OFF"
+    ::= { proretRecvEntry 27 }
+           
+proretRecvCOptAGCCtrlEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; 1 == AGC OFF"
+    ::= { proretRecvEntry 28 }
+          
+proretRecvDOptAGCCtrlEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; 1 == AGC OFF"
+    ::= { proretRecvEntry 29 }
+           
+proretRecvARFOUTCtrlMode OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AUTO; !0 == MANUAL"
+    ::= { proretRecvEntry 30 }
+
+proretRecvBRFOUTCtrlMode OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AUTO; !0 == MANUAL"
+    ::= { proretRecvEntry 31 }
+
+proretRecvCRFOUTCtrlMode OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AUTO; !0 == MANUAL"
+    ::= { proretRecvEntry 32 }
+
+proretRecvDRFOUTCtrlMode OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AUTO; !0 == MANUAL"
+    ::= { proretRecvEntry 33 }
+
+proretRecvARFOUTStatus OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "RFOUT STATUS ,!0==RFOFF,0==RFON, if(proretRecvARFOUTCtrlMode == MANUAL)it can be set"
+    ::= { proretRecvEntry 34 }
+
+proretRecvBRFOUTStatus OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "RFOUT STATUS ,!0==RFOFF,0==RFON, if(proretRecvBRFOUTCtrlMode == MANUAL)it can be set"
+    ::= { proretRecvEntry 35 }
+
+proretRecvCRFOUTStatus OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "RFOUT STATUS ,!0==RFOFF,0==RFON, if(proretRecvCRFOUTCtrlMode == MANUAL)it can be set"
+    ::= { proretRecvEntry 36 }
+
+proretRecvDRFOUTStatus OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "RFOUT STATUS ,!0==RFOFF,0==RFON, if(proretRecvDRFOUTCtrlMode == MANUAL)it can be set"
+    ::= { proretRecvEntry 37 }
+
+
+
+proretRecvAAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { proretRecvEntry 38 }
+                    
+proretRecvBAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { proretRecvEntry 39 }
+                    
+proretRecvCAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { proretRecvEntry 40 }
+                    
+proretRecvDAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { proretRecvEntry 41 }
+                    
+proretRecvAttMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { proretRecvEntry 42 }
+                  
+proretRecvAttMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { proretRecvEntry 43 }
+                  
+    
+proretRecvChanNum OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { proretRecvEntry 44 }
+                 
+proretRecvChanNumMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { proretRecvEntry 45 }
+              
+proretRecvChanNumMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { proretRecvEntry 46 }
+              
+proretRecvCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { proretRecvEntry 47 }
+    
+proretRecvSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { proretRecvEntry 48 }
+    
+proretRecvVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { proretRecvEntry 49 }
+    
+proretRecvWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { proretRecvEntry 50! }
+ 
+-- *****************************************************************************
+-- *                    CATV WOS3000 Module EDFA (TypeID = 9)
+-- *****************************************************************************
+edfaTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF EdfaEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module EDFA"
+    ::= { slotDevices 9 }
+    
+edfaEntry OBJECT-TYPE
+    SYNTAX EdfaEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { edfaSlot }
+    ::= { edfaTable 1 }
+
+EdfaEntry ::= SEQUENCE
+{
+    edfaSlot                INTEGER,
+    
+    edfaInputPwr            INTEGER,
+    edfaInputPwrAlarmHi     INTEGER,
+    edfaInputPwrAlarmLo     INTEGER,
+    
+    edfaOutputPwr           INTEGER,
+    edfaOutputPwrAlarmHi    INTEGER,
+    edfaOutputPwrAlarmLo    INTEGER,
+    
+    edfaOptAtt              Unsigned32,
+    edfaOptAttMin           Unsigned32,
+    edfaOptAttMax           Unsigned32,
+    
+    edfaPump1Bias           Unsigned32,
+    edfaPump1BiasAlarmHi    Unsigned32,
+    edfaPump1BiasAlarmLo    Unsigned32,
+    
+    edfaPump1Temp           Unsigned32,
+    edfaPump1TempAlarmHi    Unsigned32,
+    edfaPump1TempAlarmLo    Unsigned32,
+    
+    edfaPump1Tec            INTEGER,
+    edfaPump1TecAlarmHi     INTEGER,
+    edfaPump1TecAlarmLo     INTEGER,
+
+    edfaPump2Bias           Unsigned32,
+    edfaPump2BiasAlarmHi    Unsigned32,
+    edfaPump2BiasAlarmLo    Unsigned32,
+    
+    edfaPump2Temp           Unsigned32,
+    edfaPump2TempAlarmHi    Unsigned32,
+    edfaPump2TempAlarmLo    Unsigned32,
+    
+    edfaPump2Tec            INTEGER,
+    edfaPump2TecAlarmHi     INTEGER,
+    edfaPump2TecAlarmLo     INTEGER,
+        
+    edfaPumpCtrl            Unsigned32,
+    
+    edfaCPUTemp             INTEGER,
+    edfaSN                  DisplayString,
+    edfaVersion             Unsigned32,
+    edfaWTimer              Unsigned32
+}
+    
+edfaSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { edfaEntry 1 }
+    
+edfaInputPwr OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { edfaEntry 2 }
+    
+edfaInputPwrAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { edfaEntry 3 }
+        
+edfaInputPwrAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { edfaEntry 4 }
+        
+    
+edfaOutputPwr OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { edfaEntry 5 }
+              
+edfaOutputPwrAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { edfaEntry 6 }
+       
+edfaOutputPwrAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { edfaEntry 7 }
+       
+    
+edfaOptAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { edfaEntry 8 }
+                 
+edfaOptAttMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { edfaEntry 9 }
+              
+edfaOptAttMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { edfaEntry 10 }
+             
+    
+edfaPump1Bias OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { edfaEntry 11 }
+              
+edfaPump1BiasAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { edfaEntry 12 }
+       
+edfaPump1BiasAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { edfaEntry 13 }
+       
+    
+edfaPump1Temp OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { edfaEntry 14 }
+              
+edfaPump1TempAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { edfaEntry 15 }
+       
+edfaPump1TempAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { edfaEntry 16 }
+       
+    
+edfaPump1Tec OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { edfaEntry 17 }
+               
+edfaPump1TecAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { edfaEntry 18 }
+        
+edfaPump1TecAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { edfaEntry 19 }
+        
+
+edfaPump2Bias OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { edfaEntry 20 }
+              
+edfaPump2BiasAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { edfaEntry 21 }
+       
+edfaPump2BiasAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { edfaEntry 22 }
+       
+    
+edfaPump2Temp OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { edfaEntry 23 }
+              
+edfaPump2TempAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { edfaEntry 24 }
+       
+edfaPump2TempAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { edfaEntry 25 }
+       
+    
+edfaPump2Tec OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { edfaEntry 26 }
+               
+edfaPump2TecAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { edfaEntry 27 }
+        
+edfaPump2TecAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { edfaEntry 28 }
+        
+        
+edfaPumpCtrl OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == PUMP OFF; !0 == PUMP ON"
+    ::= { edfaEntry 29 }
+               
+edfaCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { edfaEntry 30 }
+    
+edfaSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { edfaEntry 31 }
+    
+edfaVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { edfaEntry 32 }
+    
+edfaWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { edfaEntry 33 }
+    
+-- *****************************************************************************
+-- *                    CATV WOS3000 Module Double-Receiver (TypeID = 10)
+-- *****************************************************************************
+dblRecvTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF DblRecvEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module Double-Receiver"
+    ::= { slotDevices 10 }
+    
+dblRecvEntry OBJECT-TYPE
+    SYNTAX DblRecvEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { dblRecvSlot }
+    ::= { dblRecvTable 1 }
+
+DblRecvEntry ::= SEQUENCE
+{
+    dblRecvSlot                 INTEGER,
+    
+    dblRecvARecvPower           INTEGER,
+    dblRecvARecvPowerAlarmHi    INTEGER,
+    dblRecvARecvPowerAlarmLo    INTEGER,
+    
+    dblRecvBRecvPower           INTEGER,
+    dblRecvBRecvPowerAlarmHi    INTEGER,
+    dblRecvBRecvPowerAlarmLo    INTEGER,
+    
+    dblRecvAOutRFLevel          Unsigned32,
+    dblRecvAOutRFLevelAlarmHi   Unsigned32,
+    dblRecvAOutRFLevelAlarmLo   Unsigned32,
+    
+    dblRecvBOutRFLevel          Unsigned32,
+    dblRecvBOutRFLevelAlarmHi   Unsigned32,
+    dblRecvBOutRFLevelAlarmLo   Unsigned32,
+    
+    dblRecvAOptAGCEn            Unsigned32,
+    dblRecvBOptAGCEn            Unsigned32,
+    
+    dblRecvAOptAGCOffset        INTEGER,
+    dblRecvAOptAGCOffsetMin     INTEGER,
+    dblRecvAOptAGCOffsetMax     INTEGER,
+    
+    dblRecvAAtt                 Unsigned32,
+    dblRecvAAttMin              Unsigned32,
+    dblRecvAAttMax              Unsigned32,
+    
+    dblRecvAEQ                  Unsigned32,
+    dblRecvAEQMin               Unsigned32,
+    dblRecvAEQMax               Unsigned32,
+    
+    dblRecvBOptAGCOffset        INTEGER,
+    dblRecvBOptAGCOffsetMin     INTEGER,
+    dblRecvBOptAGCOffsetMax     INTEGER,
+    
+    dblRecvBAtt                 Unsigned32,
+    dblRecvBAttMin              Unsigned32,
+    dblRecvBAttMax              Unsigned32,
+    
+    dblRecvBEQ                  Unsigned32,
+    dblRecvBEQMin               Unsigned32,
+    dblRecvBEQMax               Unsigned32,
+    
+    dblRecvSWCtrlMode           Unsigned32,
+    dblRecvWorkChan             Unsigned32,
+    dblRecvSwitchLevel          Unsigned32,
+    dblRecvSwitchLevelMin       Unsigned32,
+    dblRecvSwitchLevelMax       Unsigned32,
+    
+    dblRecvChanNum              Unsigned32,
+    dblRecvChanNumMin           Unsigned32,
+    dblRecvChanNumMax           Unsigned32,
+    
+    dblRecvCPUTemp              INTEGER,
+    dblRecvSN                   DisplayString,
+    dblRecvVersion              Unsigned32,
+    dblRecvWTimer               Unsigned32
+}
+
+dblRecvSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { dblRecvEntry 1 }
+    
+dblRecvARecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { dblRecvEntry 2 }
+    
+dblRecvARecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { dblRecvEntry 3 }
+       
+dblRecvARecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { dblRecvEntry 4 }
+       
+    
+dblRecvBRecvPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { dblRecvEntry 5 }
+              
+dblRecvBRecvPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { dblRecvEntry 6 }
+       
+dblRecvBRecvPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { dblRecvEntry 7 }
+       
+    
+dblRecvAOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { dblRecvEntry 8 }
+             
+dblRecvAOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { dblRecvEntry 9 }
+      
+dblRecvAOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { dblRecvEntry 10 }
+      
+    
+dblRecvBOutRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { dblRecvEntry 11 }
+             
+dblRecvBOutRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { dblRecvEntry 12 }
+      
+dblRecvBOutRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { dblRecvEntry 13 }
+      
+    
+dblRecvAOptAGCEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; !0 == AGC OFF"
+    ::= { dblRecvEntry 14 }
+               
+dblRecvBOptAGCEn OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 == AGC ON; !0 == AGC OFF"
+    ::= { dblRecvEntry 15 }
+               
+    
+dblRecvAOptAGCOffset OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 16 }
+           
+dblRecvAOptAGCOffsetMin OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 17 }
+        
+dblRecvAOptAGCOffsetMax OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 18 }
+        
+    
+dblRecvAAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 19 }
+                    
+dblRecvAAttMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 20 }
+                 
+dblRecvAAttMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 21 }
+                 
+    
+dblRecvAEQ OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 22 }
+                     
+dblRecvAEQMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 23 }
+                  
+dblRecvAEQMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 24 }
+                  
+    
+dblRecvBOptAGCOffset OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 25 }
+           
+dblRecvBOptAGCOffsetMin OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 26 }
+        
+dblRecvBOptAGCOffsetMax OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 27 }
+        
+    
+dblRecvBAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 28 }
+                    
+dblRecvBAttMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 29 }
+                 
+dblRecvBAttMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 30 }
+                 
+    
+dblRecvBEQ OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 31 }
+                     
+dblRecvBEQMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 32 }
+                  
+dblRecvBEQMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { dblRecvEntry 33 }
+                  
+    
+dblRecvSWCtrlMode OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 = AUTO; 1 = MANUAL; 2 = BOTH."
+    ::= { dblRecvEntry 34 }
+              
+dblRecvWorkChan OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 = A; 1 = B; 2 = BOTH."
+    ::= { dblRecvEntry 35 }
+                
+dblRecvSwitchLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { dblRecvEntry 36 }
+             
+dblRecvSwitchLevelMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { dblRecvEntry 37 }
+          
+dblRecvSwitchLevelMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { dblRecvEntry 38 }
+          
+    
+dblRecvChanNum OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { dblRecvEntry 39 }
+                 
+dblRecvChanNumMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { dblRecvEntry 40 }
+              
+dblRecvChanNumMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { dblRecvEntry 41 }
+              
+dblRecvCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { dblRecvEntry 42 }
+    
+dblRecvSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { dblRecvEntry 43 }
+    
+dblRecvVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { dblRecvEntry 44 }
+    
+dblRecvWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { dblRecvEntry 45 }
+    
+-- *******-- *****************************************************************************
+-- *                    CATV WOS3000 Module PreAmp (TypeID = 12)
+-- *****************************************************************************
+preampTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF PreampEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module Preamp"
+    ::= { slotDevices 12 }
+    
+preampEntry OBJECT-TYPE
+    SYNTAX RecvEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { preampSlot }
+    ::= { preampTable 1 }
+    
+PreampEntry ::= SEQUENCE
+{
+    preampSlot                INTEGER,
+    
+    preampInputRFLevel           Unsigned32,
+    preampInputRFLevelAlarmHi    Unsigned32,
+    preampInputRFLevelAlarmLo    Unsigned32,
+    
+    preampOutputRFLevel           Unsigned32,
+    preampOutputRFLevelAlarmHi    Unsigned32,
+    preampOutputRFLevelAlarmLo    Unsigned32,
+
+    preampAtt                 Unsigned32,
+    preampAttMin              Unsigned32,
+    preampAttMax              Unsigned32,
+    
+    preampEQ                  Unsigned32,
+    preampEQMin               Unsigned32,
+    preampEQMax               Unsigned32,
+    
+    preampChanNum             Unsigned32,
+    preampChanNumMin          Unsigned32,
+    preampChanNumMax          Unsigned32,
+    
+    preampCPUTemp             INTEGER,
+    preampSN                  DisplayString,
+    preampVersion             Unsigned32,
+    preampWTimer              Unsigned32
+}
+    
+preampSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { recvEntry 1 }
+
+preampInputRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { recvEntry 2 }
+    
+preampInputRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { recvEntry 3 }
+        
+preampInputRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { recvEntry 4 }
+    
+    
+preampOutputRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { recvEntry 5 }
+          
+preampOutputRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { recvEntry 6 }
+    
+preampOutputRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { recvEntry 7 }
+      
+preampAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 8 }
+                 
+preampAttMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 9 }
+               
+preampAttMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 10 }
+              
+    
+preampEQ OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 11 }
+                  
+preampEQMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 12 }
+               
+preampEQMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { recvEntry 13 }
+               
+    
+preampChanNum OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { recvEntry 14 }
+             
+preampChanNumMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { recvEntry 15 }
+          
+preampChanNumMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit N/A"
+    ::= { recvEntry 16 }
+          
+preampCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { recvEntry 17 }
+    
+preampSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { recvEntry 18 }
+    
+preampVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { recvEntry 19 }
+    
+preampWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { recvEntry 20 }
+-- *****************************************************************************
+-- *                    CATV WOS3000 Module Transmitter (TypeID = 3)
+-- *****************************************************************************
+transproTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF TransproEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "CATV WOS3000 Module Pro-Transmitter"
+    ::= { slotDevices 13 }
+    
+transproEntry OBJECT-TYPE
+    SYNTAX TransproEntry
+    ACCESS not-accessible
+    STATUS mandatory
+    INDEX { transproSlot }
+    ::= { transproTable 1 }
+
+TransproEntry ::= SEQUENCE
+{
+    transproSlot               INTEGER,
+    
+    transproOutPower           Unsigned32,
+    transproOutPowerAlarmHi    Unsigned32,
+    transproOutPowerAlarmLo    Unsigned32,
+
+    transproOutPowerafteratt          INTEGER,
+    transproOutPowerafterattAlarmHi    INTEGER,
+    transproOutPowerafterattAlarmLo    INTEGER,
+
+    transproInputPower           INTEGER,
+    transproInputPowerAlarmHi    INTEGER,
+    transproInputPowerAlarmLo    INTEGER,
+    
+    transproLaserBias          Unsigned32,
+    transproLaserBiasAlarmHi   Unsigned32,
+    transproLaserBiasAlarmLo   Unsigned32,
+    
+    transproLaserTemp          Unsigned32,
+    transproLaserTempAlarmHi   Unsigned32,
+    transproLaserTempAlarmLo   Unsigned32,
+    
+    transproLaserTec           INTEGER,
+    transproLaserTecAlarmHi    INTEGER,
+    transproLaserTecAlarmLo    INTEGER,
+    
+    transproRFLevel            Unsigned32,
+    transproRFLevelAlarmHi     Unsigned32,
+    transproRFLevelAlarmLo     Unsigned32,
+
+    transproOpAttCtrlMode          Unsigned32,
+    
+    transproOpAttValue          Unsigned32,
+    transproOpAttValueMin       Unsigned32,
+    transproOpAttValueMax       Unsigned32,
+    
+    transproOtoIPowerDef             Unsigned32,
+    transproOtoIPowerDefMin          Unsigned32,
+    transproOtoIPowerDefMax          Unsigned32,
+
+    
+    transproCurRFMode          Unsigned32,
+    
+    transproAGCOffset          INTEGER,
+    transproAGCOffsetMin       INTEGER,
+    transproAGCOffsetMax       INTEGER,
+    
+    transproMGCAtt             Unsigned32,
+    transproMGCAttMin          Unsigned32,
+    transproMGCAttMax          Unsigned32,
+    
+    transproChanNum            Unsigned32,
+    transproChanNumMin         Unsigned32,
+    transproChanNumMax         Unsigned32,
+    
+    transproLaserCtrl          Unsigned32,
+    
+    transproCPUTemp            INTEGER,
+    transproSN                 DisplayString,
+    transproVersion            Unsigned32,
+    transproWTimer             Unsigned32
+}
+
+transproSlot OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    ::= { transproEntry 1 }
+
+transproOutPower OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mW"
+    ::= { transproEntry 2 }
+    
+transproOutPowerAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mW"
+    ::= { transproEntry 3 }
+    
+transproOutPowerAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mW"
+    ::= { transproEntry 4 }
+
+transproOutPowerafteratt OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { transproEntry 5 }
+    
+transproOutPowerafterattAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { transproEntry 6 }
+    
+transproOutPowerafterattAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { transproEntry 7 }
+
+transproInputPower OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { transproEntry 8 }
+    
+transproInputPowerAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { transproEntry 9 }
+    
+transproInputPowerAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBm"
+    ::= { transproEntry 10 }
+    
+transproLaserBias OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { transproEntry 11 }
+    
+transproLaserBiasAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { transproEntry 12 }
+    
+transproLaserBiasAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1mA"
+    ::= { transproEntry 13 }
+    
+transproLaserTemp OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius"
+    ::= { transproEntry 14 }
+    
+transproLaserTempAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius"
+    ::= { transproEntry 15 }
+    
+transproLaserTempAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius"
+    ::= { transproEntry 16 }
+    
+transproLaserTec OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { transproEntry 17 }
+    
+transproLaserTecAlarmHi OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { transproEntry 18 }
+    
+transproLaserTecAlarmLo OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.01A"
+    ::= { transproEntry 19 }
+    
+transproRFLevel OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { transproEntry 20 }
+    
+transproRFLevelAlarmHi OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { transproEntry 21 }
+    
+transproRFLevelAlarmLo OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dBuV"
+    ::= { transproEntry 22 }
+
+transproOpAttCtrlMode OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Optical att control Mode,0 = AUTO; !0 = MANUAL"
+    ::= { transproEntry 23 }
+    
+transproOpAttValue OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "optical att value,when OpAttCtrlMode = MANUAL,this value is valid,Unit 0.1dB"
+    ::= { transproEntry 24 }
+    
+transproOpAttValueMin OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dB"
+    ::= { transproEntry 25 }
+    
+transproOpAttValueMax OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dB"
+    ::= { transproEntry 26 }
+    
+transproOtoIPowerDef OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "OtoIPowerDef =  InputPower - OutPowerafteratt,when OpAttCtrlMode = AUTO,this value is valid,Unit 0.1dB"
+    ::= { transproEntry 27 }
+    
+transproOtoIPowerDefMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dB"
+    ::= { transproEntry 28 }
+    
+transproOtoIPowerDefMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1dB"
+    ::= { transproEntry 29 }
+
+    
+transproCurRFMode OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 = AGC; !0 = MGC"
+    ::= { transproEntry 30 }
+    
+transproAGCOffset OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transproEntry 31 }
+    
+transproAGCOffsetMin OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transproEntry 32 }
+    
+transproAGCOffsetMax OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transproEntry 33 }
+    
+transproMGCAtt OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transproEntry 34 }
+    
+transproMGCAttMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transproEntry 35 }
+    
+transproMGCAttMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 1dB"
+    ::= { transproEntry 36 }
+    
+transproChanNum OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    ::= { transproEntry 37 }
+    
+transproChanNumMin OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    ::= { transproEntry 38 }
+    
+transproChanNumMax OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    ::= { transproEntry 39 }
+    
+transproLaserCtrl OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "0 LASER OFF; !0 laser ON."
+    ::= { transproEntry 40 }
+
+transproCPUTemp OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.1 Degree of Celsius."
+    ::= { transproEntry 41 }
+    
+transproSN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    ::= { transproEntry 42 }
+    
+transproVersion OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Devide by 100,e.g, 245 -> Version 2.45."
+    ::= { transproEntry 43 }
+    
+transproWTimer OBJECT-TYPE
+    SYNTAX Unsigned32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Unit 0.5 hours per one tick."
+    ::= { transproEntry 44 }
+
+**********************************************************************
+-- *                    CATV WOS3000 TRAP
+-- *****************************************************************************
+wos3kTrapRestart TRAP-TYPE
+    ENTERPRISE wos3000Ident
+    VARIABLES { wos3kPosixTimer, managerMacAddr }
+    DESCRIPTION
+        "WOS3000 Restart."
+    ::= 1
+
+wos3kTrapDeviceUp TRAP-TYPE
+    ENTERPRISE wos3000Ident
+    VARIABLES { wos3kPosixTimer, wos3kModuleAlarmSlot, wos3kModuleType }
+    DESCRIPTION
+        "WOS3000 Module Uplink."
+    ::= 2
+
+wos3kTrapDeviceDown TRAP-TYPE
+    ENTERPRISE wos3000Ident
+    VARIABLES { wos3kPosixTimer, wos3kModuleAlarmSlot, wos3kModuleType }
+    DESCRIPTION
+        "WOS3000 Module Downlink."
+    ::= 3
+    
+wos3kTrapAlarm TRAP-TYPE
+    ENTERPRISE wos3000Ident
+    VARIABLES { wos3kPosixTimer, wos3kModuleAlarmSlot, wos3kModuleType, wos3kModuleAlarmText }
+    DESCRIPTION
+        "WOS3000 Module Alarm."
+    ::= 4
+    
+-- *****************************************************************************
+END

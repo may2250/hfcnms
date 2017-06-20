@@ -124,7 +124,7 @@ public class StaticMemory {
 	            try {
 	                synchronized (session) {
 	                    if(session.getId().equalsIgnoreCase(sessionid)){
-	                    	System.out.println("Session Got::" + sessionid);
+	                    	//System.out.println("Session Got::" + sessionid);
 	                    	return session;
 	                    }
 	                }

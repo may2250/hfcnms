@@ -1,21 +1,40 @@
 package wl.hfc.alarmlog;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPubSub;
+
+import com.xinlong.util.RedisUtil;
+
 import wl.hfc.common.*;
 import wl.hfc.common.NlogType.TrapLogTypes;
+import wl.hfc.online.pmls;
+import wl.hfc.traprcss.TrapPduServer;
+import wl.hfc.traprcss.TrapProCenter;
 
 
 //CurrentAlarmModel负责告警的插入，历史告警的查询，并向前端推送
-public class CurrentAlarmModel 
+public class CurrentAlarmModel extends Thread
 {
+	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
     public static CurrentAlarmModel me;
     public static int MAX_TRAPNUMBER = 500;
-
+    private static Logger log = Logger.getLogger(CurrentAlarmModel.class);
+    private static final String  HFCALARM_MESSAGE =  "currentalarm.message" ;
   // private log4net.ILog ErrorLog;
   //  private log4net.ILog SysLog;
 
@@ -30,10 +49,10 @@ public class CurrentAlarmModel
     public ArrayList<nojuTrapLogTableRow> invalidRows;
     public Hashtable invalidRowsTable;
 
-
+    private static RedisUtil redisUtil;
     private Thread ptd;
 
-    public CurrentAlarmModel(CDatabaseEngine dEngine)
+    public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil)
     {    	
         this.logEngine = dEngine;
         allRows = new ArrayList<nojuTrapLogTableRow>();
@@ -41,18 +60,85 @@ public class CurrentAlarmModel
 
         invalidRows = new ArrayList<nojuTrapLogTableRow>();
         invalidRowsTable = new Hashtable();
-        me = this;
-
+        this.redisUtil = redisUtil;
+        
+        me = this;        
+    }
+    
+    public void run(){
+    	Jedis jedis=null;
+        jedis = redisUtil.getConnection();		 
+		jedis.psubscribe(jedissubSub, HFCALARM_MESSAGE);
+		redisUtil.getJedisPool().returnResource(jedis); 
     }
 
+    private   JedisPubSub jedissubSub = new JedisPubSub() {
+		public void onUnsubscribe(String arg0, int arg1) {
 
-    //public CurrentAlarmModel(FTrapLogRt view)
-    //{
-    //    this.view = view;
-    //    allRows = new List<nojuTrapLogTableRow>();
+        }
+		public void onSubscribe(String arg0, int arg1) {
 
-    //}
+        }
+		 public void onMessage(String arg0, String arg1) {
+	       
+	     }
+		 public void onPUnsubscribe(String arg0, int arg1) {
 
+	        }
+		 public void onPSubscribe(String arg0, int arg1) {
+
+	        } 
+
+      public void onPMessage(String arg0, String arg1, String msg) {
+      	try {  			
+  			parseMessage(msg);
+  			
+  		}catch(Exception e){
+  			e.printStackTrace();	
+  			log.info(e.getMessage());
+  		}
+  		
+      }
+
+	};
+	
+	private void parseMessage(String message){
+		//System.out.println(" [x] CurrentAlarmModel Received: '" + message + "'");	
+		nojuTrapLogTableRow newObj = null;
+		try {
+			String redStr = java.net.URLDecoder.decode(message, "UTF-8");  
+	        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(redStr.getBytes("ISO-8859-1"));  
+	        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);    
+			newObj = (nojuTrapLogTableRow)objectInputStream.readObject();
+			objectInputStream.close();  
+	        byteArrayInputStream.close();
+		} catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+		/*JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
+		int level = Integer.parseInt(jsondata.get("level").toString()); 
+		TrapLogTypes TrapLogType = (TrapLogTypes)jsondata.get("TrapLogType"); 
+		String addr = jsondata.get("TrapDevAddress").toString(); 
+		String neName = jsondata.get("neName").toString(); 
+		String TrapLogContent = jsondata.get("TrapLogContent").toString(); 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ");  
+	    Date TrapLogTime = sdf.parse(jsondata.get("TrapLogTime").toString());  
+	    String TrapTreatMent = jsondata.get("TrapTreatMent").toString();
+	    String TrapTreatMent = jsondata.get("TrapTreatMent").toString(); 
+		nojuTrapLogTableRow pRow = new nojuTrapLogTableRow(level,TrapLogType,addr,neName,TrapLogContent,TrapLogTime,TrapTreatMent,false,);
+		*/
+		//这里开始处理告警 
+        insertTrapLog(newObj);
+	}
+    
     public nojuTrapLogTableRow insertTrapLog(nojuTrapLogTableRow pRow)
     {
         return insertTrapLog(pRow.TrapLogType, pRow.TrapDevAddress, pRow.neName, pRow.TrapLogContent, pRow.TrapLogTime,pRow.parmName, pRow.paramValue, 0);
@@ -166,7 +252,7 @@ public class CurrentAlarmModel
 
     private int commonLogIns = -1;
     public nojuTrapLogTableRow insertTrapLog(TrapLogTypes type, String addr, String neName, String content, Date time, String paramName, String pValue, int pSlotIndex)
-    {
+    {    	
         nojuTrapLogTableRow aCurrentrow = new nojuTrapLogTableRow(NlogType.getAlarmLevel(type), type, addr, neName, content, time, "", "", paramName, pValue);
         aCurrentrow.slotIndex = pSlotIndex;
         if (NlogType.getAlarmLevel(type) == 0)
@@ -181,7 +267,6 @@ public class CurrentAlarmModel
             {
                 kickParamTrap(aCurrentrow);
             }
- 
 
         }
         else if (NlogType.getAlarmLevel(type) == 1 || NlogType.getAlarmLevel(type) == 2)
@@ -189,14 +274,12 @@ public class CurrentAlarmModel
             aCurrentrow.TrapTreatMent = "";
             aCurrentrow.isTreated = "";
             //日志不记录0级别告警
-
             //int newTrapid = this.dEngine.trapLogInsertRow(aCurrentrow);
             //if (newTrapid==-1)
             //{
             //    return
             //}
             aCurrentrow.TrapLogID = this.logEngine.trapLogInsertRow(aCurrentrow);
-
 
             if (aCurrentrow.TrapLogType == TrapLogTypes.Offline)
             {
@@ -209,8 +292,6 @@ public class CurrentAlarmModel
 
             }
 
-
-
             allRows.add(aCurrentrow);
             allRowsTable.put(aCurrentrow.TrapLogID, aCurrentrow);
             if (allRows.size() > MAX_TRAPNUMBER)
@@ -218,9 +299,24 @@ public class CurrentAlarmModel
                 ////当前告警数量超过最大值，强制处理纳入数据库
                 editTreatMent(allRows.get(0).TrapLogID, ClsLanguageExmp.commonGet("超时默认失效"));
             }
-
             
             //hi ,xinglong ,把该新告警发送到前端，在客户端的告警列表增加该告警
+            JSONObject logjson = new JSONObject();
+            logjson.put("cmd", "alarm_message");
+            logjson.put("opt", true);
+            logjson.put("id", aCurrentrow.TrapLogID);
+    		logjson.put("level", aCurrentrow.level);
+    		//logjson.put("source", aCurrentrow.neName);
+    		logjson.put("path", "grp1/xxxx");
+    		logjson.put("type", aCurrentrow.TrapLogType.toString());
+    		logjson.put("paramname", aCurrentrow.parmName);
+    		logjson.put("paramvalue", aCurrentrow.paramValue);
+    		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");  
+    		logjson.put("eventtime", sdf.format(aCurrentrow.TrapLogTime));
+    		logjson.put("solved", aCurrentrow.TrapTreatMent);
+    		logjson.put("solvetime", aCurrentrow.isTreated);
+    		//System.out.println(" [x]------------------------------=" + logjson.toJSONString());
+    		sendToQueue(logjson.toJSONString(), MAINKERNEL_MESSAGE);
             
             //通知 客户端
  /*           if (view1 != null)
@@ -297,6 +393,21 @@ public class CurrentAlarmModel
                     
                     
                     //hi ,xinglong ,把该失效（过时）的告警发送到前端，在客户端的告警列表中删除对应ID的告警
+                    JSONObject logjson = new JSONObject();
+                    logjson.put("cmd", "alarm_message");
+                    logjson.put("opt", false);
+                    logjson.put("id", item.TrapLogID);
+            		logjson.put("level", item.level);
+            		logjson.put("path", "grp1/xxxx");
+            		logjson.put("type", item.TrapLogType.toString());
+            		logjson.put("paramname", item.parmName);
+            		logjson.put("paramvalue", item.paramValue);
+            		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");  
+            		logjson.put("eventtime", sdf.format(item.TrapLogTime));
+            		logjson.put("solved", item.TrapTreatMent);
+            		logjson.put("solvetime", item.isTreated);
+            		//System.out.println(" [x]------------------------------=" + logjson.toJSONString());
+            		sendToQueue(logjson.toJSONString(), MAINKERNEL_MESSAGE);
               
                 break;
             }
@@ -383,7 +494,21 @@ public class CurrentAlarmModel
 
     }*/
 
+    private void sendToQueue(String msg, String queue) {
+		Jedis jedis = null;
+		try {
+			jedis = redisUtil.getConnection();
+			jedis.publish(queue, msg);
+			redisUtil.closeConnection(jedis);
 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			if(jedis != null)
+				redisUtil.getJedisPool().returnBrokenResource(jedis);
+
+		}
+	}
 }
 
 
