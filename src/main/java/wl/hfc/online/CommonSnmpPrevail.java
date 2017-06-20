@@ -1,10 +1,12 @@
 package wl.hfc.online;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.PDU;
 import org.snmp4j.CommunityTarget;
+
 
 
 
@@ -156,16 +158,18 @@ public class CommonSnmpPrevail extends WosBaseSnmp {
 	private JSONObject tabVarToJason(SnmpTableInfo tabVariables, JSONObject pJson) {
 		int enumi, enumj;
 		int i = 0;
-
+		JSONArray al = new JSONArray();
+		JSONObject itemjson;
 		for (enumi = 0; enumi < tabVariables.RowNum; enumi++) {
-			for (enumj = 0; enumj < tabVariables.ColNum; enumj++) {
-
+			itemjson = new JSONObject();
+			for (enumj = 0; enumj < tabVariables.ColNum; enumj++) {				
 				String vale = trapAddrsVariables[enumj].ToDispString(tabVariables.TableCells.get(i));
-				pJson.put(trapAddrsVariables[enumj].VarInfo.ParamMibLabel + "_row" + enumi, vale);
-				i++;
-			}
+				itemjson.put(trapAddrsVariables[enumj].VarInfo.ParamMibLabel + "_row", vale);
+				i++;				
+			}		
+			al.add(itemjson);
 		}
-
+		pJson.put("traptbl", al);
 		return pJson;
 
 	}

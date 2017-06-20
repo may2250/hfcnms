@@ -67,6 +67,7 @@ public class Realtime_param_call {
 							
 							if(json == null)
 								continue;
+							json.put("common", commonjson);
 							String jsonstr = json.toJSONString();
 							//System.out.println(jsonstr);
 							for(Iterator it2 = osp.sessionList.iterator();it2.hasNext();){
