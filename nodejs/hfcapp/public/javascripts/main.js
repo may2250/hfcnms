@@ -169,6 +169,20 @@
     		};    		
     	});
     	
+    	$('.nav_sound').click(function(){
+    		if($('.nav_sound p')[0].textContent == "声讯告警控制开"){
+    			$('.nav_sound i').addClass("icon-volume-off");
+    			$('.nav_sound i').removeClass("icon-volume-up"); 
+    			$('.nav_sound p')[0].textContent = "声讯告警控制关";
+    			playVideo("/alarmwavs/alarm offline.wav");
+    		}else{
+    			$('.nav_sound i').addClass("icon-volume-up");
+    			$('.nav_sound i').removeClass("icon-volume-off"); 
+    			$('.nav_sound p')[0].textContent = "声讯告警控制开";
+    			playVideo("/alarmwavs/alarm online.wav");
+    		};    		
+    	});
+    	
     	$('#needtype').change(function(){ 
     		$('#salutation').attr("disabled", !$(this).is(':checked'));    		
     	});
@@ -307,36 +321,7 @@
         }else if(jsonobj.cmd == "hfcvalueset"){
         	parseHfcValueSet(jsonobj);        	   	 
         }else if(jsonobj.cmd == "devstatus"){
-        	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.ip);
-        	if(node != undefined){
-        		if(jsonobj.isonline == true){
-        			node.data.isonline = true;
-        			if(node.getLastChild().key == "rece_workstation"){
-        				node.icon = "../images/treeRece.png";
-        			}else if(node.getLastChild().key == "EDFA"){
-        				node.icon = "../images/treeEDFA.png";
-        			}else if(node.getLastChild().key == "Trans"){
-        				node.icon = "../images/treeTrans.png";
-        			}else{
-        				node.icon = "../images/device.png";
-        			}        			
-        			node.getLastChild().data.hfctype = jsonobj.hfctype;
-        			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
-            			if(jsonobj.ip == __globalobj__._realDevice.key){
-            				$(".dev-status").css("color", "lightgreen");
-            			}
-            		}
-        		}else{
-        			node.data.isonline = false;
-        			node.icon = "../images/devoff.png";
-        			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
-            			if(jsonobj.ip == __globalobj__._realDevice.key){
-            				$(".dev-status").css("color", "red");
-            			}
-            		}
-        		}
-        		node.render(true,false);        		
-        	}
+        	parseDevStatus(jsonobj);
         }else if(jsonobj.cmd == "realtime-device"){
         	showHfcDevice(jsonobj);
         }else if(jsonobj.cmd == "devsearchprocess"){
@@ -358,21 +343,21 @@
         	var paramstr = jsonobj.ipaddr+ '/' + jsonobj.devtype +'/'+jsonobj.hfctype;
         	$('#list-newdevs').append('<li class="list-group-item"><label><input name="dev" type="checkbox" value="'+ paramstr + '" />'+jsonobj.ipaddr+ '/' + getNetTypeTostring(jsonobj.devtype)+'/'+jsonobj.hfctype+'</label></li>');
         }else if(jsonobj.cmd == "alarm_message"){
-        	if(jsonobj.opt == false || jsonobj.solved == "过时失效"){
-        		var xxx = tbl_devalarm.row("#" + jsonobj.id);
-        		tbl_devalarm.row("#" + jsonobj.id).remove().draw(false);
-        	}
-        	tbl_devalarm.row.add( [
-	            jsonobj.id,
-	            jsonobj.level,
-	            jsonobj.path,
-	            jsonobj.type,
-	            jsonobj.paramname,
-	            jsonobj.paramvalue,
-	            jsonobj.eventtime,
-	            jsonobj.solved,
-	            jsonobj.solvetime
-	        ] ).draw( false );
+        	if(jsonobj.opt == false){
+        		tbl_devalarm.row("#" + jsonobj.id).remove().draw(false);        		
+        	}else{
+        		tbl_devalarm.row.add( [
+        		       	            jsonobj.id,
+        		       	            jsonobj.level,
+        		       	            jsonobj.path,
+        		       	            jsonobj.type,
+        		       	            jsonobj.paramname,
+        		       	            jsonobj.paramvalue,
+        		       	            jsonobj.eventtime,
+        		       	            jsonobj.solved,
+        		       	            jsonobj.solvetime
+        		       	        ] ).draw( false );
+        	}        	
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;
@@ -390,6 +375,55 @@
     function onError(event) {
     	//document.getElementById('messages').innerHTML = event.data;
     }     
+    
+    function playVideo(src) {
+        if (src == null || src == "") {
+            src = "";
+        }        
+             
+        var wavsound = document.getElementById("alarmwav");
+        wavsound.src = src; 
+        wavsound.play();
+    }
+    
+    function parseDevStatus(jsonobj){
+    	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.ip);
+    	if(node != undefined){
+    		if(jsonobj.isonline == true){
+    			node.data.isonline = true;
+    			if(node.getLastChild().key == "rece_workstation"){
+    				node.icon = "../images/treeRece.png";
+    			}else if(node.getLastChild().key == "EDFA"){
+    				node.icon = "../images/treeEDFA.png";
+    			}else if(node.getLastChild().key == "Trans"){
+    				node.icon = "../images/treeTrans.png";
+    			}else{
+    				node.icon = "../images/device.png";
+    			}        			
+    			node.getLastChild().data.hfctype = jsonobj.hfctype;
+    			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
+        			if(jsonobj.ip == __globalobj__._realDevice.key){
+        				$(".dev-status").css("color", "lightgreen");
+        			}
+        		}
+    			if($(".nav_sound i").hasClass("icon-volume-up")){
+    				playVideo("/alarmwavs/alarm online.wav");
+    			}
+    		}else{
+    			node.data.isonline = false;
+    			node.icon = "../images/devoff.png";
+    			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
+        			if(jsonobj.ip == __globalobj__._realDevice.key){
+        				$(".dev-status").css("color", "red");
+        			}
+        		}
+    			if($(".nav_sound i").hasClass("icon-volume-up")){
+    				playVideo("/alarmwavs/alarm offline.wav");
+    			}
+    		}
+    		node.render(true,false);        		
+    	}
+    }
     
     function initTree(treedata) {
     	devtree = $("#dev-fancytree").fancytree({

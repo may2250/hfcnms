@@ -257,9 +257,7 @@ public class MainKernel {
     	rootjson.put("cmd", "getInitLog");
 		JSONArray jsonarray = new JSONArray();
 		//获取发往WEB的设备告警及日志信息
-		//TODO
-		//test alarms
-		System.out.println("CurrentAlarmModel.me.allRows.size()==" + CurrentAlarmModel.me.allRows.size());
+		//System.out.println("CurrentAlarmModel.me.allRows.size()==" + CurrentAlarmModel.me.allRows.size());
 		for(nojuTrapLogTableRow prow:CurrentAlarmModel.me.allRows){  
 			logjson = new JSONObject();
 			logjson.put("id", prow.TrapLogID);
