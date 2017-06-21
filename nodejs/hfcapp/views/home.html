@@ -7,11 +7,14 @@
 	<div id="xxx">
 		sjdifjsijfidjgoagada
 		<button id="start">start</button>
-		
+		<input type="text" id="datepicker">
 	</div>
 	<div id="messages"></div>
 	<script type="text/javascript">
-		
+		$( "#datepicker" ).datepicker({
+	      changeMonth: true,
+	      changeYear: true
+	    });
 		$("#start").click(function(){
 			start();
 		});
