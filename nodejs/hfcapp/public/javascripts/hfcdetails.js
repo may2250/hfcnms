@@ -79,6 +79,10 @@ function parse_rece_workstation(jsonobj){
 		$("#detail_minerelectric").parent().parent().css("display", "none");
 		$("#detail_minieratt").parent().parent().css("display", "none");
 	}	
+	$('#panel-devip')[0].textContent = __globalobj__._realDevice.key;
+	$('#panel-onlinetimeticks')[0].textContent = jsonobj.common.sysUpTime;
+	$('#panel-devinfo')[0].textContent = jsonobj.common.sysDescr;
+	$('#panel-devcontact')[0].textContent = jsonobj.common.sysContact;
 	$('#fnRFChannelNum').val(jsonobj.fnRFChannelNum);
 	$('#fnOpticalReceiverPower').val(jsonobj.fnOpticalReceiverPower); 
 	$('#commonInternalTemperature').val(jsonobj.common.commonInternalTemperature);

@@ -95,6 +95,18 @@ public class StaticMemory {
 		}		
 	}
 	
+	public synchronized void SetRealTimeDevCommunity(String netaddr, String ROCommunity, String RWCommunity){
+		if(realTimeDevHashtable.containsKey(netaddr)){
+			ObjSnmpPreail objsnmp = realTimeDevHashtable.get(netaddr);
+			objsnmp.snmpPreail.thisDev.ROCommunity = ROCommunity;
+			objsnmp.snmpPreail.thisDev.RWCommunity = RWCommunity;
+			objsnmp.commonSnmpPreail.thisDev.ROCommunity = ROCommunity;
+			objsnmp.commonSnmpPreail.thisDev.RWCommunity = RWCommunity;
+		}else{
+			return;
+		}		
+	}
+	
 	public synchronized Hashtable<String, ObjSnmpPreail> getAllRealTimeDev(){
 		return this.realTimeDevHashtable;
 	}
