@@ -6,6 +6,8 @@ import java.util.concurrent.Delayed;
 
 import org.json.simple.JSONObject;
 
+import com.xinlong.util.RedisUtil;
+
 import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.*;
 import wl.hfc.common.NlogType.TrapLogTypes;
@@ -54,8 +56,8 @@ public class topodtest {
     //nojuTrapLogTableRow aCurrentrow = new nojuTrapLogTableRow(1, TrapLogTypes.Lo, "1.1.1.1", "Nename", "content", new Date(), "", "", "paramName", "pvalue");
 	//ICDatabaseEngine1.trapLogInsertRow(aCurrentrow);
 	
-	
-	CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1);
+		RedisUtil redisUtil=new RedisUtil();
+	CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1,redisUtil);
 	//CurrentAlarmModel1.insertTrapLog( TrapLogTypes.Lo, "1.1.1.1", "neName", "content", new Date());
 	
 	//CurrentAlarmModel1.insertTrapLog( TrapLogTypes.Lo, "1.1.1.1", "neName", "content", new Date());

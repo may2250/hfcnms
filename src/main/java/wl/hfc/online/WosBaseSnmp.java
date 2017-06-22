@@ -2,6 +2,8 @@ package wl.hfc.online;
 
 import org.json.simple.JSONObject;
 import org.snmp4j.mp.SnmpConstants;
+import org.snmp4j.smi.Integer32;
+import org.snmp4j.smi.OID;
 import org.snmp4j.smi.VariableBinding;
 
 import wl.hfc.common.CDevForCMD;
@@ -15,6 +17,8 @@ import java.util.HashMap;
 
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
+
+import com.adventnet.snmp.snmp2.SnmpIpAddress;
 
 import java.util.Iterator;
 
@@ -166,7 +170,7 @@ public class WosBaseSnmp {
 		// String hi = "9.0";
 		// String lo = "-1.0";
 		// String lolo = "-7.2";
-		// String deadb = "-1.0";
+		// String deadb = "-1.0";		
 		WosParamForSetInfo wosParamForSetInfo1 = new WosParamForSetInfo();
 		int i = 0;
 		try {
@@ -216,6 +220,24 @@ public class WosBaseSnmp {
 		this.setParam(lists);
 
 	}
+	
+
+	public void setStringVars(String paramname, String pValue, int row) {
+		VariableSnmpVar tmpTagInfo = paramHashTable.get(paramname);
+
+
+		String oidrs;
+		ArrayList<VariableBinding> result = new ArrayList<VariableBinding>();
+		if (tmpTagInfo.CurrentVarBind != null) {
+			oidrs = tmpTagInfo.VarInfo.ParamMibOID.toString() + "." + (row+1);
+			result.add(new VariableBinding(new OID(oidrs), new org.snmp4j.smi.IpAddress(pValue)));
+			this.setParam(result);
+		}
+		
+
+
+	}
+
 
 	public void setSubVarsTableBYparamname(String paramname, JSONObject jsondata, int rowNumber) {
 
@@ -228,6 +250,7 @@ public class WosBaseSnmp {
 		String deadb = jsondata.get("deadb").toString();
 
 		byte en = Byte.class.cast(jsondata.get("en"));
+		
 
 		// String hihi = "9.0";
 		// String hi = "9.0";

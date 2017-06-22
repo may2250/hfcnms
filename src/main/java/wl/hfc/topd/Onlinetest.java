@@ -8,12 +8,12 @@ import org.json.simple.JSONObject;
 
 
 
+
+
+import com.xinlong.util.RedisUtil;
+
 import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.*;
-import wl.hfc.online.CommonSnmpPrevail;
-import wl.hfc.online.PDUServer;
-import wl.hfc.online.PDUServerForOneDev;
-import wl.hfc.online.ReceiverSnmpPrevail;
 import wl.hfc.online.*;
 import wl.hfc.traprcss.TrapPduServer;
 import wl.hfc.traprcss.TrapProCenter;
@@ -116,8 +116,8 @@ public class Onlinetest {
         rightNow.add(Calendar.DATE,-1);
         Date dt2=rightNow.getTime();
 		ICDatabaseEngine1.getTrapRowsWithTime(dt2, dt, "");
-		
-		CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1);
+		RedisUtil redisUtil=new RedisUtil();
+		CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1,redisUtil);
 		String nowpath; // ��ǰtomcat��binĿ¼��·��
 		nowpath = System.getProperty("user.dir");
 		nowpath = nowpath + "\\" + "mibs";
@@ -165,6 +165,12 @@ public class Onlinetest {
 		// loadDXml();
 		new pmls();
 
+		
+		Float xxx= Float.valueOf("11.2");
+		Float yy=0.1f;
+		Float rst=xxx/yy;
+		
+		int bbb= rst.intValue();
 		try {
 
          // trapTest();

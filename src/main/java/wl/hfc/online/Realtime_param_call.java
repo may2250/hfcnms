@@ -76,8 +76,7 @@ public class Realtime_param_call {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						log.info("......[x1]Realtime_param_call Done!" + e.getMessage());
-						return;
+						log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
 
 					}
 				}

@@ -79,6 +79,7 @@ public class ParamKernel {
 		System.out.println(" [x] ParamKernel Received: '" + message + "'");			
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
+		System.out.println(jsondata.toJSONString()+"dfdfdfdfdfd");
 		if(cmd.equalsIgnoreCase("hfcvalueset")){
 			hfcValueSet(jsondata);			
 		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
@@ -121,7 +122,16 @@ public class ParamKernel {
 				
 			}
 			//staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
-		}else if(target.equalsIgnoreCase("getalarmThreshold")){
+		}else if(target.equalsIgnoreCase("setTrapHost"))
+		{
+			
+			String rowString = jsondata.get("rowNum").toString();
+			int row = Integer.parseInt(rowString);
+			snmpPreail.setStringVars(jsondata.get("domstr").toString(),jsondata.get("value").toString(),row);
+			
+		
+		}		
+		else if(target.equalsIgnoreCase("getalarmThreshold")){
 
 			if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
 				
