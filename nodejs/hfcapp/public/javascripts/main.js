@@ -362,9 +362,15 @@
 		         node.renderTitle();
 	       	 }	       	 
         }else if(jsonobj.cmd == "nodedel"){
-	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
+	       	 var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);	       	 
 	       	 if(node != undefined){
 	       		node.remove();
+	       	 }
+	       	 if(__globalobj__._realDevice.key == jsonobj.key){
+	       		 //关闭正打开的设备信息界面
+	       		$('.candile').empty();
+	       		var datastring = '{"cmd":"deviceclose","ip":"' + node.key + '"}';
+	       		webSocket.send(datastring);
 	       	 }
 	         
         }else if(jsonobj.cmd == "deviceadd"){
@@ -498,6 +504,7 @@
     			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
         			if(jsonobj.ip == __globalobj__._realDevice.key){
         				$(".dev-status").css("color", "lightgreen");
+        				$("#dev-status-text")[0].textContent = "设备连接正常...";
         			}
         		}
     			if($(".nav_sound i").hasClass("icon-volume-up")){
@@ -509,6 +516,7 @@
     			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
         			if(jsonobj.ip == __globalobj__._realDevice.key){
         				$(".dev-status").css("color", "red");
+        				$("#dev-status-text")[0].textContent = "设备失去连接...";
         			}
         		}
     			if($(".nav_sound i").hasClass("icon-volume-up")){
@@ -529,7 +537,7 @@
             	
             },
             dblclick: function(event, data) {
-            	if(data.node.data.type == "device"){
+            	if(data.node.data.type == "device" && data.node.data.isonline){            		
             		//show deivce detail            		
             		var preDevice = __globalobj__._realDevice;
             		__globalobj__._realDevice = data.node;

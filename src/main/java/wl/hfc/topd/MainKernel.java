@@ -17,6 +17,7 @@ import org.json.simple.parser.ParseException;
 
 import com.xinlong.Services.ServiceHfcAlarmProcessor;
 import com.xinlong.Services.Services_Websocket;
+import com.xinlong.util.ObjSnmpPreail;
 import com.xinlong.util.RedisUtil;
 import com.xinlong.util.StaticMemory;
 
@@ -352,13 +353,13 @@ public class MainKernel {
 				}
 				subjson.put("icon", dev.isOline?imgstr:"images/devoff.png");         	
 				infojson.put("title", dev._NetAddress);						
-				infojson.put("icon", "images/net_info.png");
+				infojson.put("icon", "images/net_info.ico");
 				subjsonarray.add(infojson);
 				infojson = new JSONObject();
 				infojson.put("key", dev.mNetType.toString());
 				infojson.put("title", getNetTypeTostring(dev.mNetType));
 				infojson.put("hfctype", dev.HFCType1.toString());
-				infojson.put("icon", "images/net_info.png");
+				infojson.put("icon", "images/net_info.ico");
 				subjsonarray.add(infojson);
 				subjson.put("children", subjsonarray);
 				jsonarray.add(subjson);
@@ -753,12 +754,12 @@ public class MainKernel {
         	rootnodejson.put("icon", dev.isOline?"images/device.png":"images/devoff.png");         	
     		subjson.put("title", dev._NetAddress);	
     		subjson.put("hfctype", dev.HFCType1.toString());	
-			subjson.put("icon", "images/net_info.png");
+			subjson.put("icon", "images/net_info.ico");
 			subjsonarray.add(subjson);
 			subjson = new JSONObject();	
 			subjson.put("key", dev.mNetType.toString());
 			subjson.put("title", getNetTypeTostring(dev.mNetType));
-			subjson.put("icon", "images/net_info.png");
+			subjson.put("icon", "images/net_info.ico");
 			subjsonarray.add(subjson);
 			rootnodejson.put("children", subjsonarray);
 			jsonarray.add(rootnodejson);
@@ -795,7 +796,7 @@ public class MainKernel {
 
         if (mStatus)
         {
-
+        	staticmemory.SetRealTimeDevCommunity(netaddr,jsondata.get("rcommunity").toString(),jsondata.get("wcommunity").toString());
         	dev.BindnojuDeviceTableRow = mDeviceTableRow;
 
         	dev.fullpath = dev.parent.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;

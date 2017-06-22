@@ -91,7 +91,23 @@
 		<button type="button" class="close device-close" aria-hidden="true">&times;</button>
 		<ul class = "devdetail-header">
 			<li class="dev-img"><img src = "../images/oprv8604jl.png" /></li>
-			<li class="dev-status"><span>设备连接正常...</span></li>
+			<li class="dev-status"><span id="dev-status-text">设备连接正常...</span></li>
+			<li>
+				<table class="table tbl_noborder tbl_devtips">
+	        		<tr>
+	        			<td>设备IP:</td>
+	        			<td id="panel-devip"></td>
+	        			<td>系统描述:</td>
+	        			<td id="panel-devinfo"></td>
+	        			<td>联系信息:</td>
+	        			<td id="panel-devcontact"></td>
+	        		</tr>
+	        		<tr>
+	        			<td>在线时间:</td>
+	        			<td id="panel-onlinetimeticks"></td>
+	        		</tr>
+	        	</table>
+			</li>
 		</ul>	
 		<div class = "devdetail-content">
 			<div class="tabbable">
@@ -218,7 +234,7 @@
 								  <tbody>
 									    <tr>
 									      <td>温度:</td>
-									      <td><input type="text" class="form-control isalarmThreshold" id="commonInternalTemperature" readonly></td>									      
+									      <td><input type="text" class="form-control" id="commonInternalTemperature" readonly></td>									      
 									    </tr>
 									    <tr>
 									      <td>逻辑ID:</td>
