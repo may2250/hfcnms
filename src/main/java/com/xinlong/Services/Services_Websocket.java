@@ -104,6 +104,9 @@ public class Services_Websocket {
 			}else if(cmd.equalsIgnoreCase("deviceclose")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), PARAMKERNEL_MESSAGE);
+			}else if(cmd.equalsIgnoreCase("alarmsearch")){
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("test")){
 				// Send the first message to the client
 				rootjson.put("cmd", "test");

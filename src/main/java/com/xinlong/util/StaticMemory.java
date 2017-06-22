@@ -76,15 +76,11 @@ public class StaticMemory {
 			
 			PDUServerForOneDev PDUServerForOneDev1=new PDUServerForOneDev(0);
 			osp.snmpPreail.thisDev = devmmd;
-			osp.snmpPreail.sver =PDUServerForOneDev1;
+			osp.snmpPreail.sver =PDUServerForOneDev1;			
 			
-			
-	        osp.snmpPreail.thisDev	=devmmd;		
-		    osp.snmpPreail.sver =PDUServerForOneDev1;
-		
-			
-			
-			
+	        osp.commonSnmpPreail.thisDev	=devmmd;		
+		    osp.commonSnmpPreail.sver =PDUServerForOneDev1;
+
 			osp.sessionList.add(sessionID);
 			realTimeDevHashtable.put(netaddr, osp);
 			System.out.println("----add new RealTimeDev=="+ realTimeDevHashtable.size());

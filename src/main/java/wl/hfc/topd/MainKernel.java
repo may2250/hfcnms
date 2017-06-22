@@ -122,6 +122,8 @@ public class MainKernel {
 			staticmemory.broadCast(handleOnlineInfo(jsondata));				
 		}else if(cmd.equalsIgnoreCase("alarm_message")){			
 			staticmemory.broadCast(message);				
+		}else if(cmd.equalsIgnoreCase("alarmsearch")){			
+			staticmemory.sendRemoteStr(getHistoryAlarm(jsondata), jsondata.get("sessionid").toString());
 		}
 	}
 	
@@ -257,9 +259,7 @@ public class MainKernel {
     	rootjson.put("cmd", "getInitLog");
 		JSONArray jsonarray = new JSONArray();
 		//获取发往WEB的设备告警及日志信息
-		//TODO
-		//test alarms
-		System.out.println("CurrentAlarmModel.me.allRows.size()==" + CurrentAlarmModel.me.allRows.size());
+		//System.out.println("CurrentAlarmModel.me.allRows.size()==" + CurrentAlarmModel.me.allRows.size());
 		for(nojuTrapLogTableRow prow:CurrentAlarmModel.me.allRows){  
 			logjson = new JSONObject();
 			logjson.put("id", prow.TrapLogID);
@@ -394,7 +394,30 @@ public class MainKernel {
 		//print rootListNode;
 	}
 
-	
+	private String getHistoryAlarm(JSONObject jsondata){
+		JSONObject rootjson = new JSONObject();
+		JSONObject logjson;
+    	rootjson.put("cmd", jsondata.get("cmd"));
+		JSONArray jsonarray = new JSONArray();
+		//获取发往WEB的设备告警及日志信息
+		//System.out.println("CurrentAlarmModel.me.allRows.size()==" + CurrentAlarmModel.me.allRows.size());
+		for(nojuTrapLogTableRow prow:CurrentAlarmModel.me.allRows){  
+			logjson = new JSONObject();
+			logjson.put("id", prow.TrapLogID);
+			logjson.put("level", prow.level);
+			logjson.put("path", "grp1/xxxx");
+			logjson.put("type", prow.TrapLogType.toString());
+			logjson.put("paramname", prow.parmName);
+			logjson.put("paramvalue", prow.paramValue);
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");  
+    		logjson.put("eventtime", sdf.format(prow.TrapLogTime));
+    		logjson.put("solved", prow.TrapTreatMent);
+    		logjson.put("solvetime", prow.isTreated);
+			jsonarray.add(logjson);
+		}  
+		rootjson.put("alarms", jsonarray);
+		return rootjson.toJSONString();
+    }
 
 	// by group and device collection args
 	private  LNode offerTopodModel(Hashtable devLists, Hashtable grpLists) {

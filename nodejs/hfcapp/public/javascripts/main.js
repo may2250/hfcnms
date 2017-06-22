@@ -3,6 +3,7 @@
 	var regtree;
 	var tbl_devalarm;
 	var tbl_optlog;
+	var tbl_loglists = null;
 	var lazyLoadData = null;
 	$(function() {
 		var encstr = localStorage.userName+'/'+ sessionStorage.passWord;
@@ -169,6 +170,25 @@
     		};    		
     	});
     	
+    	$('.nav_manageralarm').click(function(){
+    		$("#modal_alarm").modal();
+    	});
+    	
+    	
+    	$('.nav_sound').click(function(){
+    		if($('.nav_sound p')[0].textContent == "声讯告警控制开"){
+    			$('.nav_sound i').addClass("icon-volume-off");
+    			$('.nav_sound i').removeClass("icon-volume-up"); 
+    			$('.nav_sound p')[0].textContent = "声讯告警控制关";
+    			playVideo("/alarmwavs/alarm offline.wav");
+    		}else{
+    			$('.nav_sound i').addClass("icon-volume-up");
+    			$('.nav_sound i').removeClass("icon-volume-off"); 
+    			$('.nav_sound p')[0].textContent = "声讯告警控制开";
+    			playVideo("/alarmwavs/alarm online.wav");
+    		};    		
+    	});
+    	
     	$('#needtype').change(function(){ 
     		$('#salutation').attr("disabled", !$(this).is(':checked'));    		
     	});
@@ -204,6 +224,80 @@
     			 $(this).parent().parent().remove();
     		});
     	});
+    	
+    	$( "#datepicker_start" ).datepicker({
+  	      changeMonth: true,
+  	      changeYear: true,
+  	      dateFormat: 'yy-mm-dd'
+  	    });
+    	
+    	$( "#datepicker_end" ).datepicker({
+  	      changeMonth: true,
+  	      changeYear: true,
+  	      dateFormat: 'yy-mm-dd'
+  	    });    	
+    	
+    	$('#btn-alarmok').click(function(){
+    		 var datastring = '{"cmd":"alarmsearch","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
+    		 + '","customdate":"'+ $("#alarmfilter-date").prop('selectedIndex') + '","source":"'+ $('#alarmfilter-source').val() 
+    		 + '","level":"'+ $("#alarmfilter-level").prop('selectedIndex') + '","type":"'+ $('#alarmfilter-type').val()
+    		 + '","treatment":"'+ $("#alarmfilter-istreatment").prop('selectedIndex') + '","nename":"'+ $('#alarmfilter-nename').val() +'"}';
+    		 webSocket.send(datastring);
+    		 $("#modal_alarm").modal('hide');
+    		 $("#modal_alarmlists").modal();
+    	});
+    	
+    	$('#modal_alarmlists').on('show.bs.modal', function () {
+    		tbl_loglists = $('#tbl_loglists').DataTable({
+        		scrollY:        430,
+        		scrollX: 		true,
+        		scrollCollapse: true,
+        		order: 			[[ 0, "desc" ]],
+                paging:         false,
+                info:     		false,
+                searching: 		false,
+                bRetrieve: 		true,
+                columns: [
+                          { title: "ID" },
+                          { title: "级别" },
+                          { title: "路径" },
+                          { title: "类型" },
+                          { title: "参数名" },
+                          { title: "参数值" },
+                          { title: "发生时间" },
+                          { title: "处理提交" },
+                          { title: "确认时间" }
+                      ]
+            } );
+    		setTimeout(function() {
+				$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+			}, 400);
+    	});
+    	
+    	$('#modal_alarmlists').on('hide.bs.modal', function () {
+    		tbl_loglists.clear().draw();
+		});
+    	
+    	$('#btn-alarmexports').click(function(){
+    		/*tbl_loglists.data().each( function (d) {
+    		    d.counter++;
+    		} );*/
+    		tableToExcel('tbl_loglists');
+    	});
+		
+    	var tableToExcel = (function() {
+            var uri = 'data:application/vnd.ms-excel;base64,',
+            template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
+              base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },
+              format = function(s, c) {
+                  return s.replace(/{(\w+)}/g,
+                  function(m, p) { return c[p]; }) }
+              return function(table, name) {
+              if (!table.nodeType) table = document.getElementById(table)
+              var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+              window.location.href = uri + base64(format(template, ctx))
+            }
+          })();
 	});
 	
 	function initWebSocket(encstr) {
@@ -307,36 +401,7 @@
         }else if(jsonobj.cmd == "hfcvalueset"){
         	parseHfcValueSet(jsonobj);        	   	 
         }else if(jsonobj.cmd == "devstatus"){
-        	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.ip);
-        	if(node != undefined){
-        		if(jsonobj.isonline == true){
-        			node.data.isonline = true;
-        			if(node.getLastChild().key == "rece_workstation"){
-        				node.icon = "../images/treeRece.png";
-        			}else if(node.getLastChild().key == "EDFA"){
-        				node.icon = "../images/treeEDFA.png";
-        			}else if(node.getLastChild().key == "Trans"){
-        				node.icon = "../images/treeTrans.png";
-        			}else{
-        				node.icon = "../images/device.png";
-        			}        			
-        			node.getLastChild().data.hfctype = jsonobj.hfctype;
-        			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
-            			if(jsonobj.ip == __globalobj__._realDevice.key){
-            				$(".dev-status").css("color", "lightgreen");
-            			}
-            		}
-        		}else{
-        			node.data.isonline = false;
-        			node.icon = "../images/devoff.png";
-        			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
-            			if(jsonobj.ip == __globalobj__._realDevice.key){
-            				$(".dev-status").css("color", "red");
-            			}
-            		}
-        		}
-        		node.render(true,false);        		
-        	}
+        	parseDevStatus(jsonobj);
         }else if(jsonobj.cmd == "realtime-device"){
         	showHfcDevice(jsonobj);
         }else if(jsonobj.cmd == "devsearchprocess"){
@@ -358,21 +423,35 @@
         	var paramstr = jsonobj.ipaddr+ '/' + jsonobj.devtype +'/'+jsonobj.hfctype;
         	$('#list-newdevs').append('<li class="list-group-item"><label><input name="dev" type="checkbox" value="'+ paramstr + '" />'+jsonobj.ipaddr+ '/' + getNetTypeTostring(jsonobj.devtype)+'/'+jsonobj.hfctype+'</label></li>');
         }else if(jsonobj.cmd == "alarm_message"){
-        	if(jsonobj.opt == false || jsonobj.solved == "过时失效"){
-        		var xxx = tbl_devalarm.row("#" + jsonobj.id);
-        		tbl_devalarm.row("#" + jsonobj.id).remove().draw(false);
-        	}
-        	tbl_devalarm.row.add( [
-	            jsonobj.id,
-	            jsonobj.level,
-	            jsonobj.path,
-	            jsonobj.type,
-	            jsonobj.paramname,
-	            jsonobj.paramvalue,
-	            jsonobj.eventtime,
-	            jsonobj.solved,
-	            jsonobj.solvetime
-	        ] ).draw( false );
+        	if(jsonobj.opt == false){
+        		tbl_devalarm.row("#" + jsonobj.id).remove().draw(false);        		
+        	}else{
+        		tbl_devalarm.row.add( [
+        		       	            jsonobj.id,
+        		       	            jsonobj.level,
+        		       	            jsonobj.path,
+        		       	            jsonobj.type,
+        		       	            jsonobj.paramname,
+        		       	            jsonobj.paramvalue,
+        		       	            jsonobj.eventtime,
+        		       	            jsonobj.solved,
+        		       	            jsonobj.solvetime
+        		       	        ] ).draw( false );
+        	}        	
+        }else if(jsonobj.cmd == "alarmsearch"){
+        	$.each(jsonobj.alarms, function (n, value) {
+        		tbl_loglists.row.add( [
+        		            value.id,
+        		            value.level,
+        		            value.path,
+        		            value.type,
+        		            value.paramname,
+        		            value.paramvalue,
+        		            value.eventtime,
+        		            value.solved,
+        		            value.solvetime
+        		        ] ).draw( false );
+            });
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;
@@ -390,6 +469,55 @@
     function onError(event) {
     	//document.getElementById('messages').innerHTML = event.data;
     }     
+    
+    function playVideo(src) {
+        if (src == null || src == "") {
+            src = "";
+        }        
+             
+        var wavsound = document.getElementById("alarmwav");
+        wavsound.src = src; 
+        wavsound.play();
+    }
+    
+    function parseDevStatus(jsonobj){
+    	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.ip);
+    	if(node != undefined){
+    		if(jsonobj.isonline == true){
+    			node.data.isonline = true;
+    			if(node.getLastChild().key == "rece_workstation"){
+    				node.icon = "../images/treeRece.png";
+    			}else if(node.getLastChild().key == "EDFA"){
+    				node.icon = "../images/treeEDFA.png";
+    			}else if(node.getLastChild().key == "Trans"){
+    				node.icon = "../images/treeTrans.png";
+    			}else{
+    				node.icon = "../images/device.png";
+    			}        			
+    			node.getLastChild().data.hfctype = jsonobj.hfctype;
+    			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
+        			if(jsonobj.ip == __globalobj__._realDevice.key){
+        				$(".dev-status").css("color", "lightgreen");
+        			}
+        		}
+    			if($(".nav_sound i").hasClass("icon-volume-up")){
+    				playVideo("/alarmwavs/alarm online.wav");
+    			}
+    		}else{
+    			node.data.isonline = false;
+    			node.icon = "../images/devoff.png";
+    			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
+        			if(jsonobj.ip == __globalobj__._realDevice.key){
+        				$(".dev-status").css("color", "red");
+        			}
+        		}
+    			if($(".nav_sound i").hasClass("icon-volume-up")){
+    				playVideo("/alarmwavs/alarm offline.wav");
+    			}
+    		}
+    		node.render(true,false);        		
+    	}
+    }
     
     function initTree(treedata) {
     	devtree = $("#dev-fancytree").fancytree({
