@@ -90,6 +90,8 @@ public class Onlinetest {
 			// get
 			snmpInstance7.getPmWithModelNumber(json);
 
+			
+			snmpInstance7.setStringVars("commonAgentTrapIP", "123123", 1);
 			// to view
 			//JSONObject json = new JSONObject();
 		//	SnmpEngine.snmpVarToJason(mjVariables, json);

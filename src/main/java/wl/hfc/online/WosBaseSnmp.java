@@ -223,16 +223,18 @@ public class WosBaseSnmp {
 	
 
 	public void setStringVars(String paramname, String pValue, int row) {
+		
+		
 		VariableSnmpVar tmpTagInfo = paramHashTable.get(paramname);
 
-
+		System.out.println(paramname+"   dfdfdfdfdfd");
 		String oidrs;
 		ArrayList<VariableBinding> result = new ArrayList<VariableBinding>();
-		if (tmpTagInfo.CurrentVarBind != null) {
-			oidrs = tmpTagInfo.VarInfo.ParamMibOID.toString() + "." + (row+1);
-			result.add(new VariableBinding(new OID(oidrs), new org.snmp4j.smi.IpAddress(pValue)));
-			this.setParam(result);
-		}
+
+		oidrs = tmpTagInfo.VarInfo.ParamMibOID.toString() + "." + (row+1);
+		result.add(new VariableBinding(new OID(oidrs), new org.snmp4j.smi.IpAddress(pValue)));
+		this.setParam(result);
+
 		
 
 
