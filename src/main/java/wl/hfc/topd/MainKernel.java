@@ -158,7 +158,8 @@ public class MainKernel {
 	
 	public static NetTypes getStringToNetType(String pNetTypes)
     {
-        switch (pNetTypes)
+        return NetTypes.rece_workstation;
+/*        switch (pNetTypes)
         {
             case "other":
                 return NetTypes.other;
@@ -179,7 +180,7 @@ public class MainKernel {
             default:
                 return NetTypes.other;
 
-        }
+        }*/
     }
   	
     

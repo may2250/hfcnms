@@ -79,6 +79,7 @@ public class ParamKernel {
 		System.out.println(" [x] ParamKernel Received: '" + message + "'");			
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
+		
 		if(cmd.equalsIgnoreCase("hfcvalueset")){
 			hfcValueSet(jsondata);			
 		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
@@ -106,32 +107,41 @@ public class ParamKernel {
 		String target = jsondata.get("target").toString();
 		String netaddr = jsondata.get("ip").toString();
 		ObjSnmpPreail osp = staticmemory.getRealTimeDev(netaddr);
-		WosBaseSnmp snmpPreail = osp.snmpPreail;
+	//	WosBaseSnmp snmpPreail = osp.snmpPreail;
 		if(target.equalsIgnoreCase("setVars")){
 
 			if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
 				
-				snmpPreail.setVars(jsondata.get("domstr").toString(),jsondata.get("value").toString());
+				osp.snmpPreail.setVars(jsondata.get("domstr").toString(),jsondata.get("value").toString());
 			}
 			else//表内参数
 			{			
 				String rowString = jsondata.get("rowNum").toString();
 				int row = Integer.parseInt(rowString);
-				snmpPreail.setTableVars(jsondata.get("domstr").toString(),jsondata.get("value").toString(),row);
+				osp.snmpPreail.setTableVars(jsondata.get("domstr").toString(),jsondata.get("value").toString(),row);
 				
 			}
 			//staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
-		}else if(target.equalsIgnoreCase("getalarmThreshold")){
+		}else if(target.equalsIgnoreCase("setTrapHost"))
+		{
+			
+			String rowString = jsondata.get("rowNum").toString();
+			int row = Integer.parseInt(rowString);
+			osp.commonSnmpPreail.setStringVars(jsondata.get("domstr").toString(),jsondata.get("value").toString(),row);
+			
+		
+		}		
+		else if(target.equalsIgnoreCase("getalarmThreshold")){
 
 			if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
 				
-				snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
+				osp.snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
 			}
 			else//表内参数
 			{			
 				String rowString = jsondata.get("rowNum").toString();
 				int row = Integer.parseInt(rowString);
-				snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson,row);
+				osp.snmpPreail.getSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson,row);
 				
 			}		
 			jsondata.put("detail", rootjson);		
@@ -159,13 +169,13 @@ public class ParamKernel {
 			rootjson.put("en", en);
 			if(jsondata.get("isRow").toString().equalsIgnoreCase("false")){//普通参数
 				
-				snmpPreail.setSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
+				osp.snmpPreail.setSubVarsBYparamname(jsondata.get("domstr").toString(),rootjson);
 			}
 			else//表内参数
 			{			
 				String rowString = jsondata.get("rowNum").toString();
 				int row = Integer.parseInt(rowString);
-				snmpPreail.setSubVarsTableBYparamname(jsondata.get("domstr").toString(),rootjson,row);
+				osp.snmpPreail.setSubVarsTableBYparamname(jsondata.get("domstr").toString(),rootjson,row);
 				
 			}
 		}
