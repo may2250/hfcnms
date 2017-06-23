@@ -515,8 +515,10 @@
     			node.icon = "../images/devoff.png";
     			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
         			if(jsonobj.ip == __globalobj__._realDevice.key){
-        				$(".dev-status").css("color", "red");
-        				$("#dev-status-text")[0].textContent = "设备失去连接...";
+        				//设备下线，关闭详细信息界面
+        				var datastring = '{"cmd":"deviceclose","ip":"' + jsonobj.ip + '"}';
+        				webSocket.send(datastring);
+        	  		  	$('.candile').empty();
         			}
         		}
     			if($(".nav_sound i").hasClass("icon-volume-up")){

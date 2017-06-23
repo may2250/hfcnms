@@ -2,6 +2,8 @@ package wl.hfc.topd;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -395,14 +397,18 @@ public class MainKernel {
 		//print rootListNode;
 	}
 
-	private String getHistoryAlarm(JSONObject jsondata){
+	private String getHistoryAlarm(JSONObject jsondata) throws java.text.ParseException{
 		JSONObject rootjson = new JSONObject();
 		JSONObject logjson;
-    	rootjson.put("cmd", jsondata.get("cmd"));
+    	rootjson.put("cmd", jsondata.get("cmd").toString());
 		JSONArray jsonarray = new JSONArray();
 		//获取发往WEB的设备告警及日志信息
-		//System.out.println("CurrentAlarmModel.me.allRows.size()==" + CurrentAlarmModel.me.allRows.size());
-		for(nojuTrapLogTableRow prow:CurrentAlarmModel.me.allRows){  
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ");  
+	    Date datestart = sdf.parse(jsondata.get("start").toString());
+	    Date dateend = sdf.parse(jsondata.get("end").toString());
+		ArrayList<nojuTrapLogTableRow> traprow = CurrentAlarmModel.me.logEngine.getTrapRowsWithTime(datestart, dateend, ""); 
+		
+		for(nojuTrapLogTableRow prow:traprow){  
 			logjson = new JSONObject();
 			logjson.put("id", prow.TrapLogID);
 			logjson.put("level", prow.level);
@@ -410,7 +416,7 @@ public class MainKernel {
 			logjson.put("type", prow.TrapLogType.toString());
 			logjson.put("paramname", prow.parmName);
 			logjson.put("paramvalue", prow.paramValue);
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");  
+			sdf=new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");  
     		logjson.put("eventtime", sdf.format(prow.TrapLogTime));
     		logjson.put("solved", prow.TrapTreatMent);
     		logjson.put("solvetime", prow.isTreated);
