@@ -275,7 +275,7 @@ public class DeviceSearchEngine extends Thread{
 					ipinfo.ipbegin = NetDataProcess.IncIpAddress(ipinfo.ipbegin);	                
 	            }
 	        }
-		}catch (InterruptedException | IOException e) {
+		}catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
