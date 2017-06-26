@@ -519,6 +519,7 @@
         				var datastring = '{"cmd":"deviceclose","ip":"' + jsonobj.ip + '"}';
         				webSocket.send(datastring);
         	  		  	$('.candile').empty();
+        	  		  	__globalobj__._realDevice = undefined;
         			}
         		}
     			if($(".nav_sound i").hasClass("icon-volume-up")){

@@ -398,31 +398,35 @@ public class MainKernel {
 		//print rootListNode;
 	}
 
-	private String getHistoryAlarm(JSONObject jsondata) throws java.text.ParseException{
+	private String getHistoryAlarm(JSONObject jsondata){
 		JSONObject rootjson = new JSONObject();
 		JSONObject logjson;
     	rootjson.put("cmd", jsondata.get("cmd").toString());
 		JSONArray jsonarray = new JSONArray();
 		//获取发往WEB的设备告警及日志信息
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ");  
-	    Date datestart = sdf.parse(jsondata.get("start").toString());
-	    Date dateend = sdf.parse(jsondata.get("end").toString());
-		ArrayList<nojuTrapLogTableRow> traprow = CurrentAlarmModel.me.logEngine.getTrapRowsWithTime(datestart, dateend, ""); 
-		
-		for(nojuTrapLogTableRow prow:traprow){  
-			logjson = new JSONObject();
-			logjson.put("id", prow.TrapLogID);
-			logjson.put("level", prow.level);
-			logjson.put("path", "grp1/xxxx");
-			logjson.put("type", prow.TrapLogType.toString());
-			logjson.put("paramname", prow.parmName);
-			logjson.put("paramvalue", prow.paramValue);
-			sdf=new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");  
-    		logjson.put("eventtime", sdf.format(prow.TrapLogTime));
-    		logjson.put("solved", prow.TrapTreatMent);
-    		logjson.put("solvetime", prow.isTreated);
-			jsonarray.add(logjson);
-		}  
+		try{
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD");  
+		    Date datestart = sdf.parse(jsondata.get("start").toString());
+		    Date dateend = sdf.parse(jsondata.get("end").toString());
+			ArrayList<nojuTrapLogTableRow> traprow = CurrentAlarmModel.me.logEngine.getTrapRowsWithTime(datestart, dateend, ""); 
+			System.out.println("-------------traprow-size =" + traprow.size());
+			for(nojuTrapLogTableRow prow:traprow){  
+				logjson = new JSONObject();
+				logjson.put("id", prow.TrapLogID);
+				logjson.put("level", prow.level);
+				logjson.put("path", "grp1/xxxx");
+				logjson.put("type", prow.TrapLogType.toString());
+				logjson.put("paramname", prow.parmName);
+				logjson.put("paramvalue", prow.paramValue);
+				sdf=new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");  
+	    		logjson.put("eventtime", sdf.format(prow.TrapLogTime));
+	    		logjson.put("solved", prow.TrapTreatMent);
+	    		logjson.put("solvetime", prow.isTreated);
+				jsonarray.add(logjson);
+			} 
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}		 
 		rootjson.put("alarms", jsonarray);
 		return rootjson.toJSONString();
     }
@@ -683,7 +687,7 @@ public class MainKernel {
       	
     	UserGroupTableRow mDevGrpTableRow = rootGroup.BindUserGroupTableRow;
     	
-    	mDevGrpTableRow.UserGroupName = jsondata.get("value").toString();
+    	mDevGrpTableRow.UserGroupName = jsondata.get("title").toString();
     	
         mStatus = this.ICDatabaseEngine1.UserGroupTableUpdateRow(mDevGrpTableRow);
         if (mStatus)
@@ -699,7 +703,7 @@ public class MainKernel {
             JSONObject rootjson = new JSONObject();
         	rootjson.put("cmd", "nodeedit");
     		rootjson.put("key", jsondata.get("key").toString());
-    		rootjson.put("title", jsondata.get("value").toString());
+    		rootjson.put("title", jsondata.get("title").toString());
     		rootjson.put("type", "group");
     		staticmemory.broadCast(rootjson.toJSONString());
             return true;

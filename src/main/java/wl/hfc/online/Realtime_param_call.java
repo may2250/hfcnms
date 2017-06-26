@@ -39,10 +39,6 @@ public class Realtime_param_call {
 						JSONObject commonjson = new JSONObject();
 						ObjSnmpPreail osp = staticmemory.getRealTimeDev(key);
 						if(osp != null){
-							//System.out.println("=====netaddr====="+ osp.snmpPreail.thisDev.mNetAddress);
-							//ReceiverSnmpPrevail receiverSnmpPrevail1Prevai11ll = new ReceiverSnmpPrevail(".1");
-							//receiverSnmpPrevail1Prevai11ll.thisDev = cfc;
-							//receiverSnmpPrevail1Prevai11ll.sver = new PDUServerForOneDev(0);
 							json.put("cmd", "realtime-device");
 							String devtype = osp.snmpPreail.thisDev.mNetType.toString();
 							json.put("devtype", osp.snmpPreail.thisDev.mNetType.toString());
@@ -75,8 +71,8 @@ public class Realtime_param_call {
 					        }
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
-						log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
+						//e.printStackTrace();
+						//log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
 
 					}
 				}
