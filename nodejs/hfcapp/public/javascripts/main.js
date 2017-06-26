@@ -458,6 +458,16 @@
         		            value.solvetime
         		        ] ).draw( false );
             });
+        }else if(jsonobj.cmd == "dbclosed"){
+        	if(jsonobj.flag){
+        		$('.dbstatus').removeClass("icon-ok-circle");
+        		$('.dbstatus').addClass("icon-remove-circle");   
+        		$('.dbstatus-lb').addClass("ui-state-error-custom");        		
+        	}else{
+        		$('.dbstatus').removeClass("icon-remove-circle");
+        		$('.dbstatus').addClass("icon-ok-circle");
+        		$('.dbstatus-lb').removeClass("ui-state-error-custom"); 
+        	}
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;
