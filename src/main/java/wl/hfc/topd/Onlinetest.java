@@ -108,8 +108,8 @@ public class Onlinetest {
 	public static void trapTest() {
 		
 		
-		
-		CDatabaseEngine	ICDatabaseEngine1=new CDatabaseEngine();
+		RedisUtil redisUtil=new RedisUtil();
+		CDatabaseEngine	ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
 		ICDatabaseEngine1.getConnection();
 		
 		Date dt=new Date();
@@ -118,7 +118,7 @@ public class Onlinetest {
         rightNow.add(Calendar.DATE,-1);
         Date dt2=rightNow.getTime();
 		ICDatabaseEngine1.getTrapRowsWithTime(dt2, dt, "");
-		RedisUtil redisUtil=new RedisUtil();
+		
 		CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1,redisUtil);
 		String nowpath; // ��ǰtomcat��binĿ¼��·��
 		nowpath = System.getProperty("user.dir");

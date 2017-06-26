@@ -20,7 +20,8 @@ public class topodtest {
 	
 	public static void main(String args[]) {
 		System.out.println("Hello World!");
-		CDatabaseEngine	ICDatabaseEngine1=new CDatabaseEngine();
+		RedisUtil redisUtil=new RedisUtil();
+		CDatabaseEngine	ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
 		ICDatabaseEngine1.getConnection();
 		Hashtable devHash = ICDatabaseEngine1.DeviceTableGetAllRows();
 		Hashtable grpHash = ICDatabaseEngine1.UserGroupTableGetAllRows();
@@ -56,7 +57,7 @@ public class topodtest {
     //nojuTrapLogTableRow aCurrentrow = new nojuTrapLogTableRow(1, TrapLogTypes.Lo, "1.1.1.1", "Nename", "content", new Date(), "", "", "paramName", "pvalue");
 	//ICDatabaseEngine1.trapLogInsertRow(aCurrentrow);
 	
-		RedisUtil redisUtil=new RedisUtil();
+		
 	CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1,redisUtil);
 	//CurrentAlarmModel1.insertTrapLog( TrapLogTypes.Lo, "1.1.1.1", "neName", "content", new Date());
 	

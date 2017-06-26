@@ -127,6 +127,8 @@ public class MainKernel {
 			staticmemory.broadCast(message);				
 		}else if(cmd.equalsIgnoreCase("alarmsearch")){			
 			//staticmemory.sendRemoteStr(getHistoryAlarm(jsondata), jsondata.get("sessionid").toString());
+		}else if(cmd.equalsIgnoreCase("dbclosed")){			
+			staticmemory.broadCast(message);
 		}
 	}
 	
@@ -137,7 +139,7 @@ public class MainKernel {
 		log.info("[#3] .....MainKernel starting.......");
 		Jedis jedis=null;
 		try {			
-			ICDatabaseEngine1=new CDatabaseEngine();
+			ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
 			ICDatabaseEngine1.getConnection();
 			initTopodData();
 			CurrentAlarmModel cam = new CurrentAlarmModel(ICDatabaseEngine1, redisUtil);
@@ -860,7 +862,6 @@ public class MainKernel {
 			jedis.publish(queue, msg);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			log.info(e.getMessage());
 
 		}finally{
