@@ -128,6 +128,9 @@ public class OidToHFCType
 
     }
 
+
+  	
+    
     /// <summary>
     /// 
     /// 根据oid,lid,devicetype,deviceid,sysname获得对应的HFCTypes

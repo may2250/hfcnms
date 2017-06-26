@@ -314,7 +314,7 @@ public class CurrentAlarmModel extends Thread
     		logjson.put("type", aCurrentrow.TrapLogType.toString());
     		logjson.put("paramname", aCurrentrow.parmName);
     		logjson.put("paramvalue", aCurrentrow.paramValue);
-    		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");  
+    		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
     		logjson.put("eventtime", sdf.format(aCurrentrow.TrapLogTime));
     		logjson.put("solved", aCurrentrow.TrapTreatMent);
     		logjson.put("solvetime", aCurrentrow.isTreated);

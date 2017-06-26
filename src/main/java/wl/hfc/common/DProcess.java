@@ -95,4 +95,33 @@ public class DProcess {
            }
        }
 
+       
+
+   	public static NetTypes getStringToNetType(String pNetTypes)
+       {
+           return NetTypes.rece_workstation;
+   /*        switch (pNetTypes)
+           {
+               case "other":
+                   return NetTypes.other;
+               case "EDFA":
+                   return NetTypes.EDFA;
+               case "Trans":
+                   return NetTypes.Trans;
+               case "rece_workstation":
+                   return NetTypes.rece_workstation;
+               case "OSW":
+                   return NetTypes.OSW;
+               case "RFSW":
+                   return NetTypes.RFSW;
+               case "PreAMP":
+                   return NetTypes.PreAMP;
+               case "wos":
+                   return NetTypes.wos;
+               default:
+                   return NetTypes.other;
+
+           }*/
+       }
+       
 }

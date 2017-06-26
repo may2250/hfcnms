@@ -130,59 +130,6 @@ public class MainKernel {
 		}
 	}
 	
-	public static String getNetTypeTostring(NetTypes pNetTypes)
-    {
-        switch (pNetTypes)
-        {
-            case other:
-                return ClsLanguageExmp.viewGet("其他设备");
-            case EDFA:
-                return "EDFA";
-            case Trans:
-                return ClsLanguageExmp.viewGet("光发射机");
-            case rece_workstation:
-                return ClsLanguageExmp.viewGet("光接收机")+"/"+ClsLanguageExmp.viewGet("光工作站");
-            case OSW:
-                return ClsLanguageExmp.viewGet("光切换开关");
-            case RFSW:
-                return ClsLanguageExmp.viewGet("射频切换开关");
-            case PreAMP:
-                return ClsLanguageExmp.viewGet("前置放大器");
-            case wos:
-                return ClsLanguageExmp.viewGet("光平台");
-            default:
-                return ClsLanguageExmp.viewGet("其他设备");
-
-        }
-    }
-	
-	public static NetTypes getStringToNetType(String pNetTypes)
-    {
-        return NetTypes.rece_workstation;
-/*        switch (pNetTypes)
-        {
-            case "other":
-                return NetTypes.other;
-            case "EDFA":
-                return NetTypes.EDFA;
-            case "Trans":
-                return NetTypes.Trans;
-            case "rece_workstation":
-                return NetTypes.rece_workstation;
-            case "OSW":
-                return NetTypes.OSW;
-            case "RFSW":
-                return NetTypes.RFSW;
-            case "PreAMP":
-                return NetTypes.PreAMP;
-            case "wos":
-                return NetTypes.wos;
-            default:
-                return NetTypes.other;
-
-        }*/
-    }
-  	
     
     @SuppressWarnings("static-access")
 	public void start(){
@@ -360,7 +307,7 @@ public class MainKernel {
 				subjsonarray.add(infojson);
 				infojson = new JSONObject();
 				infojson.put("key", dev.mNetType.toString());
-				infojson.put("title", getNetTypeTostring(dev.mNetType));
+				infojson.put("title", DProcess.getNetTypeTostring(dev.mNetType));
 				infojson.put("hfctype", dev.HFCType1.toString());
 				infojson.put("icon", "images/net_info.ico");
 				subjsonarray.add(infojson);
@@ -687,6 +634,8 @@ public class MainKernel {
       	
     	UserGroupTableRow mDevGrpTableRow = rootGroup.BindUserGroupTableRow;
     	
+
+    	String tmpNameString=	mDevGrpTableRow.UserGroupName;
     	mDevGrpTableRow.UserGroupName = jsondata.get("title").toString();
     	
         mStatus = this.ICDatabaseEngine1.UserGroupTableUpdateRow(mDevGrpTableRow);
@@ -708,7 +657,7 @@ public class MainKernel {
     		staticmemory.broadCast(rootjson.toJSONString());
             return true;
         }
-
+    	mDevGrpTableRow.UserGroupName = tmpNameString;
         return false;
     }
 
@@ -727,7 +676,7 @@ public class MainKernel {
             return null;
         }
 
-        nojuDeviceTableRow mDeviceTableRow=new nojuDeviceTableRow(jsondata.get("netip").toString(), getStringToNetType(devtypestr));
+        nojuDeviceTableRow mDeviceTableRow=new nojuDeviceTableRow(jsondata.get("netip").toString(),DProcess.getStringToNetType(devtypestr));
         mDeviceTableRow.UserGroupID=usergroupID;
         mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
         mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();
@@ -769,7 +718,7 @@ public class MainKernel {
 			subjsonarray.add(subjson);
 			subjson = new JSONObject();	
 			subjson.put("key", dev.mNetType.toString());
-			subjson.put("title", getNetTypeTostring(dev.mNetType));
+			subjson.put("title", DProcess.getNetTypeTostring(dev.mNetType));
 			subjson.put("icon", "images/net_info.ico");
 			subjsonarray.add(subjson);
 			rootnodejson.put("children", subjsonarray);

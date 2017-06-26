@@ -1,6 +1,9 @@
 package wl.hfc.online;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -26,11 +29,13 @@ import com.xinlong.util.StaticMemory;
 
 import redis.clients.jedis.Jedis;
 import wl.hfc.common.*;
+import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
 import wl.hfc.topd.MainKernel;
 
 public class PDUServer {
 	// config
+	private static final String  HFCALARM_MESSAGE =  "currentalarm.message" ;
 	public static int OnlineInterval=3;// 单位:S;设备树在线轮询一遍总时间
 	public int MinInterval; // 设备数量所决定的最低轮询一遍的时间；
 	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
@@ -221,6 +226,30 @@ public class PDUServer {
 		    	rootjson.put("ip", ipaddr);
 		    	rootjson.put("isonline", true);
 				sendToSub(rootjson.toJSONString());
+				
+		
+				  nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.TestOnline), TrapLogTypes.TestOnline, ipaddr, "neName", ClsLanguageExmp.isEn ? "Device online" : "设备上线", new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线", "");
+					
+try {
+    //hi ,xinglong ,讲该trap推送到CurrentAlarmModel
+			String serStr = null;
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
+         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);  
+         objectOutputStream.writeObject(traprst);    
+         serStr = byteArrayOutputStream.toString("ISO-8859-1");  
+         serStr = java.net.URLEncoder.encode(serStr, "UTF-8");  
+           
+         objectOutputStream.close();  
+         byteArrayOutputStream.close();
+
+			sendToQueue(serStr, HFCALARM_MESSAGE);
+	
+	
+} catch (Exception e) {
+	// TODO: handle exception
+}
+		
+				
 			}
 
 		}
@@ -323,6 +352,25 @@ public class PDUServer {
 							    	rootjson.put("ip", dev._NetAddress);
 							    	rootjson.put("isonline", false);
 									sendToSub(rootjson.toJSONString());
+									
+			 
+								  nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.Offline), TrapLogTypes.Offline, dev._NetAddress, "neName", ClsLanguageExmp.isEn ? "Device offline" : "设备下线", new Date(), "", "", ClsLanguageExmp.isEn ? "Device offline" : "设备下线", "");
+								
+
+								       //hi ,xinglong ,讲该trap推送到CurrentAlarmModel
+									String serStr = null;
+									ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
+						            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);  
+						            objectOutputStream.writeObject(traprst);    
+						            serStr = byteArrayOutputStream.toString("ISO-8859-1");  
+						            serStr = java.net.URLEncoder.encode(serStr, "UTF-8");  
+						              
+						            objectOutputStream.close();  
+						            byteArrayOutputStream.close();
+
+									sendToQueue(serStr, HFCALARM_MESSAGE);
+							
+				           
 
 
 								}
@@ -384,4 +432,21 @@ public class PDUServer {
 		}
 	}
 
+	
+	
+	private void sendToQueue(String msg, String queue) {
+		Jedis jedis = null;
+		try {
+			jedis = redisUtil.getConnection();
+			jedis.publish(HFCALARM_MESSAGE, msg);
+			redisUtil.closeConnection(jedis);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			if(jedis != null)
+				redisUtil.getJedisPool().returnBrokenResource(jedis);
+
+		}
+	}
 }
