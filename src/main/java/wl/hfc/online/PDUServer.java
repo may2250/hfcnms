@@ -190,7 +190,7 @@ public class PDUServer {
 				return;
 			}
 
-			// dev.mNetType = (int)CDevForCMD.getNetTypes(devtype);
+
 			lNode.OnlineCount = 3;
 
 			if (!lNode.isOline) {
@@ -214,7 +214,8 @@ public class PDUServer {
 
 				lNode.isOline = true;
 				log.info("[#3] .....have device online.......");
-				//hi,xinglong ,send to Mainkernel ip+isonline?  message		
+
+
 				JSONObject rootjson = new JSONObject();
 		    	rootjson.put("cmd", "devstatus");
 		    	rootjson.put("ip", ipaddr);

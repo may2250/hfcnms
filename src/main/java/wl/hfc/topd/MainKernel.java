@@ -126,7 +126,7 @@ public class MainKernel {
 		}else if(cmd.equalsIgnoreCase("alarm_message")){			
 			staticmemory.broadCast(message);				
 		}else if(cmd.equalsIgnoreCase("alarmsearch")){			
-			staticmemory.sendRemoteStr(getHistoryAlarm(jsondata), jsondata.get("sessionid").toString());
+			//staticmemory.sendRemoteStr(getHistoryAlarm(jsondata), jsondata.get("sessionid").toString());
 		}
 	}
 	
