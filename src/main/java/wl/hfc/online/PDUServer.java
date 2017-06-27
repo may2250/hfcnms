@@ -57,7 +57,7 @@ public class PDUServer {
 
 	public PDUServer(Hashtable pListDevHash) {
 
-		// this.logoVersion = plogoVersion;
+/*		// this.logoVersion = plogoVersion;
 		this.listDevHash = pListDevHash;
 		try {
 			initSnmpAPI();
@@ -65,7 +65,7 @@ public class PDUServer {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-		}
+		}*/
 
 	}
 
@@ -218,7 +218,7 @@ public class PDUServer {
 				sendToSub(rootjson.toJSONString());
 
 				nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.TestOnline), TrapLogTypes.TestOnline, ipaddr,
-						"neName", ClsLanguageExmp.isEn ? "Device online" : "设备上线", new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线", "");
+						lNode.fullpath, ClsLanguageExmp.isEn ? "Device online" : "设备上线", new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线", "");
 
 				try {
 					// hi ,xinglong ,讲该trap推送到CurrentAlarmModel
@@ -264,15 +264,15 @@ public class PDUServer {
 			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));
 			outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
 			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
-
+			this.listDevHash = MainKernel.me.listDevHash;
 			while (true) {
-				if (MainKernel.me.listDevHash != null) {
+			/*	if (MainKernel.me.listDevHash != null) {
 					this.listDevHash = MainKernel.me.listDevHash;
 				} else {
 					Thread.currentThread().sleep(3000);
 					continue;
 				}
-
+*/
 				try {
 
 					testdevlist.clear();
@@ -342,7 +342,7 @@ public class PDUServer {
 									
 
 									nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.Offline), TrapLogTypes.Offline,
-											dev._NetAddress, "neName", ClsLanguageExmp.isEn ? "Device offline" : "设备下线", new Date(), "", "",
+											dev._NetAddress, dev.fullpath, ClsLanguageExmp.isEn ? "Device offline" : "设备下线", new Date(), "", "",
 											ClsLanguageExmp.isEn ? "Device offline" : "设备下线", "");
 
 						//online log
