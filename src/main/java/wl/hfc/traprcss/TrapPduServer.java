@@ -147,7 +147,7 @@ public class TrapPduServer {
 				try {
 					nojuTrapLogTableRow traprst = trpcss.ProcessTrapRequestPduHandler(hfcalarmhash, 0, inPdu);
 					if (traprst.isValid) {
-					       //hi ,xinglong ,讲该trap推送到CurrentAlarmModel
+					
 						String serStr = null;
 						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
 			            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);  

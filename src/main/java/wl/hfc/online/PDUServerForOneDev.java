@@ -7,24 +7,24 @@ import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-import com.adventnet.snmp.snmp2.SnmpPDU;
+
 
 import wl.hfc.common.PduSevr;
 
 public class PDUServerForOneDev implements PduSevr {
-	public static PDUServerForOneDev me;
+	//public static PDUServerForOneDev me;
 	private Snmp _session;
 	// private TrapProCenter tpPrcss;
 
 
 	public PDUServerForOneDev(int snmpVersion) {
 		initSnmpAPI(snmpVersion);
-		me = this;
+		//me = this;
 	}
 
 	public void initSnmpAPI(int snmpVersion) {
 
-		// ����SNMPЭ��ͨ���������
+		// 锟斤拷锟斤拷SNMP协锟斤拷通锟斤拷锟斤拷锟斤拷锟斤拷锟�
 		try
 		{
 			_session = new Snmp(new DefaultUdpTransportMapping());
@@ -48,7 +48,7 @@ public class PDUServerForOneDev implements PduSevr {
 		try {			
 			// response PDU
 
-			ResponseEvent responseEvent = this._session.send(outpdu, cTgt); 																
+			ResponseEvent responseEvent = this._session.send(outpdu, cTgt); 													
 		
 		
 			response = responseEvent.getResponse();
@@ -71,31 +71,21 @@ public class PDUServerForOneDev implements PduSevr {
 
 		}
 		return response;
-		// System.Console.Out.WriteLine("������һ��ͬ������");
+		// System.Console.Out.WriteLine("锟斤拷锟斤拷锟斤拷一锟斤拷同锟斤拷锟斤拷锟斤拷");
 
 	}
 
-	public boolean AyncSendSnmpPdu(PDU outpdu,CommunityTarget cTgt) {
+	public boolean AyncSendSnmpPdu(PDU outpdu,CommunityTarget cTgt) {		
 //		try {
 //			this._session.send(outpdu);
 //
 //		} catch (Exception ex) {
 //			// Console.Write(ex.Source);
 //			return false;
-//		}
+//		}	
+		
 		return true;
-
-	}
 	
-	public boolean AyncSendSnmpPdu(SnmpPDU outpdu) {
-//		try {
-//			this._session.send(outpdu);
-//
-//		} catch (Exception ex) {
-//			// Console.Write(ex.Source);
-//			return false;
-//		}
-		return true;
+	}	
 
-	}
 }

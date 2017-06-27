@@ -20,10 +20,7 @@ import org.snmp4j.smi.UdpAddress;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-import com.adventnet.snmp.snmp2.SnmpAPI;
-import com.adventnet.snmp.snmp2.SnmpOID;
-import com.adventnet.snmp.snmp2.SnmpPDU;
-import com.adventnet.snmp.snmp2.UDPProtocolOptions;
+
 import com.xinlong.util.SearchIpInfo;
 import com.xinlong.util.StaticMemory;
 
@@ -41,8 +38,9 @@ public class DeviceSearchEngine extends Thread{
 	private Snmp session;
 	public static PDUServerSearch pdusearcher;
 	private static StaticMemory staticmemory;
-    public static EnumLogoVersion logoVersion = EnumLogoVersion.prevail;//当前网管定制版本
-    public static Boolean isAdapteLYTBdevs;//海南广电，温州瑞安需要打开
+    public static EnumLogoVersion logoVersion = EnumLogoVersion.prevail;//褰撳墠缃戠瀹氬埗鐗堟湰
+
+    
 	public DeviceSearchEngine(SearchIpInfo sipIf,StaticMemory staticmemory) throws IOException{
 		this.ipinfo = sipIf;
 		this.staticmemory = staticmemory;
@@ -50,7 +48,7 @@ public class DeviceSearchEngine extends Thread{
 	}
 	
 	private void initSnmpAPI() throws IOException {		
-		// 创建SNMP协议通信引擎对象。
+		// 鍒涘缓SNMP鍗忚閫氫俊寮曟搸瀵硅薄銆�
 		DefaultUdpTransportMapping transport = new DefaultUdpTransportMapping();
 		session = new Snmp(transport);
 		session.listen();
@@ -83,7 +81,7 @@ public class DeviceSearchEngine extends Thread{
 
 		}
 		return response;
-		// System.Console.Out.WriteLine("进行了一次同步发送");
+		// System.Console.Out.WriteLine("杩涜浜嗕竴娆″悓姝ュ彂閫�");
 
 	}
 
@@ -91,7 +89,7 @@ public class DeviceSearchEngine extends Thread{
 		final CountDownLatch latch = new CountDownLatch(1);  
 		ResponseListener listener = new ResponseListener() {
 			public void onResponse(ResponseEvent event) {
-				//System.out.println("---------->开始异步解析<------------");
+				//System.out.println("---------->寮�濮嬪紓姝ヨВ鏋�<------------");
 				if (event != null && event.getResponse() != null) {
 					try {
 						readResponse(event);
@@ -104,7 +102,7 @@ public class DeviceSearchEngine extends Thread{
 			}
 		};
 
-		// 发送报文
+		// 鍙戦�佹姤鏂�
 		try {
 			session.send(outpdu, target, null, listener);
 			return true;
@@ -116,8 +114,8 @@ public class DeviceSearchEngine extends Thread{
 	
 	@SuppressWarnings("unchecked")
 	public void readResponse(ResponseEvent respEvnt) {
-		// 解析Response
-		// System.out.println("------------>解析Response<----------");
+		// 瑙ｆ瀽Response
+		// System.out.println("------------>瑙ｆ瀽Response<----------");
 
 		if (respEvnt != null && respEvnt.getResponse() != null) {
 			Vector<VariableBinding> recVBs = respEvnt.getResponse().getVariableBindings();
@@ -136,16 +134,16 @@ public class DeviceSearchEngine extends Thread{
 		String ipaddr=respEvnt.getPeerAddress().toString();
 		ipaddr = ipaddr.substring(0,ipaddr.indexOf("/"));
 		Vector<VariableBinding> recVBs= (Vector<VariableBinding>)respEvnt.getResponse().getVariableBindings();
-		System.out.println("------------>解析Response<----------" + recVBs.toString());
+		System.out.println("------------>瑙ｆ瀽Response<----------" + recVBs.toString());
 		HFCTypes devtype = OidToHFCType.getType(recVBs);
-		if (devtype == HFCTypes.Unknown) // 处理未知设备
+		if (devtype == HFCTypes.Unknown) // 澶勭悊鏈煡璁惧
 		{
 			return;
 		}
 		try
         {
-			System.out.println("------------>发现设备.....<----------" + ipaddr);
-			//判断设备是否已注册
+			System.out.println("------------>鍙戠幇璁惧.....<----------" + ipaddr);
+			//鍒ゆ柇璁惧鏄惁宸叉敞鍐�
 			if(MainKernel.me.listDevHash.containsKey(ipaddr)){
 				return;
 			}
@@ -201,10 +199,10 @@ public class DeviceSearchEngine extends Thread{
         cyt.setCommunity(new OctetString(commu));
         cyt.setAddress(new UdpAddress(ipaddr.toString()+"/161"));        
         outpdu.setType(PDU.GET);
-        if (destiType == 1)    //btkel ,RTL1550Transmitter，wos3000SCTE,WOS4000
+        if (destiType == 1)    //btkel ,RTL1550Transmitter锛寃os3000SCTE,WOS4000
         //   if (true)
         {
-            //强制pdu的版本为V2
+            //寮哄埗pdu鐨勭増鏈负V2
         	cyt.setVersion(SnmpConstants.version2c);
             //   outpdu.BroadCastEnable = true;
             //    outpdu.ClientID = this.AsyncClientID;
@@ -218,30 +216,13 @@ public class DeviceSearchEngine extends Thread{
 
             //    outpdu.BroadCastEnable = true;
 
-            outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0"))); //设备的系统OID。
-            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.1.0")));//HFC的commonNELogicalID
-            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.3.0")));//HFC的commonNEModelNumber
-            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.4.0")));//HFC的commonNESerialNumber
-            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));    //需要实验确定
+            outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0"))); //璁惧鐨勭郴缁烵ID銆�
+            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.1.0")));//HFC鐨刢ommonNELogicalID
+            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.3.0")));//HFC鐨刢ommonNEModelNumber
+            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.4.0")));//HFC鐨刢ommonNESerialNumber
+            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));    //闇�瑕佸疄楠岀‘瀹�
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));    //.2.0
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
-
-        }
-        else if (destiType == 2)//otec光平台
-        {
-            //   outpdu.BroadCastEnable = true;
-            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.3.0")));
-            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
-
-        }
-        else if (destiType == 3)//lytb MTRAN2000光平台
-        {
-            if (isAdapteLYTBdevs)
-            {
-                outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0")));
-                outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
-
-            }
 
         }
 
@@ -254,7 +235,7 @@ public class DeviceSearchEngine extends Thread{
 	@Override
     public void run() {		
 		try{
-			//if广播搜索
+			//if骞挎挱鎼滅储
 	        if (ipinfo.isBroadCast)
 	        {
 	            SearchAgentByIpAddressAnycBrdcst(ipinfo.community);
@@ -262,7 +243,7 @@ public class DeviceSearchEngine extends Thread{
 	        else
 	        {
 	        	int i = 0;
-	            //else 根据地址搜索
+	            //else 鏍规嵁鍦板潃鎼滅储
 	            for (; NetDataProcess.CompareIpAddress(ipinfo.ipbegin, ipinfo.ipend) <= 0; )
 	            {
 	                SearchAgentByIpAddressAnyc(ipinfo.ipbegin, ipinfo.community, ipinfo.destiType);                

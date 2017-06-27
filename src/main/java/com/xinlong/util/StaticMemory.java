@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import wl.hfc.common.CDevForCMD;
+import wl.hfc.common.DProcess;
 import wl.hfc.common.NetTypes;
 import wl.hfc.online.CommonSnmpPrevail;
 import wl.hfc.online.PDUServerForOneDev;
@@ -72,7 +73,7 @@ public class StaticMemory {
 				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
 			}		
 			CDevForCMD devmmd = new CDevForCMD(jsondata.get("rcommunity").toString(), jsondata.get("wcommunity").toString(),netaddr);
-			devmmd.mNetType=MainKernel.me.getStringToNetType(jsondata.get("devtype").toString());
+			devmmd.mNetType=DProcess.getStringToNetType(jsondata.get("devtype").toString());
 			
 			PDUServerForOneDev PDUServerForOneDev1=new PDUServerForOneDev(0);
 			osp.snmpPreail.thisDev = devmmd;
