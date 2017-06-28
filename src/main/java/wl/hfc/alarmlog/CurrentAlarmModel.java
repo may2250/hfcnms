@@ -30,7 +30,7 @@ import wl.hfc.traprcss.TrapPduServer;
 import wl.hfc.traprcss.TrapProCenter;
 
 
-//CurrentAlarmModel负责告警的插入，历史告警的查询，并向前端推送
+//CurrentAlarmModel璐熻矗鍛婅鐨勬彃鍏ワ紝鍘嗗彶鍛婅鐨勬煡璇紝骞跺悜鍓嶇鎺ㄩ��
 public class CurrentAlarmModel extends Thread
 {
 	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
@@ -138,7 +138,7 @@ public class CurrentAlarmModel extends Thread
 	    String TrapTreatMent = jsondata.get("TrapTreatMent").toString(); 
 		nojuTrapLogTableRow pRow = new nojuTrapLogTableRow(level,TrapLogType,addr,neName,TrapLogContent,TrapLogTime,TrapTreatMent,false,);
 		*/
-		//这里开始处理告警 
+		//杩欓噷寮�濮嬪鐞嗗憡璀� 
         insertTrapLog(newObj);
 	}
     
@@ -167,7 +167,7 @@ public class CurrentAlarmModel extends Thread
 
         if (treatTid != -1)
         {
-            editTreatMent(treatTid, ClsLanguageExmp.commonGet("自动恢复"));
+            editTreatMent(treatTid, ClsLanguageExmp.commonGet("鑷姩鎭㈠"));
         }
 
     }
@@ -193,7 +193,7 @@ public class CurrentAlarmModel extends Thread
 
         if (treatTid != -1)
         {
-            editTreatMent(treatTid, ClsLanguageExmp.commonGet("自动恢复"));
+            editTreatMent(treatTid, ClsLanguageExmp.commonGet("鑷姩鎭㈠"));
         }
 
     }
@@ -219,7 +219,7 @@ public class CurrentAlarmModel extends Thread
 
         if (treatTid != -1)
         {
-            editTreatMent(treatTid, ClsLanguageExmp.commonGet("过时失效"));
+            editTreatMent(treatTid, ClsLanguageExmp.commonGet("杩囨椂澶辨晥"));
         }
 
 
@@ -246,7 +246,7 @@ public class CurrentAlarmModel extends Thread
 
         if (treatTid != -1)
         {
-            editTreatMent(treatTid, ClsLanguageExmp.commonGet("过时失效"));
+            editTreatMent(treatTid, ClsLanguageExmp.commonGet("杩囨椂澶辨晥"));
         }
 
 
@@ -260,7 +260,7 @@ public class CurrentAlarmModel extends Thread
         aCurrentrow.slotIndex = pSlotIndex;
         if (NlogType.getAlarmLevel(type) == 0)
         {
-            aCurrentrow.TrapTreatMent = ClsLanguageExmp.commonGet("无需处理");
+            aCurrentrow.TrapTreatMent = ClsLanguageExmp.commonGet("鏃犻渶澶勭悊");
             aCurrentrow.isTreated = time.toString();
             if (aCurrentrow.TrapLogType == TrapLogTypes.TestOnline)
             {
@@ -276,7 +276,7 @@ public class CurrentAlarmModel extends Thread
         {
             aCurrentrow.TrapTreatMent = "";
             aCurrentrow.isTreated = "";
-            //日志不记录0级别告警
+            //鏃ュ織涓嶈褰�0绾у埆鍛婅
             //int newTrapid = this.dEngine.trapLogInsertRow(aCurrentrow);
             //if (newTrapid==-1)
             //{
@@ -299,11 +299,10 @@ public class CurrentAlarmModel extends Thread
             allRowsTable.put(aCurrentrow.TrapLogID, aCurrentrow);
             if (allRows.size() > MAX_TRAPNUMBER)
             {
-                ////当前告警数量超过最大值，强制处理纳入数据库
-                editTreatMent(allRows.get(0).TrapLogID, ClsLanguageExmp.commonGet("超时默认失效"));
+                editTreatMent(allRows.get(0).TrapLogID, ClsLanguageExmp.commonGet("trap list is full"));
             }
             
-            //hi ,xinglong ,把该新告警发送到前端，在客户端的告警列表增加该告警
+          
             JSONObject logjson = new JSONObject();
             logjson.put("cmd", "alarm_message");
             logjson.put("opt", true);
@@ -321,7 +320,7 @@ public class CurrentAlarmModel extends Thread
     		//System.out.println(" [x]------------------------------=" + logjson.toJSONString());
     		sendToQueue(logjson.toJSONString(), MAINKERNEL_MESSAGE);
             
-            //通知 客户端
+            //閫氱煡 瀹㈡埛绔�
  /*           if (view1 != null)
                 view1.appendnewTrapLogRow(aCurrentrow);
             if (view2 != null)
@@ -372,7 +371,7 @@ public class CurrentAlarmModel extends Thread
                     allRows.remove(item);
                     allRowsTable.remove(item.TrapLogID);
                     
-                    //通知拓扑树删除该告警
+                    //閫氱煡鎷撴墤鏍戝垹闄よ鍛婅
                  /*   if (view3 != null)
                         view3.TreatedTrap(item);
                     if (viewDevGrpModel != null)
@@ -382,20 +381,20 @@ public class CurrentAlarmModel extends Thread
             
                     invalidRows.add(item);
                     invalidRowsTable.put(item.TrapLogID, item);
-                    if (invalidRowsTable.size() > MAX_TRAPNUMBER)//超出最大值
+                    if (invalidRowsTable.size() > MAX_TRAPNUMBER)//瓒呭嚭鏈�澶у��
                     {
-                        //丢入历史告警
+                        //涓㈠叆鍘嗗彶鍛婅
                         nojuTrapLogTableRow removeRow = invalidRows.get(0);
                         invalidRows.remove(removeRow);
                         invalidRowsTable.remove(removeRow.TrapLogID);
                     }
     
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-                    item.isTreated=df.format(new Date());// new Date()为获取当前系统时间
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//璁剧疆鏃ユ湡鏍煎紡
+                    item.isTreated=df.format(new Date());// new Date()涓鸿幏鍙栧綋鍓嶇郴缁熸椂闂�
                     item.TrapTreatMent = content;
                     
                     
-                    //hi ,xinglong ,把该失效（过时）的告警发送到前端，在客户端的告警列表中删除对应ID的告警
+                    //hi ,xinglong ,鎶婅澶辨晥锛堣繃鏃讹級鐨勫憡璀﹀彂閫佸埌鍓嶇锛屽湪瀹㈡埛绔殑鍛婅鍒楄〃涓垹闄ゅ搴擨D鐨勫憡璀�
                     JSONObject logjson = new JSONObject();
                     logjson.put("cmd", "alarm_message");
                     logjson.put("opt", false);
@@ -449,7 +448,7 @@ public class CurrentAlarmModel extends Thread
             
         }
 
-        editTreatMentss(trapIDss, ClsLanguageExmp.commonGet("设备被删除后清空"));
+        editTreatMentss(trapIDss, ClsLanguageExmp.commonGet("璁惧琚垹闄ゅ悗娓呯┖"));
         
         
     }

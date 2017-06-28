@@ -35,28 +35,29 @@ import wl.hfc.topd.MainKernel;
 
 public class PDUServer {
 	// config
-	private static final String  HFCALARM_MESSAGE =  "currentalarm.message" ;
-	public static int OnlineInterval=3;// 单位:S;设备树在线轮询一遍总时间
+	private static final String HFCALARM_MESSAGE = "currentalarm.message";
+	public static int OnlineInterval = 3;// 单位:S;设备树在线轮询一遍总时间
 	public int MinInterval; // 设备数量所决定的最低轮询一遍的时间；
-	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
+	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	private static Logger log = Logger.getLogger(PDUServer.class);
 	// private EnumLogoVersion logoVersion;//当前网管定制版本
 	private Snmp session;
 	private boolean isOnlineThreadRun = true;
 	private Hashtable listDevHash;
-	
+
 	private static RedisUtil redisUtil;
+
 	public static void setRedisUtil(RedisUtil redisUtil) {
 		PDUServer.redisUtil = redisUtil;
 	}
-	
-	public PDUServer(){
-		
+
+	public PDUServer() {
+
 	}
 
 	public PDUServer(Hashtable pListDevHash) {
 
-		// this.logoVersion = plogoVersion;
+/*		// this.logoVersion = plogoVersion;
 		this.listDevHash = pListDevHash;
 		try {
 			initSnmpAPI();
@@ -64,9 +65,7 @@ public class PDUServer {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-		}
-
-
+		}*/
 
 	}
 
@@ -121,7 +120,7 @@ public class PDUServer {
 
 		ResponseListener listener = new ResponseListener() {
 			public void onResponse(ResponseEvent event) {
-				//System.out.println("---------->开始异步解析<------------");
+				// System.out.println("---------->开始异步解析<------------");
 				if (event != null && event.getResponse() != null) {
 					try {
 						readResponse(event);
@@ -156,7 +155,6 @@ public class PDUServer {
 			if (!(recVB.getVariable().toString().equalsIgnoreCase("Null"))) {
 
 				TestOnlineMessageCallback(respEvnt);
-
 			}
 		}
 
@@ -164,23 +162,16 @@ public class PDUServer {
 
 	private void TestOnlineMessageCallback(ResponseEvent respEvnt) {
 
-		// System.Diagnostics.Stopwatch stopwatch = new Stopwatch();
-		// stopwatch.Start(); // 开始监视代码
-
-		// Console.WriteLine(DateTime.Now.ToString("h:mm:ss    ") +
-		// "收到一个trap包来自::" + pdu.Address.ToString());
-		// System.Console.Out.WriteLine(pdu.PrintVarBinds());
-
 		DevTopd lNode;
-		
-		String ipaddr=respEvnt.getPeerAddress().toString();
-		ipaddr = ipaddr.substring(0,ipaddr.indexOf("/"));
-		lNode = (DevTopd)listDevHash.get(ipaddr);
+
+		String ipaddr = respEvnt.getPeerAddress().toString();
+		ipaddr = ipaddr.substring(0, ipaddr.indexOf("/"));
+		lNode = (DevTopd) listDevHash.get(ipaddr);
 		if (lNode == null)
 			return;
-		Vector<VariableBinding> recVBs= (Vector<VariableBinding>)respEvnt.getResponse().getVariableBindings();
+		Vector<VariableBinding> recVBs = (Vector<VariableBinding>) respEvnt.getResponse().getVariableBindings();
 		if (lNode != null) {
-			
+
 			HFCTypes devtype = OidToHFCType.getType(recVBs);
 			if (devtype == HFCTypes.Unknown) // 处理未知设备
 			{
@@ -191,10 +182,10 @@ public class PDUServer {
 
 			if (lNode.mNetType != DProcess.getNetTypes(lNode.HFCType1) && lNode.mNetType != NetTypes.other)// 和数据库指定的不匹配
 			{
-				//System.out.println("----lnode.type==" + lNode.mNetType + "-----hfctype---" + DProcess.getNetTypes(lNode.HFCType1));
+				// System.out.println("----lnode.type==" + lNode.mNetType +
+				// "-----hfctype---" + DProcess.getNetTypes(lNode.HFCType1));
 				return;
 			}
-
 
 			lNode.OnlineCount = 3;
 
@@ -210,46 +201,43 @@ public class PDUServer {
 					lNode.DEVICEID = "";
 				} else {
 
-					lNode.ID = recVBs.elementAt(1).getVariable().toString();					
-					lNode.MD = recVBs.elementAt(2).getVariable().toString();					
-					lNode.SN = recVBs.elementAt(3).getVariable().toString();					
+					lNode.ID = recVBs.elementAt(1).getVariable().toString();
+					lNode.MD = recVBs.elementAt(2).getVariable().toString();
+					lNode.SN = recVBs.elementAt(3).getVariable().toString();
 					lNode.DEVICEID = recVBs.elementAt(6).getVariable().toString();
-					
+
 				}
 
 				lNode.isOline = true;
 				log.info("[#3] .....have device online.......");
 
-
 				JSONObject rootjson = new JSONObject();
-		    	rootjson.put("cmd", "devstatus");
-		    	rootjson.put("ip", ipaddr);
-		    	rootjson.put("isonline", true);
+				rootjson.put("cmd", "devstatus");
+				rootjson.put("ip", ipaddr);
+				rootjson.put("isonline", true);
 				sendToSub(rootjson.toJSONString());
-				
-		
-				  nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.TestOnline), TrapLogTypes.TestOnline, ipaddr, "neName", ClsLanguageExmp.isEn ? "Device online" : "设备上线", new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线", "");
-					
-try {
-    //hi ,xinglong ,讲该trap推送到CurrentAlarmModel
-			String serStr = null;
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
-         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);  
-         objectOutputStream.writeObject(traprst);    
-         serStr = byteArrayOutputStream.toString("ISO-8859-1");  
-         serStr = java.net.URLEncoder.encode(serStr, "UTF-8");  
-           
-         objectOutputStream.close();  
-         byteArrayOutputStream.close();
 
-			sendToQueue(serStr, HFCALARM_MESSAGE);
-	
-	
-} catch (Exception e) {
-	// TODO: handle exception
-}
-		
-				
+				nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.TestOnline), TrapLogTypes.TestOnline, ipaddr,
+						lNode.fullpath, ClsLanguageExmp.isEn ? "Device online" : "设备上线", new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线", "");
+
+				try {
+					// hi ,xinglong ,讲该trap推送到CurrentAlarmModel
+					String serStr = null;
+					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+					ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+					objectOutputStream.writeObject(traprst);
+					serStr = byteArrayOutputStream.toString("ISO-8859-1");
+					serStr = java.net.URLEncoder.encode(serStr, "UTF-8");
+
+					objectOutputStream.close();
+					byteArrayOutputStream.close();
+
+					sendToQueue(serStr, HFCALARM_MESSAGE);
+
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+
 			}
 
 		}
@@ -260,10 +248,10 @@ try {
 	}
 
 	@SuppressWarnings("static-access")
-	private void OnlineTestThread() {		
-		try {			
+	private void OnlineTestThread() {
+		try {
 			initSnmpAPI();
-			//OnlineTestThread();
+			// OnlineTestThread();
 			log.info("[#3] .....OnlineTestThread starting.......");
 			LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
 
@@ -276,18 +264,17 @@ try {
 			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));
 			outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
 			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
-
-			while (true) {		
-				if(MainKernel.me.listDevHash != null){
+			this.listDevHash = MainKernel.me.listDevHash;
+			while (true) {
+			/*	if (MainKernel.me.listDevHash != null) {
 					this.listDevHash = MainKernel.me.listDevHash;
-				}else{
+				} else {
 					Thread.currentThread().sleep(3000);
 					continue;
 				}
-			
+*/
 				try {
-					
-					
+
 					testdevlist.clear();
 
 					Enumeration e = this.listDevHash.elements();
@@ -300,7 +287,7 @@ try {
 					}
 
 					if (testdevlist == null || testdevlist.size() == 0) {
-						
+
 						Thread.currentThread().sleep(1000);
 						continue;
 					}
@@ -334,44 +321,42 @@ try {
 
 					if (!isOnlineThreadRun) {
 						Thread.currentThread().sleep(3000);
-					}
-					else {
+					} else {
 
 						for (Iterator iter = testdevlist.iterator(); iter.hasNext();) {
 							DevTopd dev = (DevTopd) iter.next();
 
-
 							// notify runtime data
 							if (dev.OnlineCount <= 0) {
 								if (dev.isOline) {
-									dev.isOline = false;						
+									dev.isOline = false;
+
+
 									
-									//hi,xinglong ,send to Mainkernel ip+isonline?  message	
+									//onlien infor
 									JSONObject rootjson = new JSONObject();
-							    	rootjson.put("cmd", "devstatus");
-							    	rootjson.put("ip", dev._NetAddress);
-							    	rootjson.put("isonline", false);
+									rootjson.put("cmd", "devstatus");
+									rootjson.put("ip", dev._NetAddress);
+									rootjson.put("isonline", false);
 									sendToSub(rootjson.toJSONString());
 									
-			 
-								  nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.Offline), TrapLogTypes.Offline, dev._NetAddress, "neName", ClsLanguageExmp.isEn ? "Device offline" : "设备下线", new Date(), "", "", ClsLanguageExmp.isEn ? "Device offline" : "设备下线", "");
-								
 
-								       //hi ,xinglong ,讲该trap推送到CurrentAlarmModel
+									nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.Offline), TrapLogTypes.Offline,
+											dev._NetAddress, dev.fullpath, ClsLanguageExmp.isEn ? "Device offline" : "设备下线", new Date(), "", "",
+											ClsLanguageExmp.isEn ? "Device offline" : "设备下线", "");
+
+						//online log
 									String serStr = null;
-									ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
-						            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);  
-						            objectOutputStream.writeObject(traprst);    
-						            serStr = byteArrayOutputStream.toString("ISO-8859-1");  
-						            serStr = java.net.URLEncoder.encode(serStr, "UTF-8");  
-						              
-						            objectOutputStream.close();  
-						            byteArrayOutputStream.close();
+									ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+									ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+									objectOutputStream.writeObject(traprst);
+									serStr = byteArrayOutputStream.toString("ISO-8859-1");
+									serStr = java.net.URLEncoder.encode(serStr, "UTF-8");
+
+									objectOutputStream.close();
+									byteArrayOutputStream.close();
 
 									sendToQueue(serStr, HFCALARM_MESSAGE);
-							
-				           
-
 
 								}
 
@@ -384,28 +369,15 @@ try {
 					}
 				} catch (Exception ex1) {
 					// log4net.LogManager.GetLogger("prgLog").Info("Exception from the OnlineTestThread");
-					// log4net.LogManager.GetLogger("prgLog").Info(ex1.ToString() +
+					// log4net.LogManager.GetLogger("prgLog").Info(ex1.ToString()
+					// +
 					// ex1.Message);
 					ex1.printStackTrace();
 					log.info(ex1.getMessage());
 				}
-	/*
-				try {
-					Thread.currentThread().sleep(10000);
-				} catch (Exception e) {
-					// TODO: handle exception
-				}*/
-				
-
-				// stopwatch.Stop(); // 停止监视
-				// TimeSpan timeSpan = stopwatch.Elapsed; // 获取总时间
-				// this.MinInterval = timeSpan.Seconds;
-				// int rstSC = timeSpan.Minutes;
-				// Console.WriteLine(MinInterval +
-				// "                    pdu server  askwhile min second   " +
-				// rstSC.ToString());
-
+	
 			}
+
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -413,9 +385,9 @@ try {
 			log.info(e.getMessage());
 			log.info("[#3] .....OnlineTestThread Done.......");
 		}
-		
+
 	}
-	
+
 	private void sendToSub(String msg) {
 		Jedis jedis = null;
 		try {
@@ -425,15 +397,13 @@ try {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			if(jedis != null)
+			// e.printStackTrace();
+			if (jedis != null)
 				redisUtil.getJedisPool().returnBrokenResource(jedis);
 
 		}
 	}
 
-	
-	
 	private void sendToQueue(String msg, String queue) {
 		Jedis jedis = null;
 		try {
@@ -443,8 +413,8 @@ try {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			if(jedis != null)
+			// e.printStackTrace();
+			if (jedis != null)
 				redisUtil.getJedisPool().returnBrokenResource(jedis);
 
 		}

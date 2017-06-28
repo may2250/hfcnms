@@ -2,6 +2,7 @@ package wl.hfc.traprcss;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -26,9 +27,11 @@ import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 import redis.clients.jedis.Jedis;
 import wl.hfc.alarmlog.CurrentAlarmModel;
+import wl.hfc.common.DevTopd;
 import wl.hfc.common.PduSevr;
 import wl.hfc.common.nojuTrapLogTableRow;
 import wl.hfc.online.pmls;
+import wl.hfc.topd.MainKernel;
 
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
@@ -47,7 +50,7 @@ public class TrapPduServer {
 
 	private static Snmp snmp = null;
 	private Address listenAddress;
-
+	private Hashtable listDevHash;
 	public static CurrentAlarmModel realTrapResponder;
 	private static Logger logger = Logger.getLogger(TrapPduServer.class);
 	
@@ -71,6 +74,7 @@ public class TrapPduServer {
 		System.out.println("----------------path--->>>" + filePath);
         TrapProCenter trpcss = new TrapProCenter(true, filePath);
         this.trpcss = trpcss;
+    	this.listDevHash = MainKernel.me.listDevHash;
 		try {
 			// get trap port from db
 
@@ -143,11 +147,19 @@ public class TrapPduServer {
 				hfcalarmhash.put("status", String.valueOf(status));
 				hfcalarmhash.put("traptype", String.valueOf(traptype));
 				hfcalarmhash.put("enterprise", enterprise.toString());
-				hfcalarmhash.put("ip", event.getPeerAddress().toString());
+				
+				
+				String ipaddr = event.getPeerAddress().toString();
+				ipaddr = ipaddr.substring(0, ipaddr.indexOf("/"));
+				DevTopd lNode = (DevTopd) listDevHash.get(ipaddr);
+			    if (lNode == null)
+                    return ;
+
+				hfcalarmhash.put("ip", ipaddr);
 				try {
 					nojuTrapLogTableRow traprst = trpcss.ProcessTrapRequestPduHandler(hfcalarmhash, 0, inPdu);
 					if (traprst.isValid) {
-					       //hi ,xinglong ,讲该trap推送到CurrentAlarmModel
+					
 						String serStr = null;
 						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
 			            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);  
