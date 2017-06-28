@@ -101,6 +101,7 @@ public class MainKernel {
 		if(cmd.equalsIgnoreCase("getLoginInit")){	
 			staticmemory.sendRemoteStr(getInitTree(rootjson), jsondata.get("sessionid").toString());	
 			staticmemory.sendRemoteStr(getInitLog(rootjson), jsondata.get("sessionid").toString());	
+			staticmemory.sendRemoteStr(getDBstatus(), jsondata.get("sessionid").toString());	
 		}else if(cmd.equalsIgnoreCase("getgrouptree")){
 			staticmemory.sendRemoteStr(getGroupTree(rootjson), jsondata.get("sessionid").toString());
 		}else if(cmd.equalsIgnoreCase("nodeadd")){
@@ -208,6 +209,7 @@ public class MainKernel {
     }
     
     private String getInitLog(JSONObject rootjson){  
+    	rootjson = new JSONObject();
     	JSONObject logjson;
     	rootjson.put("cmd", "getInitLog");
 		JSONArray jsonarray = new JSONArray();
@@ -236,8 +238,15 @@ public class MainKernel {
 		logjson.put("time", "2017-5-22");
 		jsonarray = new JSONArray();
 		jsonarray.add(logjson);
-		rootjson.put("logs", jsonarray);
+		rootjson.put("logs", jsonarray);		
 		return rootjson.toJSONString();
+    }
+    
+    private String getDBstatus(){
+    	JSONObject rootjson = new JSONObject();
+    	rootjson.put("cmd", "dbclosed");
+    	rootjson.put("dbstatus", ICDatabaseEngine1.getDBStatus());
+    	return rootjson.toJSONString();
     }
     
     private JSONArray getSubTree(LNode pnode){

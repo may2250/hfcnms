@@ -29,6 +29,7 @@ public class CDatabaseEngine {
 	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
 	private static Logger log = Logger.getLogger(CDatabaseEngine.class);
 	private static RedisUtil redisUtil;
+	private boolean flag = false; //数据库连接状态
 	
 	public CDatabaseEngine (RedisUtil redisUtil){
 		this.redisUtil = redisUtil;
@@ -43,6 +44,7 @@ public class CDatabaseEngine {
 			if (con == null || con.isClosed()) {
 				Class.forName(driver);
 				con = DriverManager.getConnection(url, dbuser, dbpass);
+				flag = true;
 			}
 
 		} catch (Exception e) {
@@ -56,6 +58,10 @@ public class CDatabaseEngine {
 
 	public Connection con;
 	
+	public boolean getDBStatus(){
+		return this.flag;
+	}
+	
 	private boolean isDBConnected(boolean flag){
 		try {
 			if(!flag){
@@ -67,8 +73,16 @@ public class CDatabaseEngine {
 		            rootjson.put("cmd", "dbclosed");
 		            rootjson.put("flag", true);
 					sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+					this.flag = false;
 					return false;
-				}				
+				}else{
+					//发送数据库失去连接信息到前端
+					JSONObject rootjson = new JSONObject();
+			        rootjson.put("cmd", "dbclosed");
+			        rootjson.put("flag", false);
+					sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+					this.flag = true;
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -76,13 +90,10 @@ public class CDatabaseEngine {
             rootjson.put("cmd", "dbclosed");
             rootjson.put("flag", true);
 			sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+			this.flag = false;
 			return false;
 		}
-		//发送数据库失去连接信息到前端
-		JSONObject rootjson = new JSONObject();
-        rootjson.put("cmd", "dbclosed");
-        rootjson.put("flag", false);
-		sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+		
 		return true;
 	}
 	
@@ -123,6 +134,11 @@ public class CDatabaseEngine {
 	public int UserGroupTableInsertRow(UserGroupTableRow row) {
 		int lastId = -1;
 		int copyIndex = 1;
+		if(!flag){
+			if(!isDBConnected(false)){
+				return -1;
+			}
+		}
 		String newName = row.UserGroupName;
 		ResultSet rs = null;		
 
@@ -157,6 +173,11 @@ public class CDatabaseEngine {
 	}
 
 	public boolean UserGroupTableDeleteRow(int thisID) {
+		if(!flag){
+			if(!isDBConnected(false)){
+				return false;
+			}
+		}
 		String sqlInsert = "DELETE FROM usergrouptable WHERE UserGroupID=" + thisID;
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
@@ -177,6 +198,11 @@ public class CDatabaseEngine {
 	}
 
 	public boolean UserGroupTableUpdateRow(UserGroupTableRow row) {
+		if(!flag){
+			if(!isDBConnected(false)){
+				return false;
+			}
+		}
 		if (isDevGroupExsit(row.UserGroupName) != -1) {
 			if (isDevGroupExsit(row.UserGroupName) != row.UserGroupID) {
 				return false;// 直接不允许修改
@@ -204,6 +230,11 @@ public class CDatabaseEngine {
 		PreparedStatement pstmt;
 		Hashtable retList = new Hashtable();
 		ResultSet rs = null;
+		if(!flag){
+			if(!isDBConnected(false)){
+				return retList;
+			}
+		}
 		try {
 			String sqlInsert = "SELECT * FROM usergrouptable";
 
@@ -241,6 +272,11 @@ public class CDatabaseEngine {
 		PreparedStatement pstmt;
 		Hashtable retList = new Hashtable();
 		ResultSet rs = null;
+		if(!flag){
+			if(!isDBConnected(false)){
+				return retList;
+			}
+		}
 		try {
 			String sqlInsert = "SELECT * FROM devicetable";
 
@@ -304,6 +340,11 @@ public class CDatabaseEngine {
 	}
 
 	public boolean DeviceTableInsertRow(nojuDeviceTableRow row) {
+		if(!flag){
+			if(!isDBConnected(false)){
+				return false;
+			}
+		}
 		int copyIndex = 1;
 		String newName = row.Name;
 		while (!isDevExsit(newName).equals("")) {
@@ -331,6 +372,11 @@ public class CDatabaseEngine {
 	}
 
 	public boolean DeviceTableDeleteRow(nojuDeviceTableRow row) {
+		if(!flag){
+			if(!isDBConnected(false)){
+				return false;
+			}
+		}
 		String sqlInsert = "DELETE FROM devicetable WHERE NetAddress='" + row.get_NetAddress() + '\'';
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
@@ -348,6 +394,11 @@ public class CDatabaseEngine {
 	}
 
 	public boolean DeviceTableUpdateRow(nojuDeviceTableRow row) {
+		if(!flag){
+			if(!isDBConnected(false)){
+				return false;
+			}
+		}
 		String rstIsDevExsit = isDevExsit(row.Name);
 
 		if (!rstIsDevExsit.equals("")) {
@@ -382,7 +433,11 @@ public class CDatabaseEngine {
 	public int trapLogInsertRow(nojuTrapLogTableRow row) {
 		ResultSet rs = null;
 		int lastId = -1;
-
+		if(!flag){
+			if(!isDBConnected(false)){
+				return -1;
+			}
+		}
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String currentTime = sdf.format(row.TrapLogTime);
@@ -411,7 +466,11 @@ public class CDatabaseEngine {
 
 	public int trapLogEditRow(int TrapLogID, String treatment) {
 		String IsTreatMent = new Date().toString();// 消失时间
-
+		if(!flag){
+			if(!isDBConnected(false)){
+				return -1;
+			}
+		}
 		String sqlInsert = "UPDATE TrapLogTable SET TrapTreatMent='" + treatment + "', IsTreatMent='" + IsTreatMent + "' WHERE TrapLogID='" + TrapLogID + "'";
 
 		PreparedStatement pstmt;
@@ -427,7 +486,12 @@ public class CDatabaseEngine {
 	}
 
 	public ArrayList<nojuTrapLogTableRow> getTrapRowsWithTime(Date beginTime, Date endTime, String ip) {
-		ArrayList<nojuTrapLogTableRow> results = new ArrayList<nojuTrapLogTableRow>();		
+		ArrayList<nojuTrapLogTableRow> results = new ArrayList<nojuTrapLogTableRow>();	
+		if(!flag){
+			if(!isDBConnected(false)){
+				return results;
+			}
+		}
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String endString = sdf.format(endTime);

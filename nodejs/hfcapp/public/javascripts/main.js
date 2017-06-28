@@ -333,6 +333,7 @@
         }else if(jsonobj.cmd == "getInitLog"){
         	//解析日志并显示
         	parseLogs(jsonobj);
+        	
         }else if(jsonobj.cmd == "test"){
         	document.getElementById('messages').innerHTML
             += '<br />' + jsonobj.message;
