@@ -284,6 +284,16 @@
     		} );*/
     		tableToExcel('tbl_loglists');
     	});
+    	
+    	$('#btn-tree-search').click(function(){
+    		searchtreenode($("#searchbar-key").val());
+    	});
+    	
+    	$('#searchbar-key').bind('keydown',function(event){
+    	    if(event.keyCode == "13") {
+    	    	searchtreenode($("#searchbar-key").val());
+    	    }
+    	});  
 		
     	var tableToExcel = (function() {
             var uri = 'data:application/vnd.ms-excel;base64,',
@@ -812,6 +822,22 @@
     	          }
     	        }
     	    });
+    }
+    
+    function searchtreenode(search_val){
+		var node = undefined;
+		if(ipvalidate(search_val)){
+			node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(search_val);
+		}else{
+			//Title搜索
+			node = $("#dev-fancytree").fancytree("getTree").findFirst(search_val);
+		}
+		if(node != undefined){
+			node.setActive(true);
+			  	var activeLi = node && node.li;
+			  	$('.fancytree-container').animate({
+			  		scrollTop: $(activeLi).offset().top - $('.fancytree-container').offset().top + $('.fancytree-container').scrollTop()}, 'slow');
+		}
     }
     
     function parseLogs(jsonobj){

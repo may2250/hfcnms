@@ -330,6 +330,20 @@ function ipvalidate(ip) {
     return true;
 }
 
+function macvalidate(mac) {  
+    var val = /[A-F\d]{2}:[A-F\d]{2}:[A-F\d]{2}:[A-F\d]{2}:[A-F\d]{2}:[A-F\d]{2}/;  
+    var vald = val.exec(mac);  
+    if (vald == null) {    
+        return false;  
+    }  
+    if (vald != '') {  
+        if (vald[0] != mac) {    
+            return false;  
+        }  
+    }
+    return true;
+}
+
 //比较两个ip的大小,如果大于，返回1，等于返回0，小于返回-1  
 function compareIP(ipBegin, ipEnd)  
 {  
