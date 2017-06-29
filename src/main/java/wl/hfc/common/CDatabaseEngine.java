@@ -29,7 +29,7 @@ public class CDatabaseEngine {
 	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
 	private static Logger log = Logger.getLogger(CDatabaseEngine.class);
 	private static RedisUtil redisUtil;
-	private boolean flag = false; //数据库连接状态
+	public static  boolean flag = false; //数据库连接状态
 	
 	public CDatabaseEngine (RedisUtil redisUtil){
 		this.redisUtil = redisUtil;

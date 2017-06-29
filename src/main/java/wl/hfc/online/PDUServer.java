@@ -44,7 +44,7 @@ public class PDUServer {
 	private Snmp session;
 	private boolean isOnlineThreadRun = true;
 	private Hashtable listDevHash;
-
+	public static boolean PDUServer_status=false;
 	private static RedisUtil redisUtil;
 
 	public static void setRedisUtil(RedisUtil redisUtil) {
@@ -52,6 +52,17 @@ public class PDUServer {
 	}
 
 	public PDUServer() {
+		
+		try {	
+			initSnmpAPI();
+			PDUServer_status=true;
+			
+		} catch (Exception ex1) {
+			PDUServer_status=false;
+			ex1.printStackTrace();
+			log.info(ex1.getMessage());
+		}
+		
 
 	}
 
@@ -249,8 +260,8 @@ public class PDUServer {
 
 	@SuppressWarnings("static-access")
 	private void OnlineTestThread() {
-		try {
-			initSnmpAPI();
+
+	
 			// OnlineTestThread();
 			log.info("[#3] .....OnlineTestThread starting.......");
 			LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
@@ -265,6 +276,7 @@ public class PDUServer {
 			outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
 			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
 			this.listDevHash = MainKernel.me.listDevHash;
+			PDUServer_status=true;
 			while (true) {
 			/*	if (MainKernel.me.listDevHash != null) {
 					this.listDevHash = MainKernel.me.listDevHash;
@@ -377,14 +389,7 @@ public class PDUServer {
 				}
 	
 			}
-
-
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			log.info(e.getMessage());
-			log.info("[#3] .....OnlineTestThread Done.......");
-		}
+		
 
 	}
 

@@ -31,6 +31,7 @@ import wl.hfc.common.DevTopd;
 import wl.hfc.common.PduSevr;
 import wl.hfc.common.nojuTrapLogTableRow;
 import wl.hfc.online.pmls;
+import wl.hfc.server.Sstatus;
 import wl.hfc.topd.MainKernel;
 
 import org.snmp4j.PDU;
@@ -47,7 +48,8 @@ public class TrapPduServer {
 	public static TrapProCenter trpcss;
 	public static String TRAP_ADDRESS = "udp:0.0.0.0/";
 	//private static final String TRAP_SERVER_PORT_KEY = "global:trapserver:port";
-
+	//true:is valid; false:is invalid
+	public static boolean TrapPduServer_status=false;
 	private static Snmp snmp = null;
 	private Address listenAddress;
 	private Hashtable listDevHash;
@@ -93,9 +95,14 @@ public class TrapPduServer {
 			snmp.getMessageDispatcher().addMessageProcessingModel(new MPv2c());
 			snmp.getMessageDispatcher().addMessageProcessingModel(new MPv3());
 			snmp.listen();
+			
+			
+			TrapPduServer_status=true;
 
 		} catch (Exception e) {
+			TrapPduServer_status=false;
 			e.printStackTrace();
+			
 		}
 
 		CommandResponder pduHandler = new CommandResponder() {
