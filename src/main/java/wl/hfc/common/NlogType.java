@@ -107,15 +107,10 @@ public class NlogType
                     return "Backup Log";
                 case SearchDevice:
                     return "Search Device";
-                case SetDeviceParam:
-                case BackupParamShelf:
-                case RestoreParamShelf:
-                case NTP_Sync:
                 case Acknowledge:
                 case ClearAcknowledge:
                 case ClearAllAcknowledge:
                 case SetSystemSounder:
-                case SetMsgConfig:
                     return "Common";
                 default:
                     return "Unknown";
@@ -144,15 +139,10 @@ public class NlogType
                     return "日志备份";
                 case SearchDevice:
                     return "设备搜索";
-                case SetDeviceParam:
-                case BackupParamShelf:
-                case RestoreParamShelf:
-                case NTP_Sync:
                 case Acknowledge:
                 case ClearAcknowledge:
                 case ClearAllAcknowledge:
                 case SetSystemSounder:
-                case SetMsgConfig:
                     return "普通";
                 default:
                     return "未知";
@@ -177,18 +167,10 @@ public class NlogType
         BackupLog,
 
         SearchDevice,
-
-
-        SetDeviceParam,
-        BackupParamShelf,
-        RestoreParamShelf,
-        NTP_Sync,
         Acknowledge,
         ClearAcknowledge,
         ClearAllAcknowledge,
         SetSystemSounder,
-        SetMsgConfig
-
 
     }
 
