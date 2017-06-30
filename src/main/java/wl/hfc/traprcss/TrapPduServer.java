@@ -176,20 +176,11 @@ public class TrapPduServer {
 			              
 			            objectOutputStream.close();  
 			            byteArrayOutputStream.close();
-						/*JSONObject json = new JSONObject();
-						json.put("isValid", traprst.isValid);
-						json.put("level", traprst.level);
-						json.put("neName", traprst.neName);						
-						json.put("paramValue", traprst.paramValue);
-						json.put("slotIndex", traprst.slotIndex);
-						json.put("TrapDevAddress", traprst.TrapDevAddress);						
-						json.put("TrapLogContent", traprst.TrapLogContent);						
-						json.put("TrapLogID", traprst.TrapLogID);
-						json.put("TrapLogTime", traprst.TrapLogTime);						
-						json.put("TrapLogType", traprst.TrapLogType);
-						json.put("TrapTreatMent", traprst.TrapTreatMent);					
-						*/
-						sendToQueue(serStr, HFCALARM_MESSAGE);
+						JSONObject json = new JSONObject();
+						json.put("cmd", "newalarm");
+						json.put("val", serStr);
+
+						sendToQueue(json.toJSONString(), HFCALARM_MESSAGE);
 					}
 	           
 					//realTrapResponder.insertTrapLog(traprst);

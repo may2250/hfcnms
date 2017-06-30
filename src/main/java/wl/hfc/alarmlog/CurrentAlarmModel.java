@@ -123,7 +123,7 @@ public class CurrentAlarmModel extends Thread {
 			Date datestart = sdf.parse(jsondata.get("start").toString());
 			Date dateend = sdf.parse(jsondata.get("end").toString());
 			ArrayList<nojuTrapLogTableRow> traprow = CurrentAlarmModel.me.logEngine.getTrapRowsWithTime(datestart, dateend, "");
-			System.out.println("-------------traprow-size =" + traprow.size());
+			//System.out.println("-------------traprow-size =" + traprow.size());
 			for (nojuTrapLogTableRow prow : traprow) {
 				logjson = new JSONObject();
 				logjson.put("id", prow.TrapLogID);
@@ -147,43 +147,32 @@ public class CurrentAlarmModel extends Thread {
 
 
 	private void parseMessage(String message) {
-		// System.out.println(" [x] CurrentAlarmModel Received: '" + message +
-		// "'");
+		 //System.out.println(" [x] CurrentAlarmModel Received: '" + message +
+		 //"'");		
 		nojuTrapLogTableRow newObj = null;
 		try {
-			String redStr = java.net.URLDecoder.decode(message, "UTF-8");
-			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(redStr.getBytes("ISO-8859-1"));
-			ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-			newObj = (nojuTrapLogTableRow) objectInputStream.readObject();
-			objectInputStream.close();
-			byteArrayInputStream.close();
+			JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
+			String cmd = jsondata.get("cmd").toString();
+			if(cmd.equalsIgnoreCase("newalarm")){
+				String redStr = java.net.URLDecoder.decode(jsondata.get("val").toString(), "UTF-8");
+				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(redStr.getBytes("ISO-8859-1"));
+				ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+				newObj = (nojuTrapLogTableRow) objectInputStream.readObject();
+				objectInputStream.close();
+				byteArrayInputStream.close();
+			}
+			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		/*
-		 * JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
-		 * int level = Integer.parseInt(jsondata.get("level").toString());
-		 * TrapLogTypes TrapLogType = (TrapLogTypes)jsondata.get("TrapLogType");
-		 * String addr = jsondata.get("TrapDevAddress").toString(); String
-		 * neName = jsondata.get("neName").toString(); String TrapLogContent =
-		 * jsondata.get("TrapLogContent").toString(); SimpleDateFormat sdf = new
-		 * SimpleDateFormat("yyyy-MM-dd "); Date TrapLogTime =
-		 * sdf.parse(jsondata.get("TrapLogTime").toString()); String
-		 * TrapTreatMent = jsondata.get("TrapTreatMent").toString(); String
-		 * TrapTreatMent = jsondata.get("TrapTreatMent").toString();
-		 * nojuTrapLogTableRow pRow = new
-		 * nojuTrapLogTableRow(level,TrapLogType,addr
-		 * ,neName,TrapLogContent,TrapLogTime,TrapTreatMent,false,);
-		 */
-		// 杩欓噷寮�濮嬪鐞嗗憡璀�
 		insertTrapLog(newObj);
 	}
 

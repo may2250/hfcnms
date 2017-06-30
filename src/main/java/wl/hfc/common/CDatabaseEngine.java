@@ -518,7 +518,7 @@ public class CDatabaseEngine {
 				TrapLogTypes type1 = TrapLogTypes.values()[rs.getInt(2)];
 				int i = 4;
 				nojuTrapLogTableRow newURow = new nojuTrapLogTableRow(NlogType.getAlarmLevel(type1), type1, rs.getString(i++), rs.getString(i++),
-						rs.getString(i++), rs.getDate(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++));
+						rs.getString(i++), rs.getTimestamp(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++));
 				newURow.TrapLogID = rs.getInt(1);
 
 				results.add(newURow);

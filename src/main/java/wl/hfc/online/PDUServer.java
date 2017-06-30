@@ -242,8 +242,10 @@ public class PDUServer {
 
 					objectOutputStream.close();
 					byteArrayOutputStream.close();
-
-					sendToQueue(serStr, HFCALARM_MESSAGE);
+					JSONObject json = new JSONObject();
+					json.put("cmd", "newalarm");
+					json.put("val", serStr);
+					sendToQueue(json.toJSONString(), HFCALARM_MESSAGE);
 
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -368,7 +370,10 @@ public class PDUServer {
 									objectOutputStream.close();
 									byteArrayOutputStream.close();
 
-									sendToQueue(serStr, HFCALARM_MESSAGE);
+									JSONObject json = new JSONObject();
+									json.put("cmd", "newalarm");
+									json.put("val", serStr);
+									sendToQueue(json.toJSONString(), HFCALARM_MESSAGE);
 
 								}
 

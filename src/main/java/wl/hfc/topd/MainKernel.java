@@ -273,14 +273,17 @@ public class MainKernel {
 				subjson.put("expand", true);
 				subjson.put("isAlarm", group.isAlarm == 0 ? false : true);
 				subjson.put("icon", "images/net_center.png");
-				// 绗笁绾у紑濮嬪惎鐢ㄥ欢杩熷姞杞藉姛鑳�
-				if (usergroup.ParentGroupID == -1) {
-					JSONArray subjsonarray = new JSONArray();
-					subjsonarray = getSubTree(node);
+				JSONArray subjsonarray = new JSONArray();
+				subjsonarray = getSubTree(node);
+				if (usergroup.ParentGroupID == -1) {					
 					subjson.put("lazy", false);
 					subjson.put("children", subjsonarray);
 				} else {
-					subjson.put("lazy", true);
+					if(subjsonarray.size() == 0){
+						subjson.put("lazy", false);
+					}else{
+						subjson.put("lazy", true);
+					}					
 				}
 
 				jsonarray.add(subjson);
