@@ -23,11 +23,13 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
 import com.xinlong.util.RedisUtil;
+import com.xinlong.util.StaticMemory;
 
 import wl.hfc.common.*;
 import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.online.pmls;
+import wl.hfc.topd.MainKernel;
 import wl.hfc.traprcss.TrapPduServer;
 import wl.hfc.traprcss.TrapProCenter;
 
@@ -52,6 +54,11 @@ public class CurrentAlarmModel extends Thread {
 
 	private static RedisUtil redisUtil;
 	private Thread ptd;
+	private static StaticMemory staticmemory;
+
+	public static void setStaticMemory(StaticMemory staticmemory) {
+		CurrentAlarmModel.staticmemory = staticmemory;
+	}
 
 	public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil) {
 		this.logEngine = dEngine;
@@ -95,19 +102,31 @@ public class CurrentAlarmModel extends Thread {
 
 		public void onPMessage(String arg0, String arg1, String msg) {
 			try {
-				parseMessage(msg);
-
+			System.out.println(" [x] MainKernel Received: '" + msg + "'");
+			JSONObject jsondata = (JSONObject) new JSONParser().parse(msg);
+			String cmd = jsondata.get("cmd").toString();
+			JSONObject rootjson = new JSONObject();
+			
+			
+			if(cmd.equalsIgnoreCase("newalarm")){	
+			
+					parseMessage(msg);		
+	
+			}else if(cmd.equalsIgnoreCase("historyalarm")){
 				
-				//else if (cmd.equalsIgnoreCase("alarmsearch")) {
-				// staticmemory.sendRemoteStr(getHistoryAlarm(jsondata),
-				// jsondata.get("sessionid").toString());
-			} catch (Exception e) {
-				e.printStackTrace();
-				log.info(e.getMessage());
+				staticmemory.sendRemoteStr(getHistoryAlarm(jsondata),
+			     jsondata.get("sessionid").toString());
+				
+				
 			}
-
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info(e.getMessage());
 		}
+		
+		
 
+	}
 	};
 	
 	
@@ -476,4 +495,7 @@ public class CurrentAlarmModel extends Thread {
 
 		}
 	}
+
+
+
 }
