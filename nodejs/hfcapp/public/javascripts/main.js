@@ -227,32 +227,46 @@
     			 $(this).parent().parent().remove();
     		});
     	});
+    	$("select#alarmfilter-date").change(function(){
+    		if($(this).val() == "自选日期"){
+    			$("#datepicker_start").datepicker("enable").removeAttr("readonly");
+    			$("#datepicker_end").datepicker("enable").removeAttr("readonly");
+    		}else{
+    			$("#datepicker_start").datepicker("disable").attr("readonly","readonly");
+    			$("#datepicker_end").datepicker("disable").attr("readonly","readonly");
+    		}
+    	});
     	
     	$( "#datepicker_start" ).datepicker({
   	      changeMonth: true,
   	      changeYear: true,
   	      dateFormat: 'yy-mm-dd'
   	    });
-    	
+    	$( "#datepicker_start" ).datepicker( 'setDate' , new Date());
     	$( "#datepicker_end" ).datepicker({
   	      changeMonth: true,
   	      changeYear: true,
   	      dateFormat: 'yy-mm-dd'
   	    });    	
-    	
+    	$( "#datepicker_end" ).datepicker( 'setDate' , new Date());
     	$( "#datepicker_optstart" ).datepicker({
     	      changeMonth: true,
     	      changeYear: true,
     	      dateFormat: 'yy-mm-dd'
     	    });
-      	
+    	$( "#datepicker_optstart" ).datepicker( 'setDate' , new Date());
       	$( "#datepicker_optend" ).datepicker({
     	      changeMonth: true,
     	      changeYear: true,
     	      dateFormat: 'yy-mm-dd'
     	    });    	
-    	
+      	$( "#datepicker_optend" ).datepicker( 'setDate' , new Date());
+      	
     	$('#btn-alarmok').click(function(){
+    		if(getDays($('#datepicker_start').val(), $('#datepicker_end').val()) > 92){
+    			alert("查询间隔不能大于3个月!");
+    			return;
+    		}
     		 var datastring = '{"cmd":"alarmsearch","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
     		 + '","customdate":"'+ $("#alarmfilter-date").prop('selectedIndex') + '","source":"'+ $('#alarmfilter-source').val() 
     		 + '","level":"'+ $("#alarmfilter-level").prop('selectedIndex') + '","type":"'+ $('#alarmfilter-type').val()

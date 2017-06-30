@@ -166,17 +166,21 @@ a:hover { transition: all 200ms ease-in-out; }
 }
 
 .top_menu ul  li:hover{
-	color:white;
+	color:black;
 }
 
 .signout {
 	padding-left: 5px;    
 }
 
+.net-info {
+	color:#ccc;
+}
+
 .top_menu ul  li {
 	position: relative;
-	background: #82abeb;
-    border-left: 2px solid rgba(255,255,255,.15);
+	background: white;
+    border-left: 2px solid rgba(159, 161, 173, 0.15);
     display: block;
     float: left;
     cursor: pointer;
@@ -189,7 +193,7 @@ a:hover { transition: all 200ms ease-in-out; }
 }
 
 .icon-nav:hover {
-	color: white;
+	color: black;
 }
 
 .users_details_left ul li{
@@ -342,7 +346,7 @@ div.dataTables_wrapper {
     top: 0;
     left: 0;
     bottom: 0;
-    background-color: #82abeb;
+    background-color: white;
     box-shadow: 0px 0px 10px 0px rgb(58, 41, 31);
 	-o-box-shadow: 0px 0px 10px 0px rgb(58, 41, 31);
 	-webkit-box-shadow: 0px 0px 10px 0px rgb(58, 41, 31);
@@ -694,7 +698,7 @@ span#logo h1 {
 /*--- User Panel---*/
 
 .header-section {
-    background:#82abeb;
+    background:white;
 	box-shadow: 2px 0 6px rgba(1, 70, 76, 0.68);
 	    -webkit-box-shadow: 2px 0 6px rgba(1, 70, 76, 0.68);
     -moz-box-shadow: 2px 0 6px rgba(1, 70, 76, 0.68);

@@ -318,12 +318,12 @@ public class MainKernel {
 					break;
 				}
 				subjson.put("icon", dev.isOline ? imgstr : "images/devoff.png");
-				infojson.put("title", dev._NetAddress);
+				infojson.put("title", "<span class='net-info' >" +dev._NetAddress + "</span>");
 				infojson.put("icon", "images/net_info.ico");
 				subjsonarray.add(infojson);
 				infojson = new JSONObject();
 				infojson.put("key", dev.mNetType.toString());
-				infojson.put("title", DProcess.getNetTypeTostring(dev.mNetType));
+				infojson.put("title", "<span class='net-info' >" +DProcess.getNetTypeTostring(dev.mNetType) + "</span>");
 				infojson.put("hfctype", dev.HFCType1.toString());
 				infojson.put("icon", "images/net_info.ico");
 				subjsonarray.add(infojson);
@@ -652,13 +652,13 @@ public class MainKernel {
 			rootnodejson.put("wcommunity", dev.BindnojuDeviceTableRow._RWCommunity);
 			rootnodejson.put("isonline", dev.isOline);
 			rootnodejson.put("icon", dev.isOline ? "images/device.png" : "images/devoff.png");
-			subjson.put("title", dev._NetAddress);
+			subjson.put("title", "<span class='net-info' >" +dev._NetAddress + "</span>");
 			subjson.put("hfctype", dev.HFCType1.toString());
 			subjson.put("icon", "images/net_info.ico");
 			subjsonarray.add(subjson);
 			subjson = new JSONObject();
 			subjson.put("key", dev.mNetType.toString());
-			subjson.put("title", DProcess.getNetTypeTostring(dev.mNetType));
+			subjson.put("title", "<span class='net-info' >" +DProcess.getNetTypeTostring(dev.mNetType) + "</span>");
 			subjson.put("icon", "images/net_info.ico");
 			subjsonarray.add(subjson);
 			rootnodejson.put("children", subjsonarray);
