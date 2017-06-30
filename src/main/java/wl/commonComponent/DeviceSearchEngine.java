@@ -199,10 +199,8 @@ public class DeviceSearchEngine extends Thread{
         cyt.setCommunity(new OctetString(commu));
         cyt.setAddress(new UdpAddress(ipaddr.toString()+"/161"));        
         outpdu.setType(PDU.GET);
-        if (destiType == 1)    //btkel ,RTL1550Transmitter锛寃os3000SCTE,WOS4000
-        //   if (true)
+        if (destiType == 1)    //WOS4000
         {
-            //寮哄埗pdu鐨勭増鏈负V2
         	cyt.setVersion(SnmpConstants.version2c);
             //   outpdu.BroadCastEnable = true;
             //    outpdu.ClientID = this.AsyncClientID;
@@ -213,9 +211,7 @@ public class DeviceSearchEngine extends Thread{
         }
         else if (destiType == 0)
         {
-
             //    outpdu.BroadCastEnable = true;
-
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0"))); //璁惧鐨勭郴缁烵ID銆�
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.1.0")));//HFC鐨刢ommonNELogicalID
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.3.0")));//HFC鐨刢ommonNEModelNumber
@@ -223,7 +219,6 @@ public class DeviceSearchEngine extends Thread{
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));    //闇�瑕佸疄楠岀‘瀹�
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));    //.2.0
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
-
         }
 
         AyncSendSnmpPdu(outpdu,cyt);

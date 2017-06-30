@@ -29,7 +29,7 @@ public class CDatabaseEngine {
 	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
 	private static Logger log = Logger.getLogger(CDatabaseEngine.class);
 	private static RedisUtil redisUtil;
-	private boolean flag = false; //数据库连接状态
+	public static  boolean flag = false; //数据库连接状态
 	
 	public CDatabaseEngine (RedisUtil redisUtil){
 		this.redisUtil = redisUtil;
@@ -533,4 +533,44 @@ public class CDatabaseEngine {
 
 	}
 
+	
+	
+	
+    public int operLogInsertRow(nojuOperLogTableRow row)
+    {
+    	
+    	ResultSet rs = null;
+		int lastId = -1;
+		if(!flag){
+			if(!isDBConnected(false)){
+				return -1;
+			}
+		}
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		String currentTime = sdf.format(row.OperLogTime);
+		String sqlInsert = "insert into traplogtable values (" + null + "," + row.OperLogType.ordinal() + ",'" + row.OperLogType.toString() + "','"
+				+ row.OperLogContent + "','"  + currentTime + "','" + row.OperLogUser + "')";
+
+		PreparedStatement pstmt;
+		try {
+			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
+			pstmt.executeUpdate();
+			rs = pstmt.getGeneratedKeys();// 这一句代码就是得到插入的记录的id
+			while (rs.next()) {
+				lastId = rs.getInt(1);
+			}
+			row.OperLogID = lastId;
+			return row.OperLogID;
+		} catch (Exception EX) {
+			System.out.println(EX);
+			isDBConnected(false);
+			return lastId;
+
+		}   	
+    	
+
+
+    }
+	
 }

@@ -395,7 +395,6 @@ public class MainKernel {
 		rootjson.put("alarms", jsonarray);
 		return rootjson.toJSONString();
 	}
-
 	// by group and device collection args
 	private LNode offerTopodModel(Hashtable devLists, Hashtable grpLists) {
 
@@ -722,6 +721,9 @@ public class MainKernel {
 		nojuDeviceTableRow mDeviceTableRow = dev.BindnojuDeviceTableRow;
 
 		// edit the mDeviceTableRow property here from jsondata
+		String tmpNameString=mDeviceTableRow.Name;
+		String _ROCommunity=mDeviceTableRow._ROCommunity;
+		String _RWCommunity=mDeviceTableRow._RWCommunity;
 		mDeviceTableRow.Name = jsondata.get("title").toString();
 		mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
 		mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();
@@ -737,6 +739,9 @@ public class MainKernel {
 
 		}
 
+		mDeviceTableRow.Name =tmpNameString;
+		mDeviceTableRow._ROCommunity = _ROCommunity;
+		mDeviceTableRow._RWCommunity =_RWCommunity;
 		return mStatus;
 
 	}
