@@ -44,7 +44,7 @@ public class PDUServer {
 	private Snmp session;
 	private boolean isOnlineThreadRun = true;
 	private Hashtable listDevHash;
-	public static boolean PDUServer_status=false;
+	public static boolean PDUServer_status = false;
 	private static RedisUtil redisUtil;
 
 	public static void setRedisUtil(RedisUtil redisUtil) {
@@ -52,31 +52,27 @@ public class PDUServer {
 	}
 
 	public PDUServer() {
-		
-		try {	
+
+		try {
 			initSnmpAPI();
-			PDUServer_status=true;
-			
+			PDUServer_status = true;
+
 		} catch (Exception ex1) {
-			PDUServer_status=false;
+			PDUServer_status = false;
 			ex1.printStackTrace();
 			log.info(ex1.getMessage());
 		}
-		
 
 	}
 
 	public PDUServer(Hashtable pListDevHash) {
 
-/*		// this.logoVersion = plogoVersion;
-		this.listDevHash = pListDevHash;
-		try {
-			initSnmpAPI();
-			OnlineTestThread();
-
-		} catch (Exception e) {
-			// TODO: handle exception
-		}*/
+		/*
+		 * // this.logoVersion = plogoVersion; this.listDevHash = pListDevHash;
+		 * try { initSnmpAPI(); OnlineTestThread();
+		 * 
+		 * } catch (Exception e) { // TODO: handle exception }
+		 */
 
 	}
 
@@ -180,6 +176,7 @@ public class PDUServer {
 		lNode = (DevTopd) listDevHash.get(ipaddr);
 		if (lNode == null)
 			return;
+		@SuppressWarnings("unchecked")
 		Vector<VariableBinding> recVBs = (Vector<VariableBinding>) respEvnt.getResponse().getVariableBindings();
 		if (lNode != null) {
 
@@ -229,7 +226,8 @@ public class PDUServer {
 				sendToSub(rootjson.toJSONString());
 
 				nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.TestOnline), TrapLogTypes.TestOnline, ipaddr,
-						lNode.fullpath, ClsLanguageExmp.isEn ? "Device online" : "设备上线", new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线", "");
+						lNode.fullpath, ClsLanguageExmp.isEn ? "Device online" : "设备上线", new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线",
+						"");
 
 				try {
 					// hi ,xinglong ,讲该trap推送到CurrentAlarmModel
@@ -263,138 +261,128 @@ public class PDUServer {
 	@SuppressWarnings("static-access")
 	private void OnlineTestThread() {
 
-	
-			// OnlineTestThread();
-			log.info("[#3] .....OnlineTestThread starting.......");
-			LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
+		// OnlineTestThread();
+		log.info("[#3] .....OnlineTestThread starting.......");
+		LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
 
-			PDU outpdu = new PDU();
-			outpdu.setType(PDU.GET);
-			outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0"))); // mac
-			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.1.0")));
-			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.3.0")));
-			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.4.0")));
-			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));
-			outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
-			outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
-			this.listDevHash = MainKernel.me.listDevHash;
-			PDUServer_status=true;
-			while (true) {
-			/*	if (MainKernel.me.listDevHash != null) {
-					this.listDevHash = MainKernel.me.listDevHash;
-				} else {
+		PDU outpdu = new PDU();
+		outpdu.setType(PDU.GET);
+		outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0"))); // mac
+		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.1.0")));
+		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.3.0")));
+		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.4.0")));
+		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));
+		outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
+		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
+		this.listDevHash = MainKernel.me.listDevHash;
+		PDUServer_status = true;
+		while (true) {
+			try {
+
+				if (!isOnlineThreadRun) {
 					Thread.currentThread().sleep(3000);
 					continue;
 				}
-*/
-				try {
+				testdevlist.clear();
 
-					testdevlist.clear();
+				Enumeration e = this.listDevHash.elements();
 
-					Enumeration e = this.listDevHash.elements();
+				while (e.hasMoreElements()) {
 
-					while (e.hasMoreElements()) {
+					DevTopd item = (DevTopd) e.nextElement();
+					testdevlist.add(item);
 
-						DevTopd item = (DevTopd) e.nextElement();
-						testdevlist.add(item);
+				}
 
-					}
+				if (testdevlist == null || testdevlist.size() == 0) {
 
-					if (testdevlist == null || testdevlist.size() == 0) {
+					Thread.currentThread().sleep(1000);
+					continue;
+				}
 
-						Thread.currentThread().sleep(1000);
-						continue;
-					}
+				// if (OnlineInterval==0)
+				// {
+				// OnlineInterval = 2;//设备数量过少的时候
+				// }
 
-					// if (OnlineInterval==0)
-					// {
-					// OnlineInterval = 2;//设备数量过少的时候
-					// }
+				// 不管多少台设备，每台设备被轮到之上间隔2秒，
+				// dev.OnlineCount1=3初始值，也就是2*3，每台设备要被询问3次后无回包才判断下线
 
-					// 不管多少台设备，每台设备被轮到之上间隔2秒，
-					// dev.OnlineCount1=3初始值，也就是2*3，每台设备要被询问3次后无回包才判断下线
+				int intervel1 = (OnlineInterval + 1) * 1000 / testdevlist.size();// +`1是因为默认值0的时候，如果设备很少，太过敏捷了
 
-					int intervel1 = (OnlineInterval + 1) * 1000 / testdevlist.size();// +`1是因为默认值0的时候，如果设备很少，太过敏捷了
+				if (intervel1 < 100)
+					intervel1 = 100;
 
-					if (intervel1 < 100)
-						intervel1 = 100;
+				if (intervel1 > 10000)
+					intervel1 = 10000;
 
-					if (intervel1 > 10000)
-						intervel1 = 10000;
-					int psrint = 0;
+				for (Iterator iter = testdevlist.iterator(); iter.hasNext();) {
+					DevTopd lNode = (DevTopd) iter.next();
+
+					AyncSendSnmpPdu(outpdu, lNode._NetAddress, lNode.BindnojuDeviceTableRow._ROCommunity);
+
+					Thread.currentThread().sleep(intervel1);
+					lNode.OnlineCount--;
+
+				}
+
+				if (!isOnlineThreadRun) {
+					Thread.currentThread().sleep(3000);
+				} else {
 
 					for (Iterator iter = testdevlist.iterator(); iter.hasNext();) {
-						DevTopd lNode = (DevTopd) iter.next();
+						DevTopd dev = (DevTopd) iter.next();
 
-						AyncSendSnmpPdu(outpdu, lNode._NetAddress, lNode.BindnojuDeviceTableRow._ROCommunity);
+						// notify runtime data
+						if (dev.OnlineCount <= 0) {
+							if (dev.isOline) {
+								dev.isOline = false;
 
-						Thread.currentThread().sleep(intervel1);
-						lNode.OnlineCount--;
+								// onlien infor
+								JSONObject rootjson = new JSONObject();
+								rootjson.put("cmd", "devstatus");
+								rootjson.put("ip", dev._NetAddress);
+								rootjson.put("isonline", false);
+								sendToSub(rootjson.toJSONString());
 
-					}
+								nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.Offline), TrapLogTypes.Offline,
+										dev._NetAddress, dev.fullpath, ClsLanguageExmp.isEn ? "Device offline" : "设备下线", new Date(), "", "",
+										ClsLanguageExmp.isEn ? "Device offline" : "设备下线", "");								
 
-					if (!isOnlineThreadRun) {
-						Thread.currentThread().sleep(3000);
-					} else {
+								// online log
+								String serStr = null;
+								ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+								ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+								objectOutputStream.writeObject(traprst);
+								serStr = byteArrayOutputStream.toString("ISO-8859-1");
+								serStr = java.net.URLEncoder.encode(serStr, "UTF-8");
+								objectOutputStream.close();
+								byteArrayOutputStream.close();
 
-						for (Iterator iter = testdevlist.iterator(); iter.hasNext();) {
-							DevTopd dev = (DevTopd) iter.next();
-
-							// notify runtime data
-							if (dev.OnlineCount <= 0) {
-								if (dev.isOline) {
-									dev.isOline = false;
-
-
-									
-									//onlien infor
-									JSONObject rootjson = new JSONObject();
-									rootjson.put("cmd", "devstatus");
-									rootjson.put("ip", dev._NetAddress);
-									rootjson.put("isonline", false);
-									sendToSub(rootjson.toJSONString());
-									
-
-									nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.Offline), TrapLogTypes.Offline,
-											dev._NetAddress, dev.fullpath, ClsLanguageExmp.isEn ? "Device offline" : "设备下线", new Date(), "", "",
-											ClsLanguageExmp.isEn ? "Device offline" : "设备下线", "");
-
-						//online log
-									String serStr = null;
-									ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-									ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-									objectOutputStream.writeObject(traprst);
-									serStr = byteArrayOutputStream.toString("ISO-8859-1");
-									serStr = java.net.URLEncoder.encode(serStr, "UTF-8");
-
-									objectOutputStream.close();
-									byteArrayOutputStream.close();
-
-									JSONObject json = new JSONObject();
-									json.put("cmd", "newalarm");
-									json.put("val", serStr);
-									sendToQueue(json.toJSONString(), HFCALARM_MESSAGE);
-
-								}
-
-								dev.OnlineCount = 0;
+								JSONObject json = new JSONObject();
+								json.put("cmd", "newalarm");
+								json.put("val", serStr);
+								sendToQueue(json.toJSONString(), HFCALARM_MESSAGE);
 
 							}
+
+							dev.OnlineCount = 0;
 
 						}
 
 					}
-				} catch (Exception ex1) {
-					// log4net.LogManager.GetLogger("prgLog").Info("Exception from the OnlineTestThread");
-					// log4net.LogManager.GetLogger("prgLog").Info(ex1.ToString()
-					// +
-					// ex1.Message);
-					ex1.printStackTrace();
-					log.info(ex1.getMessage());
+
 				}
-	
+			} catch (Exception ex1) {
+				// log4net.LogManager.GetLogger("prgLog").Info("Exception from the OnlineTestThread");
+				// log4net.LogManager.GetLogger("prgLog").Info(ex1.ToString()
+				// +
+				// ex1.Message);
+				ex1.printStackTrace();
+				log.info(ex1.getMessage());
 			}
-		
+
+		}
 
 	}
 

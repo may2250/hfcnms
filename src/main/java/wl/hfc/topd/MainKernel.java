@@ -131,10 +131,7 @@ public class MainKernel {
 			staticmemory.broadCast(handleOnlineInfo(jsondata));
 		} else if (cmd.equalsIgnoreCase("alarm_message")) {
 			staticmemory.broadCast(message);
-		} else if (cmd.equalsIgnoreCase("alarmsearch")) {
-			staticmemory.sendRemoteStr(getHistoryAlarm(jsondata),
-			jsondata.get("sessionid").toString());
-		} else if (cmd.equalsIgnoreCase("dbclosed")) {
+		}  else if (cmd.equalsIgnoreCase("dbclosed")) {
 			staticmemory.broadCast(message);
 		}
 	}
@@ -366,38 +363,6 @@ public class MainKernel {
 		// print rootListNode;
 	}
 
-	private String getHistoryAlarm(JSONObject jsondata) {
-		JSONObject rootjson = new JSONObject();
-		JSONObject logjson;
-		rootjson.put("cmd", jsondata.get("cmd").toString());
-		JSONArray jsonarray = new JSONArray();
-		// 鑾峰彇鍙戝線WEB鐨勮澶囧憡璀﹀強鏃ュ織淇℃伅
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Date datestart = sdf.parse(jsondata.get("start").toString());
-			Date dateend = sdf.parse(jsondata.get("end").toString());
-			ArrayList<nojuTrapLogTableRow> traprow = CurrentAlarmModel.me.logEngine.getTrapRowsWithTime(datestart, dateend, "");
-			//System.out.println("-------------traprow-size =" + traprow.size());
-			for (nojuTrapLogTableRow prow : traprow) {
-				logjson = new JSONObject();
-				logjson.put("id", prow.TrapLogID);
-				logjson.put("level", prow.level);
-				logjson.put("path", "grp1/xxxx");
-				logjson.put("type", prow.TrapLogType.toString());
-				logjson.put("paramname", prow.parmName);
-				logjson.put("paramvalue", prow.paramValue);
-				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				logjson.put("eventtime", sdf.format(prow.TrapLogTime));
-				logjson.put("solved", prow.TrapTreatMent);
-				logjson.put("solvetime", prow.isTreated);
-				jsonarray.add(logjson);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		rootjson.put("alarms", jsonarray);
-		return rootjson.toJSONString();
-	}
 	// by group and device collection args
 	private LNode offerTopodModel(Hashtable devLists, Hashtable grpLists) {
 
