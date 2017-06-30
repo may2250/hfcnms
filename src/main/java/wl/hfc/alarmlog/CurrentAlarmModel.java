@@ -29,6 +29,7 @@ import wl.hfc.common.*;
 import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.online.pmls;
+import wl.hfc.topd.MainKernel;
 import wl.hfc.traprcss.TrapPduServer;
 import wl.hfc.traprcss.TrapProCenter;
 
@@ -54,7 +55,7 @@ public class CurrentAlarmModel extends Thread {
 
 	private static RedisUtil redisUtil;
 	private Thread ptd;
-	
+
 	public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil) {
 		this.logEngine = dEngine;
 		allRows = new CopyOnWriteArrayList<nojuTrapLogTableRow>();
@@ -108,19 +109,30 @@ public class CurrentAlarmModel extends Thread {
 
 		public void onPMessage(String arg0, String arg1, String msg) {
 			try {
-				parseMessage(msg);
-
+			System.out.println(" [x] CurrentAlarmModel Received: '" + msg + "'");
+			JSONObject jsondata = (JSONObject) new JSONParser().parse(msg);
+			String cmd = jsondata.get("cmd").toString();
+			JSONObject rootjson = new JSONObject();
+			
+			
+			if(cmd.equalsIgnoreCase("newalarm")){	
+			
+					parseMessage(msg);		
+	
+			}else if(cmd.equalsIgnoreCase("alarmsearch")){
 				
-				//else if (cmd.equalsIgnoreCase("alarmsearch")) {
-				// staticmemory.sendRemoteStr(getHistoryAlarm(jsondata),
-				// jsondata.get("sessionid").toString());
-			} catch (Exception e) {
-				e.printStackTrace();
-				log.info(e.getMessage());
+				staticmemory.sendRemoteStr(getHistoryAlarm(jsondata), jsondata.get("sessionid").toString());
+				
+				
 			}
-
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info(e.getMessage());
 		}
+		
+		
 
+	}
 	};
 	
 	
@@ -132,10 +144,10 @@ public class CurrentAlarmModel extends Thread {
 		JSONArray jsonarray = new JSONArray();
 		// 鑾峰彇鍙戝線WEB鐨勮澶囧憡璀﹀強鏃ュ織淇℃伅
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date datestart = sdf.parse(jsondata.get("start").toString());
 			Date dateend = sdf.parse(jsondata.get("end").toString());
-			ArrayList<nojuTrapLogTableRow> traprow = CurrentAlarmModel.me.logEngine.getTrapRowsWithTime(datestart, dateend, "");
+			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend, "");
 			//System.out.println("-------------traprow-size =" + traprow.size());
 			for (nojuTrapLogTableRow prow : traprow) {
 				logjson = new JSONObject();
@@ -145,7 +157,7 @@ public class CurrentAlarmModel extends Thread {
 				logjson.put("type", prow.TrapLogType.toString());
 				logjson.put("paramname", prow.parmName);
 				logjson.put("paramvalue", prow.paramValue);
-				sdf = new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");
+				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				logjson.put("eventtime", sdf.format(prow.TrapLogTime));
 				logjson.put("solved", prow.TrapTreatMent);
 				logjson.put("solvetime", prow.isTreated);
@@ -489,4 +501,7 @@ public class CurrentAlarmModel extends Thread {
 
 		}
 	}
+
+
+
 }
