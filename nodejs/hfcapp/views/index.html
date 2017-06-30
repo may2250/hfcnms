@@ -45,27 +45,27 @@
 					<div class="top_menu">
 						<div class="top_nav">
 							<ul class="navigation">
-								<li class="nav_search">
+								<li class="nav_search icon-nav">
 									<i class="icon-search icon-2x" ></i>
 									<p>搜索设备</p>
 								</li>
 								<!-- <li class="nav_managerauth">
-									<i class="icon-lock icon-2x" ></i>
+									<i class="icon-lock icon-2x  icon-nav" ></i>
 									<p>权限管理</p>
 								</li> -->
-								<li class="nav_manageralarm">
+								<li class="nav_manageralarm icon-nav">
 									<i class="icon-bell-alt icon-2x" ></i>
 									<p>告警管理</p>
 								</li>
-								<li class="nav_managerlog">
+								<li class="nav_managerlog icon-nav">
 									<i class="icon-calendar icon-2x" ></i>
 									<p>日志管理</p>
 								</li>
-								<li class="nav_displaylog">
+								<li class="nav_displaylog icon-nav">
 									<i class="icon-eye-open icon-2x" ></i>
 									<p>隐藏日志栏</p>
 								</li>
-								<li class="nav_sound">
+								<li class="nav_sound icon-nav">
 									<i class="icon-volume-up icon-2x" ></i>
 									<p>声讯告警控制开</p>
 								</li>
@@ -329,8 +329,6 @@
 					<select name="search-stype" id="search-stype">
 				      <option selected>国标设备</option>
 				      <option>Wos4000,Wos3000_SCTE</option>
-				      <option>AOB01SMM</option>
-				      <option>MTRAN 2000</option>
 				    </select>
   				</td>
   				<td>
@@ -454,14 +452,14 @@
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal -->
 	</div>
-	<div class="modal fade bs-example-modal-lg" id="modal_alarmlists" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade bs-example-modal-lg" id="modal_alarmlists" tabindex="-1" role="dialog" aria-labelledby="alarmlist-title" aria-hidden="true">
 		<div class="modal-dialog" style="width:80%; height:500px">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 						&times;
 					</button>
-					<h4 class="modal-title" id="myModalLabel">
+					<h4 class="modal-title" id="alarmlist-title">
 						历史告警日志
 					</h4>
 				</div>
@@ -472,6 +470,41 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" id="btn-alarmexports" >导出到EXCEL
+					</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<div class="modal fade bs-example-modal" id="modal_optlog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						历史/事件日志
+					</h4>
+				</div>
+				<div class="modal-body modal-search-content-m">					
+		 			<table class="table tbl_noborder">
+		 				<tr>
+		 					<td>开始</td>
+		 					<td><input type="text" id="datepicker_optstart"></td>
+		 					<td>结束</td>
+		 					<td><input type="text" id="datepicker_optend"></td>
+		 					
+		 				</tr>
+		 				<tr>
+		 					<td>操作者</td>
+		 					<td><input type="text" class="form-control" id="optfilter-name" value="" ></td>
+		 				</tr>		 				
+		 			</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="btn-optlogok" >确定
 					</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
 					</button>

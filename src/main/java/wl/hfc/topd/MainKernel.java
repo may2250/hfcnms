@@ -132,8 +132,8 @@ public class MainKernel {
 		} else if (cmd.equalsIgnoreCase("alarm_message")) {
 			staticmemory.broadCast(message);
 		} else if (cmd.equalsIgnoreCase("alarmsearch")) {
-			// staticmemory.sendRemoteStr(getHistoryAlarm(jsondata),
-			// jsondata.get("sessionid").toString());
+			staticmemory.sendRemoteStr(getHistoryAlarm(jsondata),
+			jsondata.get("sessionid").toString());
 		} else if (cmd.equalsIgnoreCase("dbclosed")) {
 			staticmemory.broadCast(message);
 		}
@@ -228,7 +228,7 @@ public class MainKernel {
 			logjson.put("type", prow.TrapLogType.toString());
 			logjson.put("paramname", prow.parmName);
 			logjson.put("paramvalue", prow.paramValue);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			logjson.put("eventtime", sdf.format(prow.TrapLogTime));
 			logjson.put("solved", prow.TrapTreatMent);
 			logjson.put("solvetime", prow.isTreated);
@@ -370,11 +370,11 @@ public class MainKernel {
 		JSONArray jsonarray = new JSONArray();
 		// 鑾峰彇鍙戝線WEB鐨勮澶囧憡璀﹀強鏃ュ織淇℃伅
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date datestart = sdf.parse(jsondata.get("start").toString());
 			Date dateend = sdf.parse(jsondata.get("end").toString());
 			ArrayList<nojuTrapLogTableRow> traprow = CurrentAlarmModel.me.logEngine.getTrapRowsWithTime(datestart, dateend, "");
-			System.out.println("-------------traprow-size =" + traprow.size());
+			//System.out.println("-------------traprow-size =" + traprow.size());
 			for (nojuTrapLogTableRow prow : traprow) {
 				logjson = new JSONObject();
 				logjson.put("id", prow.TrapLogID);
@@ -383,7 +383,7 @@ public class MainKernel {
 				logjson.put("type", prow.TrapLogType.toString());
 				logjson.put("paramname", prow.parmName);
 				logjson.put("paramvalue", prow.paramValue);
-				sdf = new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");
+				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				logjson.put("eventtime", sdf.format(prow.TrapLogTime));
 				logjson.put("solved", prow.TrapTreatMent);
 				logjson.put("solvetime", prow.isTreated);
@@ -402,7 +402,7 @@ public class MainKernel {
 		listDevHash.clear();
 		listGrpHash.clear();
 		LNode result = new LNode();
-		result.fullpath = "璁惧鏍�";
+		result.fullpath = "设备中心";
 		result.Level = 0;
 		createTree(devLists, grpLists, result);
 		return result;

@@ -107,23 +107,9 @@ public class Services_Websocket {
 			}else if(cmd.equalsIgnoreCase("alarmsearch")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
-			}else if(cmd.equalsIgnoreCase("test")){
-				// Send the first message to the client
-				rootjson.put("cmd", "test");
-				rootjson.put("message", "This is the first server message");
-		        session.getBasicRemote().sendText(rootjson.toJSONString());
-		        
-		        // Send 3 messages to the client every 5 seconds
-		        int sentMessages = 0;
-		        while (sentMessages < 3) {
-		            Thread.sleep(5000);
-		            rootjson.put("message", "This is an intermediate server message. Count: " + sentMessages);
-		            session.getBasicRemote().sendText(rootjson.toJSONString());
-		            sentMessages++;
-		        }        
-		        // Send a final message to the client
-		        rootjson.put("message", "This is the last server message");
-		        session.getBasicRemote().sendText(rootjson.toJSONString());
+			}else if(cmd.equalsIgnoreCase("optlogsearch")){
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else{
 				sendToQueue(message, MAINKERNEL_MESSAGE);
 			}

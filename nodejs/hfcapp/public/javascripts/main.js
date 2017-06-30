@@ -174,6 +174,9 @@
     		$("#modal_alarm").modal();
     	});
     	
+    	$('.nav_managerlog').click(function(){
+    		$("#modal_optlog").modal();
+    	});
     	
     	$('.nav_sound').click(function(){
     		if($('.nav_sound p')[0].textContent == "声讯告警控制开"){
@@ -237,38 +240,71 @@
   	      dateFormat: 'yy-mm-dd'
   	    });    	
     	
+    	$( "#datepicker_optstart" ).datepicker({
+    	      changeMonth: true,
+    	      changeYear: true,
+    	      dateFormat: 'yy-mm-dd'
+    	    });
+      	
+      	$( "#datepicker_optend" ).datepicker({
+    	      changeMonth: true,
+    	      changeYear: true,
+    	      dateFormat: 'yy-mm-dd'
+    	    });    	
+    	
     	$('#btn-alarmok').click(function(){
     		 var datastring = '{"cmd":"alarmsearch","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
     		 + '","customdate":"'+ $("#alarmfilter-date").prop('selectedIndex') + '","source":"'+ $('#alarmfilter-source').val() 
     		 + '","level":"'+ $("#alarmfilter-level").prop('selectedIndex') + '","type":"'+ $('#alarmfilter-type').val()
     		 + '","treatment":"'+ $("#alarmfilter-istreatment").prop('selectedIndex') + '","nename":"'+ $('#alarmfilter-nename').val() +'"}';
     		 webSocket.send(datastring);
+    		 $("#alarmlist-title")[0].textContent = "历史告警日志";
     		 $("#modal_alarm").modal('hide');
     		 $("#modal_alarmlists").modal();
     	});
     	
     	$('#modal_alarmlists').on('show.bs.modal', function () {
-    		tbl_loglists = $('#tbl_loglists').DataTable({
-        		scrollY:        430,
-        		scrollX: 		true,
-        		scrollCollapse: true,
-        		order: 			[[ 0, "desc" ]],
-                paging:         false,
-                info:     		false,
-                searching: 		false,
-                bRetrieve: 		true,
-                columns: [
-                          { title: "ID" },
-                          { title: "级别" },
-                          { title: "路径" },
-                          { title: "类型" },
-                          { title: "参数名" },
-                          { title: "参数值" },
-                          { title: "发生时间" },
-                          { title: "处理提交" },
-                          { title: "确认时间" }
-                      ]
-            } );
+    		if($("#alarmlist-title")[0].textContent == "历史告警日志"){
+    			tbl_loglists = $('#tbl_loglists').DataTable({
+            		scrollY:        430,
+            		scrollX: 		true,
+            		scrollCollapse: true,
+            		order: 			[[ 0, "desc" ]],
+                    paging:         false,
+                    info:     		false,
+                    searching: 		false,
+                    bRetrieve: 		true,
+                    columns: [
+                              { title: "ID" },
+                              { title: "级别" },
+                              { title: "路径" },
+                              { title: "类型" },
+                              { title: "参数名" },
+                              { title: "参数值" },
+                              { title: "发生时间" },
+                              { title: "处理提交" },
+                              { title: "确认时间" }
+                          ]
+                } );
+    		}else{
+    			tbl_loglists = $('#tbl_loglists').DataTable({
+            		scrollY:        430,
+            		scrollX: 		true,
+            		scrollCollapse: true,
+            		order: 			[[ 0, "desc" ]],
+                    paging:         false,
+                    info:     		false,
+                    searching: 		false,
+                    bRetrieve: 		true,
+                    columns: [
+                              { title: "日志编号" },
+                              { title: "日志类型" },
+                              { title: "日志内容" },
+                              { title: "登记时间" }
+                          ]
+                } );
+    		}
+    		
     		setTimeout(function() {
 				$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
 			}, 400);
@@ -284,6 +320,15 @@
     		} );*/
     		tableToExcel('tbl_loglists');
     	});
+    	
+    	$('#btn-optlogok').click(function(){
+   		 var datastring = '{"cmd":"optlogsearch","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
+   		 + '","optname":"'+ $('#optfilter-name').val() +'"}';
+   		 webSocket.send(datastring);
+   		 $("#alarmlist-title")[0].textContent = "历史/事件日志";
+   		 $("#modal_optlog").modal('hide');
+   		 $("#modal_alarmlists").modal();
+   	});
     	
     	$('#btn-tree-search').click(function(){
     		searchtreenode($("#searchbar-key").val());
@@ -824,20 +869,56 @@
     	    });
     }
     
-    function searchtreenode(search_val){
-		var node = undefined;
+    function searchtreenode(search_val){		
 		if(ipvalidate(search_val)){
-			node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(search_val);
+			var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(search_val);	
+			node.setActive(true);
+			var activeLi = node && node.li;
+		  	$('.fancytree-container').animate({
+		  		scrollTop: $(activeLi).offset().top - $('.fancytree-container').offset().top + $('.fancytree-container').scrollTop()}, 'slow');
 		}else{
 			//Title搜索
-			node = $("#dev-fancytree").fancytree("getTree").findFirst(search_val);
-		}
-		if(node != undefined){
-			node.setActive(true);
-			  	var activeLi = node && node.li;
+			var activenode = $("#dev-fancytree").fancytree("getActiveNode");
+			var node = $("#dev-fancytree").fancytree("getTree").findAll(search_val);
+			var firstnode = $("#dev-fancytree").fancytree("getTree").findFirst(search_val);
+			var flag = false;
+			if(activenode == null){				
+				firstnode.setActive(true);
+				var activeLi = firstnode && firstnode.li;
 			  	$('.fancytree-container').animate({
 			  		scrollTop: $(activeLi).offset().top - $('.fancytree-container').offset().top + $('.fancytree-container').scrollTop()}, 'slow');
+				return;
+			}
+			
+			if($.inArray(activenode, node) == -1){
+				firstnode.setActive(true);
+				var activeLi = firstnode && firstnode.li;
+			  	$('.fancytree-container').animate({
+			  		scrollTop: $(activeLi).offset().top - $('.fancytree-container').offset().top + $('.fancytree-container').scrollTop()}, 'slow');
+			}else{
+				$.each(node, function (n, value) {
+					if(!value.isActive()){
+						if(flag){
+							value.setActive(true);
+							flag = false;
+							var activeLi = value && value.li;
+						  	$('.fancytree-container').animate({
+						  		scrollTop: $(activeLi).offset().top - $('.fancytree-container').offset().top + $('.fancytree-container').scrollTop()}, 'slow');
+						  	return;
+						}						
+					}else{
+						flag = true;
+					}
+				});		
+				if(flag){
+					firstnode.setActive(true);
+					var activeLi = firstnode && firstnode.li;
+				  	$('.fancytree-container').animate({
+				  		scrollTop: $(activeLi).offset().top - $('.fancytree-container').offset().top + $('.fancytree-container').scrollTop()}, 'slow');
+				}
+			}	
 		}
+		
     }
     
     function parseLogs(jsonobj){
