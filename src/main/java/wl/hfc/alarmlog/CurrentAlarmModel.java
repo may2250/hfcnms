@@ -23,6 +23,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
 import com.xinlong.util.RedisUtil;
+import com.xinlong.util.StaticMemory;
 
 import wl.hfc.common.*;
 import wl.hfc.common.NlogType.OperLogTypes;
@@ -38,6 +39,7 @@ public class CurrentAlarmModel extends Thread {
 	public static int MAX_TRAPNUMBER = 500;
 	private static Logger log = Logger.getLogger(CurrentAlarmModel.class);
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
+	private static StaticMemory staticmemory;
 	// private log4net.ILog ErrorLog;
 	// private log4net.ILog SysLog;
 
@@ -52,7 +54,7 @@ public class CurrentAlarmModel extends Thread {
 
 	private static RedisUtil redisUtil;
 	private Thread ptd;
-
+	
 	public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil) {
 		this.logEngine = dEngine;
 		allRows = new CopyOnWriteArrayList<nojuTrapLogTableRow>();
@@ -61,7 +63,18 @@ public class CurrentAlarmModel extends Thread {
 		invalidRows = new ArrayList<nojuTrapLogTableRow>();
 		invalidRowsTable = new Hashtable();
 		this.redisUtil = redisUtil;
+		me = this;
+	}
 
+	public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil, StaticMemory staticmemory) {
+		this.logEngine = dEngine;
+		allRows = new CopyOnWriteArrayList<nojuTrapLogTableRow>();
+		allRowsTable = new Hashtable();
+
+		invalidRows = new ArrayList<nojuTrapLogTableRow>();
+		invalidRowsTable = new Hashtable();
+		this.redisUtil = redisUtil;
+		this.staticmemory = staticmemory;
 		me = this;
 	}
 

@@ -145,7 +145,7 @@ public class MainKernel {
 			ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);
 			ICDatabaseEngine1.getConnection();
 			initTopodData();
-			CurrentAlarmModel cam = new CurrentAlarmModel(ICDatabaseEngine1, redisUtil);
+			CurrentAlarmModel cam = new CurrentAlarmModel(ICDatabaseEngine1, redisUtil, staticmemory);
 			cam.start();
 			jedis = redisUtil.getConnection();
 			jedis.psubscribe(jedissubSub, MAINKERNEL_MESSAGE);

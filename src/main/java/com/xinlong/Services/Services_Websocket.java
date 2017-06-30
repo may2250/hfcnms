@@ -43,6 +43,7 @@ public class Services_Websocket {
 	private static Logger log = Logger.getLogger(Services_Websocket.class);
 	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
 	private static final String  PARAMKERNEL_MESSAGE =  "paramkernel.message";
+	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	private static final String deskey = "prevail0";
 	private static RedisUtil redisUtil;
 	private static StaticMemory staticmemory;
@@ -106,7 +107,7 @@ public class Services_Websocket {
 				sendToQueue(jsondata.toJSONString(), PARAMKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("alarmsearch")){
 				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
+				sendToQueue(jsondata.toJSONString(), HFCALARM_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("optlogsearch")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
