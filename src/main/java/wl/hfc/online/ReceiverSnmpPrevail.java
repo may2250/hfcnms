@@ -24,8 +24,6 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 	public VariableSnmpVar[] cInputVariables;
 	public VariableSnmpVar[] cOutputVariables;
 
-	private SnmpTableInfo InputTableInfo;
-	private SnmpTableInfo outputTable;
 
 	// pdus
 	private PDU majorVarPdu;

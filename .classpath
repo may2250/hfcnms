@@ -29,8 +29,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="F:/project/hfcnms/src/main/webapp/WEB-INF/lib/AdventNetLogging.jar"/>
-	<classpathentry kind="lib" path="F:/project/hfcnms/src/main/webapp/WEB-INF/lib/AdventNetSnmp.jar"/>
 	<classpathentry kind="lib" path="F:/AdventNetLogging.jar"/>
 	<classpathentry kind="lib" path="F:/AdventNetSnmp.jar"/>
 	<classpathentry kind="output" path="target/classes"/>

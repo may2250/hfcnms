@@ -4,7 +4,6 @@ import com.adventnet.snmp.snmp2.*;
 
 import java.io.IOException;
 
-
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -46,12 +45,10 @@ public class TrapProCenter {
 		ParamsHash = new Hashtable(800, 0.75F);
 	}
 
-	
-	
-	
-	private  static int tmpVAL=0;
+	private static int tmpVAL = 0;
+
 	public static SnmpOID ParseAlarmInform(byte[] data) {
-		 SnmpOID oid = null;
+		SnmpOID oid = null;
 		tmpVAL = 0;
 		if (data.length < 2)
 			return null;
@@ -81,9 +78,7 @@ public class TrapProCenter {
 		return oid;
 	}
 
-
-	public nojuTrapLogTableRow ProcessTrapRequestPduHandler(Map<String, String> alarm,
-			int requestID, PDU pdu) {
+	public nojuTrapLogTableRow ProcessTrapRequestPduHandler(Map<String, String> alarm, int requestID, PDU pdu) {
 
 		String traptype = alarm.get("traptype");
 		String Enterprise = alarm.get("enterprise");
@@ -111,16 +106,15 @@ public class TrapProCenter {
 		}
 	}
 
-	public nojuTrapLogTableRow ProcessHFCTraps(Map<String, String> alarm, PDU pdu)
-			throws IOException {	
+	public nojuTrapLogTableRow ProcessHFCTraps(Map<String, String> alarm, PDU pdu) throws IOException {
 		String status = alarm.get("status");
 		String ipdd = alarm.get("ip");
 		switch (Integer.valueOf(status)) {
 		case 0:// hfcColdstart
-			// ParseTrapHfcColdStart(devmac,logicalid);
+				// ParseTrapHfcColdStart(devmac,logicalid);
 			return new nojuTrapLogTableRow(false);
 		case 1:// hfcAlarmevent
-			return ParseTrapHfcAlarmEvent(ipdd,pdu);
+			return ParseTrapHfcAlarmEvent(ipdd, pdu);
 		default:
 			return new nojuTrapLogTableRow(false);
 
@@ -170,35 +164,31 @@ public class TrapProCenter {
 
 	}
 
-	public nojuTrapLogTableRow ParseTrapHfcAlarmEvent(String pAddress,PDU pdu)
-			throws IOException {
+	public nojuTrapLogTableRow ParseTrapHfcAlarmEvent(String pAddress, PDU pdu) throws IOException {
 
 		// if (pdu.VariableBindings.Count < 3)
 		// return new CTrap(false);
 		String logicalID;
-	    String macaddr;
+		String macaddr;
 		String trapstring = "";
 		String paramName = "";
-		VariableBinding vbd = (VariableBinding) pdu.getVariableBindings()
-				.elementAt(0);
-		macaddr= vbd.toString();
-		vbd = (VariableBinding) pdu.getVariableBindings()
-				.elementAt(1);
-		logicalID=vbd.toString();
-		 vbd = (VariableBinding) pdu.getVariableBindings()
-				.elementAt(2);
+		VariableBinding vbd = (VariableBinding) pdu.getVariableBindings().elementAt(0);
+		macaddr = vbd.toString();
+		vbd = (VariableBinding) pdu.getVariableBindings().elementAt(1);
+		logicalID = vbd.toString();
+		vbd = (VariableBinding) pdu.getVariableBindings().elementAt(2);
 		String alarminfoss = (vbd.getVariable().toString());
 		alarminfoss = alarminfoss.replace(":", "");
 		byte[] alarminfo = hexStringToBytes(alarminfoss);
 		if (alarminfo.length < 6)
 			return new nojuTrapLogTableRow(false);
-		trapstring +=  ClsLanguageExmp.trapDiscrGet("类型") + GetAlarmEnumString(alarminfo[4])+" ";
+		trapstring += ClsLanguageExmp.trapDiscrGet("类型") + GetAlarmEnumString(alarminfo[4]) + " ";
 		byte[] alarmvb = new byte[alarminfo.length - 6];
 		System.arraycopy(alarminfo, 6, alarmvb, 0, alarmvb.length);
 		SnmpOID oid = null;
-		 tmpVAL = 0;
+		tmpVAL = 0;
 		String pValue = "";
-       // string pValue = string.Empty;
+		// string pValue = string.Empty;
 		if ((oid = ParseAlarmInform(alarmvb)) != null) {
 			String plabel = MibProcess.getLabel(oid);
 			if (!plabel.equalsIgnoreCase("")) {
@@ -223,45 +213,43 @@ public class TrapProCenter {
 				// }
 				//
 				// }
-				if (pararmrow != null)
-				{
+				if (pararmrow != null) {
 					paramName = pararmrow.ParamDispText + exstr;
-					trapstring += ClsLanguageExmp.trapDiscrGet("名称")  + paramName+" ";
+					trapstring += ClsLanguageExmp.trapDiscrGet("名称") + paramName + " ";
 
 					if (pararmrow.IsFormatEnable) {
-	
-							float tmpf = tmpVAL * pararmrow.FormatCoff;
-							pValue=String.valueOf(tmpf);
-							trapstring += ClsLanguageExmp.trapDiscrGet("值") + tmpf + pararmrow.FormatUnit+" ";
-			
 
-				} 
-				else {
-					paramName = plabel + exstr;
-					trapstring += ClsLanguageExmp.trapDiscrGet("值") + tmpVAL+" ";
+						float tmpf = tmpVAL * pararmrow.FormatCoff;
+						// pValue=String.valueOf(tmpf);
+						pValue = tmpf + pararmrow.FormatUnit;
+						trapstring += ClsLanguageExmp.trapDiscrGet("值") + pValue + " ";
+
+					} else {
+						paramName = plabel + exstr;
+						pValue = String.valueOf(tmpVAL);
+						trapstring += ClsLanguageExmp.trapDiscrGet("值") + pValue + " ";
+					}
+
+				} else {
+					paramName = oid.toString();
+					trapstring += ClsLanguageExmp.trapDiscrGet("名称") + paramName;
+					pValue = String.valueOf(tmpVAL);
+					trapstring += ClsLanguageExmp.trapDiscrGet("值") + pValue + " ";
+
 				}
+				System.out.println(trapstring);
+				/*
+				 * return new CTrap(NlogType.GetTrapLogType(alarminfo[4]),
+				 * pAddress, trapstring, new Date(), paramName);
+				 */
+				TrapLogTypes type = NlogType.GetTrapLogType(alarminfo[4]);
 
-			} else {
-				paramName = oid.toString();
-				trapstring += ClsLanguageExmp.trapDiscrGet("名称") + paramName;
-				trapstring += ClsLanguageExmp.trapDiscrGet("值") + tmpVAL+" ";
-				pValue=String.valueOf(tmpVAL);
-
+				return new nojuTrapLogTableRow(NlogType.getAlarmLevel(type), type, pAddress, "neName", trapstring, new Date(), "", "", paramName, pValue);
 			}
-			System.out.println(trapstring);
-/*			return new CTrap(NlogType.GetTrapLogType(alarminfo[4]), pAddress,
-					trapstring, new Date(), paramName);*/
-			TrapLogTypes type=NlogType.GetTrapLogType(alarminfo[4]);
-			
-			
-			return new nojuTrapLogTableRow(NlogType.getAlarmLevel(type), type, pAddress, "neName", trapstring, new Date(), "", "", paramName, pValue);
+
 		}
 
-
-	}
-		
 		return new nojuTrapLogTableRow(false);
 	}
 
-	
 }
