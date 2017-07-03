@@ -33,7 +33,7 @@ import wl.hfc.topd.MainKernel;
 import wl.hfc.traprcss.TrapPduServer;
 import wl.hfc.traprcss.TrapProCenter;
 
-//CurrentAlarmModel璐熻矗鍛婅鐨勬彃鍏ワ紝鍘嗗彶鍛婅鐨勬煡璇紝骞跺悜鍓嶇鎺ㄩ��
+//CurrentAlarmModel
 public class CurrentAlarmModel extends Thread {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	public static CurrentAlarmModel me;
@@ -41,8 +41,8 @@ public class CurrentAlarmModel extends Thread {
 	private static Logger log = Logger.getLogger(CurrentAlarmModel.class);
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	private static StaticMemory staticmemory;
-	// private log4net.ILog ErrorLog;
-	// private log4net.ILog SysLog;
+
+	
 
 	public CDatabaseEngine logEngine;
 
@@ -54,7 +54,7 @@ public class CurrentAlarmModel extends Thread {
 	public Hashtable invalidRowsTable;
 
 	private static RedisUtil redisUtil;
-	private Thread ptd;
+
 
 	public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil) {
 		this.logEngine = dEngine;
@@ -67,16 +67,10 @@ public class CurrentAlarmModel extends Thread {
 		me = this;
 	}
 
-	public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil, StaticMemory staticmemory) {
-		this.logEngine = dEngine;
-		allRows = new CopyOnWriteArrayList<nojuTrapLogTableRow>();
-		allRowsTable = new Hashtable();
-
-		invalidRows = new ArrayList<nojuTrapLogTableRow>();
-		invalidRowsTable = new Hashtable();
-		this.redisUtil = redisUtil;
+	public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil, StaticMemory staticmemory) {		
+		this(dEngine, redisUtil);
 		this.staticmemory = staticmemory;
-		me = this;
+
 	}
 
 	public void run() {
@@ -124,7 +118,11 @@ public class CurrentAlarmModel extends Thread {
 				staticmemory.sendRemoteStr(getHistoryAlarm(jsondata), jsondata.get("sessionid").toString());
 				
 				
+			}else if(cmd.equalsIgnoreCase("logCMD")){	
+
 			}
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.info(e.getMessage());
@@ -177,16 +175,13 @@ public class CurrentAlarmModel extends Thread {
 		nojuTrapLogTableRow newObj = null;
 		try {
 			JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
-			String cmd = jsondata.get("cmd").toString();
-			if(cmd.equalsIgnoreCase("newalarm")){
 				String redStr = java.net.URLDecoder.decode(jsondata.get("val").toString(), "UTF-8");
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(redStr.getBytes("ISO-8859-1"));
 				ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
 				newObj = (nojuTrapLogTableRow) objectInputStream.readObject();
 				objectInputStream.close();
 				byteArrayInputStream.close();
-			}
-			
+		
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -289,7 +284,7 @@ public class CurrentAlarmModel extends Thread {
 		nojuTrapLogTableRow aCurrentrow = new nojuTrapLogTableRow(NlogType.getAlarmLevel(type), type, addr, neName, content, time, "", "", paramName, pValue);
 		aCurrentrow.slotIndex = pSlotIndex;
 		if (NlogType.getAlarmLevel(type) == 0) {
-			aCurrentrow.TrapTreatMent = ClsLanguageExmp.commonGet("鏃犻渶澶勭悊");
+			aCurrentrow.TrapTreatMent = ClsLanguageExmp.commonGet("无需处理");
 			aCurrentrow.isTreated = time.toString();
 			if (aCurrentrow.TrapLogType == TrapLogTypes.TestOnline) {
 				kickOffLineTrap(aCurrentrow);
@@ -300,12 +295,7 @@ public class CurrentAlarmModel extends Thread {
 		} else if (NlogType.getAlarmLevel(type) == 1 || NlogType.getAlarmLevel(type) == 2) {
 			aCurrentrow.TrapTreatMent = "";
 			aCurrentrow.isTreated = "";
-			// 鏃ュ織涓嶈褰�0绾у埆鍛婅
-			// int newTrapid = this.dEngine.trapLogInsertRow(aCurrentrow);
-			// if (newTrapid==-1)
-			// {
-			// return
-			// }
+
 			aCurrentrow.TrapLogID = this.logEngine.trapLogInsertRow(aCurrentrow);
 
 			if (aCurrentrow.TrapLogType == TrapLogTypes.Offline) {
@@ -319,7 +309,7 @@ public class CurrentAlarmModel extends Thread {
 			allRows.add(aCurrentrow);
 			allRowsTable.put(aCurrentrow.TrapLogID, aCurrentrow);
 			if (allRows.size() > MAX_TRAPNUMBER) {
-				editTreatMent(allRows.get(0).TrapLogID, ClsLanguageExmp.commonGet("trap list is full"));
+				editTreatMent(allRows.get(0).TrapLogID, ClsLanguageExmp.commonGet("超时默认失效"));
 			}
 
 			JSONObject logjson = new JSONObject();
@@ -362,7 +352,7 @@ public class CurrentAlarmModel extends Thread {
 		// DataRow ros;
 		try {
 			int rst = logEngine.trapLogEditRow(TrapLogID, content);
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			return;
 
 		}
@@ -375,29 +365,23 @@ public class CurrentAlarmModel extends Thread {
 				allRows.remove(item);
 				allRowsTable.remove(item.TrapLogID);
 
-				// 閫氱煡鎷撴墤鏍戝垹闄よ鍛婅
-				/*
-				 * if (view3 != null) view3.TreatedTrap(item); if
-				 * (viewDevGrpModel != null) viewDevGrpModel.TreatedTrap(item);
-				 */
-
+	
 				invalidRows.add(item);
 				invalidRowsTable.put(item.TrapLogID, item);
-				if (invalidRowsTable.size() > MAX_TRAPNUMBER)// 瓒呭嚭鏈�澶у��
+				if (invalidRowsTable.size() > MAX_TRAPNUMBER)////超出最大值
 				{
-					// 涓㈠叆鍘嗗彶鍛婅
+					   //丢入历史告警
 					nojuTrapLogTableRow removeRow = invalidRows.get(0);
 					invalidRows.remove(removeRow);
 					invalidRowsTable.remove(removeRow.TrapLogID);
 				}
 
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 璁剧疆鏃ユ湡鏍煎紡
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 
 				item.isTreated = df.format(new Date());// new
-														// Date()涓鸿幏鍙栧綋鍓嶇郴缁熸椂闂�
+								
 				item.TrapTreatMent = content;
 
-				// hi ,xinglong
-				// ,鎶婅澶辨晥锛堣繃鏃讹級鐨勫憡璀﹀彂閫佸埌鍓嶇锛屽湪瀹㈡埛绔殑鍛婅鍒楄〃涓垹闄ゅ搴擨D鐨勫憡璀�
+				
 				JSONObject logjson = new JSONObject();
 				logjson.put("cmd", "alarm_message");
 				logjson.put("opt", false);
@@ -485,6 +469,9 @@ public class CurrentAlarmModel extends Thread {
 	 * 
 	 * }
 	 */
+
+	
+	
 
 	private void sendToQueue(String msg, String queue) {
 		Jedis jedis = null;

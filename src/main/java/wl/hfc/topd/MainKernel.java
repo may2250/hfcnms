@@ -1,6 +1,8 @@
 package wl.hfc.topd;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +29,8 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.*;
+import wl.hfc.common.NlogType.OperLogTypes;
+import wl.hfc.common.NlogType.TrapLogTypes;
 
 //DevGrpModel灏嗘壙鎷呮嫇鎵戠殑缁勫缓锛岀淮鎶わ紝浠ュ強缁勶紝璁惧鐨勫鍒犳煡鏀圭殑鍝嶅簲
 public class MainKernel {
@@ -666,6 +670,10 @@ public class MainKernel {
 			rootjson.put("devnodes", jsonarray);
 
 			staticmemory.broadCast(rootjson.toJSONString());
+			
+						
+	
+			
 			return dev;
 
 		}
