@@ -99,8 +99,8 @@ public class DProcess {
 
    	public static NetTypes getStringToNetType(String pNetTypes)
        {
-           return NetTypes.rece_workstation;
-   /*        switch (pNetTypes)
+          return NetTypes.other;
+/*          switch (pNetTypes)
            {
                case "other":
                    return NetTypes.other;

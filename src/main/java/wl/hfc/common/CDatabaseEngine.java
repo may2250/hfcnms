@@ -19,6 +19,7 @@ import redis.clients.jedis.Jedis;
 
 import com.xinlong.util.RedisUtil;
 
+import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.topd.MainKernel;
 
@@ -549,7 +550,7 @@ public class CDatabaseEngine {
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String currentTime = sdf.format(row.OperLogTime);
-		String sqlInsert = "insert into traplogtable values (" + null + "," + row.OperLogType.ordinal() + ",'" + row.OperLogType.toString() + "','"
+		String sqlInsert = "insert into operlogtable values (" + null + "," + row.OperLogType.ordinal() + ",'" + row.OperLogType.toString() + "','"
 				+ row.OperLogContent + "','"  + currentTime + "','" + row.OperLogUser + "')";
 
 		PreparedStatement pstmt;
@@ -573,4 +574,57 @@ public class CDatabaseEngine {
 
     }
 	
+    
+
+    public ArrayList<nojuOperLogTableRow> getOperRowsWithTime(Date beginTime, Date endTime)
+    {
+    	
+    	ArrayList<nojuOperLogTableRow> results = new ArrayList<nojuOperLogTableRow>();	
+		if(!flag){
+			if(!isDBConnected(false)){
+				return results;
+			}
+		}
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		String endString = sdf.format(endTime);
+		String bENGString = sdf.format(beginTime);		
+
+		PreparedStatement pstmt;
+		ResultSet rs = null;
+		try {
+			String sqlInsert;
+
+
+				sqlInsert = "SELECT operLogTable.*FROM operLogTable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString + "';";
+
+
+			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+			rs = pstmt.executeQuery(sqlInsert);
+
+			while (rs.next()) {
+
+				// 通过reader["列名"]来取得值
+				OperLogTypes type1 = OperLogTypes.values()[rs.getInt(2)];
+				int i = 4;
+				
+	            nojuOperLogTableRow newURow = new nojuOperLogTableRow(type1, rs.getString(i++), rs.getTimestamp(i++), rs.getString(i++));
+				
+				newURow.OperLogID = rs.getInt(1);
+
+				results.add(newURow);
+			}
+
+		} catch (Exception ex) {
+			isDBConnected(false);
+			String xxxString = ex.toString();
+		}  	
+    	
+
+        return results;
+
+
+    }
+
+    
 }
