@@ -88,6 +88,10 @@
 		<property name="redisUtil" ref="redisUtil" />
 		<property name="staticMemory" ref="staticMemory" />
 	</bean>
+		<bean id="CurrentAlarmModel" class="wl.hfc.alarmlog.CurrentAlarmModel" >
+		<property name="redisUtil" ref="redisUtil" />
+		<property name="staticMemory" ref="staticMemory" />
+	</bean>
 	<bean id="paramKernel" class="wl.hfc.online.ParamKernel" >
 		<property name="redisUtil" ref="redisUtil" />
 		<property name="staticMemory" ref="staticMemory" />
@@ -115,6 +119,11 @@
 	</bean>
 	<bean id="mainKernelJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="mainKernel" />
+	 <property name="targetMethod"  value="start"/>
+	 <property name="concurrent" value="true" />	 	
+	</bean>
+		<bean id="CurrentAlarmModelJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	 <property name="targetObject" ref="CurrentAlarmModel" />
 	 <property name="targetMethod"  value="start"/>
 	 <property name="concurrent" value="true" />	 	
 	</bean>
@@ -154,6 +163,12 @@
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
+	<bean id="CurrentAlarmModelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+	 <property name="jobDetail" ref="CurrentAlarmModelJob" />
+	 <property name="startDelay" value="4000" />
+	 <property name="repeatInterval" value="5" />
+	 <property name="repeatCount" value="0" />		  	 
+	</bean>
 	<bean id="paramKernelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="paramKernelJob" />
 	 <property name="startDelay" value="3000" />
@@ -175,6 +190,7 @@
 	            <ref bean="trapReceiverJob" /> 
 	            <ref bean="hfcAlarmJob" /> 
 	            <ref bean="mainKernelJob" />
+	            <ref bean="CurrentAlarmModelJob" />
 	            <ref bean="paramKernelJob" />
 	            <ref bean="realreadingJob" />
 	        </list>  
@@ -186,6 +202,7 @@
 	            <ref bean="trapReceierTrigger" />
 	            <ref bean="hfcAlarmTrigger" /> 
 	            <ref bean="mainKernelTrigger" /> 
+	            <ref bean="CurrentAlarmModelTrigger" /> 
 	            <ref bean="paramKernelTrigger" />
 	            <ref bean="realreadingTrigger" />
 	        </list>  

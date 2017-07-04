@@ -102,6 +102,7 @@ public class TrapPduServer {
 		} catch (Exception e) {
 			TrapPduServer_status=false;
 			e.printStackTrace();
+			return;
 			
 		}
 

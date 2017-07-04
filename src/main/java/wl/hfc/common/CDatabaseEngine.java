@@ -31,9 +31,11 @@ public class CDatabaseEngine {
 	private static Logger log = Logger.getLogger(CDatabaseEngine.class);
 	private static RedisUtil redisUtil;
 	public static  boolean flag = false; //数据库连接状态
-	
+public static CDatabaseEngine me;
+    private boolean isFirstTimeSucedCnt = true;
 	public CDatabaseEngine (RedisUtil redisUtil){
 		this.redisUtil = redisUtil;
+		me=this;
 	}
 	public Connection getConnection() {
 		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
@@ -46,6 +48,11 @@ public class CDatabaseEngine {
 				Class.forName(driver);
 				con = DriverManager.getConnection(url, dbuser, dbpass);
 				flag = true;
+				
+				JSONObject rootjson = new JSONObject();
+	            rootjson.put("cmd", "isFirstTimeSucedCnt");
+				sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+				isFirstTimeSucedCnt=false;
 			}
 
 		} catch (Exception e) {
