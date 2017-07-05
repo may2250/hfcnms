@@ -192,6 +192,10 @@
     		};    		
     	});
     	
+    	$('.nav_about').click(function(){
+    		$("#modal_about").modal();
+    	});
+    	
     	$('#needtype').change(function(){ 
     		$('#salutation').attr("disabled", !$(this).is(':checked'));    		
     	});

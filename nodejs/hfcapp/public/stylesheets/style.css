@@ -546,6 +546,29 @@ li#menu-academico{
 	height: 150px;
 }
 
+.modal-search-content-m2 {
+	height: 250px;
+}
+
+.about_pic {
+	float: left;
+    padding: 70px 0px;
+}
+
+.about_info {
+	float: left;
+    margin-top: 20px;
+    margin-left: 10px
+}
+
+.about_info p {
+	font-size: 12px;
+}
+
+.about_info fieldset {
+	margin-top: 20px !important;
+}
+
 .modal-tree {
 	float: left;
     width: 26%;
