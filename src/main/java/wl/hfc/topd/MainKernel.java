@@ -631,7 +631,7 @@ public class MainKernel {
 			return null;
 		}
 
-		nojuDeviceTableRow mDeviceTableRow = new nojuDeviceTableRow(jsondata.get("netip").toString(), DProcess.getStringToNetType(devtypestr));
+		nojuDeviceTableRow mDeviceTableRow = new nojuDeviceTableRow(jsondata.get("netip").toString(), DProcess.netTypeFromStringNetTypes(devtypestr));
 		mDeviceTableRow.UserGroupID = usergroupID;
 		mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
 		mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();

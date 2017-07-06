@@ -406,10 +406,9 @@ public class SnmpEngine {
 	public static ArrayList<VariableBinding> cutTableVaribaleSingle(WosParamForSetInfo paramSetList, VariableSnmpVar tmpTagInfo, int rowNumber) {
 		String oidrs;
 		ArrayList<VariableBinding> result = new ArrayList<VariableBinding>();
-		if (tmpTagInfo.CurrentVarBind != null) {
-			oidrs = tmpTagInfo.VarInfo.ParamMibOID.toString() + "." + (rowNumber+1);
-			result.add(new VariableBinding(new OID(oidrs), new Integer32(paramSetList.pmSetList[0])));
-		}
+
+		oidrs = tmpTagInfo.VarInfo.ParamMibOID.toString() + "." + (rowNumber+1);
+		result.add(new VariableBinding(new OID(oidrs), new Integer32(paramSetList.pmSetList[0])));
 
 		return result;
 	}

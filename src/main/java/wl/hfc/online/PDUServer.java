@@ -226,7 +226,7 @@ public class PDUServer {
 				sendToSub(rootjson.toJSONString());
 
 				nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.TestOnline), TrapLogTypes.TestOnline, ipaddr,
-						lNode.fullpath, ClsLanguageExmp.isEn ? "Device online" : "设备上线", new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线",
+						lNode.fullpath, (ClsLanguageExmp.isEn ? "Device online" : "设备上线"), new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线",
 						"");
 
 				try {

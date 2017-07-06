@@ -98,7 +98,7 @@ public class DProcess {
 
        
 
-   	public static NetTypes getStringToNetType(String tpString)
+   	public static NetTypes netTypeFromStringNetTypes(String tpString)
        {
    		
    		
@@ -109,6 +109,26 @@ public class DProcess {
    		{   			
    			
    		   return NetTypes.EDFA;
+   		}
+ 		else if(tpString.equalsIgnoreCase(NetTypes.Trans.toString()))
+   		{   			
+   			
+   		   return NetTypes.Trans;
+   		}
+ 		else if(tpString.equalsIgnoreCase(NetTypes.OSW.toString()))
+   		{   			
+   			
+   		   return NetTypes.OSW;
+   		}
+ 		else if(tpString.equalsIgnoreCase(NetTypes.PreAMP.toString()))
+   		{   			
+   			
+   		   return NetTypes.PreAMP;
+   		}
+ 		else if(tpString.equalsIgnoreCase(NetTypes.RFSW.toString()))
+   		{   			
+   			
+   		   return NetTypes.RFSW;
    		}
    		else {
 			

@@ -166,6 +166,7 @@ public class TrapPduServer {
 				hfcalarmhash.put("ip", ipaddr);
 				try {
 					nojuTrapLogTableRow traprst = trpcss.ProcessTrapRequestPduHandler(hfcalarmhash, 0, inPdu);
+					traprst.neName=lNode.fullpath;
 					if (traprst.isValid) {
 					
 						String serStr = null;

@@ -102,11 +102,11 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			row1 = pmls.paramxml1.tab1.get("fnOutputRFlevelatt");
 			cOutputVariables[1] = new VariableSnmpVar(row1);
 			cOutputVariables[1].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
-
+			paramHashTable.put(row1.ParamMibLabel, cOutputVariables[1]);
 			row1 = pmls.paramxml1.tab1.get("fnOutputRFleveleq");
 			cOutputVariables[2] = new VariableSnmpVar(row1);
 			cOutputVariables[2].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
-
+			paramHashTable.put(row1.ParamMibLabel, cOutputVariables[2]);
 			row1 = pmls.paramxml1.tab1.get("fnRFPortOutputRFLevel");
 			cOutputVariables[3] = new VariableSnmpVar(row1, ".1",ToValueMode.FmtInteger, true);
 			cOutputVariables[3].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
