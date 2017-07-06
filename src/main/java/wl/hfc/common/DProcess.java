@@ -22,6 +22,7 @@ public class DProcess {
 	}
 	   public static NetTypes getNetTypes(HFCTypes pHFCTypes)
        {
+		  
            switch (pHFCTypes)
            {
                case EDFA:
@@ -69,7 +70,7 @@ public class DProcess {
 
 	   
 	   
-       public static String getNetTypeTostring(NetTypes pNetTypes)
+       public static String getDevDISCRIPTIONByNettypeString(NetTypes pNetTypes)
        {
            switch (pNetTypes)
            {
@@ -97,31 +98,25 @@ public class DProcess {
 
        
 
-   	public static NetTypes getStringToNetType(String pNetTypes)
+   	public static NetTypes getStringToNetType(String tpString)
        {
-          return NetTypes.other;
-/*          switch (pNetTypes)
-           {
-               case "other":
-                   return NetTypes.other;
-               case "EDFA":
-                   return NetTypes.EDFA;
-               case "Trans":
-                   return NetTypes.Trans;
-               case "rece_workstation":
-                   return NetTypes.rece_workstation;
-               case "OSW":
-                   return NetTypes.OSW;
-               case "RFSW":
-                   return NetTypes.RFSW;
-               case "PreAMP":
-                   return NetTypes.PreAMP;
-               case "wos":
-                   return NetTypes.wos;
-               default:
-                   return NetTypes.other;
+   		
+   		
+   		if (tpString.equalsIgnoreCase(NetTypes.rece_workstation.toString())) {
+            return NetTypes.rece_workstation;	
+		}
+   		else if(tpString.equalsIgnoreCase(NetTypes.EDFA.toString()))
+   		{   			
+   			
+   		   return NetTypes.EDFA;
+   		}
+   		else {
+			
+   		   return NetTypes.other;  		
+		}
+       
+         
 
-           }*/
        }
        
 }

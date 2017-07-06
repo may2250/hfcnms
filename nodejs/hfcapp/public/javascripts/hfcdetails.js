@@ -50,7 +50,7 @@ function showHfcDevice(jsonobj){
 	case "EDFA":
 		
 		break;
-	case "rece_workstation":
+	case "HfcMinWorkstation":
 		parse_rece_workstation(jsonobj);
 		break;
 	case "OSW":
@@ -73,7 +73,8 @@ function showHfcDevice(jsonobj){
 }
 
 function parse_rece_workstation(jsonobj){
-	if(__globalobj__._realDevice.getLastChild().data.hfctype == "HfcMinWorkstation"){
+	//if(__globalobj__._realDevice.getLastChild().data.hfctype == "HfcMinWorkstation"){
+	    if(jsonobj.devtype== "HfcMinWorkstation"){
 		$("#detail_mineroptical").parent().css("display", "none");
 		$("#detail_mineroptical").parent().prev().css("display", "none");
 		$("#detail_minerelectric").parent().parent().css("display", "none");

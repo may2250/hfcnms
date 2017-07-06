@@ -6,6 +6,8 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
+import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
+
 import com.xinlong.util.ObjSnmpPreail;
 import com.xinlong.util.StaticMemory;
 
@@ -40,30 +42,17 @@ public class Realtime_param_call {
 						ObjSnmpPreail osp = staticmemory.getRealTimeDev(key);
 						if(osp != null){
 							json.put("cmd", "realtime-device");
-							String devtype = osp.snmpPreail.thisDev.mNetType.toString();
-							json.put("devtype", osp.snmpPreail.thisDev.mNetType.toString());
-							if(devtype.equalsIgnoreCase("EDFA")){
-								
-							}else if(devtype.equalsIgnoreCase("Trans")){
-								
-							}else if(devtype.equalsIgnoreCase("rece_workstation")){
+							//String nettypes = osp.snmpPreail.thisDev.mNetType.toString();
+						   json.put("devtype", osp.snmpPreail.thisDev.HFCType1.toString());
+							
+							if(osp.snmpPreail.thisDev.HFCType1==HFCTypes.HfcMinWorkstation){
 								json = ((ReceiverSnmpPrevail)osp.snmpPreail).getPmWithModelNumber(json);
 								commonjson=((CommonSnmpPrevail)osp.commonSnmpPreail).getPmWithModelNumber(commonjson);
-							}else if(devtype.equalsIgnoreCase("OSW")){
-								
-							}else if(devtype.equalsIgnoreCase("RFSW")){
-								
-							}else if(devtype.equalsIgnoreCase("PreAMP")){
-								
-							}else if(devtype.equalsIgnoreCase("wos")){
-								
-							}else{
-								json = ((ReceiverSnmpPrevail)osp.snmpPreail).getPmWithModelNumber(json);
-							}			
-							
+							}
 							if(json == null)
 								continue;
-							json.put("common", commonjson);
+							
+							json.put("common", commonjson);							
 							String jsonstr = json.toJSONString();
 							//System.out.println(jsonstr);
 							for(Iterator it2 = osp.sessionList.iterator();it2.hasNext();){
