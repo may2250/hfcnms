@@ -45,16 +45,28 @@ public class MainKernel {
 	public static MainKernel me;
 
 	public MainKernel() {
-
+	
 		me = this;
 
 	}
 
-	public MainKernel(CDatabaseEngine pICDatabaseEngine) {
+	
+	public void myinit()
+	{		
+		ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);			
+		ICDatabaseEngine1.getConnection();
+		
+		initTopodData();
+		
+		//CurrentAlarmModel.me.logEngine=ICDatabaseEngine1;
+		CurrentAlarmModel cam = new CurrentAlarmModel();
+		cam.logEngine=ICDatabaseEngine1;
+		cam.setRedisUtil(redisUtil);
+	    cam.setStaticMemory(staticmemory);
+	    cam.start();
 
-		this.ICDatabaseEngine1 = pICDatabaseEngine;
-		me = this;
 	}
+
 
 	// private static Logger log = Logger.getLogger(MainKernel.class);
 	private static RedisUtil redisUtil;
@@ -146,11 +158,8 @@ public class MainKernel {
 		log.info("[#3] .....MainKernel starting.......");
 		Jedis jedis = null;
 		try {
-			ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);
-			ICDatabaseEngine1.getConnection();
-			initTopodData();
-	//CurrentAlarmModel cam = new CurrentAlarmModel(ICDatabaseEngine1, redisUtil, staticmemory);
-	//	cam.start();
+	
+			myinit();
 			jedis = redisUtil.getConnection();
 			jedis.psubscribe(jedissubSub, MAINKERNEL_MESSAGE);
 			redisUtil.getJedisPool().returnResource(jedis);
@@ -327,7 +336,7 @@ public class MainKernel {
 				subjsonarray.add(infojson);
 				infojson = new JSONObject();
 				infojson.put("key", dev.mNetType.toString());
-				infojson.put("title", "<span class='net-info' >" +DProcess.getNetTypeTostring(dev.mNetType) + "</span>");
+				infojson.put("title", "<span class='net-info' >" +DProcess.getDevDISCRIPTIONByNettypeString(dev.mNetType) + "</span>");
 				infojson.put("hfctype", dev.HFCType1.toString());
 				infojson.put("icon", "images/net_info.ico");
 				subjsonarray.add(infojson);
@@ -626,7 +635,7 @@ public class MainKernel {
 		mDeviceTableRow.UserGroupID = usergroupID;
 		mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
 		mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();
-		mDeviceTableRow.Name = jsondata.get("devname").toString();
+//		mDeviceTableRow.Name = jsondata.get("devname").toString();
 
 		mStatus = this.ICDatabaseEngine1.DeviceTableInsertRow(mDeviceTableRow);
 		if (mStatus) {
@@ -662,7 +671,7 @@ public class MainKernel {
 			subjsonarray.add(subjson);
 			subjson = new JSONObject();
 			subjson.put("key", dev.mNetType.toString());
-			subjson.put("title", "<span class='net-info' >" +DProcess.getNetTypeTostring(dev.mNetType) + "</span>");
+			subjson.put("title", "<span class='net-info' >" +DProcess.getDevDISCRIPTIONByNettypeString(dev.mNetType) + "</span>");
 			subjson.put("icon", "images/net_info.ico");
 			subjsonarray.add(subjson);
 			rootnodejson.put("children", subjsonarray);
@@ -786,7 +795,7 @@ public class MainKernel {
 		 * CMDType.OLINE_INFO); OlineeInforCmd1.mTimeStamp = DateTime.Now.Ticks;
 		 * this.Notify("DbEngine.newCMD", OlineeInforCmd1);
 		 */
-		jsondata.put("hfctype", lNode.HFCType1.toString());
+		jsondata.put("hfctype", lNode.HFCType1.ordinal());
 		jsondata.put("id", lNode.ID);
 		jsondata.put("md", lNode.MD);
 		jsondata.put("sn", lNode.SN);

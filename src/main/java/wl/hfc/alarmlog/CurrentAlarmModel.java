@@ -34,7 +34,7 @@ import wl.hfc.traprcss.TrapPduServer;
 import wl.hfc.traprcss.TrapProCenter;
 
 //CurrentAlarmModel
-public class CurrentAlarmModel  {
+public class CurrentAlarmModel extends  Thread {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	public static CurrentAlarmModel me;
 	public static int MAX_TRAPNUMBER = 500;
@@ -65,7 +65,7 @@ public class CurrentAlarmModel  {
 
 
 	public CurrentAlarmModel() {
-		this.logEngine=CDatabaseEngine.me;
+
 		allRows = new CopyOnWriteArrayList<nojuTrapLogTableRow>();
 		allRowsTable = new Hashtable();
 
@@ -74,27 +74,12 @@ public class CurrentAlarmModel  {
 		me = this;
 
 	}
-
 	
-	public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil) {
-		this.logEngine = dEngine;
-		allRows = new CopyOnWriteArrayList<nojuTrapLogTableRow>();
-		allRowsTable = new Hashtable();
 
-		invalidRows = new ArrayList<nojuTrapLogTableRow>();
-		invalidRowsTable = new Hashtable();
-		this.redisUtil = redisUtil;
-		me = this;
-	}
 
-	public CurrentAlarmModel(CDatabaseEngine dEngine, RedisUtil redisUtil, StaticMemory staticmemory) {		
-		this(dEngine, redisUtil);
-		this.staticmemory = staticmemory;
 
-	}
 
-	public void start() {
-	
+	public void run() {
 		Jedis jedis = null;
 		jedis = redisUtil.getConnection();
 		jedis.psubscribe(jedissubSub, HFCALARM_MESSAGE);

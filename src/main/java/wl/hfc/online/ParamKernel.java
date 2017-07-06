@@ -22,13 +22,15 @@ import com.xinlong.util.StaticMemory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 import wl.commonComponent.DeviceSearchEngine;
+import wl.hfc.common.DevTopd;
+import wl.hfc.topd.MainKernel;
 
 
 //DevGrpModel将承担拓扑的组建，维护，以及组，设备的增删查改的响应
 public class ParamKernel {
 	private static final String  PARAMKERNEL_MESSAGE =  "paramkernel.message";
 	private static Logger log = Logger.getLogger(ParamKernel.class);	
-
+	private Hashtable listDevHash;
     public ParamKernel()
     {
     	  
@@ -99,6 +101,8 @@ public class ParamKernel {
 		if(!jsondata.get("predev").toString().equalsIgnoreCase("")){
 			staticmemory.removeRealTimeDev(jsondata.get("predev").toString(),jsondata.get("sessionid").toString());
 		}		
+		DevTopd lNode = (DevTopd) listDevHash.get( jsondata.get("ip").toString());
+		jsondata.put("nojuhfctype", lNode.HFCType1.ordinal());
 		staticmemory.addRealTimeDev(jsondata);
 	}
 	
@@ -196,7 +200,7 @@ public class ParamKernel {
     
     @SuppressWarnings("static-access")
 	public void start() throws InterruptedException{
-		
+		this.listDevHash = MainKernel.me.listDevHash;
 		log.info("[#3] .....ParamKernel starting.......");
 		Jedis jedis=null;
 		try {		
