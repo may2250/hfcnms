@@ -263,7 +263,7 @@ function parseHfcValueSet(jsonobj){
 	   	    			  return;
 	   	    		  }
 	   	    		  var node = __globalobj__._realDevice.getFirstChild();
-     	    		  var datastring = '{"cmd":"hfcvalueset","target":"setalarmThreshold","ip":"' + node.title +'","domstr":"'+ jsonobj.domstr +'","devtype":"'+ __globalobj__._realDevice.getLastChild().key
+     	    		  var datastring = '{"cmd":"hfcvalueset","target":"setalarmThreshold","ip":"' + __globalobj__._realDevice.key +'","domstr":"'+ jsonobj.domstr +'","devtype":"'+ __globalobj__._realDevice.getLastChild().key
      	    		  	+'","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity +'","wcommunity":"'+ __globalobj__._realDevice.data.wcommunity +'","HIHI":"'+ $("#hihi").val()
      	    		  	+'","HI":"'+ $("#hi").val() +'","LO":"'+ $("#lo").val() +'","LOLO":"'+ $("#lolo").val() +'","DEAD":"'+ $("#dead").val() +'","ISHIHI":"'+ ($('#ishihi').attr('checked') =='checked'?true:false)
      	    		  	+'","ISHI":"'+ ($('#ishi').attr('checked') =='checked'?true:false) +'","ISLO":"'+ ($('#islo').attr('checked') =='checked'?true:false) +'","ISLOLO":"'+ ($('#islolo').attr('checked') =='checked'?true:false)
