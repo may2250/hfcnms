@@ -31,13 +31,13 @@ public class CDatabaseEngine {
 	private static Logger log = Logger.getLogger(CDatabaseEngine.class);
 	private static RedisUtil redisUtil;
 	public static  boolean flag = false; //数据库连接状态
-public static CDatabaseEngine me;
+    public static CDatabaseEngine me;
     private boolean isFirstTimeSucedCnt = true;
 	public CDatabaseEngine (RedisUtil redisUtil){
 		this.redisUtil = redisUtil;
 		me=this;
 	}
-	public Connection getConnection() {
+/*	public Connection getConnection() {
 		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
 		// ����������
 		String driver = "com.mysql.jdbc.Driver";
@@ -57,40 +57,100 @@ public static CDatabaseEngine me;
 
 		} catch (Exception e) {
 			// TODO: handle exception
+			flag = false;
 			e.printStackTrace();
 			log.info(e.getMessage());
 		}
 
 		return con;
 	}
+*/
 
-	public Connection con;
+	public Connection trapcon;
 	
-	public boolean getDBStatus(){
-		return this.flag;
-	}
+	private boolean lastTrapInsertIsSucced=false;
+
 	
-	private boolean isDBConnected(boolean flag){
+	 public Connection offNewCoon()//因为增删查改不需要关注或者维护“数据库连接”这个层面，本来不需要offnewcon，因为存在连接长期不用可能失效的情况，直接暴力新建短连接。
+     {
+		     boolean tmpFlag=flag;
+		 
+		 
+			String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
+			// ����������
+			String driver = "com.mysql.jdbc.Driver";
+			String dbuser = "root";
+			String dbpass = "prevail";
+			Connection con=null;
+			try {				
+				Class.forName(driver);
+				 con = DriverManager.getConnection(url, dbuser, dbpass);
+				flag=true;
+
+
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				log.info(e.getMessage());
+
+				flag=false;
+		
+			}
+
+			if (tmpFlag!=flag) {
+				
+				JSONObject rootjson = new JSONObject();
+	            rootjson.put("cmd", "dbclosed");
+	            rootjson.put("flag", !flag);
+				sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+			}
+			return con;
+     }
+	 
+	 
+	 
+	 public void  offNewTrapCoon()
+     {
+
+			String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
+			// ����������
+			String driver = "com.mysql.jdbc.Driver";
+			String dbuser = "root";
+			String dbpass = "prevail";
+			try {				
+				Class.forName(driver);
+				trapcon = DriverManager.getConnection(url, dbuser, dbpass);
+
+			} catch (Exception e) {
+				
+				// TODO: handle exception
+				e.printStackTrace();
+				log.info(e.getMessage());
+				trapcon=null;
+		
+			}
+
+
+     }
+     
+     
+	
+/*	private boolean isDBConnected(){
 		try {
-			if(!flag){
+
 				//重连一次
 				con = this.getConnection();
 				if(con.isClosed()){
 					//发送数据库失去连接信息到前端
-					JSONObject rootjson = new JSONObject();
-		            rootjson.put("cmd", "dbclosed");
-		            rootjson.put("flag", true);
-					sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
-					this.flag = false;
-					return false;
+
 				}else{
 					//发送数据库失去连接信息到前端
 					JSONObject rootjson = new JSONObject();
-			        rootjson.put("cmd", "dbclosed");
-			        rootjson.put("flag", false);
+			        rootjson.put("cmd", "dbOpend");
+			        rootjson.put("flag", true);
 					sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
-					this.flag = true;
-				}
+					flag=true;
+				}	
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -99,11 +159,10 @@ public static CDatabaseEngine me;
             rootjson.put("flag", true);
 			sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
 			this.flag = false;
-			return false;
 		}
 		
-		return true;
-	}
+		return this.flag;
+	}*/
 	
 	public void sendToQueue(String msg, String queue) {
 		Jedis jedis = null;
@@ -121,32 +180,41 @@ public static CDatabaseEngine me;
 
 	public int isDevGroupExsit(String gpName) {
 
-		Hashtable groupLists = UserGroupTableGetAllRows();
+		try {
+			Hashtable groupLists = UserGroupTableGetAllRows();
 
-		Enumeration e = groupLists.elements();
+			Enumeration e = groupLists.elements();
 
-		while (e.hasMoreElements()) {
+			while (e.hasMoreElements()) {
 
-			UserGroupTableRow item = (UserGroupTableRow) e.nextElement();
+				UserGroupTableRow item = (UserGroupTableRow) e.nextElement();
 
-			if (item.UserGroupName.equals(gpName)) {
-				return item.UserGroupID;
+				if (item.UserGroupName.equals(gpName)) {
+					return item.UserGroupID;
+				}
+
 			}
 
+	
+			
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 
 		return -1;
-
 	}
 
 	public int UserGroupTableInsertRow(UserGroupTableRow row) {
 		int lastId = -1;
 		int copyIndex = 1;
-		if(!flag){
-			if(!isDBConnected(false)){
-				return -1;
-			}
+		
+		
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return -1;
+			
 		}
+
 		String newName = row.UserGroupName;
 		ResultSet rs = null;		
 
@@ -173,7 +241,7 @@ public static CDatabaseEngine me;
 			return row.UserGroupID;
 		} catch (Exception EX) {
 			System.out.println(EX);
-			isDBConnected(false);
+			//isDBConnected(false);
 			return lastId;
 
 		}
@@ -181,10 +249,10 @@ public static CDatabaseEngine me;
 	}
 
 	public boolean UserGroupTableDeleteRow(int thisID) {
-		if(!flag){
-			if(!isDBConnected(false)){
-				return false;
-			}
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return false;
+			
 		}
 		String sqlInsert = "DELETE FROM usergrouptable WHERE UserGroupID=" + thisID;
 		// sqlInsert += ";select @@IDENTITY";
@@ -196,7 +264,7 @@ public static CDatabaseEngine me;
 
 		} catch (Exception EX) {
 			sqlInsert = "DELETE FROM usergrouptable WHERE UserGroupID=" + thisID;
-			isDBConnected(false);
+	
 			return false;
 
 		}
@@ -206,10 +274,10 @@ public static CDatabaseEngine me;
 	}
 
 	public boolean UserGroupTableUpdateRow(UserGroupTableRow row) {
-		if(!flag){
-			if(!isDBConnected(false)){
-				return false;
-			}
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return false;
+			
 		}
 		if (isDevGroupExsit(row.UserGroupName) != -1) {
 			if (isDevGroupExsit(row.UserGroupName) != row.UserGroupID) {
@@ -227,23 +295,22 @@ public static CDatabaseEngine me;
 				return true;
 
 		} catch (Exception EX) {
-			isDBConnected(false);
+		
 		}
 
 		return false;
 
 	}
 
-	public Hashtable UserGroupTableGetAllRows() {
+	public Hashtable UserGroupTableGetAllRows() throws SQLException{
 		PreparedStatement pstmt;
 		Hashtable retList = new Hashtable();
 		ResultSet rs = null;
-		if(!flag){
-			if(!isDBConnected(false)){
-				return retList;
-			}
-		}
-		try {
+		
+		Connection con=offNewCoon();		
+
+		
+
 			String sqlInsert = "SELECT * FROM usergrouptable";
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
@@ -268,24 +335,21 @@ public static CDatabaseEngine me;
 
 			}
 
-		} catch (Exception ex) {
-			isDBConnected(false);
-			String xxxString = ex.toString();
-		}
+
 
 		return retList;
 	}
 
-	public Hashtable DeviceTableGetAllRows() {
+	public Hashtable DeviceTableGetAllRows()  throws SQLException{
 		PreparedStatement pstmt;
 		Hashtable retList = new Hashtable();
 		ResultSet rs = null;
-		if(!flag){
-			if(!isDBConnected(false)){
-				return retList;
-			}
-		}
-		try {
+		
+		Connection con=offNewCoon();		
+
+		
+		
+	
 			String sqlInsert = "SELECT * FROM devicetable";
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
@@ -320,38 +384,42 @@ public static CDatabaseEngine me;
 
 			}
 
-		} catch (Exception ex) {
-			isDBConnected(false);
-			String xxxString = ex.toString();
-		}
 
 		return retList;
 	}
 
 	public String isDevExsit(String Name) {
-		Hashtable groupLists = DeviceTableGetAllRows();
+		try {	
+			
+			Hashtable groupLists = DeviceTableGetAllRows();
+			Enumeration e = groupLists.elements();
 
-		Enumeration e = groupLists.elements();
+			while (e.hasMoreElements()) {
 
-		while (e.hasMoreElements()) {
+				nojuDeviceTableRow item = (nojuDeviceTableRow) e.nextElement();
 
-			nojuDeviceTableRow item = (nojuDeviceTableRow) e.nextElement();
+				if (item.Name.endsWith(Name)) {
+					return item.get_NetAddress();
+				}
 
-			if (item.Name.endsWith(Name)) {
-				return item.get_NetAddress();
 			}
 
+			
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
+	
 
 		return "";
+
 
 	}
 
 	public boolean DeviceTableInsertRow(nojuDeviceTableRow row) {
-		if(!flag){
-			if(!isDBConnected(false)){
-				return false;
-			}
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return false;
+			
 		}
 		int copyIndex = 1;
 		String newName = row.Name;
@@ -372,7 +440,6 @@ public static CDatabaseEngine me;
 				return true;
 		} catch (Exception EX) {
 			System.out.println(EX);
-			isDBConnected(false);
 			return false;
 
 		}
@@ -380,10 +447,10 @@ public static CDatabaseEngine me;
 	}
 
 	public boolean DeviceTableDeleteRow(nojuDeviceTableRow row) {
-		if(!flag){
-			if(!isDBConnected(false)){
-				return false;
-			}
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return false;
+			
 		}
 		String sqlInsert = "DELETE FROM devicetable WHERE NetAddress='" + row.get_NetAddress() + '\'';
 		// sqlInsert += ";select @@IDENTITY";
@@ -394,7 +461,7 @@ public static CDatabaseEngine me;
 				return true;
 
 		} catch (Exception EX) {
-			isDBConnected(false);
+
 		}
 
 		return false;
@@ -402,10 +469,10 @@ public static CDatabaseEngine me;
 	}
 
 	public boolean DeviceTableUpdateRow(nojuDeviceTableRow row) {
-		if(!flag){
-			if(!isDBConnected(false)){
-				return false;
-			}
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return false;
+			
 		}
 		String rstIsDevExsit = isDevExsit(row.Name);
 
@@ -427,7 +494,7 @@ public static CDatabaseEngine me;
 				return true;
 
 		} catch (Exception EX) {
-			isDBConnected(false);
+
 		}
 
 		return false;
@@ -441,11 +508,10 @@ public static CDatabaseEngine me;
 	public int trapLogInsertRow(nojuTrapLogTableRow row) {
 		ResultSet rs = null;
 		int lastId = -1;
-		if(!flag){
-			if(!isDBConnected(false)){
-				return -1;
-			}
+		if (!lastTrapInsertIsSucced) {			
+			this.offNewTrapCoon();				
 		}
+	    boolean tmpFlag=flag;	
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String currentTime = sdf.format(row.TrapLogTime);
@@ -455,29 +521,40 @@ public static CDatabaseEngine me;
 
 		PreparedStatement pstmt;
 		try {
-			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
+			pstmt = (PreparedStatement) trapcon.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
 			pstmt.executeUpdate();
 			rs = pstmt.getGeneratedKeys();// 这一句代码就是得到插入的记录的id
 			while (rs.next()) {
 				lastId = rs.getInt(1);
 			}
 			row.TrapLogID = lastId;
-			return row.TrapLogID;
+			lastTrapInsertIsSucced=true;
+			flag=true;
+	
 		} catch (Exception EX) {
-			System.out.println(EX);
-			isDBConnected(false);
-			return lastId;
+			lastTrapInsertIsSucced=false;
+			flag=false;
+			System.out.println(EX);	
 
+		}	    
+	     
+	     
+		if (tmpFlag!=flag) {
+			
+			JSONObject rootjson = new JSONObject();
+            rootjson.put("cmd", "dbclosed");
+            rootjson.put("flag", !flag);
+			sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
 		}
-
+		return lastId;
 	}
 
 	public int trapLogEditRow(int TrapLogID, String treatment) {
 		String IsTreatMent = new Date().toString();// 消失时间
-		if(!flag){
-			if(!isDBConnected(false)){
-				return -1;
-			}
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return -1;
+			
 		}
 		String sqlInsert = "UPDATE TrapLogTable SET TrapTreatMent='" + treatment + "', IsTreatMent='" + IsTreatMent + "' WHERE TrapLogID='" + TrapLogID + "'";
 
@@ -487,7 +564,7 @@ public static CDatabaseEngine me;
 			return pstmt.executeUpdate();
 
 		} catch (Exception EX) {
-			isDBConnected(false);
+			System.out.println(EX);	
 			return -1;
 		}
 
@@ -495,10 +572,11 @@ public static CDatabaseEngine me;
 
 	public ArrayList<nojuTrapLogTableRow> getTrapRowsWithTime(Date beginTime, Date endTime, String ip) {
 		ArrayList<nojuTrapLogTableRow> results = new ArrayList<nojuTrapLogTableRow>();	
-		if(!flag){
-			if(!isDBConnected(false)){
-				return results;
-			}
+		
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return results;
+			
 		}
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -533,8 +611,8 @@ public static CDatabaseEngine me;
 			}
 
 		} catch (Exception ex) {
-			isDBConnected(false);
 			String xxxString = ex.toString();
+			
 		}
 
 		return results;
@@ -549,11 +627,13 @@ public static CDatabaseEngine me;
     	
     	ResultSet rs = null;
 		int lastId = -1;
-		if(!flag){
-			if(!isDBConnected(false)){
-				return -1;
-			}
+		
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return -1;
+			
 		}
+		
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String currentTime = sdf.format(row.OperLogTime);
@@ -572,7 +652,7 @@ public static CDatabaseEngine me;
 			return row.OperLogID;
 		} catch (Exception EX) {
 			System.out.println(EX);
-			isDBConnected(false);
+
 			return lastId;
 
 		}   	
@@ -587,11 +667,13 @@ public static CDatabaseEngine me;
     {
     	
     	ArrayList<nojuOperLogTableRow> results = new ArrayList<nojuOperLogTableRow>();	
-		if(!flag){
-			if(!isDBConnected(false)){
-				return results;
-			}
+    	
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return results;
+			
 		}
+		
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String endString = sdf.format(endTime);
@@ -623,7 +705,6 @@ public static CDatabaseEngine me;
 			}
 
 		} catch (Exception ex) {
-			isDBConnected(false);
 			String xxxString = ex.toString();
 		}  	
     	

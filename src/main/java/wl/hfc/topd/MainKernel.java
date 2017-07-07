@@ -3,6 +3,7 @@ package wl.hfc.topd;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,11 +38,11 @@ public class MainKernel {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	private static final String PARAMKERNEL_MESSAGE = "paramkernel.message";
 	private static Logger log = Logger.getLogger(MainKernel.class);
-	public CDatabaseEngine ICDatabaseEngine1;
+	private CDatabaseEngine ICDatabaseEngine1;
 	private LNode rootListNode;
 	public Hashtable listDevHash = new Hashtable();
 	public Hashtable listGrpHash = new Hashtable();
-
+	private boolean isTopodInit;
 	public static MainKernel me;
 
 	public MainKernel() {
@@ -53,10 +54,11 @@ public class MainKernel {
 	
 	public void myinit()
 	{		
-		ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);			
-		ICDatabaseEngine1.getConnection();
 		
-		initTopodData();
+		ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
+
+	    initTopodData();	
+
 		
 		//CurrentAlarmModel.me.logEngine=ICDatabaseEngine1;
 		CurrentAlarmModel cam = new CurrentAlarmModel();
@@ -103,6 +105,7 @@ public class MainKernel {
 
 		public void onPMessage(String arg0, String arg1, String msg) {
 			try {
+		
 				servicestart(msg);
 
 			} catch (Exception e) {
@@ -119,8 +122,17 @@ public class MainKernel {
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
 		JSONObject rootjson = new JSONObject();
+		
+		if (!this.isTopodInit) 
+		{
+			staticmemory.sendRemoteStr(getDBstatus(), jsondata.get("sessionid").toString());	
+			return;
+
+		}	
+
 		if(cmd.equalsIgnoreCase("getLoginInit")){	
-			staticmemory.sendRemoteStr(getInitTree(rootjson), jsondata.get("sessionid").toString());	
+			
+			staticmemory.sendRemoteStr(getInitTree(rootjson), jsondata.get("sessionid").toString());
 			staticmemory.sendRemoteStr(getInitLog(rootjson), jsondata.get("sessionid").toString());	
 			staticmemory.sendRemoteStr(getDBstatus(), jsondata.get("sessionid").toString());	
 		}else if(cmd.equalsIgnoreCase("getgrouptree")){
@@ -155,11 +167,16 @@ public class MainKernel {
 	@SuppressWarnings("static-access")
 	public void start() {
 
+		
+		
+		
 		log.info("[#3] .....MainKernel starting.......");
+		
+		myinit();
 		Jedis jedis = null;
 		try {
 	
-			myinit();
+
 			jedis = redisUtil.getConnection();
 			jedis.psubscribe(jedissubSub, MAINKERNEL_MESSAGE);
 			redisUtil.getJedisPool().returnResource(jedis);
@@ -167,6 +184,7 @@ public class MainKernel {
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.info(e.getMessage());
+			
 			redisUtil.getJedisPool().returnBrokenResource(jedis);
 
 		}
@@ -260,7 +278,7 @@ public class MainKernel {
     private String getDBstatus(){
     	JSONObject rootjson = new JSONObject();
     	rootjson.put("cmd", "dbclosed");
-    	rootjson.put("dbstatus", ICDatabaseEngine1.getDBStatus());
+    	rootjson.put("flag", !ICDatabaseEngine1.flag);
     	return rootjson.toJSONString();
     }
     
@@ -367,11 +385,20 @@ public class MainKernel {
 	}
 
 	public void initTopodData() {
-		Hashtable devHash = ICDatabaseEngine1.DeviceTableGetAllRows();
-		Hashtable grpHash = ICDatabaseEngine1.UserGroupTableGetAllRows();
-		// List<CDataBasePropery.nojuDeviceTableRow> SlotRowsList =
-		// ICDatabaseEngine1.slotTableGetAllRows();
-		rootListNode = this.offerTopodModel(devHash, grpHash);
+		try {
+			Hashtable devHash = ICDatabaseEngine1.DeviceTableGetAllRows();
+			Hashtable grpHash = ICDatabaseEngine1.UserGroupTableGetAllRows();
+			// List<CDataBasePropery.nojuDeviceTableRow> SlotRowsList =
+			// ICDatabaseEngine1.slotTableGetAllRows();
+			rootListNode = this.offerTopodModel(devHash, grpHash);
+		    isTopodInit=true;
+			
+		} catch (Exception e) {
+		    isTopodInit=false;
+			// TODO: handle exception
+		}
+				
+
 
 		// print rootListNode;
 	}
@@ -479,6 +506,9 @@ public class MainKernel {
 	}
 
 	public boolean handleInsertGrp(JSONObject jsondata) {
+		
+
+		
 		boolean mStatus = false;
 		JSONObject rootjson = new JSONObject();
 
