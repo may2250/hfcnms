@@ -61,13 +61,12 @@ public class TrapPduServer {
 	
 	public TrapPduServer() {
 
-		logger.info("TrapPduServer.start() action called, start trap receivering..........");
 		String filePath = pmls.class.getResource("/").toString();
 		filePath = filePath.substring(filePath.indexOf("file:") + 5);
 		filePath = filePath + "mibs";
-		System.out.println("----------------path--->>>" + filePath);
-        TrapProCenter trpcss = new TrapProCenter(true, filePath);
-        this.trpcss = trpcss;
+	//	System.out.println("----------------path--->>>" + filePath);
+		this.trpcss  = new TrapProCenter(true, filePath);
+
 
 		me=this;
 
@@ -86,6 +85,8 @@ public class TrapPduServer {
 
 	public void start() {
 
+
+		logger.info("[#3] .....TrapPduServer starting.......");
 		try {
 			// get trap port from db
 

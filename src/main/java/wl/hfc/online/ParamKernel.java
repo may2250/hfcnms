@@ -30,10 +30,12 @@ import wl.hfc.topd.MainKernel;
 public class ParamKernel {
 	private static final String  PARAMKERNEL_MESSAGE =  "paramkernel.message";
 	private static Logger log = Logger.getLogger(ParamKernel.class);	
-	private Hashtable listDevHash;
+	public Hashtable listDevHash;
+	
+	public static  ParamKernel me;
     public ParamKernel()
     {
-    	  
+    	  me=this;
     }
 
 	private static RedisUtil redisUtil;
@@ -66,7 +68,7 @@ public class ParamKernel {
 
       public void onPMessage(String arg0, String arg1, String msg) {
       	try {  			
-  			servicestart(msg);
+  			phraseMSG(msg);
   			
   		}catch(Exception e){
   			e.printStackTrace();	
@@ -77,7 +79,7 @@ public class ParamKernel {
 
 	};
 	
-	private void servicestart(String message) throws InterruptedException, ParseException, IOException{
+	private void phraseMSG(String message) throws InterruptedException, ParseException, IOException{
 		System.out.println(" [x] ParamKernel Received: '" + message + "'");			
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
@@ -195,7 +197,7 @@ public class ParamKernel {
     
     @SuppressWarnings("static-access")
 	public void start() throws InterruptedException{
-		this.listDevHash = MainKernel.me.listDevHash;
+
 		log.info("[#3] .....ParamKernel starting.......");
 		Jedis jedis=null;
 		try {		

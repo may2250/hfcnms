@@ -257,7 +257,7 @@ public class PDUServer {
 	private void OnlineTestThread() {
 
 		// OnlineTestThread();
-		log.info("[#3] .....OnlineTestThread starting.......");
+		log.info("[#3] .....PDUServer starting.......");
 		LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
 
 		PDU outpdu = new PDU();
@@ -271,8 +271,7 @@ public class PDUServer {
 		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
 
 		PDUServer_status = true;
-		while (true) {
-			
+		while (true) {		
 			
 	
 			

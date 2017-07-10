@@ -33,6 +33,7 @@ import wl.hfc.common.*;
 import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.online.PDUServer;
+import wl.hfc.online.ParamKernel;
 import wl.hfc.traprcss.TrapPduServer;
 
 
@@ -91,7 +92,7 @@ public class MainKernel {
 		public void onPMessage(String arg0, String arg1, String msg) {
 			try {
 		
-				servicestart(msg);
+				phraseMSG(msg);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -102,7 +103,7 @@ public class MainKernel {
 
 	};
 
-	private void servicestart(String message) throws InterruptedException, ParseException, IOException {
+	private void phraseMSG(String message) throws InterruptedException, ParseException, IOException {
 		System.out.println(" [x] MainKernel Received: '" + message + "'");
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
@@ -152,8 +153,9 @@ public class MainKernel {
 	@SuppressWarnings("static-access")
 	public void start() {		
 		
-		ClsLanguageExmp.init(false, false);
 		log.info("[#3] .....MainKernel starting.......");
+		ClsLanguageExmp.init(false, false);
+
 		
 		ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
 
@@ -169,7 +171,8 @@ public class MainKernel {
 	    
 	  
 	    PDUServer.me.listDevHash=this.listDevHash;
-	    TrapPduServer.me.listDevHash=this.listDevHash;
+	    TrapPduServer.me.listDevHash=this.listDevHash;	    
+	    ParamKernel.me.listDevHash=this.listDevHash;
 	    
 		Jedis jedis = null;
 		try {
@@ -186,6 +189,11 @@ public class MainKernel {
 			redisUtil.getJedisPool().returnBrokenResource(jedis);
 
 		}
+		
+		
+		int xxx=12;
+		
+		
 
 	}
 

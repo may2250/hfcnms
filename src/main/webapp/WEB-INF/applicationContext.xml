@@ -147,9 +147,16 @@
 	</bean>
 											
 
+	<bean id="mainKernelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+	 <property name="jobDetail" ref="mainKernelJob" />
+	 <property name="startDelay" value="1500" />
+	 <property name="repeatInterval" value="5" />
+	 <property name="repeatCount" value="0" />		  	 
+	</bean>
+
 	<bean id="trapReceierTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="trapReceiverJob" />
-	 <property name="startDelay" value="3000" />
+	 <property name="startDelay" value="2000" />
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
@@ -167,12 +174,7 @@
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
-	<bean id="mainKernelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-	 <property name="jobDetail" ref="mainKernelJob" />
-	 <property name="startDelay" value="4500" />
-	 <property name="repeatInterval" value="5" />
-	 <property name="repeatCount" value="0" />		  	 
-	</bean>
+
 <!--
 	<bean id="CurrentAlarmModelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="CurrentAlarmModelJob" />
@@ -183,13 +185,13 @@
 
 	<bean id="paramKernelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="paramKernelJob" />
-	 <property name="startDelay" value="5000" />
+	 <property name="startDelay" value="3000" />
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
 	<bean id="realreadingTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="realreadingJob" />
-	 <property name="startDelay" value="5500" />
+	 <property name="startDelay" value="3000" />
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
