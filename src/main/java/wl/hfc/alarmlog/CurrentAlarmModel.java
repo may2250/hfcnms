@@ -146,7 +146,8 @@ public class CurrentAlarmModel extends  Thread {
 		JSONObject logjson;
 		rootjson.put("cmd", jsondata.get("cmd").toString());
 		JSONArray jsonarray = new JSONArray();
-		// 鑾峰彇鍙戝線WEB鐨勮澶囧憡璀﹀強鏃ュ織淇℃伅
+
+		
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date datestart = sdf.parse(jsondata.get("start").toString());
@@ -156,7 +157,7 @@ public class CurrentAlarmModel extends  Thread {
 			for (nojuTrapLogTableRow prow : traprow) {
 				logjson = new JSONObject();
 				logjson.put("id", prow.TrapLogID);
-				logjson.put("level", prow.level);
+			  logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
 				logjson.put("path", prow.neName);
 				logjson.put("type", prow.TrapLogType.toString());
 				logjson.put("paramname", prow.parmName);
@@ -278,7 +279,7 @@ public class CurrentAlarmModel extends  Thread {
 		}
 
 		if (treatTid != -1) {
-			editTreatMent(treatTid, ClsLanguageExmp.commonGet("杩囨椂澶辨晥"));
+			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过期失效"));
 		}
 
 	}
@@ -322,7 +323,7 @@ public class CurrentAlarmModel extends  Thread {
 			logjson.put("cmd", "alarm_message");
 			logjson.put("opt", true);
 			logjson.put("id", aCurrentrow.TrapLogID);
-			logjson.put("level", aCurrentrow.level);
+			logjson.put("level", NlogType.getAlarmString(type));
 			// logjson.put("source", aCurrentrow.neName);
 			logjson.put("path", aCurrentrow.neName);
 			logjson.put("type", aCurrentrow.TrapLogType.toString());
@@ -392,8 +393,8 @@ public class CurrentAlarmModel extends  Thread {
 				logjson.put("cmd", "alarm_message");
 				logjson.put("opt", false);
 				logjson.put("id", item.TrapLogID);
-				logjson.put("level", item.level);
-				logjson.put("path", "grp1/xxxx");
+				logjson.put("level", NlogType.getAlarmString(item.TrapLogType));
+					logjson.put("path", "grp1/xxxx");
 				logjson.put("type", item.TrapLogType.toString());
 				logjson.put("paramname", item.parmName);
 				logjson.put("paramvalue", item.paramValue);

@@ -32,8 +32,10 @@ import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.*;
 import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
+import wl.hfc.online.PDUServer;
+import wl.hfc.traprcss.TrapPduServer;
 
-//DevGrpModel灏嗘壙鎷呮嫇鎵戠殑缁勫缓锛岀淮鎶わ紝浠ュ強缁勶紝璁惧鐨勫鍒犳煡鏀圭殑鍝嶅簲
+
 public class MainKernel {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	private static final String PARAMKERNEL_MESSAGE = "paramkernel.message";
@@ -51,23 +53,6 @@ public class MainKernel {
 
 	}
 
-	
-	public void myinit()
-	{		
-		
-		ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
-
-	    initTopodData();	
-
-		
-		//CurrentAlarmModel.me.logEngine=ICDatabaseEngine1;
-		CurrentAlarmModel cam = new CurrentAlarmModel();
-		cam.logEngine=ICDatabaseEngine1;
-		cam.setRedisUtil(redisUtil);
-	    cam.setStaticMemory(staticmemory);
-	    cam.start();
-
-	}
 
 
 	// private static Logger log = Logger.getLogger(MainKernel.class);
@@ -165,14 +150,27 @@ public class MainKernel {
 	}
 
 	@SuppressWarnings("static-access")
-	public void start() {
-
+	public void start() {		
 		
-		
-		
+		ClsLanguageExmp.init(false, false);
 		log.info("[#3] .....MainKernel starting.......");
 		
-		myinit();
+		ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
+
+	    initTopodData();	
+
+		
+		//CurrentAlarmModel.me.logEngine=ICDatabaseEngine1;
+		CurrentAlarmModel cam = new CurrentAlarmModel();
+		cam.logEngine=ICDatabaseEngine1;
+		cam.setRedisUtil(redisUtil);
+	    cam.setStaticMemory(staticmemory);
+	    cam.start();
+	    
+	  
+	    PDUServer.me.listDevHash=this.listDevHash;
+	    TrapPduServer.me.listDevHash=this.listDevHash;
+	    
 		Jedis jedis = null;
 		try {
 	

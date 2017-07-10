@@ -1,6 +1,5 @@
 package wl.hfc.common;
 
-import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
 import wl.hfc.common.nojuDeviceTableRow.UserDevGrpPriv;
 
 public class devGroup extends LNode implements InodeInterface

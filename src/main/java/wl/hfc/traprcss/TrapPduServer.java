@@ -52,11 +52,27 @@ public class TrapPduServer {
 	public static boolean TrapPduServer_status=false;
 	private static Snmp snmp = null;
 	private Address listenAddress;
-	private Hashtable listDevHash;
+	public Hashtable listDevHash;
 	public static CurrentAlarmModel realTrapResponder;
 	private static Logger logger = Logger.getLogger(TrapPduServer.class);
-	
+	public static TrapPduServer me;
 	private static RedisUtil redisUtil;
+	
+	
+	public TrapPduServer() {
+
+		logger.info("TrapPduServer.start() action called, start trap receivering..........");
+		String filePath = pmls.class.getResource("/").toString();
+		filePath = filePath.substring(filePath.indexOf("file:") + 5);
+		filePath = filePath + "mibs";
+		System.out.println("----------------path--->>>" + filePath);
+        TrapProCenter trpcss = new TrapProCenter(true, filePath);
+        this.trpcss = trpcss;
+
+		me=this;
+
+	}
+
 	public static RedisUtil getRedisUtil() {
 		return redisUtil;
 	}
@@ -69,14 +85,7 @@ public class TrapPduServer {
 	private Address targetAddress = null;
 
 	public void start() {
-		logger.info("TrapPduServer.start() action called, start trap receivering..........");
-		String filePath = pmls.class.getResource("/").toString();
-		filePath = filePath.substring(filePath.indexOf("file:") + 5);
-		filePath = filePath + "mibs";
-		System.out.println("----------------path--->>>" + filePath);
-        TrapProCenter trpcss = new TrapProCenter(true, filePath);
-        this.trpcss = trpcss;
-    	this.listDevHash = MainKernel.me.listDevHash;
+
 		try {
 			// get trap port from db
 
@@ -130,11 +139,6 @@ public class TrapPduServer {
 		
 	}
 
-	public TrapPduServer() {
-
-		
-
-	}
 
 	@SuppressWarnings("unchecked")
 	public void doReceive(CommandResponderEvent event) {
@@ -159,6 +163,13 @@ public class TrapPduServer {
 				
 				String ipaddr = event.getPeerAddress().toString();
 				ipaddr = ipaddr.substring(0, ipaddr.indexOf("/"));
+				
+				if(listDevHash==null)
+				{				
+					
+					return;
+				}
+				
 				DevTopd lNode = (DevTopd) listDevHash.get(ipaddr);
 			    if (lNode == null)
                     return ;

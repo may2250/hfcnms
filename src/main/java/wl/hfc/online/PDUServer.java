@@ -43,38 +43,33 @@ public class PDUServer {
 	// private EnumLogoVersion logoVersion;//当前网管定制版本
 	private Snmp session;
 	private boolean isOnlineThreadRun = true;
-	private Hashtable listDevHash;
+	public  Hashtable listDevHash;
 	public static boolean PDUServer_status = false;
 	private static RedisUtil redisUtil;
 
 	public static void setRedisUtil(RedisUtil redisUtil) {
 		PDUServer.redisUtil = redisUtil;
 	}
-
+	public static PDUServer me;
+	
+	
+	
 	public PDUServer() {
 
 		try {
 			initSnmpAPI();
 			PDUServer_status = true;
+		
 
 		} catch (Exception ex1) {
 			PDUServer_status = false;
 			ex1.printStackTrace();
 			log.info(ex1.getMessage());
 		}
-
+		me=this;
 	}
 
-	public PDUServer(Hashtable pListDevHash) {
 
-		/*
-		 * // this.logoVersion = plogoVersion; this.listDevHash = pListDevHash;
-		 * try { initSnmpAPI(); OnlineTestThread();
-		 * 
-		 * } catch (Exception e) { // TODO: handle exception }
-		 */
-
-	}
 
 	private void initSnmpAPI() throws IOException {
 
@@ -274,10 +269,19 @@ public class PDUServer {
 		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));
 		outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
 		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
-		this.listDevHash = MainKernel.me.listDevHash;
+
 		PDUServer_status = true;
 		while (true) {
+			
+			
+	
+			
 			try {
+				if (this.listDevHash==null) {			
+					
+					Thread.currentThread().sleep(3000);
+					continue;
+				}
 
 				if (!isOnlineThreadRun) {
 					Thread.currentThread().sleep(3000);

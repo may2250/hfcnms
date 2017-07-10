@@ -78,9 +78,11 @@
 	<bean id="trapReceiverBean" class="wl.hfc.traprcss.TrapPduServer" >
 		<property name="redisUtil" ref="redisUtil" />
 	</bean>
+<!--
 	<bean id="hfcAlarmProcessor" class="com.xinlong.Services.ServiceHfcAlarmProcessor" >
 		<property name="redisUtil" ref="redisUtil" />
-	</bean>
+	</bean>-->
+
 	<bean id="pduserver" class="wl.hfc.online.PDUServer" >
 		<property name="redisUtil" ref="redisUtil" />
 	</bean>
@@ -109,11 +111,13 @@
 	 <property name="targetMethod"  value="start"/>
 	 <property name="concurrent" value="true" />	 	
 	</bean>
+<!--
 	<bean id="hfcAlarmJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="hfcAlarmProcessor" />
 	 <property name="targetMethod"  value="start"/>
 	 <property name="concurrent" value="true" />	 	
-	</bean>
+	</bean>-->
+
 	<bean id="pduserverJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="pduserver" />
 	 <property name="targetMethod"  value="OnlineTestThread"/>
@@ -149,12 +153,14 @@
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
+<!--
 	<bean id="hfcAlarmTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="hfcAlarmJob" />
 	 <property name="startDelay" value="1000" />
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
-	</bean>
+	</bean>-->
+
 	<bean id="pduserverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="pduserverJob" />
 	 <property name="startDelay" value="2500" />
@@ -177,13 +183,13 @@
 
 	<bean id="paramKernelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="paramKernelJob" />
-	 <property name="startDelay" value="3000" />
+	 <property name="startDelay" value="5000" />
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
 	<bean id="realreadingTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="realreadingJob" />
-	 <property name="startDelay" value="4000" />
+	 <property name="startDelay" value="5500" />
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
@@ -194,7 +200,7 @@
 	        <list>  
 	            <ref bean="pduserverJob" />
 	            <ref bean="trapReceiverJob" /> 
-	            <ref bean="hfcAlarmJob" /> 
+	<!--           <ref bean="hfcAlarmJob" /> -->
 	            <ref bean="mainKernelJob" />
 	 <!--           <ref bean="CurrentAlarmModelJob" />-->
 	            <ref bean="paramKernelJob" />
@@ -206,7 +212,7 @@
 	        <list>  
 	            <ref bean="pduserverTrigger" />
 	            <ref bean="trapReceierTrigger" />
-	            <ref bean="hfcAlarmTrigger" /> 
+	  <!--          <ref bean="hfcAlarmTrigger" /> -->
 	            <ref bean="mainKernelTrigger" /> 
 	     <!--       <ref bean="CurrentAlarmModelTrigger" /> -->
 	            <ref bean="paramKernelTrigger" />

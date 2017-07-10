@@ -135,8 +135,8 @@ public class DeviceSearchEngine extends Thread{
 		ipaddr = ipaddr.substring(0,ipaddr.indexOf("/"));
 		Vector<VariableBinding> recVBs= (Vector<VariableBinding>)respEvnt.getResponse().getVariableBindings();
 		System.out.println("------------>瑙ｆ瀽Response<----------" + recVBs.toString());
-		HFCTypes devtype = OidToHFCType.getType(recVBs);
-		if (devtype == HFCTypes.Unknown) // 澶勭悊鏈煡璁惧
+		HFCTypes hfctyp1 = OidToHFCType.getType(recVBs);
+		if (hfctyp1 == HFCTypes.Unknown) // 澶勭悊鏈煡璁惧
 		{
 			return;
 		}
@@ -150,11 +150,11 @@ public class DeviceSearchEngine extends Thread{
 			
 			CDevForCMD result = new CDevForCMD();
 			result.mNetAddress = ipaddr;
-			result.HFCType1 = devtype;
-			result.mNetType = DProcess.getNetTypes(devtype);
-			if (devtype == HFCTypes.ES26 || devtype == HFCTypes.Cisco_64657T || devtype == HFCTypes.CiscoEDFA || devtype == HFCTypes.OTECWos
-					|| devtype == HFCTypes.wos3000SCTE || devtype == HFCTypes.wos4000 || devtype == HFCTypes.LYTB_MTRAN2000 || devtype == HFCTypes.wos5000
-					|| devtype == HFCTypes.TransDM_SCTE) {
+			result.HFCType1 = hfctyp1;
+			result.mNetType = DProcess.getNetTypes(hfctyp1);
+			if (hfctyp1 == HFCTypes.ES26 || hfctyp1 == HFCTypes.Cisco_64657T || hfctyp1 == HFCTypes.CiscoEDFA || hfctyp1 == HFCTypes.OTECWos
+					|| hfctyp1 == HFCTypes.wos3000SCTE || hfctyp1 == HFCTypes.wos4000 || hfctyp1 == HFCTypes.LYTB_MTRAN2000 || hfctyp1 == HFCTypes.wos5000
+					|| hfctyp1 == HFCTypes.TransDM_SCTE) {
 
 				result.ID = "";
 				result.MD = "";
@@ -169,8 +169,8 @@ public class DeviceSearchEngine extends Thread{
 			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "devsearch-result");
 			rootjson.put("ipaddr", result.mNetAddress);
-			rootjson.put("devtype", result.mNetType.toString());
-			rootjson.put("hfctype", result.HFCType1.toString());
+			rootjson.put("devtype", "  ");
+			rootjson.put("hfctype",OidToHFCType.GetHFCTypeString(result.HFCType1 ));
 			rootjson.put("rcommunity", ipinfo.community);
 			staticmemory.sendRemoteStr(rootjson.toJSONString(), ipinfo.sessionid);
         }

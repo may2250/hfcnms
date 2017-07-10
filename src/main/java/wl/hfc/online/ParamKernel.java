@@ -85,7 +85,12 @@ public class ParamKernel {
 		if(cmd.equalsIgnoreCase("hfcvalueset")){
 			hfcValueSet(jsondata);			
 		}else if(cmd.equalsIgnoreCase("getdevicedetail")){
-			hfcDeviceDetail(jsondata);				
+			if(!jsondata.get("predev").toString().equalsIgnoreCase("")){
+				staticmemory.removeRealTimeDev(jsondata.get("predev").toString(),jsondata.get("sessionid").toString());
+			}		
+			DevTopd lNode = (DevTopd) listDevHash.get( jsondata.get("ip").toString());
+			jsondata.put("nojuhfctype", lNode.HFCType1.ordinal());
+			staticmemory.addRealTimeDev(jsondata);			
 		}else if(cmd.equalsIgnoreCase("deviceclose")){			
 			staticmemory.removeRealTimeDev(jsondata.get("ip").toString(),jsondata.get("sessionid").toString());
 		}else if(cmd.equalsIgnoreCase("devsearch")){
@@ -93,18 +98,8 @@ public class ParamKernel {
 		}
 	}
 	
-
 	
-	private void hfcDeviceDetail(JSONObject jsondata){
-		//获取设备详细信息	
-		//每个客户端只能打开一台设备，删除原来打开设备记录	
-		if(!jsondata.get("predev").toString().equalsIgnoreCase("")){
-			staticmemory.removeRealTimeDev(jsondata.get("predev").toString(),jsondata.get("sessionid").toString());
-		}		
-		DevTopd lNode = (DevTopd) listDevHash.get( jsondata.get("ip").toString());
-		jsondata.put("nojuhfctype", lNode.HFCType1.ordinal());
-		staticmemory.addRealTimeDev(jsondata);
-	}
+
 	
 	private void hfcValueSet(JSONObject jsondata){
 		JSONObject rootjson = new JSONObject();
