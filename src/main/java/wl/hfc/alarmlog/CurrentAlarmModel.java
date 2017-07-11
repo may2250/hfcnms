@@ -34,14 +34,12 @@ import wl.hfc.traprcss.TrapPduServer;
 import wl.hfc.traprcss.TrapProCenter;
 
 //CurrentAlarmModel
-public class CurrentAlarmModel extends  Thread {
+public class CurrentAlarmModel extends Thread {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	public static CurrentAlarmModel me;
 	public static int MAX_TRAPNUMBER = 500;
 	private static Logger log = Logger.getLogger(CurrentAlarmModel.class);
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
-
-	
 
 	public CDatabaseEngine logEngine;
 
@@ -63,7 +61,6 @@ public class CurrentAlarmModel extends  Thread {
 		CurrentAlarmModel.staticmemory = staticmemory;
 	}
 
-
 	public CurrentAlarmModel() {
 
 		allRows = new CopyOnWriteArrayList<nojuTrapLogTableRow>();
@@ -74,10 +71,6 @@ public class CurrentAlarmModel extends  Thread {
 		me = this;
 
 	}
-	
-
-
-
 
 	public void run() {
 		Jedis jedis = null;
@@ -109,37 +102,53 @@ public class CurrentAlarmModel extends  Thread {
 
 		public void onPMessage(String arg0, String arg1, String msg) {
 			try {
-			System.out.println(" [x] CurrentAlarmModel Received: '" + msg + "'");
-			JSONObject jsondata = (JSONObject) new JSONParser().parse(msg);
-			String cmd = jsondata.get("cmd").toString();
-			JSONObject rootjson = new JSONObject();
-			
-			
-			if(cmd.equalsIgnoreCase("newalarm")){	
-			
-					parseMessage(msg);		
-	
-			}else if(cmd.equalsIgnoreCase("alarmsearch")){
-				
-				staticmemory.sendRemoteStr(getHistoryAlarm(jsondata), jsondata.get("sessionid").toString());
-				
-				
-			}else if(cmd.equalsIgnoreCase("logCMD")){	
+				System.out.println(" [x] CurrentAlarmModel Received: '" + msg + "'");
+				JSONObject jsondata = (JSONObject) new JSONParser().parse(msg);
+				String cmd = jsondata.get("cmd").toString();
+				JSONObject rootjson = new JSONObject();
 
+				if (cmd.equalsIgnoreCase("newalarm")) {
+
+					parseMessage(msg);
+
+				} else if (cmd.equalsIgnoreCase("alarmsearch")) {
+
+					staticmemory.sendRemoteStr(getHistoryAlarm(jsondata), jsondata.get("sessionid").toString());
+
+				} else if (cmd.equalsIgnoreCase("grpaddlog")) {
+
+					InsertOperLog(OperLogTypes.UserGroupOpration, ClsLanguageExmp.formGet("创建分组") + "： " + jsondata.get("title").toString(), "admin");
+
+				} else if (cmd.equalsIgnoreCase("devaddLog")) {
+
+					InsertOperLog(OperLogTypes.DeviceOpration, ClsLanguageExmp.formGet("创建IP设备") + "： " + jsondata.get("title").toString() + " @ "
+							+ jsondata.get("key").toString(), "admin");
+
+				} else if (cmd.equalsIgnoreCase("grpdellog")) {
+
+					InsertOperLog(OperLogTypes.UserGroupOpration, ClsLanguageExmp.formGet("删除") + "： " + jsondata.get("title").toString(), "admin");
+
+				} else if (cmd.equalsIgnoreCase("devdellog")) {
+
+					InsertOperLog(OperLogTypes.DeviceOpration,
+							ClsLanguageExmp.formGet("删除") + "： " + jsondata.get("title").toString() + " @ " + jsondata.get("key").toString(), "admin");
+				} else if (cmd.equalsIgnoreCase("grpeditlog")) {
+
+					InsertOperLog(OperLogTypes.UserGroupOpration, (ClsLanguageExmp.isEn ? "Update: " : "更新：") + jsondata.get("title").toString(), "admin");
+
+				} else if (cmd.equalsIgnoreCase("deveditlog")) {
+
+					InsertOperLog(OperLogTypes.DeviceOpration, (ClsLanguageExmp.isEn ? "Update: " : "更新：") + "： " + jsondata.get("title").toString() + " @ "
+							+ jsondata.get("key").toString(), "admin");
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.info(e.getMessage());
 			}
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.info(e.getMessage());
-		}
-		
-		
 
-	}
+		}
 	};
-	
-	
 
 	private String getHistoryAlarm(JSONObject jsondata) {
 		JSONObject rootjson = new JSONObject();
@@ -147,17 +156,17 @@ public class CurrentAlarmModel extends  Thread {
 		rootjson.put("cmd", jsondata.get("cmd").toString());
 		JSONArray jsonarray = new JSONArray();
 
-		
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date datestart = sdf.parse(jsondata.get("start").toString());
 			Date dateend = sdf.parse(jsondata.get("end").toString());
 			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend, "");
-			//System.out.println("-------------traprow-size =" + traprow.size());
+			// System.out.println("-------------traprow-size =" +
+			// traprow.size());
 			for (nojuTrapLogTableRow prow : traprow) {
 				logjson = new JSONObject();
 				logjson.put("id", prow.TrapLogID);
-			  logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+				logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
 				logjson.put("path", prow.neName);
 				logjson.put("type", prow.TrapLogType.toString());
 				logjson.put("paramname", prow.parmName);
@@ -175,20 +184,19 @@ public class CurrentAlarmModel extends  Thread {
 		return rootjson.toJSONString();
 	}
 
-
 	private void parseMessage(String message) {
-		 //System.out.println(" [x] CurrentAlarmModel Received: '" + message +
-		 //"'");		
+		// System.out.println(" [x] CurrentAlarmModel Received: '" + message +
+		// "'");
 		nojuTrapLogTableRow newObj = null;
 		try {
 			JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
-				String redStr = java.net.URLDecoder.decode(jsondata.get("val").toString(), "UTF-8");
-				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(redStr.getBytes("ISO-8859-1"));
-				ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-				newObj = (nojuTrapLogTableRow) objectInputStream.readObject();
-				objectInputStream.close();
-				byteArrayInputStream.close();
-		
+			String redStr = java.net.URLDecoder.decode(jsondata.get("val").toString(), "UTF-8");
+			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(redStr.getBytes("ISO-8859-1"));
+			ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+			newObj = (nojuTrapLogTableRow) objectInputStream.readObject();
+			objectInputStream.close();
+			byteArrayInputStream.close();
+
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -372,29 +380,27 @@ public class CurrentAlarmModel extends  Thread {
 				allRows.remove(item);
 				allRowsTable.remove(item.TrapLogID);
 
-	
 				invalidRows.add(item);
 				invalidRowsTable.put(item.TrapLogID, item);
-				if (invalidRowsTable.size() > MAX_TRAPNUMBER)////超出最大值
+				if (invalidRowsTable.size() > MAX_TRAPNUMBER)// //超出最大值
 				{
-					   //丢入历史告警
+					// 丢入历史告警
 					nojuTrapLogTableRow removeRow = invalidRows.get(0);
 					invalidRows.remove(removeRow);
 					invalidRowsTable.remove(removeRow.TrapLogID);
 				}
 
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
 				item.isTreated = df.format(new Date());// new
-								
+
 				item.TrapTreatMent = content;
 
-				
 				JSONObject logjson = new JSONObject();
 				logjson.put("cmd", "alarm_message");
 				logjson.put("opt", false);
 				logjson.put("id", item.TrapLogID);
 				logjson.put("level", NlogType.getAlarmString(item.TrapLogType));
-					logjson.put("path", "grp1/xxxx");
+				logjson.put("path", "grp1/xxxx");
 				logjson.put("type", item.TrapLogType.toString());
 				logjson.put("paramname", item.parmName);
 				logjson.put("paramvalue", item.paramValue);
@@ -456,7 +462,7 @@ public class CurrentAlarmModel extends  Thread {
 		row.OperLogID = logEngine.operLogInsertRow(row);
 
 		// send row to clinet
-		
+
 		return row;
 	}
 
@@ -477,9 +483,6 @@ public class CurrentAlarmModel extends  Thread {
 	 * }
 	 */
 
-	
-	
-
 	private void sendToQueue(String msg, String queue) {
 		Jedis jedis = null;
 		try {
@@ -495,7 +498,5 @@ public class CurrentAlarmModel extends  Thread {
 
 		}
 	}
-
-
 
 }

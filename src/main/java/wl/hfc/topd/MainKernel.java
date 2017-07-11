@@ -564,6 +564,14 @@ public class MainKernel {
 			rootjson.put("expand", true);
 			rootjson.put("icon", "images/net_center.png");
 			staticmemory.broadCast(rootjson.toJSONString());
+			
+
+	
+			//for syslog
+			rootjson = new JSONObject();
+			rootjson.put("cmd", "grpaddlog");
+			rootjson.put("title",  jsondata.get("value").toString());
+			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 
 		}
 
@@ -607,6 +615,13 @@ public class MainKernel {
 			rootjson.put("key", jsondata.get("key").toString());
 			rootjson.put("pkey", jsondata.get("pkey").toString());
 			staticmemory.broadCast(rootjson.toJSONString());
+			
+			//for syslog
+			rootjson = new JSONObject();
+			rootjson.put("cmd", "grpdellog");
+			rootjson.put("title",  delgrp.BindUserGroupTableRow.UserGroupName);
+			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
+			
 			return true;
 
 		} else {
@@ -646,10 +661,23 @@ public class MainKernel {
 			rootjson.put("title", jsondata.get("title").toString());
 			rootjson.put("type", "group");
 			staticmemory.broadCast(rootjson.toJSONString());
-			return true;
+			
+			
+			rootjson = new JSONObject();
+			rootjson.put("cmd", "grpeditlog");
+			rootjson.put("title", jsondata.get("title").toString());
+
+			//for syslog
+			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
+
 		}
-		mDevGrpTableRow.UserGroupName = tmpNameString;
-		return false;
+		else
+		{
+			mDevGrpTableRow.UserGroupName = tmpNameString;
+		
+		}
+
+		return mStatus;
 	}
 
 	public DevTopd handleInsertDev(JSONObject jsondata) {
@@ -662,7 +690,7 @@ public class MainKernel {
 		devGroup grp = (devGroup) listGrpHash.get(usergroupID);
 		String devtypestr = jsondata.get("devtype").toString();
 
-		if (grp == null)// 鐖惰澶囩粍涓嶅瓨鍦�
+		if (grp == null)// 
 		{
 			return null;
 		}
@@ -716,6 +744,15 @@ public class MainKernel {
 
 			staticmemory.broadCast(rootjson.toJSONString());
 			
+			
+			//for syslog
+			rootjson = new JSONObject();
+			rootjson.put("cmd", "devaddlog");
+			rootjson.put("key", dev._NetAddress);
+			rootjson.put("title", dev.BindnojuDeviceTableRow.Name);		
+			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
+			
+			
 						
 	
 			
@@ -743,8 +780,10 @@ public class MainKernel {
 
 		// edit the mDeviceTableRow property here from jsondata
 		String tmpNameString=mDeviceTableRow.Name;
-		String _ROCommunity=mDeviceTableRow._ROCommunity;
-		String _RWCommunity=mDeviceTableRow._RWCommunity;
+		String _tmpRO=mDeviceTableRow._ROCommunity;
+		String _tmpRW=mDeviceTableRow._RWCommunity;
+		
+		
 		mDeviceTableRow.Name = jsondata.get("title").toString();
 		mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
 		mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();
@@ -757,12 +796,22 @@ public class MainKernel {
 			dev.fullpath = dev.parent.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;
 
 			staticmemory.broadCast(jsondata.toJSONString());
-
+			
+			//for syslog
+			jsondata = new JSONObject();
+			jsondata.put("cmd", "deveditlog");
+			jsondata.put("key", dev.BindnojuDeviceTableRow.get_NetAddress());
+			jsondata.put("title", dev.BindnojuDeviceTableRow.Name);
+			sendToQueue(jsondata.toJSONString(), "currentalarm.message");
+		}
+		else {
+			
+			mDeviceTableRow.Name =tmpNameString;
+			mDeviceTableRow._ROCommunity = _tmpRO;
+			mDeviceTableRow._RWCommunity =_tmpRW;
 		}
 
-		mDeviceTableRow.Name =tmpNameString;
-		mDeviceTableRow._ROCommunity = _ROCommunity;
-		mDeviceTableRow._RWCommunity =_RWCommunity;
+	
 		return mStatus;
 
 	}
@@ -780,17 +829,6 @@ public class MainKernel {
 
 		}
 
-		/*
-		 * if
-		 * (!this.ICDatabaseEngine1.clearElemetTableByLinked(cmd.mDeviceTableRow
-		 * .NetAddress)) { return false; }
-		 * 
-		 * 
-		 * if (cmd.mDeviceTableRow.NetType==NetTypes.wos) { if
-		 * (!this.ICDatabaseEngine1
-		 * .clearSlotTableByNetAddress(cmd.mDeviceTableRow.NetAddress)) { return
-		 * false; } }
-		 */
 
 		mStatus = this.ICDatabaseEngine1.DeviceTableDeleteRow(delDev.BindnojuDeviceTableRow);
 
@@ -805,6 +843,17 @@ public class MainKernel {
 			rootjson.put("key", jsondata.get("key").toString());
 			rootjson.put("pkey", jsondata.get("pkey").toString());
 			staticmemory.broadCast(rootjson.toJSONString());
+			
+			
+			//for syslog
+			
+			//for syslog
+			rootjson = new JSONObject();
+			rootjson.put("cmd", "devdellog");
+			rootjson.put("key", delDev.BindnojuDeviceTableRow.get_NetAddress());
+			rootjson.put("title",  delDev.BindnojuDeviceTableRow.Name);			
+			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
+			
 		}
 
 		return mStatus;
