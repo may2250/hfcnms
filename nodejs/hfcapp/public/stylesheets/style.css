@@ -204,10 +204,15 @@ a:hover { transition: all 200ms ease-in-out; }
 
 .navigation p {
 	font-size:10px;
+	padding: 0px 8px;
 }
 
 .candile {
 	height: 485px;
+}
+
+.tbl_devdetail-content {
+	margin: 0 auto;
 }
 
 .users_details_left {
@@ -267,11 +272,9 @@ div.dataTables_wrapper {
 .tbl_power {
     min-width: 200px;
     text-align: left;
-    margin: 0 auto;
 }
 
 .tbl_devmiddle{
-	margin: 0 auto;
 	min-width:650px;
 	text-align: left;
 }
@@ -298,6 +301,7 @@ div.dataTables_wrapper {
 
 .tbl_detail td{
     border-top: 0px !important;
+    text-align: left;
 }
 
 .tbl_noborder td{
@@ -352,6 +356,10 @@ div.dataTables_wrapper {
 	-webkit-box-shadow: 0px 0px 10px 0px rgb(58, 41, 31);
 	-moz-box-shadow: 0px 0px 10px 0px rgb(58, 41, 31);
    z-index: 999;
+}
+
+#modal_alarmlists {
+	font-size: 8px !important;
 }
 
 .alarm-danger {

@@ -457,6 +457,7 @@
 	       	 lazyLoadData = jsonobj.lazyNodes;
         }else if(jsonobj.cmd == "getdevicedetail"){
         	var node = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.key);
+        	showHfcDevice(jsonobj);
         	if(node != undefined){
         		if(jsonobj.isonline == true){
         			node.data.isonline = true;
@@ -476,8 +477,7 @@
             		}
         		}
         		node.render(true,false);        		
-        	}
-        	showHfcDevice(jsonobj);
+        	}        	
         }else if(jsonobj.cmd == "hfcvalueset"){
         	parseHfcValueSet(jsonobj);        	   	 
         }else if(jsonobj.cmd == "devstatus"){
@@ -965,7 +965,7 @@
     }
     
     function getDeviceDetail(devnode,preDevice){
-    	__getDeviceDetail(devnode);
+    	//__getDeviceDetail(devnode);
     	var datastring;
     	if(preDevice == undefined){
     		datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().data.hfctype 
@@ -973,7 +973,8 @@
     	}else{
     		datastring = '{"cmd":"getdevicedetail","ip":"' + devnode.key + '","devtype":"' + devnode.getLastChild().data.hfctype 
         	+ '","rcommunity":"' + devnode.data.rcommunity + '","wcommunity":"' + devnode.data.wcommunity + '","predev":"' + preDevice.key + '"}';
-    	}    	
+    	}   
+    	$(".candile").empty();
     	send(datastring);
     }  
     

@@ -3,8 +3,8 @@ $(function() {
 	
 });
 
-function __getDeviceDetail(devnode){
-	switch(devnode.getLastChild().key){
+function __getDeviceDetail(devnode, jsonobj){
+	switch(devnode.getLastChild().data.hfctype){
 	case "Trans":
 		$(".candile").load("/opticalTran");
 		break;
@@ -14,11 +14,10 @@ function __getDeviceDetail(devnode){
 	case "EDFA":
 		$(".candile").load("/opticalTran");
 		break;
-	case "rece_workstation":
-		$(".candile").load("/rece_workstation");
-		if(devnode.getLastChild().data.hfctype == "HfcMinWorkstation"){
-			
-		}
+	case "HfcMinWorkstation":
+		$(".candile").load("/rece_workstation", function(){
+			parseHfcDevice(jsonobj);
+		});
 		break;
 	case "OSW":
 		$(".candile").load("/opticalTran");
@@ -38,7 +37,7 @@ function __getDeviceDetail(devnode){
 	}
 }
 
-function showHfcDevice(jsonobj){
+function parseHfcDevice(jsonobj){
 	$(".dev-status").css("color", "lightgreen");
 	switch(jsonobj.devtype){
 	case "Trans":
@@ -70,6 +69,14 @@ function showHfcDevice(jsonobj){
 			break;
 		
 	}
+}
+
+function showHfcDevice(jsonobj){
+	if($(".candile")[0].textContent == ""){
+		__getDeviceDetail(__globalobj__._realDevice, jsonobj);
+	}else{
+		parseHfcDevice(jsonobj);
+	}	
 }
 
 function parse_rece_workstation(jsonobj){

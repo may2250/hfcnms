@@ -148,69 +148,83 @@
 				</ul>
 				<div class="tab-content">
 				    <div class="tab-pane tab-devpane active" id="tab-dev1">
-					    <div class="devdetail-content">					    	
-							<table class="table tbl_detail">
-							  <tbody>
-								    <tr>
-								      <td>输入光功率:</td>
-								      <td><input type="text" class="form-control isalarmThreshold" id="fnOpticalReceiverPower" readonly></td>
-								      <td>反向发射光功率:</td>
-								      <td><input type="text" class="form-control" id="detail_mineroptical" readonly></td>
-								    </tr>
-								    <tr>
-								      <td>反向偏置电流:</td>
-								      <td><input type="text" class="form-control" id="detail_minerelectric" readonly></td>
-								      <td>反向衰减值:</td>
-								      <td><input type="text" class="form-control" id="detail_minieratt" readonly></td>
-								    </tr>
-								    <tr>
-								      <td>频道数:</td>
-								      <td><input type="text" class="form-control hfcunit" id="fnRFChannelNum" readonly></td>
-								    </tr>
-							  </tbody>
-							</table>
-							<table class="table tbl_power" style="width:30%">
-							   <thead>
-								    <tr>
-								      <th>电源输出表</th>
-								      <th>输出电压</th>
-								    </tr>
-							  </thead>
-							  <tbody>
-									<tr>
-										<td><label class="fnDCPowerName_row0"></label></td>
-										<td><label class="fnDCPowerVoltage_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="fnDCPowerVoltage" id="fnDCPowerVoltage_row0"></label></td>
-									</tr>
-									<tr>
-										<td><label class="fnDCPowerName_row1"></label></td>
-										<td><label class="fnDCPowerVoltage_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="fnDCPowerVoltage" id="fnDCPowerVoltage_row1"></label></td>
-									</tr>
-							  </tbody>
-							</table>
-							<table class="table tbl_devmiddle tbl_devcontent" style="width:30%">
-							   <thead>
-								    <tr>
-								      <th>输出端口</th>
-								      <th>ATT</th>
-								      <th>EQ均衡</th>
-								      <th>输出电平</th>
-								    </tr>
-							  </thead>
-							  <tbody>
-									<tr>
-										<td><label class="fnRFPortName_row0"></label></td>
-										<td><label class="fnOutputRFlevelatt_row0 tbl_hfcunit" data-rownum="0" data-paramname="fnOutputRFlevelatt" id="fnOutputRFlevelatt_row0"></label></td>
-										<td><label class="fnOutputRFleveleq_row0 tbl_hfcunit" data-rownum="0" data-paramname="fnOutputRFleveleq" id="fnOutputRFleveleq_row0"></label></td>
-										<td><label class="fnRFPortOutputRFLevel_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="fnRFPortOutputRFLevel" id="fnRFPortOutputRFLevel_row0"></label></td>
-									</tr>
-									<tr>
-										<td><label class="fnRFPortName_row1"></label></td>
-										<td><label class="fnOutputRFlevelatt_row1 tbl_hfcunit" data-rownum="1" data-paramname="fnOutputRFlevelatt" id="fnOutputRFlevelatt_row1"></label></td>
-										<td><label class="fnOutputRFleveleq_row1 tbl_hfcunit" data-rownum="1" data-paramname="fnOutputRFleveleq" id="fnOutputRFleveleq_row1"></label></td>
-										<td><label class="fnRFPortOutputRFLevel_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="fnRFPortOutputRFLevel" id="fnRFPortOutputRFLevel_row1"></label></td>
-									</tr>
-							  </tbody>
-							</table>
+					    <div class="devdetail-content">			
+					    	<table class="tbl_devdetail-content">
+					    		<tr>
+					    			<td>
+					    				<table class="table tbl_detail">
+										  <tbody>
+											    <tr>
+											      <td>输入光功率:</td>
+											      <td><input type="text" class="form-control isalarmThreshold" id="fnOpticalReceiverPower" readonly></td>
+											      <td>反向发射光功率:</td>
+											      <td><input type="text" class="form-control" id="detail_mineroptical" readonly></td>
+											    </tr>
+											    <tr>
+											      <td>反向偏置电流:</td>
+											      <td><input type="text" class="form-control" id="detail_minerelectric" readonly></td>
+											      <td>反向衰减值:</td>
+											      <td><input type="text" class="form-control" id="detail_minieratt" readonly></td>
+											    </tr>
+											    <tr>
+											      <td>频道数:</td>
+											      <td><input type="text" class="form-control hfcunit" id="fnRFChannelNum" readonly></td>
+											    </tr>
+										  </tbody>
+										</table>
+					    			</td>
+					    		</tr>
+					    		<tr>
+					    			<td>
+					    				<table class="table tbl_power" style="width:30%">
+										   <thead>
+											    <tr>
+											      <th>电源输出表</th>
+											      <th>输出电压</th>
+											    </tr>
+										  </thead>
+										  <tbody>
+												<tr>
+													<td><label class="fnDCPowerName_row0"></label></td>
+													<td><label class="fnDCPowerVoltage_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="fnDCPowerVoltage" id="fnDCPowerVoltage_row0"></label></td>
+												</tr>
+												<tr>
+													<td><label class="fnDCPowerName_row1"></label></td>
+													<td><label class="fnDCPowerVoltage_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="fnDCPowerVoltage" id="fnDCPowerVoltage_row1"></label></td>
+												</tr>
+										  </tbody>
+										</table>
+					    			</td>
+					    		</tr>
+					    		<tr>
+					    			<td>
+					    				<table class="table tbl_devmiddle tbl_devcontent" style="width:30%">
+										   <thead>
+											    <tr>
+											      <th>输出端口</th>
+											      <th>ATT</th>
+											      <th>EQ均衡</th>
+											      <th>输出电平</th>
+											    </tr>
+										  </thead>
+										  <tbody>
+												<tr>
+													<td><label class="fnRFPortName_row0"></label></td>
+													<td><label class="fnOutputRFlevelatt_row0 tbl_hfcunit" data-rownum="0" data-paramname="fnOutputRFlevelatt" id="fnOutputRFlevelatt_row0"></label></td>
+													<td><label class="fnOutputRFleveleq_row0 tbl_hfcunit" data-rownum="0" data-paramname="fnOutputRFleveleq" id="fnOutputRFleveleq_row0"></label></td>
+													<td><label class="fnRFPortOutputRFLevel_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="fnRFPortOutputRFLevel" id="fnRFPortOutputRFLevel_row0"></label></td>
+												</tr>
+												<tr>
+													<td><label class="fnRFPortName_row1"></label></td>
+													<td><label class="fnOutputRFlevelatt_row1 tbl_hfcunit" data-rownum="1" data-paramname="fnOutputRFlevelatt" id="fnOutputRFlevelatt_row1"></label></td>
+													<td><label class="fnOutputRFleveleq_row1 tbl_hfcunit" data-rownum="1" data-paramname="fnOutputRFleveleq" id="fnOutputRFleveleq_row1"></label></td>
+													<td><label class="fnRFPortOutputRFLevel_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="fnRFPortOutputRFLevel" id="fnRFPortOutputRFLevel_row1"></label></td>
+												</tr>
+										  </tbody>
+										</table>
+					    			</td>
+					    		</tr>
+					    	</table>						
 					    </div>				    	
 				    </div>
 				    <div class="tab-pane tab-devpane" id="tab-dev2">
