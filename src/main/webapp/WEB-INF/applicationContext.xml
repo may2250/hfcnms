@@ -106,11 +106,13 @@
 	
 	<!-- 调度业务 -->
 
+<!--
 	<bean id="trapReceiverJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="trapReceiverBean" />
 	 <property name="targetMethod"  value="start"/>
 	 <property name="concurrent" value="true" />	 	
-	</bean>
+	</bean>-->
+
 <!--
 	<bean id="hfcAlarmJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="hfcAlarmProcessor" />
@@ -118,11 +120,13 @@
 	 <property name="concurrent" value="true" />	 	
 	</bean>-->
 
+<!--
 	<bean id="pduserverJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="pduserver" />
 	 <property name="targetMethod"  value="OnlineTestThread"/>
 	 <property name="concurrent" value="true" />	 	
-	</bean>
+	</bean>-->
+
 	<bean id="mainKernelJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="mainKernel" />
 	 <property name="targetMethod"  value="start"/>
@@ -140,12 +144,14 @@
 	 <property name="targetMethod"  value="start"/>
 	 <property name="concurrent" value="true" />	 	
 	</bean>
+<!--
 	<bean id="realreadingJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="realreading" />
 	 <property name="targetMethod"  value="start"/>
 	 <property name="concurrent" value="true" />	 	
 	</bean>
-											
+			-->
+								
 
 	<bean id="mainKernelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="mainKernelJob" />
@@ -154,12 +160,14 @@
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
 
+<!--
 	<bean id="trapReceierTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="trapReceiverJob" />
 	 <property name="startDelay" value="2000" />
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
-	</bean>
+	</bean>-->
+
 <!--
 	<bean id="hfcAlarmTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="hfcAlarmJob" />
@@ -168,12 +176,14 @@
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>-->
 
+<!--
 	<bean id="pduserverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="pduserverJob" />
 	 <property name="startDelay" value="2500" />
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
-	</bean>
+	</bean>-->
+
 
 <!--
 	<bean id="CurrentAlarmModelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
@@ -189,36 +199,36 @@
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
+<!--
 	<bean id="realreadingTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="realreadingJob" />
 	 <property name="startDelay" value="3000" />
 	 <property name="repeatInterval" value="5" />
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>
-	
+	-->
+
 	<!-- 设置调度 -->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		 <property name="jobDetails">  
 	        <list>  
-	            <ref bean="pduserverJob" />
-	            <ref bean="trapReceiverJob" /> 
-	<!--           <ref bean="hfcAlarmJob" /> -->
+<!--	            <ref bean="pduserverJob" />-->
+<!--	            <ref bean="trapReceiverJob" /> -->
 	            <ref bean="mainKernelJob" />
 	 <!--           <ref bean="CurrentAlarmModelJob" />-->
 	            <ref bean="paramKernelJob" />
-	            <ref bean="realreadingJob" />
+	<!--            <ref bean="realreadingJob" />-->
 	        </list>  
 	    </property>  
 	   
 	    <property name="triggers">  
 	        <list>  
-	            <ref bean="pduserverTrigger" />
-	            <ref bean="trapReceierTrigger" />
-	  <!--          <ref bean="hfcAlarmTrigger" /> -->
+	      <!--      <ref bean="pduserverTrigger" />-->
+<!--	            <ref bean="trapReceierTrigger" />-->
 	            <ref bean="mainKernelTrigger" /> 
 	     <!--       <ref bean="CurrentAlarmModelTrigger" /> -->
 	            <ref bean="paramKernelTrigger" />
-	            <ref bean="realreadingTrigger" />
+	     <!--       <ref bean="realreadingTrigger" />-->
 	        </list>  
 	    </property>  
 	</bean>

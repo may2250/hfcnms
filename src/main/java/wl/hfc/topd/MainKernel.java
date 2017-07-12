@@ -34,6 +34,8 @@ import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.online.PDUServer;
 import wl.hfc.online.ParamKernel;
+import wl.hfc.online.Realtime_param_call;
+import wl.hfc.server.Sstatus;
 import wl.hfc.traprcss.TrapPduServer;
 
 
@@ -41,15 +43,20 @@ public class MainKernel {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	private static final String PARAMKERNEL_MESSAGE = "paramkernel.message";
 	private static Logger log = Logger.getLogger(MainKernel.class);
+	
 	private CDatabaseEngine ICDatabaseEngine1;
 	private LNode rootListNode;
+	
 	public Hashtable listDevHash = new Hashtable();
 	public Hashtable listGrpHash = new Hashtable();
+	
 	private boolean isTopodInit;
 	public static MainKernel me;
 
-	public MainKernel() {
-	
+	public MainKernel() {	
+		
+		//Integer xx=null;
+		//log.info(xx.toString());
 		me = this;
 
 	}
@@ -154,9 +161,7 @@ public class MainKernel {
 	public void start() {		
 		
 		log.info("[#3] .....MainKernel starting.......");
-		ClsLanguageExmp.init(false, false);
-
-		
+		ClsLanguageExmp.init(false, false);		
 		ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
 
 	    initTopodData();	
@@ -167,12 +172,20 @@ public class MainKernel {
 		cam.logEngine=ICDatabaseEngine1;
 		cam.setRedisUtil(redisUtil);
 	    cam.setStaticMemory(staticmemory);
-	    cam.start();
-	    
+	 
 	  
 	    PDUServer.me.listDevHash=this.listDevHash;
 	    TrapPduServer.me.listDevHash=this.listDevHash;	    
 	    ParamKernel.me.listDevHash=this.listDevHash;
+	    
+	    
+	    cam.start();	    
+	    TrapPduServer.me.start();
+	    PDUServer.me.start();
+	    Realtime_param_call.me.start();
+	    
+	    
+	    Sstatus stsengine=  new Sstatus(redisUtil);
 	    
 		Jedis jedis = null;
 		try {
@@ -448,7 +461,7 @@ public class MainKernel {
 			group.parent = rootNode;
 			group.fullpath = rootNode.fullpath + "/" + group.BindUserGroupTableRow.UserGroupName;
 			group.Tag = group;
-			log.info(group.fullpath);
+			//log.info(group.fullpath);
 			listGrpHash.put(group.BindUserGroupTableRow.UserGroupID, group);
 
 			CreateTreeNode(group, groupLists, devLists);

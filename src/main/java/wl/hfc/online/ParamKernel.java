@@ -35,6 +35,7 @@ public class ParamKernel {
 	public static  ParamKernel me;
     public ParamKernel()
     {
+    	 new pmls();
     	  me=this;
     }
 
@@ -201,7 +202,7 @@ public class ParamKernel {
 		log.info("[#3] .....ParamKernel starting.......");
 		Jedis jedis=null;
 		try {		
-			new pmls();
+		
 			jedis = redisUtil.getConnection();		 
 			jedis.psubscribe(jedissubSub, PARAMKERNEL_MESSAGE);
 			redisUtil.getJedisPool().returnResource(jedis); 

@@ -12,21 +12,22 @@ import com.xinlong.util.ObjSnmpPreail;
 import com.xinlong.util.StaticMemory;
 
 
-public class Realtime_param_call {
+public class Realtime_param_call extends Thread {
 	private static Logger log = Logger.getLogger(Realtime_param_call.class);
 
 	private static StaticMemory staticmemory;
-	
+	public static Realtime_param_call me;
+
 	public Realtime_param_call()
     {
-    	  
+    	  me=this;
     }
 	
 	public static void setStaticMemory(StaticMemory staticmemory) {
 		Realtime_param_call.staticmemory = staticmemory;
 	}
 	@SuppressWarnings("static-access")
-	public void start() throws InterruptedException{
+	public void run() {
 		
 		log.info("[#3] .....Realtime_param_call starting.......");
 		
@@ -65,8 +66,13 @@ public class Realtime_param_call {
 
 					}
 				}
-			}			
-			Thread.sleep(1500);
+			}	
+			try {
+				Thread.sleep(1500);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+	
 		}
 	}
 }

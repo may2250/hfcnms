@@ -37,25 +37,27 @@ public class pmls {
 
 	// private static String thisparamrowsFile = Application.StartupPath +
 	// @"\phs.wspb";
-	public static pmls paramxml1;
+
 	public static Hashtable<String, nojuParmsTableRow> tab1;
 	private static Document doc;
 	private static Logger log = Logger.getLogger(pmls.class);
-	public PduSevr sver;
+
 	private static SnmpUtil util;
 	public static PDU recePDU;
-
+	public static pmls me;
+	
+	public PduSevr sver;
 	public pmls() {
 		tab1 = new Hashtable<String, nojuParmsTableRow>();
 		loadDXml();
-		paramxml1 = this;
+		me = this;
 	}
 
 	public void loadDXml() {
 		long lasting = System.currentTimeMillis();
 		String filePath = pmls.class.getResource("/").toString();
 		filePath = filePath.substring(filePath.indexOf("file:") + 5);
-		log.info("----------------path--->>>" + filePath+ "phs.xml");
+		//log.info("----------------path--->>>" + filePath+ "phs.xml");
 		File f = new File(filePath + "phs.xml");
 	    	
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

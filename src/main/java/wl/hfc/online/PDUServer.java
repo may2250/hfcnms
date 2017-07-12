@@ -33,7 +33,7 @@ import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
 import wl.hfc.topd.MainKernel;
 
-public class PDUServer {
+public class PDUServer extends Thread {
 	// config
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	public static int OnlineInterval = 3;// 单位:S;设备树在线轮询一遍总时间
@@ -254,7 +254,7 @@ public class PDUServer {
 	}
 
 	@SuppressWarnings("static-access")
-	private void OnlineTestThread() {
+	public void run() {
 
 		// OnlineTestThread();
 		log.info("[#3] .....PDUServer starting.......");

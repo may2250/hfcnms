@@ -18,22 +18,19 @@ import com.xinlong.util.StaticMemory;
 
 
 // common class for response  the  other informations of
-public class Sstatus {	
+public class Sstatus{	
 
 		private static final String  Sstatus_MESSAGE =  "sstatus.message";
 		private static Logger log = Logger.getLogger(Sstatus.class);	
-
-	    public Sstatus()
-	    {
+		private    RedisUtil redisUtil;
+		
+	    public Sstatus( RedisUtil redisUtil)
+	    {	    	
 	    	  
 	    }
 
-		private static RedisUtil redisUtil;
 
-		public static void setRedisUtil(RedisUtil redisUtil) {
-			Sstatus.redisUtil = redisUtil;
-		}
-		
+
 
 		
 		private   JedisPubSub jedissubSub = new JedisPubSub() {
@@ -55,7 +52,7 @@ public class Sstatus {
 
 	      public void onPMessage(String arg0, String arg1, String msg) {
 	      	try {  			
-	  			servicestart(msg);
+	  			phraseMSG(msg);
 	  			
 	  		}catch(Exception e){
 	  			e.printStackTrace();	
@@ -66,15 +63,15 @@ public class Sstatus {
 
 		};
 		
-		private void servicestart(String message) throws InterruptedException, ParseException, IOException{
+		private void phraseMSG(String message) throws InterruptedException, ParseException, IOException{
 			System.out.println(" [x] ParamKernel Received: '" + message + "'");			
 			JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 			String cmd = jsondata.get("cmd").toString();
 
 			if(cmd.equalsIgnoreCase("severstatus")){
-				jsondata.put("TrapPduServerstatus", TrapPduServer.TrapPduServer_status);
-				jsondata.put("CDatabaseEngineflag", CDatabaseEngine.flag);				
-				jsondata.put("PDUServerstatus", PDUServer.PDUServer_status);				
+				jsondata.put("TrapPduServerstatus", TrapPduServer.TrapPduServer_status);//trap listen status
+				jsondata.put("CDatabaseEngineflag", CDatabaseEngine.flag);//last time  database status		
+				jsondata.put("PDUServerstatus", PDUServer.PDUServer_status);//	pduserver init		
 				
 				//send to client
 				//staticmemory.sendRemoteStr(jsondata, jsondata.get("sessionid").toString());	
@@ -83,20 +80,17 @@ public class Sstatus {
 		}
 		
 
-	    @SuppressWarnings("static-access")
-		public void start() throws InterruptedException{
-			
-			log.info("[#3] .....ParamKernel starting.......");
-			Jedis jedis=null;
+
+		public boolean testJedis(){
+	    	Jedis jedis=null;
 			try {		
-				jedis = redisUtil.getConnection();		 
-				jedis.psubscribe(jedissubSub, Sstatus_MESSAGE);
-				redisUtil.getJedisPool().returnResource(jedis); 
+				jedis = redisUtil.getConnection();	
+				return true;
 				  
 			}catch(Exception e){
 				e.printStackTrace();
 				redisUtil.getJedisPool().returnBrokenResource(jedis);
-				
+				return false;
 			}
 			
 		}

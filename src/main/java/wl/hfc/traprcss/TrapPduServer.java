@@ -43,7 +43,7 @@ import com.xinlong.util.RedisUtil;
 
 
 //TrapPduServer 只负责告警监听，不响应发布订阅消息机制。
-public class TrapPduServer {
+public class TrapPduServer extends Thread {
 	private static final String  HFCALARM_MESSAGE =  "currentalarm.message" ;
 	public static TrapProCenter trpcss;
 	public static String TRAP_ADDRESS = "udp:0.0.0.0/";
@@ -83,16 +83,14 @@ public class TrapPduServer {
 	//hfc_client_udp  	    
 	private Address targetAddress = null;
 
-	public void start() {
-
+	public void run() {
 
 		logger.info("[#3] .....TrapPduServer starting.......");
 		try {
-			// get trap port from db
 
 			String trapport = "162";
 			TRAP_ADDRESS = TRAP_ADDRESS + trapport;
-			System.out.println("+++++++++TRAP_ADDRESS=" + TRAP_ADDRESS);
+			//System.out.println("+++++++++TRAP_ADDRESS=" + TRAP_ADDRESS);
 
 			listenAddress = GenericAddress.parse(System.getProperty("snmp4j.listenAddress", TRAP_ADDRESS));
 			TransportMapping transport;
@@ -112,6 +110,7 @@ public class TrapPduServer {
 		} catch (Exception e) {
 			TrapPduServer_status=false;
 			e.printStackTrace();
+			logger.info(e.getMessage());
 			return;
 			
 		}
