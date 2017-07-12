@@ -164,7 +164,7 @@ public class MainKernel {
 		ClsLanguageExmp.init(false, false);		
 		ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
 
-	    initTopodData();	
+	  
 
 		
 		//CurrentAlarmModel.me.logEngine=ICDatabaseEngine1;
@@ -178,6 +178,8 @@ public class MainKernel {
 	    TrapPduServer.me.listDevHash=this.listDevHash;	    
 	    ParamKernel.me.listDevHash=this.listDevHash;
 	    
+	    
+	    initTopodData();	
 	    
 	    cam.start();	    
 	    TrapPduServer.me.start();
