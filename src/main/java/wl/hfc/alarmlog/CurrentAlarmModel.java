@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -155,11 +156,64 @@ public class CurrentAlarmModel extends Thread {
 		JSONObject logjson;
 		rootjson.put("cmd", jsondata.get("cmd").toString());
 		JSONArray jsonarray = new JSONArray();
-
+		Date datestart ;
+		Date dateend ;
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Date datestart = sdf.parse(jsondata.get("start").toString());
-			Date dateend = sdf.parse(jsondata.get("end").toString());
+			String custSlectindexString=jsondata.get("customdate").toString();
+			
+			if (custSlectindexString.equalsIgnoreCase("0")) {
+				 datestart = sdf.parse(jsondata.get("start").toString());//已经是零点
+				 dateend = sdf.parse(jsondata.get("end").toString());
+					
+					
+				 //结束日的24点
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(dateend);
+                calendar.add(calendar.DATE,1);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                dateend = calendar.getTime();
+			}
+			else {
+				
+				int daysNeedToSHUT=0;
+				if (custSlectindexString.equalsIgnoreCase("1")) {
+					daysNeedToSHUT=-1;
+				}else if (custSlectindexString.equalsIgnoreCase("2")) 
+				{
+					daysNeedToSHUT=-7;
+				}else if (custSlectindexString.equalsIgnoreCase("3")) 
+				{
+			    	daysNeedToSHUT=-30;
+				}	
+				
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(calendar.DATE,daysNeedToSHUT);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                datestart = calendar.getTime();     
+                
+                
+                calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(calendar.DATE,daysNeedToSHUT);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                datestart = calendar.getTime();            
+                
+                
+
+                dateend = new Date();
+				
+				
+			}
+			
+	
 			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend, "");
 			// System.out.println("-------------traprow-size =" +
 			// traprow.size());

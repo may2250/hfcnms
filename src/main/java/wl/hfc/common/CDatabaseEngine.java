@@ -714,5 +714,49 @@ public class CDatabaseEngine {
 
     }
 
+/*	public int UserAuthorizeTableInsertRow(nojuUserAuthorizeTableRow row) {
+		int lastId = -1;
+		int copyIndex = 1;
+		
+		
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return -1;
+			
+		}
+
+		String newName = row.UserGroupName;
+		ResultSet rs = null;		
+
+		while (isDevGroupExsit(newName) != -1) {
+			newName = row.UserGroupName + "(" + copyIndex + ")";
+			copyIndex++;
+
+		}
+
+		row.UserGroupName = newName;
+
+		String sqlInsert = "INSERT INTO usergrouptable(UserGroupName,ParentGroupID) VALUES('" + row.UserGroupName + "'," + row.ParentGroupID + ')';
+
+		// sqlInsert += ";select @@IDENTITY";
+		PreparedStatement pstmt;
+		try {
+			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
+			pstmt.executeUpdate();
+			rs = pstmt.getGeneratedKeys();// 这一句代码就是得到插入的记录的id
+			while (rs.next()) {
+				lastId = rs.getInt(1);
+			}
+			row.UserGroupID = lastId;
+			return row.UserGroupID;
+		} catch (Exception EX) {
+			System.out.println(EX);
+			//isDBConnected(false);
+			return lastId;
+
+		}
+
+	}
+*/
     
 }
