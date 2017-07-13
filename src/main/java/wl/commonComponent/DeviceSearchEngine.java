@@ -39,7 +39,7 @@ public class DeviceSearchEngine extends Thread{
 	public static PDUServerSearch pdusearcher;
 	private static StaticMemory staticmemory;
     public static EnumLogoVersion logoVersion = EnumLogoVersion.prevail;//褰撳墠缃戠瀹氬埗鐗堟湰
-
+    private int processint = 1;
     
 	public DeviceSearchEngine(SearchIpInfo sipIf,StaticMemory staticmemory) throws IOException{
 		this.ipinfo = sipIf;
@@ -98,7 +98,7 @@ public class DeviceSearchEngine extends Thread{
 					}
 					session.cancel(outpdu, this);
 					latch.countDown();  
-				}
+				}				
 			}
 		};
 
@@ -134,7 +134,7 @@ public class DeviceSearchEngine extends Thread{
 		String ipaddr=respEvnt.getPeerAddress().toString();
 		ipaddr = ipaddr.substring(0,ipaddr.indexOf("/"));
 		Vector<VariableBinding> recVBs= (Vector<VariableBinding>)respEvnt.getResponse().getVariableBindings();
-		System.out.println("------------>瑙ｆ瀽Response<----------" + recVBs.toString());
+		//System.out.println("------------>瑙ｆ瀽Response<----------" + recVBs.toString());
 		HFCTypes hfctyp1 = OidToHFCType.getType(recVBs);
 		if (hfctyp1 == HFCTypes.Unknown) // 澶勭悊鏈煡璁惧
 		{
@@ -237,18 +237,21 @@ public class DeviceSearchEngine extends Thread{
 	        }
 	        else
 	        {
-	        	int i = 0;
+	        	long startip = NetDataProcess.getIP(ipinfo.ipbegin);
+	        	long endip = NetDataProcess.getIP(ipinfo.ipend);
 	            //else 鏍规嵁鍦板潃鎼滅储
-	            for (; NetDataProcess.CompareIpAddress(ipinfo.ipbegin, ipinfo.ipend) <= 0; )
+	            while (startip <= endip)
 	            {
-	                SearchAgentByIpAddressAnyc(ipinfo.ipbegin, ipinfo.community, ipinfo.destiType);                
+	                SearchAgentByIpAddressAnyc(NetDataProcess.toIP(startip), ipinfo.community, ipinfo.destiType);  
 					Thread.sleep(20);
 					JSONObject rootjson = new JSONObject();
 					rootjson.put("cmd", "devsearchprocess");
-					rootjson.put("process", i%ipinfo.searchnumbers*100);
+					float process = Math.abs((float) processint / ipinfo.searchnumbers * 100);
+					rootjson.put("process", process);
 					staticmemory.sendRemoteStr(rootjson.toJSONString(), ipinfo.sessionid);
-					i++;
-					ipinfo.ipbegin = NetDataProcess.IncIpAddress(ipinfo.ipbegin);	                
+					processint++;
+					//ipinfo.ipbegin = NetDataProcess.IncIpAddress(ipinfo.ipbegin);	  
+					startip++;
 	            }
 	        }
 		}catch (Exception e) {

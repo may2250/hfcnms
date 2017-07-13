@@ -491,8 +491,10 @@
         		var datastring = '{"cmd":"getgrouptree"}';
     	    	webSocket.send(datastring);
     	    	$("#modal_searchresult").modal();
+        	}else{
+        		$(".progress-bar").width(jsonobj.process+ "%");
         	}
-        	$(".progress-bar").width(jsonobj.process+ "%");
+        	
         }else if(jsonobj.cmd == "getgrouptree"){
         	regtree = $("#reg-grouptree").fancytree({
                 source: jsonobj.treenodes,
