@@ -199,6 +199,8 @@ public class NlogType
 
     }
 
+    public enum AuthResult { SUCCESS, USER_NOT_EXIST, PASSWD_NOT_MATCH, USER_ALREADYLOGIN }
+    
 }
 
 

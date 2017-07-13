@@ -1,5 +1,6 @@
 package wl.hfc.topd;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.concurrent.Delayed;
@@ -22,11 +23,23 @@ public class topodtest {
 		System.out.println("Hello World!");
 		RedisUtil redisUtil=new RedisUtil();
 		CDatabaseEngine	ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
-		ICDatabaseEngine1.getConnection();
-		Hashtable devHash = ICDatabaseEngine1.DeviceTableGetAllRows();
-		Hashtable grpHash = ICDatabaseEngine1.UserGroupTableGetAllRows();
+		//ICDatabaseEngine1.getConnection();
+		try {
+			Hashtable devHash = ICDatabaseEngine1.DeviceTableGetAllRows();
+			Hashtable grpHash = ICDatabaseEngine1.UserGroupTableGetAllRows();
+			
+			  ArrayList<nojuUserAuthorizeTableRow> rowssss=ICDatabaseEngine1.UserAuthorizeTableGetAllRows();
+				int rossns=1;
+				
+				
+				rossns++;
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		
-		
+	
+
 		//grp test
 //	UserGroupTableRow row=new UserGroupTableRow(999,"bb8",-1);
 //	ICDatabaseEngine1.UserGroupTableInsertRow(row);
@@ -58,7 +71,7 @@ public class topodtest {
 	//ICDatabaseEngine1.trapLogInsertRow(aCurrentrow);
 	
 		
-	CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1,redisUtil);
+	//CurrentAlarmModel CurrentAlarmModel1=new CurrentAlarmModel(ICDatabaseEngine1,redisUtil);
 	//CurrentAlarmModel1.insertTrapLog( TrapLogTypes.Lo, "1.1.1.1", "neName", "content", new Date());
 	
 	//CurrentAlarmModel1.insertTrapLog( TrapLogTypes.Lo, "1.1.1.1", "neName", "content", new Date());
