@@ -714,7 +714,7 @@ public class CDatabaseEngine {
 
     }
 
-/*	public int UserAuthorizeTableInsertRow(nojuUserAuthorizeTableRow row) {
+	public int UserAuthorizeTableInsertRow(nojuUserAuthorizeTableRow row) {
 		int lastId = -1;
 		int copyIndex = 1;
 		
@@ -725,19 +725,9 @@ public class CDatabaseEngine {
 			
 		}
 
-		String newName = row.UserGroupName;
 		ResultSet rs = null;		
 
-		while (isDevGroupExsit(newName) != -1) {
-			newName = row.UserGroupName + "(" + copyIndex + ")";
-			copyIndex++;
-
-		}
-
-		row.UserGroupName = newName;
-
-		String sqlInsert = "INSERT INTO usergrouptable(UserGroupName,ParentGroupID) VALUES('" + row.UserGroupName + "'," + row.ParentGroupID + ')';
-
+		String sqlInsert = "INSERT INTO UserAuthorizeTable(UserName,password1,phoneNmber,smtpAddress,AuthTotal,IsMsgDefi) VALUES(" + "'" + row.UserName + "','" + row.PassWord + "','" + row.PhoneNmbr + "','" + row.smtpAddress + "'," + row.AuthTotal + "," + "no" + ")";
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
 		try {
@@ -747,8 +737,8 @@ public class CDatabaseEngine {
 			while (rs.next()) {
 				lastId = rs.getInt(1);
 			}
-			row.UserGroupID = lastId;
-			return row.UserGroupID;
+			row.UserID = lastId;
+			return row.UserID;
 		} catch (Exception EX) {
 			System.out.println(EX);
 			//isDBConnected(false);
@@ -757,6 +747,56 @@ public class CDatabaseEngine {
 		}
 
 	}
-*/
-    
+
+	public boolean UserAuthorizeTableDeleteRow(nojuUserAuthorizeTableRow row) {
+		Connection con=offNewCoon();		
+		if (con==null) {
+			return false;
+			
+		}
+	String sqlInsert= "DELETE FROM UserAuthorizeTable WHERE UserID=" + row.UserID;
+		// sqlInsert += ";select @@IDENTITY";
+		PreparedStatement pstmt;
+		try {
+			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+			if (pstmt.executeUpdate() > 0)
+				return true;
+
+		} catch (Exception EX) {
+	
+			return false;
+
+		}
+
+		return false;
+
+	}
+	
+	public   ArrayList<nojuUserAuthorizeTableRow> UserAuthorizeTableGetAllRows() throws SQLException{
+		PreparedStatement pstmt;
+		ArrayList<nojuUserAuthorizeTableRow> retList = new ArrayList<nojuUserAuthorizeTableRow>();
+
+		ResultSet rs = null;
+		
+		Connection con=offNewCoon();		
+
+		
+
+			String sqlInsert = "SELECT * FROM UserAuthorizeTable";
+
+			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+			rs = pstmt.executeQuery(sqlInsert);
+
+			while (rs.next()) {
+				nojuUserAuthorizeTableRow newURow = new nojuUserAuthorizeTableRow(rs.getInt(1), rs.getString(2), rs.getByte(3),rs.getString(4));
+
+				retList.add(newURow);
+			}
+
+
+
+		return retList;
+	}
+
+
 }

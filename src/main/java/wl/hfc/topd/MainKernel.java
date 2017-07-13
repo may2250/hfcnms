@@ -30,6 +30,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.*;
+import wl.hfc.common.NlogType.AuthResult;
 import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.online.PDUServer;
@@ -903,6 +904,49 @@ public class MainKernel {
 		return jsondata.toJSONString();
 	}
 
+    private void  handleAuthUser(JSONObject jsondata)
+    {
+    	AuthResult rst;
+        boolean isExist = false;
+            ArrayList<nojuUserAuthorizeTableRow> mUserAuthorizeTableRowList = ICDatabaseEngine1.UserAuthorizeTableGetAllRows();
+           
+			for (nojuUserAuthorizeTableRow prow : mUserAuthorizeTableRowList) {				
+				
+		         if (prow.UserName == jsondata.get("username").toString())
+	                {
+	                    isExist = true;
+	                    if (prow.PassWord == jsondata.get("password").toString())
+	                    {	                   
+	                        //login success
+	                    	rst= AuthResult.SUCCESS; 
+	            
+
+	
+	                    }
+	                    else
+	                    {
+	                    	rst=  AuthResult.PASSWD_NOT_MATCH;
+	                        
+	                    }
+	                    break;
+	                }
+	
+			}
+    
+
+            if (!isExist)
+            {
+            	rst = AuthResult.USER_NOT_EXIST;
+            }
+
+
+        }
+
+
+
+    
+
+	
 	public void sendToQueue(String msg, String queue) {
 		Jedis jedis = null;
 		try {
