@@ -240,6 +240,7 @@ public class DeviceSearchEngine extends Thread{
 	        	long startip = NetDataProcess.getIP(ipinfo.ipbegin);
 	        	long endip = NetDataProcess.getIP(ipinfo.ipend);
 	            //else 鏍规嵁鍦板潃鎼滅储
+	        	//System.out.println("--startip="+ startip+"----endip="+endip);
 	            while (startip <= endip)
 	            {
 	                SearchAgentByIpAddressAnyc(NetDataProcess.toIP(startip), ipinfo.community, ipinfo.destiType);  
@@ -247,6 +248,7 @@ public class DeviceSearchEngine extends Thread{
 					JSONObject rootjson = new JSONObject();
 					rootjson.put("cmd", "devsearchprocess");
 					float process = Math.abs((float) processint / ipinfo.searchnumbers * 100);
+					//System.out.println("--process===="+process);
 					rootjson.put("process", process);
 					staticmemory.sendRemoteStr(rootjson.toJSONString(), ipinfo.sessionid);
 					processint++;

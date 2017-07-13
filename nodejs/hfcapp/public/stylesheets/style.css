@@ -279,6 +279,10 @@ div.dataTables_wrapper {
 	text-align: left;
 }
 
+.alarm_ico {
+	width:16px;
+}
+
 .tab-devpane{
 	height: 320px !important;
     overflow: auto;
@@ -363,7 +367,7 @@ div.dataTables_wrapper {
 }
 
 .alarm-danger {
-	background: #d23939 !important;
+	background: #f566a0 !important;
 }
 
 .alarm-major {

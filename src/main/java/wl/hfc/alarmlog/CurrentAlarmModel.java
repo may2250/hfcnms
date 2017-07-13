@@ -516,7 +516,15 @@ public class CurrentAlarmModel extends Thread {
 		row.OperLogID = logEngine.operLogInsertRow(row);
 
 		// send row to clinet
-
+		JSONObject logjson = new JSONObject();
+		logjson.put("cmd", "log_message");
+		logjson.put("id", row.OperLogID);
+		logjson.put("user", row.OperLogUser);
+		logjson.put("type", row.OperLogType.toString());
+		logjson.put("content", row.OperLogContent);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		logjson.put("time", sdf.format(row.OperLogTime));
+		sendToQueue(logjson.toJSONString(), MAINKERNEL_MESSAGE);
 		return row;
 	}
 

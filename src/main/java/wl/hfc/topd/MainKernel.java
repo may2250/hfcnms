@@ -152,7 +152,9 @@ public class MainKernel {
 			staticmemory.broadCast(handleOnlineInfo(jsondata));
 		} else if (cmd.equalsIgnoreCase("alarm_message")) {
 			staticmemory.broadCast(message);
-		}  else if (cmd.equalsIgnoreCase("dbclosed")) {
+		} else if (cmd.equalsIgnoreCase("log_message")) {
+			staticmemory.broadCast(message);
+		} else if (cmd.equalsIgnoreCase("dbclosed")) {
 			staticmemory.broadCast(message);
 		}
 	}
@@ -272,7 +274,7 @@ public class MainKernel {
 		for (nojuTrapLogTableRow prow : CurrentAlarmModel.me.allRows) {
 			logjson = new JSONObject();
 			logjson.put("id", prow.TrapLogID);
-			logjson.put("level", prow.level);
+			logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
 			logjson.put("path", "grp1/xxxx");
 			logjson.put("type", prow.TrapLogType.toString());
 			logjson.put("paramname", prow.parmName);
@@ -284,9 +286,27 @@ public class MainKernel {
 			jsonarray.add(logjson);
 		}
 		rootjson.put("alarms", jsonarray);
+		//invalid alarms
+		jsonarray = new JSONArray();
+		for (nojuTrapLogTableRow prow : CurrentAlarmModel.me.invalidRows) {
+			logjson = new JSONObject();
+			logjson.put("id", prow.TrapLogID);
+			logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+			logjson.put("path", "grp1/xxxx");
+			logjson.put("type", prow.TrapLogType.toString());
+			logjson.put("paramname", prow.parmName);
+			logjson.put("paramvalue", prow.paramValue);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			logjson.put("eventtime", sdf.format(prow.TrapLogTime));
+			logjson.put("solved", prow.TrapTreatMent);
+			logjson.put("solvetime", prow.isTreated);
+			jsonarray.add(logjson);
+		}
+		rootjson.put("invalidalarms", jsonarray);
 		// test logs
 		logjson = new JSONObject();
 		logjson.put("id", "1");
+		logjson.put("user", "admin");
 		logjson.put("type", "test");
 		logjson.put("content", "test log!!");
 		logjson.put("time", "2017-5-22");

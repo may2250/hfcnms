@@ -17,13 +17,13 @@ public class SearchIpInfo {
         community = "public";
         if (NetDataProcess.CompareIpAddress(ip1, ip2) <= 0)
         {
-        	ipbegin = ip2;
-            ipend = ip1;
+        	ipbegin = ip1;
+            ipend = ip2;        	
         }
         else
         {
-        	ipbegin = ip1;
-            ipend = ip2;            
+        	ipbegin = ip2;
+            ipend = ip1;       
         }
         searchnumbers = 0;
         /*long retval = NetDataProcess.IpAddressDispersion(ipbegin, ipend);

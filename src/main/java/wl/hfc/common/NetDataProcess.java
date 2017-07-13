@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class NetDataProcess {
-	public static int CompareIpAddress(InetAddress ip1, InetAddress ip2)
+	/*public static int CompareIpAddress(InetAddress ip1, InetAddress ip2)
     {
         if (ip1.equals(ip2)) return 0;
 
@@ -19,6 +19,15 @@ public class NetDataProcess {
                 return -1;
             else
                 return 1;
+        }
+
+        return 0;
+    }*/
+	
+	public static int CompareIpAddress(InetAddress ip1, InetAddress ip2)
+    {
+        if(getIP(ip1)>getIP(ip2)){
+        	return 1;
         }
 
         return 0;

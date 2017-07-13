@@ -2,6 +2,7 @@
 	var webSocket;
 	var regtree;
 	var tbl_devalarm;
+	var tbl_devalarm_old;
 	var tbl_optlog;
 	var tbl_loglists = null;
 	var lazyLoadData = null;
@@ -81,9 +82,42 @@
         	  },
         	  "createdRow": function ( row, data, index ) {
         		  $(row).attr('id', data[0]);
-                  if ( data[1] == "1" ) {
+                  if ( data[1] == "紧急告警" ) {
+                	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-warning');
-                  }else if(data[1] == "2"){
+                  }else if(data[1] == "重要告警"){
+                	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
+                	  $('td', row).parent().addClass('alarm-danger');                  
+                  }
+              }
+        } );
+    	
+    	tbl_devalarm_old = $('#tbl_devalarm_old').DataTable({
+    		scrollY:        130,
+    		scrollX: 		true,
+    		scrollCollapse: true,
+    		order: 			[[ 0, "desc" ]],
+            paging:         false,
+            info:     		false,
+            searching: 		false,
+            columns: [
+                      { title: "ID" },
+                      { title: "级别" },
+                      { title: "路径" },
+                      { title: "类型" },
+                      { title: "参数名" },
+                      { title: "参数值" },
+                      { title: "发生时间" },
+                      { title: "处理提交" },
+                      { title: "确认时间" }
+                  ],
+        	  "createdRow": function ( row, data, index ) {
+        		  $(row).attr('id', data[0]);
+                  if ( data[1] == "紧急告警" ) {
+                	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
+                	  $('td', row).parent().addClass('alarm-warning');
+                  }else if(data[1] == "重要告警"){
+                	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-danger');                  
                   }
               }
@@ -302,7 +336,17 @@
                               { title: "发生时间" },
                               { title: "处理提交" },
                               { title: "确认时间" }
-                          ]
+                          ],
+                  "createdRow": function ( row, data, index ) {
+            		  $(row).attr('id', data[0]);
+                      if ( data[1] == "紧急告警" ) {
+                    	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
+                    	  $('td', row).parent().addClass('alarm-warning');
+                      }else if(data[1] == "重要告警"){
+                    	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
+                    	  $('td', row).parent().addClass('alarm-danger');                  
+                      }
+                  }
                 } );
     		}else{
     			tbl_loglists = $('#tbl_loglists').DataTable({
@@ -316,6 +360,7 @@
                     bRetrieve: 		true,
                     columns: [
                               { title: "日志编号" },
+                              { title: "操作用户" },
                               { title: "日志类型" },
                               { title: "日志内容" },
                               { title: "登记时间" }
@@ -505,21 +550,15 @@
         	var paramstr = jsonobj.ipaddr+ '/' + jsonobj.devtype +'/'+jsonobj.hfctype;
         	$('#list-newdevs').append('<li class="list-group-item"><label><input name="dev" type="checkbox" value="'+ paramstr + '" />'+jsonobj.ipaddr+ '/' + getNetTypeTostring(jsonobj.devtype)+'/'+jsonobj.hfctype+'</label></li>');
         }else if(jsonobj.cmd == "alarm_message"){
-        	if(jsonobj.opt == false){
-        		tbl_devalarm.row("#" + jsonobj.id).remove().draw(false);        		
-        	}else{
-        		tbl_devalarm.row.add( [
-        		       	            jsonobj.id,
-        		       	            jsonobj.level,
-        		       	            jsonobj.path,
-        		       	            jsonobj.type,
-        		       	            jsonobj.paramname,
-        		       	            jsonobj.paramvalue,
-        		       	            jsonobj.eventtime,
-        		       	            jsonobj.solved,
-        		       	            jsonobj.solvetime
-        		       	        ] ).draw( false );
-        	}        	
+        	alarmSolve(jsonobj);
+        }else if(jsonobj.cmd == "log_message"){
+        	tbl_optlog.row.add( [
+       		       	            jsonobj.id,
+       		       	            jsonobj.user,
+       		       	            jsonobj.type,
+       		       	            jsonobj.content,
+       		       	            jsonobj.time
+       		       	        ] ).draw( false );     	
         }else if(jsonobj.cmd == "alarmsearch"){
         	$.each(jsonobj.alarms, function (n, value) {
         		tbl_loglists.row.add( [
@@ -549,6 +588,35 @@
             += '<br />' + event.data;
         }
     }
+	
+	function alarmSolve(jsonobj){
+		if(jsonobj.opt == false){    		
+    		tbl_devalarm_old.row.add( [
+       		       	            jsonobj.id,
+       		       	            jsonobj.level,
+       		       	            jsonobj.path,
+       		       	            jsonobj.type,
+       		       	            jsonobj.paramname,
+       		       	            jsonobj.paramvalue,
+       		       	            jsonobj.eventtime,
+       		       	            jsonobj.solved,
+       		       	            jsonobj.solvetime
+       		       	        ] ).draw( false );
+    		tbl_devalarm.row("#" + jsonobj.id).remove().draw(false);        		
+    	}else{
+    		tbl_devalarm.row.add( [
+    		       	            jsonobj.id,
+    		       	            jsonobj.level,
+    		       	            jsonobj.path,
+    		       	            jsonobj.type,
+    		       	            jsonobj.paramname,
+    		       	            jsonobj.paramvalue,
+    		       	            jsonobj.eventtime,
+    		       	            jsonobj.solved,
+    		       	            jsonobj.solvetime
+    		       	        ] ).draw( false );
+    	}        	
+	}
 
  
     function onOpen(event) {
@@ -956,9 +1024,24 @@
     		        ] ).draw( false );
         });
     	
+    	$.each(jsonobj.invalidalarms, function (n, value) {
+    		tbl_devalarm_old.row.add( [
+    		            value.id,
+    		            value.level,
+    		            value.path,
+    		            value.type,
+    		            value.paramname,
+    		            value.paramvalue,
+    		            value.eventtime,
+    		            value.solved,
+    		            value.solvetime
+    		        ] ).draw( false );
+        });
+    	
     	$.each(jsonobj.logs, function (n, value) {
     		tbl_optlog.row.add( [
     		            value.id,
+    		            value.user,
     		            value.type,
     		            value.content,
     		            value.time
