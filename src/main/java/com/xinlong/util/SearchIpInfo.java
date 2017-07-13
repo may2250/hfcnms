@@ -17,19 +17,25 @@ public class SearchIpInfo {
         community = "public";
         if (NetDataProcess.CompareIpAddress(ip1, ip2) <= 0)
         {
-            ipbegin = ip1;
-            ipend = ip2;
+        	ipbegin = ip1;
+            ipend = ip2;        	
         }
         else
         {
-            ipbegin = ip2;
-            ipend = ip1;
+        	ipbegin = ip2;
+            ipend = ip1;       
         }
-        searchnumbers = -1;
-        long retval = NetDataProcess.IpAddressDispersion(ipbegin, ipend);
+        searchnumbers = 0;
+        /*long retval = NetDataProcess.IpAddressDispersion(ipbegin, ipend);
         if (retval <= 65535)
         {
             searchnumbers = (int)retval + 1;
+        }*/
+        long retval = NetDataProcess.getIP(ipbegin) - NetDataProcess.getIP(ipend);
+        
+        if (retval <= 65535)
+        {
+            searchnumbers = Integer.parseInt(String.valueOf(retval - 1));
         }
         this.isBroadCast = isBrdcst;
         this.destiType = destiType;

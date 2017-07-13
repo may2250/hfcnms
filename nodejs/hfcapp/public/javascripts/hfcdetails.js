@@ -15,6 +15,7 @@ function __getDeviceDetail(devnode, jsonobj){
 		$(".candile").load("/opticalTran");
 		break;
 	case "HfcMinWorkstation":
+	case 14:
 		$(".candile").load("/rece_workstation", function(){
 			parseHfcDevice(jsonobj);
 		});
