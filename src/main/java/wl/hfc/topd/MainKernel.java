@@ -302,17 +302,7 @@ public class MainKernel {
 			logjson.put("solvetime", prow.isTreated);
 			jsonarray.add(logjson);
 		}
-		rootjson.put("invalidalarms", jsonarray);
-		// test logs
-		logjson = new JSONObject();
-		logjson.put("id", "1");
-		logjson.put("user", "admin");
-		logjson.put("type", "test");
-		logjson.put("content", "test log!!");
-		logjson.put("time", "2017-5-22");
-		jsonarray = new JSONArray();
-		jsonarray.add(logjson);
-		rootjson.put("logs", jsonarray);		
+		rootjson.put("invalidalarms", jsonarray);		
 		return rootjson.toJSONString();
     }
     

@@ -141,6 +141,9 @@ public class CurrentAlarmModel extends Thread {
 
 					InsertOperLog(OperLogTypes.DeviceOpration, (ClsLanguageExmp.isEn ? "Update: " : "更新：") + "： " + jsondata.get("title").toString() + " @ "
 							+ jsondata.get("key").toString(), "admin");
+				} else if (cmd.equalsIgnoreCase("optlogsearch")) {
+					//获取历史操作日志
+					
 				}
 
 			} catch (Exception e) {

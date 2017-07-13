@@ -110,7 +110,7 @@ public class Services_Websocket {
 				sendToQueue(jsondata.toJSONString(), HFCALARM_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("optlogsearch")){
 				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
+				sendToQueue(jsondata.toJSONString(), HFCALARM_MESSAGE);
 			}else{
 				sendToQueue(message, MAINKERNEL_MESSAGE);
 			}

@@ -1037,16 +1037,6 @@
     		            value.solvetime
     		        ] ).draw( false );
         });
-    	
-    	$.each(jsonobj.logs, function (n, value) {
-    		tbl_optlog.row.add( [
-    		            value.id,
-    		            value.user,
-    		            value.type,
-    		            value.content,
-    		            value.time
-    		        ] ).draw( false );
-        });
     }
     
     function getDeviceDetail(devnode,preDevice){
