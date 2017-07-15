@@ -289,8 +289,8 @@ public class SnmpEngine {
 					else
 						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "LOLO", "0");
 					
-				} else
-
+				} 
+				else
 				{
 					vale = subVariableSnmpVarS[j].ToDispString();
 					pJson.put(tableVariable.VarInfo.ParamMibLabel + row + j, vale);

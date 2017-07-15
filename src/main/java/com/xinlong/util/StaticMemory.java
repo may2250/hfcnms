@@ -16,6 +16,7 @@ import wl.hfc.common.DProcess;
 import wl.hfc.common.NetTypes;
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
 import wl.hfc.online.CommonSnmpPrevail;
+import wl.hfc.online.EDFASnmpPrevail;
 import wl.hfc.online.PDUServerForOneDev;
 import wl.hfc.online.ReceiverSnmpPrevail;
 import wl.hfc.topd.MainKernel;
@@ -45,7 +46,7 @@ public class StaticMemory {
 	}
 
 	public synchronized void addRealTimeDev(JSONObject jsondata) {
-		System.out.println(HFCTypes.HfcMinWorkstation.toString());
+	
 		String netaddr = jsondata.get("ip").toString();
 		String sessionID = jsondata.get("sessionid").toString();
 		if (realTimeDevHashtable.containsKey(netaddr)) {
@@ -59,9 +60,13 @@ public class StaticMemory {
 			ObjSnmpPreail osp = new ObjSnmpPreail();
 			HFCTypes hfctyp1 =HFCTypes.values()[Integer.valueOf(jsondata.get("nojuhfctype").toString())];
 			if (hfctyp1==HFCTypes.HfcMinWorkstation) {
-				osp.snmpPreail = new ReceiverSnmpPrevail(".1");
+				osp.snmpPreail = new ReceiverSnmpPrevail(".1",jsondata.get("deviceid").toString());
 				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
-			} else {
+			}
+			else if (hfctyp1==HFCTypes.EDFA) {
+				osp.snmpPreail = new EDFASnmpPrevail(".1",jsondata.get("deviceid").toString());
+				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
+			}else {
 
 				return;
 			}

@@ -93,6 +93,7 @@ public class ParamKernel {
 			}		
 			DevTopd lNode = (DevTopd) listDevHash.get( jsondata.get("ip").toString());
 			jsondata.put("nojuhfctype", lNode.HFCType1.ordinal());
+			jsondata.put("deviceid", lNode.DEVICEID);
 			staticmemory.addRealTimeDev(jsondata);			
 		}else if(cmd.equalsIgnoreCase("deviceclose")){			
 			staticmemory.removeRealTimeDev(jsondata.get("ip").toString(),jsondata.get("sessionid").toString());

@@ -46,10 +46,10 @@ public class Realtime_param_call extends Thread {
 							//String nettypes = osp.snmpPreail.thisDev.mNetType.toString();
 						   json.put("devtype", osp.snmpPreail.thisDev.HFCType1.toString());
 							
-							if(osp.snmpPreail.thisDev.HFCType1==HFCTypes.HfcMinWorkstation){
-								json = ((ReceiverSnmpPrevail)osp.snmpPreail).getPmWithModelNumber(json);
+							//if(osp.snmpPreail.thisDev.HFCType1==HFCTypes.HfcMinWorkstation){
+								json = osp.snmpPreail.getPmWithModelNumber(json);
 								commonjson=((CommonSnmpPrevail)osp.commonSnmpPreail).getPmWithModelNumber(commonjson);
-							}
+							//}
 							if(json == null)
 								continue;
 							

@@ -30,8 +30,6 @@ public class Sstatus{
 	    }
 
 
-
-
 		
 		private   JedisPubSub jedissubSub = new JedisPubSub() {
 			public void onUnsubscribe(String arg0, int arg1) {

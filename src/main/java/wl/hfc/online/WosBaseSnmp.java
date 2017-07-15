@@ -285,4 +285,12 @@ public class WosBaseSnmp {
 
 	}
 
+	
+
+	public JSONObject getPmWithModelNumber(JSONObject pJson) throws Exception 
+	{
+		
+		
+		return pJson;
+	}
 }
