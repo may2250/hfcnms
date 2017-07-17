@@ -509,7 +509,7 @@ public class MainKernel {
 			rootjson.put("cmd", "nodeadd");
 			rootjson.put("key", mDevGrpTableRow.UserGroupID);// node UserGroupID
 			rootjson.put("pkey", jsondata.get("key").toString()); // ParentGroupID
-			rootjson.put("title", jsondata.get("value").toString());// UserGroupName
+			rootjson.put("title", mDevGrpTableRow.UserGroupName);// UserGroupName
 			rootjson.put("type", "group");
 			rootjson.put("isFolder", true);
 			rootjson.put("expand", true);
@@ -607,7 +607,7 @@ public class MainKernel {
 			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "nodeedit");
 			rootjson.put("key", jsondata.get("key").toString());
-			rootjson.put("title", jsondata.get("title").toString());
+			rootjson.put("title", 		mDevGrpTableRow.UserGroupName);
 			rootjson.put("type", "group");
 			staticmemory.broadCast(rootjson.toJSONString());
 
@@ -645,7 +645,7 @@ public class MainKernel {
 		mDeviceTableRow.UserGroupID = usergroupID;
 		mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
 		mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();
-		// mDeviceTableRow.Name = jsondata.get("devname").toString();
+		mDeviceTableRow.Name = jsondata.get("devname").toString();
 
 		mStatus = this.ICDatabaseEngine1.DeviceTableInsertRow(mDeviceTableRow);
 		if (mStatus) {

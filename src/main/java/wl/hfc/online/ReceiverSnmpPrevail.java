@@ -66,6 +66,8 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			mjVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
 			paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 			this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));
+			
+			
 			row1 = pmls.me.tab1.get("fnOpticalReceiverPower");
 			mjVariables[vIns] = new VariableSnmpVar(row1, ".1", VariableSnmpVar.ToValueMode.FmtInteger, true);
 			paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);

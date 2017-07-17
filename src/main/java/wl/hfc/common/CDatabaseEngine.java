@@ -147,11 +147,10 @@ public class CDatabaseEngine {
 		}
 	}
 
-	public int isDevGroupExsit(String gpName) {
+	public int grpWithPname(String gpName,Hashtable groupLists) {
 
 		try {
-			Hashtable groupLists = UserGroupTableGetAllRows();
-
+		
 			Enumeration e = groupLists.elements();
 
 			while (e.hasMoreElements()) {
@@ -183,8 +182,15 @@ public class CDatabaseEngine {
 
 		String newName = row.UserGroupName;
 		ResultSet rs = null;
-
-		while (isDevGroupExsit(newName) != -1) {
+		Hashtable groupLists;
+		try {
+			groupLists = UserGroupTableGetAllRows();
+		} catch (Exception e) {
+			return -1;
+			// TODO: handle exception
+		}
+		
+		while (grpWithPname(newName,groupLists) != -1) {
 			newName = row.UserGroupName + "(" + copyIndex + ")";
 			copyIndex++;
 
@@ -245,16 +251,55 @@ public class CDatabaseEngine {
 			return false;
 
 		}
-		if (isDevGroupExsit(row.UserGroupName) != -1) {
-			if (isDevGroupExsit(row.UserGroupName) != row.UserGroupID) {
+		
+		Hashtable groupLists;
+		try {
+			groupLists = UserGroupTableGetAllRows();
+		} catch (Exception e) {
+			return false;
+			// TODO: handle exception
+		}	
+		
+		
+		if (grpWithPname(row.UserGroupName,groupLists) != -1) {
+			if (grpWithPname(row.UserGroupName,groupLists) != row.UserGroupID) {
 				return false;// 直接不允许修改
 			}
 		}
+		
+		
+		
+		
+		PreparedStatement pstmt;
+		ResultSet rs = null;
+		
+		String sqlInsert;
+/*		//is name exsit ?
+		String sqlInsert = "SELECT * FROM usergrouptable where UserGroupName='"+row.UserGroupName+"'";		
 
-		String sqlInsert = "UPDATE usergrouptable SET UserGroupName='" + row.UserGroupName + "',ParentGroupID=" + row.ParentGroupID + ",Txa=" + row.x1
+		try {
+			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+			rs = pstmt.executeQuery(sqlInsert);
+			rs.last(); 
+			int rowCount = rs.getRow(); 
+			
+			if (rowCount>0) {
+				
+				//name exsit，return
+				return false;
+			}
+			
+			
+		} catch (Exception e) {
+			return false;
+		}
+	*/
+		
+		
+		 sqlInsert = "UPDATE usergrouptable SET UserGroupName='" + row.UserGroupName + "',ParentGroupID=" + row.ParentGroupID + ",Txa=" + row.x1
 				+ ",Txb=" + row.x2 + ",Txc=" + row.y1 + ",Txd=" + row.y2 + ",isTx=" + (row.isTx ? "1" : "0") + " WHERE UserGroupID=" + row.UserGroupID;
 
-		PreparedStatement pstmt;
+
 		try {
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 			if (pstmt.executeUpdate() > 0)
@@ -346,17 +391,12 @@ public class CDatabaseEngine {
 		return retList;
 	}
 
-	public String isDevExsit(String Name) {
+	public String devWithPname(String Name,Hashtable groupLists) {
 		try {
-
-			Hashtable groupLists = DeviceTableGetAllRows();
 			Enumeration e = groupLists.elements();
-
 			while (e.hasMoreElements()) {
-
 				nojuDeviceTableRow item = (nojuDeviceTableRow) e.nextElement();
-
-				if (item.Name.endsWith(Name)) {
+				if (item.Name.equalsIgnoreCase(Name)) {
 					return item.get_NetAddress();
 				}
 
@@ -378,7 +418,16 @@ public class CDatabaseEngine {
 		}
 		int copyIndex = 1;
 		String newName = row.Name;
-		while (!isDevExsit(newName).equals("")) {
+		Hashtable devLists;
+		try {
+			devLists = DeviceTableGetAllRows();
+		} catch (Exception e) {
+			return false;
+			// TODO: handle exception
+		}		
+
+		
+		while (!devWithPname(newName,devLists).equals("")) {
 			newName = row.Name + "(" + copyIndex + ")";
 			copyIndex++;
 		}
@@ -429,10 +478,19 @@ public class CDatabaseEngine {
 			return false;
 
 		}
-		String rstIsDevExsit = isDevExsit(row.Name);
+		
+		Hashtable groupLists;
+		try {
+			groupLists = DeviceTableGetAllRows();
+		} catch (Exception e) {
+			return false;
+			// TODO: handle exception
+		}		
 
-		if (!rstIsDevExsit.equals("")) {
-			if (!rstIsDevExsit.equals(row.get_NetAddress())) {
+		String rstNm = devWithPname(row.Name,groupLists);
+
+		if (!rstNm.equals("")) {
+			if (!rstNm.equals(row.get_NetAddress())) {
 				return false;// 直接不允许修改
 			}
 		}
