@@ -231,7 +231,10 @@
     	});
     	
     	$('#needtype').change(function(){ 
-    		$('#salutation').attr("disabled", !$(this).is(':checked'));    		
+    		$('#salutation').attr("disabled", !$(this).is(':checked'));
+    		if(!$(this).is(':checked')){
+    			$("#salutation").find("option[text='其它设备']").attr("selected",true);
+    		}
     	});
     	
     	$('#user-logout').click(function(){

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -914,7 +915,7 @@ public class MainKernel {
 		return jsondata.toJSONString();
 	}
 
-    private void  handleAuthUser(JSONObject jsondata)
+    private void  handleAuthUser(JSONObject jsondata) throws SQLException
     {
     	AuthResult rst;
         boolean isExist = false;
