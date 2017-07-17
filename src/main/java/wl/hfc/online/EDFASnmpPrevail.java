@@ -71,12 +71,14 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		nojuParmsTableRow row1 = pmls.tab1.get("oaInputOpticalPower");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtInteger, true);
+		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 		
 		row1 = pmls.tab1.get("oaOutputOpticalPower");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtInteger, true);
+		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 
@@ -94,6 +96,8 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		row1 = pmls.tab1.get("oaDCPowerVoltage");
 		cInputVariables[1] = new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
+		paramHashTable.put(row1.ParamMibLabel, cInputVariables[1]);
+
 
 		int begincol = 0;
 		int endcol = 1;
@@ -119,16 +123,20 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		cOutputVariables[1] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[1].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[1]);
+
 
 		row1 = pmls.tab1.get("oaPumpTEC");
 		cOutputVariables[2] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[2].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[2]);
 
 		row1 = pmls.tab1.get("oaPumpTemp");
 		cOutputVariables[3] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[3].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[3]);
 
 		begincol = 0;
 		endcol = 3;
