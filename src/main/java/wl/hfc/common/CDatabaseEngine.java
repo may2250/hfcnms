@@ -27,143 +27,112 @@ import wl.hfc.topd.MainKernel;
  import com.mysql.jdbc.PreparedStatement;*/
 
 public class CDatabaseEngine {
-	private static final String  MAINKERNEL_MESSAGE =  "mainkernel.message";
+	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	private static Logger log = Logger.getLogger(CDatabaseEngine.class);
 	private static RedisUtil redisUtil;
-	public static  boolean flag = false; //数据库连接状态
-    public static CDatabaseEngine me;
-    private boolean isFirstTimeSucedCnt = true;
-	public CDatabaseEngine (RedisUtil redisUtil){
+	public static boolean flag = false; // 数据库连接状态
+	public static CDatabaseEngine me;
+	private boolean isFirstTimeSucedCnt = true;
+
+	public CDatabaseEngine(RedisUtil redisUtil) {
 		this.redisUtil = redisUtil;
-		me=this;
+		me = this;
 	}
-/*	public Connection getConnection() {
+
+	/*
+	 * public Connection getConnection() { String url =
+	 * "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8"; //
+	 * ���������� String driver = "com.mysql.jdbc.Driver"; String dbuser =
+	 * "root"; String dbpass = "prevail"; try { if (con == null ||
+	 * con.isClosed()) { Class.forName(driver); con =
+	 * DriverManager.getConnection(url, dbuser, dbpass); flag = true;
+	 * 
+	 * JSONObject rootjson = new JSONObject(); rootjson.put("cmd",
+	 * "isFirstTimeSucedCnt"); sendToQueue(rootjson.toJSONString(),
+	 * MAINKERNEL_MESSAGE); isFirstTimeSucedCnt=false; }
+	 * 
+	 * } catch (Exception e) { // TODO: handle exception flag = false;
+	 * e.printStackTrace(); log.info(e.getMessage()); }
+	 * 
+	 * return con; }
+	 */
+
+	public Connection trapcon;
+
+	private boolean lastTrapInsertIsSucced = false;
+
+	public Connection offNewCoon()// 因为增删查改不需要关注或者维护“数据库连接”这个层面，本来不需要offnewcon，因为存在连接长期不用可能失效的情况，直接暴力新建短连接。
+	{
+		boolean tmpFlag = flag;
+
+		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
+		// ����������
+		String driver = "com.mysql.jdbc.Driver";
+		String dbuser = "root";
+		String dbpass = "prevail";
+		Connection con = null;
+		try {
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, dbuser, dbpass);
+			flag = true;
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			log.info(e.getMessage());
+
+			flag = false;
+
+		}
+
+		if (tmpFlag != flag) {
+
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "dbclosed");
+			rootjson.put("flag", !flag);
+			sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+		}
+		return con;
+	}
+
+	public void offNewTrapCoon() {
+
 		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
 		// ����������
 		String driver = "com.mysql.jdbc.Driver";
 		String dbuser = "root";
 		String dbpass = "prevail";
 		try {
-			if (con == null || con.isClosed()) {
-				Class.forName(driver);
-				con = DriverManager.getConnection(url, dbuser, dbpass);
-				flag = true;
-				
-				JSONObject rootjson = new JSONObject();
-	            rootjson.put("cmd", "isFirstTimeSucedCnt");
-				sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
-				isFirstTimeSucedCnt=false;
-			}
+			Class.forName(driver);
+			trapcon = DriverManager.getConnection(url, dbuser, dbpass);
 
 		} catch (Exception e) {
+
 			// TODO: handle exception
-			flag = false;
 			e.printStackTrace();
 			log.info(e.getMessage());
+			trapcon = null;
+
 		}
 
-		return con;
 	}
-*/
 
-	public Connection trapcon;
-	
-	private boolean lastTrapInsertIsSucced=false;
+	/*
+	 * private boolean isDBConnected(){ try {
+	 * 
+	 * //重连一次 con = this.getConnection(); if(con.isClosed()){ //发送数据库失去连接信息到前端
+	 * 
+	 * }else{ //发送数据库失去连接信息到前端 JSONObject rootjson = new JSONObject();
+	 * rootjson.put("cmd", "dbOpend"); rootjson.put("flag", true);
+	 * sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE); flag=true; } }
+	 * } catch (SQLException e) { e.printStackTrace(); JSONObject rootjson = new
+	 * JSONObject(); rootjson.put("cmd", "dbclosed"); rootjson.put("flag",
+	 * true); sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+	 * this.flag = false; }
+	 * 
+	 * return this.flag; }
+	 */
 
-	
-	 public Connection offNewCoon()//因为增删查改不需要关注或者维护“数据库连接”这个层面，本来不需要offnewcon，因为存在连接长期不用可能失效的情况，直接暴力新建短连接。
-     {
-		     boolean tmpFlag=flag;
-		 
-		 
-			String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
-			// ����������
-			String driver = "com.mysql.jdbc.Driver";
-			String dbuser = "root";
-			String dbpass = "prevail";
-			Connection con=null;
-			try {				
-				Class.forName(driver);
-				 con = DriverManager.getConnection(url, dbuser, dbpass);
-				flag=true;
-
-
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-				log.info(e.getMessage());
-
-				flag=false;
-		
-			}
-
-			if (tmpFlag!=flag) {
-				
-				JSONObject rootjson = new JSONObject();
-	            rootjson.put("cmd", "dbclosed");
-	            rootjson.put("flag", !flag);
-				sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
-			}
-			return con;
-     }
-	 
-	 
-	 
-	 public void  offNewTrapCoon()
-     {
-
-			String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
-			// ����������
-			String driver = "com.mysql.jdbc.Driver";
-			String dbuser = "root";
-			String dbpass = "prevail";
-			try {				
-				Class.forName(driver);
-				trapcon = DriverManager.getConnection(url, dbuser, dbpass);
-
-			} catch (Exception e) {
-				
-				// TODO: handle exception
-				e.printStackTrace();
-				log.info(e.getMessage());
-				trapcon=null;
-		
-			}
-
-
-     }
-     
-     
-	
-/*	private boolean isDBConnected(){
-		try {
-
-				//重连一次
-				con = this.getConnection();
-				if(con.isClosed()){
-					//发送数据库失去连接信息到前端
-
-				}else{
-					//发送数据库失去连接信息到前端
-					JSONObject rootjson = new JSONObject();
-			        rootjson.put("cmd", "dbOpend");
-			        rootjson.put("flag", true);
-					sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
-					flag=true;
-				}	
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			JSONObject rootjson = new JSONObject();
-            rootjson.put("cmd", "dbclosed");
-            rootjson.put("flag", true);
-			sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
-			this.flag = false;
-		}
-		
-		return this.flag;
-	}*/
-	
 	public void sendToQueue(String msg, String queue) {
 		Jedis jedis = null;
 		try {
@@ -173,10 +142,10 @@ public class CDatabaseEngine {
 		} catch (Exception e) {
 			log.info(e.getMessage());
 
-		}finally{
+		} finally {
 			redisUtil.closeConnection(jedis);
 		}
-	} 
+	}
 
 	public int isDevGroupExsit(String gpName) {
 
@@ -195,8 +164,6 @@ public class CDatabaseEngine {
 
 			}
 
-	
-			
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -207,16 +174,15 @@ public class CDatabaseEngine {
 	public int UserGroupTableInsertRow(UserGroupTableRow row) {
 		int lastId = -1;
 		int copyIndex = 1;
-		
-		
-		Connection con=offNewCoon();		
-		if (con==null) {
+
+		Connection con = offNewCoon();
+		if (con == null) {
 			return -1;
-			
+
 		}
 
 		String newName = row.UserGroupName;
-		ResultSet rs = null;		
+		ResultSet rs = null;
 
 		while (isDevGroupExsit(newName) != -1) {
 			newName = row.UserGroupName + "(" + copyIndex + ")";
@@ -241,7 +207,7 @@ public class CDatabaseEngine {
 			return row.UserGroupID;
 		} catch (Exception EX) {
 			System.out.println(EX);
-			//isDBConnected(false);
+			// isDBConnected(false);
 			return lastId;
 
 		}
@@ -249,10 +215,10 @@ public class CDatabaseEngine {
 	}
 
 	public boolean UserGroupTableDeleteRow(int thisID) {
-		Connection con=offNewCoon();		
-		if (con==null) {
+		Connection con = offNewCoon();
+		if (con == null) {
 			return false;
-			
+
 		}
 		String sqlInsert = "DELETE FROM usergrouptable WHERE UserGroupID=" + thisID;
 		// sqlInsert += ";select @@IDENTITY";
@@ -264,7 +230,7 @@ public class CDatabaseEngine {
 
 		} catch (Exception EX) {
 			sqlInsert = "DELETE FROM usergrouptable WHERE UserGroupID=" + thisID;
-	
+
 			return false;
 
 		}
@@ -274,10 +240,10 @@ public class CDatabaseEngine {
 	}
 
 	public boolean UserGroupTableUpdateRow(UserGroupTableRow row) {
-		Connection con=offNewCoon();		
-		if (con==null) {
+		Connection con = offNewCoon();
+		if (con == null) {
 			return false;
-			
+
 		}
 		if (isDevGroupExsit(row.UserGroupName) != -1) {
 			if (isDevGroupExsit(row.UserGroupName) != row.UserGroupID) {
@@ -295,102 +261,94 @@ public class CDatabaseEngine {
 				return true;
 
 		} catch (Exception EX) {
-		
+
 		}
 
 		return false;
 
 	}
 
-	public Hashtable UserGroupTableGetAllRows() throws SQLException{
+	public Hashtable UserGroupTableGetAllRows() throws SQLException {
 		PreparedStatement pstmt;
 		Hashtable retList = new Hashtable();
 		ResultSet rs = null;
-		
-		Connection con=offNewCoon();		
 
-		
+		Connection con = offNewCoon();
 
-			String sqlInsert = "SELECT * FROM usergrouptable";
+		String sqlInsert = "SELECT * FROM usergrouptable";
 
-			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
-			rs = pstmt.executeQuery(sqlInsert);
+		pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+		rs = pstmt.executeQuery(sqlInsert);
 
-			while (rs.next()) {
-				UserGroupTableRow tmpRow = new UserGroupTableRow(rs.getInt(1), rs.getString(2), rs.getInt(3));
+		while (rs.next()) {
+			UserGroupTableRow tmpRow = new UserGroupTableRow(rs.getInt(1), rs.getString(2), rs.getInt(3));
 
-				int i = 3;
-				tmpRow.x1 = rs.getFloat(i++);
-				tmpRow.x2 = rs.getFloat(i++);
-				tmpRow.y1 = rs.getFloat(i++);
-				tmpRow.y2 = rs.getFloat(i++);
-				int tmpInt = rs.getInt(i++);
-				if (tmpInt > 0) {
-					tmpRow.isTx = true;
-				} else {
+			int i = 3;
+			tmpRow.x1 = rs.getFloat(i++);
+			tmpRow.x2 = rs.getFloat(i++);
+			tmpRow.y1 = rs.getFloat(i++);
+			tmpRow.y2 = rs.getFloat(i++);
+			int tmpInt = rs.getInt(i++);
+			if (tmpInt > 0) {
+				tmpRow.isTx = true;
+			} else {
 
-					tmpRow.isTx = false;
-				}
-				retList.put(tmpRow.UserGroupID, tmpRow);
-
+				tmpRow.isTx = false;
 			}
+			retList.put(tmpRow.UserGroupID, tmpRow);
 
-
+		}
 
 		return retList;
 	}
 
-	public Hashtable DeviceTableGetAllRows()  throws SQLException{
+	public Hashtable DeviceTableGetAllRows() throws SQLException {
 		PreparedStatement pstmt;
 		Hashtable retList = new Hashtable();
 		ResultSet rs = null;
-		
-		Connection con=offNewCoon();		
 
-		
-		
-	
-			String sqlInsert = "SELECT * FROM devicetable";
+		Connection con = offNewCoon();
 
-			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
-			rs = pstmt.executeQuery(sqlInsert);
+		String sqlInsert = "SELECT * FROM devicetable";
 
-			while (rs.next()) {
-				nojuDeviceTableRow tmpRow = new nojuDeviceTableRow(rs.getString(1), NetTypes.values()[rs.getInt(2)]);
+		pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+		rs = pstmt.executeQuery(sqlInsert);
 
-				int i = 3;
+		while (rs.next()) {
+			nojuDeviceTableRow tmpRow = new nojuDeviceTableRow(rs.getString(1), NetTypes.values()[rs.getInt(2)]);
 
-				tmpRow.UserGroupID = rs.getInt(i++);
-				tmpRow.HeadAddress = rs.getString(i++);
-				tmpRow.Name = rs.getString(i++);
-				tmpRow._ROCommunity = rs.getString(i++);
-				tmpRow._RWCommunity = rs.getString(i++);
-				tmpRow.remark = rs.getString(i++);
-				tmpRow._IsRegister = true;
+			int i = 3;
 
-				tmpRow.x1 = rs.getFloat(i++);
-				tmpRow.x2 = rs.getFloat(i++);
-				tmpRow.y1 = rs.getFloat(i++);
-				tmpRow.y2 = rs.getFloat(i++);
-				int tmpInt = rs.getInt(i++);
-				if (tmpInt > 0) {
-					tmpRow.isTx = true;
-				} else {
+			tmpRow.UserGroupID = rs.getInt(i++);
+			tmpRow.HeadAddress = rs.getString(i++);
+			tmpRow.Name = rs.getString(i++);
+			tmpRow._ROCommunity = rs.getString(i++);
+			tmpRow._RWCommunity = rs.getString(i++);
+			tmpRow.remark = rs.getString(i++);
+			tmpRow._IsRegister = true;
 
-					tmpRow.isTx = false;
-				}
+			tmpRow.x1 = rs.getFloat(i++);
+			tmpRow.x2 = rs.getFloat(i++);
+			tmpRow.y1 = rs.getFloat(i++);
+			tmpRow.y2 = rs.getFloat(i++);
+			int tmpInt = rs.getInt(i++);
+			if (tmpInt > 0) {
+				tmpRow.isTx = true;
+			} else {
 
-				retList.put(tmpRow.get_NetAddress(), tmpRow);
-
+				tmpRow.isTx = false;
 			}
 
+			retList.put(tmpRow.get_NetAddress(), tmpRow);
+
+		}
 
 		return retList;
 	}
 
 	public String isDevExsit(String Name) {
-		try {	
-			
+		try {
+
 			Hashtable groupLists = DeviceTableGetAllRows();
 			Enumeration e = groupLists.elements();
 
@@ -404,22 +362,19 @@ public class CDatabaseEngine {
 
 			}
 
-			
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-	
 
 		return "";
-
 
 	}
 
 	public boolean DeviceTableInsertRow(nojuDeviceTableRow row) {
-		Connection con=offNewCoon();		
-		if (con==null) {
+		Connection con = offNewCoon();
+		if (con == null) {
 			return false;
-			
+
 		}
 		int copyIndex = 1;
 		String newName = row.Name;
@@ -447,10 +402,10 @@ public class CDatabaseEngine {
 	}
 
 	public boolean DeviceTableDeleteRow(nojuDeviceTableRow row) {
-		Connection con=offNewCoon();		
-		if (con==null) {
+		Connection con = offNewCoon();
+		if (con == null) {
 			return false;
-			
+
 		}
 		String sqlInsert = "DELETE FROM devicetable WHERE NetAddress='" + row.get_NetAddress() + '\'';
 		// sqlInsert += ";select @@IDENTITY";
@@ -469,10 +424,10 @@ public class CDatabaseEngine {
 	}
 
 	public boolean DeviceTableUpdateRow(nojuDeviceTableRow row) {
-		Connection con=offNewCoon();		
-		if (con==null) {
+		Connection con = offNewCoon();
+		if (con == null) {
 			return false;
-			
+
 		}
 		String rstIsDevExsit = isDevExsit(row.Name);
 
@@ -508,10 +463,10 @@ public class CDatabaseEngine {
 	public int trapLogInsertRow(nojuTrapLogTableRow row) {
 		ResultSet rs = null;
 		int lastId = -1;
-		if (!lastTrapInsertIsSucced) {			
-			this.offNewTrapCoon();				
+		if (!lastTrapInsertIsSucced) {
+			this.offNewTrapCoon();
 		}
-	    boolean tmpFlag=flag;	
+		boolean tmpFlag = flag;
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String currentTime = sdf.format(row.TrapLogTime);
@@ -528,22 +483,21 @@ public class CDatabaseEngine {
 				lastId = rs.getInt(1);
 			}
 			row.TrapLogID = lastId;
-			lastTrapInsertIsSucced=true;
-			flag=true;
-	
-		} catch (Exception EX) {
-			lastTrapInsertIsSucced=false;
-			flag=false;
-			System.out.println(EX);	
+			lastTrapInsertIsSucced = true;
+			flag = true;
 
-		}	    
-	     
-	     
-		if (tmpFlag!=flag) {
-			
+		} catch (Exception EX) {
+			lastTrapInsertIsSucced = false;
+			flag = false;
+			System.out.println(EX);
+
+		}
+
+		if (tmpFlag != flag) {
+
 			JSONObject rootjson = new JSONObject();
-            rootjson.put("cmd", "dbclosed");
-            rootjson.put("flag", !flag);
+			rootjson.put("cmd", "dbclosed");
+			rootjson.put("flag", !flag);
 			sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
 		}
 		return lastId;
@@ -551,10 +505,10 @@ public class CDatabaseEngine {
 
 	public int trapLogEditRow(int TrapLogID, String treatment) {
 		String IsTreatMent = new Date().toString();// 消失时间
-		Connection con=offNewCoon();		
-		if (con==null) {
+		Connection con = offNewCoon();
+		if (con == null) {
 			return -1;
-			
+
 		}
 		String sqlInsert = "UPDATE TrapLogTable SET TrapTreatMent='" + treatment + "', IsTreatMent='" + IsTreatMent + "' WHERE TrapLogID='" + TrapLogID + "'";
 
@@ -564,24 +518,24 @@ public class CDatabaseEngine {
 			return pstmt.executeUpdate();
 
 		} catch (Exception EX) {
-			System.out.println(EX);	
+			System.out.println(EX);
 			return -1;
 		}
 
 	}
 
 	public ArrayList<nojuTrapLogTableRow> getTrapRowsWithTime(Date beginTime, Date endTime, String ip) {
-		ArrayList<nojuTrapLogTableRow> results = new ArrayList<nojuTrapLogTableRow>();	
-		
-		Connection con=offNewCoon();		
-		if (con==null) {
+		ArrayList<nojuTrapLogTableRow> results = new ArrayList<nojuTrapLogTableRow>();
+
+		Connection con = offNewCoon();
+		if (con == null) {
 			return results;
-			
+
 		}
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String endString = sdf.format(endTime);
-		String bENGString = sdf.format(beginTime);		
+		String bENGString = sdf.format(beginTime);
 
 		PreparedStatement pstmt;
 		ResultSet rs = null;
@@ -612,33 +566,29 @@ public class CDatabaseEngine {
 
 		} catch (Exception ex) {
 			String xxxString = ex.toString();
-			
+
 		}
 
 		return results;
 
 	}
 
-	
-	
-	
-    public int operLogInsertRow(nojuOperLogTableRow row)
-    {
-    	
-    	ResultSet rs = null;
+	public int operLogInsertRow(nojuOperLogTableRow row) {
+
+		ResultSet rs = null;
 		int lastId = -1;
-		
-		Connection con=offNewCoon();		
-		if (con==null) {
+
+		Connection con = offNewCoon();
+		if (con == null) {
 			return -1;
-			
+
 		}
-		
+
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String currentTime = sdf.format(row.OperLogTime);
 		String sqlInsert = "insert into operlogtable values (" + null + "," + row.OperLogType.ordinal() + ",'" + row.OperLogType.toString() + "','"
-				+ row.OperLogContent + "','"  + currentTime + "','" + row.OperLogUser + "')";
+				+ row.OperLogContent + "','" + currentTime + "','" + row.OperLogUser + "')";
 
 		PreparedStatement pstmt;
 		try {
@@ -655,38 +605,31 @@ public class CDatabaseEngine {
 
 			return lastId;
 
-		}   	
-    	
-
-
-    }
-	
-    
-
-    public ArrayList<nojuOperLogTableRow> getOperRowsWithTime(Date beginTime, Date endTime)
-    {
-    	
-    	ArrayList<nojuOperLogTableRow> results = new ArrayList<nojuOperLogTableRow>();	
-    	
-		Connection con=offNewCoon();		
-		if (con==null) {
-			return results;
-			
 		}
-		
+
+	}
+
+	public ArrayList<nojuOperLogTableRow> getOperRowsWithTime(Date beginTime, Date endTime) {
+
+		ArrayList<nojuOperLogTableRow> results = new ArrayList<nojuOperLogTableRow>();
+
+		Connection con = offNewCoon();
+		if (con == null) {
+			return results;
+
+		}
+
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String endString = sdf.format(endTime);
-		String bENGString = sdf.format(beginTime);		
+		String bENGString = sdf.format(beginTime);
 
 		PreparedStatement pstmt;
 		ResultSet rs = null;
 		try {
 			String sqlInsert;
 
-
-				sqlInsert = "SELECT operLogTable.*FROM operLogTable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString + "';";
-
+			sqlInsert = "SELECT operLogTable.*FROM operLogTable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString + "';";
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 			rs = pstmt.executeQuery(sqlInsert);
@@ -696,9 +639,9 @@ public class CDatabaseEngine {
 				// 通过reader["列名"]来取得值
 				OperLogTypes type1 = OperLogTypes.values()[rs.getInt(2)];
 				int i = 4;
-				
-	            nojuOperLogTableRow newURow = new nojuOperLogTableRow(type1, rs.getString(i++), rs.getTimestamp(i++), rs.getString(i++));
-				
+
+				nojuOperLogTableRow newURow = new nojuOperLogTableRow(type1, rs.getString(i++), rs.getTimestamp(i++), rs.getString(i++));
+
 				newURow.OperLogID = rs.getInt(1);
 
 				results.add(newURow);
@@ -706,28 +649,26 @@ public class CDatabaseEngine {
 
 		} catch (Exception ex) {
 			String xxxString = ex.toString();
-		}  	
-    	
+		}
 
-        return results;
+		return results;
 
-
-    }
+	}
 
 	public int UserAuthorizeTableInsertRow(nojuUserAuthorizeTableRow row) {
 		int lastId = -1;
 		int copyIndex = 1;
-		
-		
-		Connection con=offNewCoon();		
-		if (con==null) {
+
+		Connection con = offNewCoon();
+		if (con == null) {
 			return -1;
-			
+
 		}
 
-		ResultSet rs = null;		
+		ResultSet rs = null;
 
-		String sqlInsert = "INSERT INTO UserAuthorizeTable(UserName,password1,phoneNmber,smtpAddress,AuthTotal,IsMsgDefi) VALUES(" + "'" + row.UserName + "','" + row.PassWord + "','" + row.PhoneNmbr + "','" + row.smtpAddress + "'," + row.AuthTotal + "," + "no" + ")";
+		String sqlInsert = "INSERT INTO UserAuthorizeTable(UserName,password1,phoneNmber,smtpAddress,AuthTotal,IsMsgDefi) VALUES(" + "'" + row.UserName + "','"
+				+ row.PassWord + "','" + row.PhoneNmbr + "','" + row.smtpAddress + "'," + row.AuthTotal + "," + "no" + ")";
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
 		try {
@@ -741,7 +682,7 @@ public class CDatabaseEngine {
 			return row.UserID;
 		} catch (Exception EX) {
 			System.out.println(EX);
-			//isDBConnected(false);
+			// isDBConnected(false);
 			return lastId;
 
 		}
@@ -749,12 +690,12 @@ public class CDatabaseEngine {
 	}
 
 	public boolean UserAuthorizeTableDeleteRow(nojuUserAuthorizeTableRow row) {
-		Connection con=offNewCoon();		
-		if (con==null) {
+		Connection con = offNewCoon();
+		if (con == null) {
 			return false;
-			
+
 		}
-	String sqlInsert= "DELETE FROM UserAuthorizeTable WHERE UserID=" + row.UserID;
+		String sqlInsert = "DELETE FROM UserAuthorizeTable WHERE UserID=" + row.UserID;
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
 		try {
@@ -763,7 +704,7 @@ public class CDatabaseEngine {
 				return true;
 
 		} catch (Exception EX) {
-	
+
 			return false;
 
 		}
@@ -771,32 +712,27 @@ public class CDatabaseEngine {
 		return false;
 
 	}
-	
-	public   ArrayList<nojuUserAuthorizeTableRow> UserAuthorizeTableGetAllRows() throws SQLException{
+
+	public ArrayList<nojuUserAuthorizeTableRow> UserAuthorizeTableGetAllRows() throws SQLException {
 		PreparedStatement pstmt;
 		ArrayList<nojuUserAuthorizeTableRow> retList = new ArrayList<nojuUserAuthorizeTableRow>();
 
 		ResultSet rs = null;
-		
-		Connection con=offNewCoon();		
 
-		
+		Connection con = offNewCoon();
 
-			String sqlInsert = "SELECT * FROM UserAuthorizeTable";
+		String sqlInsert = "SELECT * FROM UserAuthorizeTable";
 
-			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
-			rs = pstmt.executeQuery(sqlInsert);
+		pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+		rs = pstmt.executeQuery(sqlInsert);
 
-			while (rs.next()) {
-				nojuUserAuthorizeTableRow newURow = new nojuUserAuthorizeTableRow(rs.getInt(1), rs.getString(2), rs.getByte(3),rs.getString(4));
+		while (rs.next()) {
+			nojuUserAuthorizeTableRow newURow = new nojuUserAuthorizeTableRow(rs.getInt(1), rs.getString(2), rs.getByte(3), rs.getString(4));
 
-				retList.add(newURow);
-			}
-
-
+			retList.add(newURow);
+		}
 
 		return retList;
 	}
-
 
 }

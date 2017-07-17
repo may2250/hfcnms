@@ -49,7 +49,7 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 	private static String heOpRxOutputALCLevel = ".1.3.6.1.4.1.5591.1.11.1.2.1.1.2.1.34";
 	private static String heOpRxOutputMLCLevel = ".1.3.6.1.4.1.5591.1.11.1.2.1.1.2.1.35";
 
-	public ReceiverSnmpPrevail(String phsicIndex) {
+	public ReceiverSnmpPrevail(String phsicIndex,String PDeviceID) {
 		super(phsicIndex);
 		try{
 			mjVariables = new VariableSnmpVar[2];
@@ -130,6 +130,8 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 
 	}
 
+
+    @Override 
 	public JSONObject getPmWithModelNumber(JSONObject pJson) throws Exception {
 		PDU inPDU;
 		CommunityTarget cTgt;

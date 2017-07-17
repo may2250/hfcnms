@@ -44,6 +44,7 @@ public class CurrentAlarmModel extends Thread {
 
 	public CDatabaseEngine logEngine;
 
+	private int commonLogIns = -1;
 	// the real model,current trap rows
 	public CopyOnWriteArrayList<nojuTrapLogTableRow> allRows;
 	public Hashtable allRowsTable;
@@ -107,14 +108,15 @@ public class CurrentAlarmModel extends Thread {
 				JSONObject jsondata = (JSONObject) new JSONParser().parse(msg);
 				String cmd = jsondata.get("cmd").toString();
 				JSONObject rootjson = new JSONObject();
+				if (cmd.equalsIgnoreCase("getLoginInit")) {
+					staticmemory.sendRemoteStr(getInitLog(rootjson), jsondata.get("sessionid").toString());			
+				}else if (cmd.equalsIgnoreCase("newalarm")) {
 
-				if (cmd.equalsIgnoreCase("newalarm")) {
-
-					parseMessage(msg);
+					parseAlarm(msg);
 
 				} else if (cmd.equalsIgnoreCase("alarmsearch")) {
 
-					staticmemory.sendRemoteStr(getHistoryAlarm(jsondata), jsondata.get("sessionid").toString());
+					staticmemory.sendRemoteStr(getHistoryTraplogs(jsondata), jsondata.get("sessionid").toString());
 
 				} else if (cmd.equalsIgnoreCase("grpaddlog")) {
 
@@ -154,7 +156,50 @@ public class CurrentAlarmModel extends Thread {
 		}
 	};
 
-	private String getHistoryAlarm(JSONObject jsondata) {
+	private String getInitLog(JSONObject rootjson) {
+		rootjson = new JSONObject();
+		JSONObject logjson;
+		rootjson.put("cmd", "getInitLog");
+		JSONArray jsonarray = new JSONArray();
+
+		// System.out.println("CurrentAlarmModel.me.allRows.size()==" +
+		// CurrentAlarmModel.me.allRows.size());
+		for (nojuTrapLogTableRow prow : CurrentAlarmModel.me.allRows) {
+			logjson = new JSONObject();
+			logjson.put("id", prow.TrapLogID);
+			logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+			logjson.put("path", "grp1/xxxx");
+			logjson.put("type", prow.TrapLogType.toString());
+			logjson.put("paramname", prow.parmName);
+			logjson.put("paramvalue", prow.paramValue);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			logjson.put("eventtime", sdf.format(prow.TrapLogTime));
+			logjson.put("solved", prow.TrapTreatMent);
+			logjson.put("solvetime", prow.isTreated);
+			jsonarray.add(logjson);
+		}
+		rootjson.put("alarms", jsonarray);
+		// invalid alarms
+		jsonarray = new JSONArray();
+		for (nojuTrapLogTableRow prow : CurrentAlarmModel.me.invalidRows) {
+			logjson = new JSONObject();
+			logjson.put("id", prow.TrapLogID);
+			logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+			logjson.put("path", "grp1/xxxx");
+			logjson.put("type", prow.TrapLogType.toString());
+			logjson.put("paramname", prow.parmName);
+			logjson.put("paramvalue", prow.paramValue);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			logjson.put("eventtime", sdf.format(prow.TrapLogTime));
+			logjson.put("solved", prow.TrapTreatMent);
+			logjson.put("solvetime", prow.isTreated);
+			jsonarray.add(logjson);
+		}
+		rootjson.put("invalidalarms", jsonarray);
+		return rootjson.toJSONString();
+	}
+
+	private String getHistoryTraplogs(JSONObject jsondata) {
 		JSONObject rootjson = new JSONObject();
 		JSONObject logjson;
 		rootjson.put("cmd", jsondata.get("cmd").toString());
@@ -241,7 +286,7 @@ public class CurrentAlarmModel extends Thread {
 		return rootjson.toJSONString();
 	}
 
-	private void parseMessage(String message) {
+	private void parseAlarm(String message) {
 		// System.out.println(" [x] CurrentAlarmModel Received: '" + message +
 		// "'");
 		nojuTrapLogTableRow newObj = null;
@@ -268,88 +313,7 @@ public class CurrentAlarmModel extends Thread {
 		insertTrapLog(newObj);
 	}
 
-	public nojuTrapLogTableRow insertTrapLog(nojuTrapLogTableRow pRow) {
-		return insertTrapLog(pRow.TrapLogType, pRow.TrapDevAddress, pRow.neName, pRow.TrapLogContent, pRow.TrapLogTime, pRow.parmName, pRow.paramValue, 0);
-
-	}
-
-	private void kickOffLineTrap(nojuTrapLogTableRow aCurrentrow) {
-		int treatTid = -1;
-
-		Iterator it1 = allRows.iterator();
-		while (it1.hasNext()) {
-			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
-			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.TrapLogType == TrapLogTypes.Offline) {
-				treatTid = item.TrapLogID;
-				break;
-
-			}
-		}
-
-		if (treatTid != -1) {
-			editTreatMent(treatTid, ClsLanguageExmp.commonGet("鑷姩鎭㈠"));
-		}
-
-	}
-
-	private void kickParamTrap(nojuTrapLogTableRow aCurrentrow) {
-		int treatTid = -1;
-
-		Iterator it1 = allRows.iterator();
-		while (it1.hasNext()) {
-			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
-			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.parmName.equalsIgnoreCase(aCurrentrow.parmName)) {
-				treatTid = item.TrapLogID;
-				break;
-
-			}
-		}
-
-		if (treatTid != -1) {
-			editTreatMent(treatTid, ClsLanguageExmp.commonGet("鑷姩鎭㈠"));
-		}
-
-	}
-
-	private void coverOnlineTrap(nojuTrapLogTableRow aCurrentrow) {
-		int treatTid = -1;
-
-		Iterator it1 = allRows.iterator();
-		while (it1.hasNext()) {
-			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
-			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.TrapLogType == TrapLogTypes.Offline) {
-				treatTid = item.TrapLogID;
-				break;
-
-			}
-		}
-
-		if (treatTid != -1) {
-			editTreatMent(treatTid, ClsLanguageExmp.commonGet("杩囨椂澶辨晥"));
-		}
-
-	}
-
-	private void coverParamTrap(nojuTrapLogTableRow aCurrentrow) {
-		int treatTid = -1;
-
-		Iterator it1 = allRows.iterator();
-		while (it1.hasNext()) {
-			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
-			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.parmName.equalsIgnoreCase(aCurrentrow.parmName)) {
-				treatTid = item.TrapLogID;
-				break;
-
-			}
-		}
-
-		if (treatTid != -1) {
-			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过期失效"));
-		}
-
-	}
-
-	private int commonLogIns = -1;
+	
 
 	public nojuTrapLogTableRow insertTrapLog(TrapLogTypes type, String addr, String neName, String content, Date time, String paramName, String pValue,
 			int pSlotIndex) {
@@ -419,6 +383,90 @@ public class CurrentAlarmModel extends Thread {
 		return aCurrentrow;
 
 	}
+
+	
+	public nojuTrapLogTableRow insertTrapLog(nojuTrapLogTableRow pRow) {
+		return insertTrapLog(pRow.TrapLogType, pRow.TrapDevAddress, pRow.neName, pRow.TrapLogContent, pRow.TrapLogTime, pRow.parmName, pRow.paramValue, 0);
+
+	}
+
+	private void kickOffLineTrap(nojuTrapLogTableRow aCurrentrow) {
+		int treatTid = -1;
+
+		Iterator it1 = allRows.iterator();
+		while (it1.hasNext()) {
+			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
+			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.TrapLogType == TrapLogTypes.Offline) {
+				treatTid = item.TrapLogID;
+				break;
+
+			}
+		}
+
+		if (treatTid != -1) {
+			editTreatMent(treatTid, ClsLanguageExmp.commonGet("自动恢复"));
+		}
+
+	}
+
+	private void kickParamTrap(nojuTrapLogTableRow aCurrentrow) {
+		int treatTid = -1;
+
+		Iterator it1 = allRows.iterator();
+		while (it1.hasNext()) {
+			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
+			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.parmName.equalsIgnoreCase(aCurrentrow.parmName)) {
+				treatTid = item.TrapLogID;
+				break;
+
+			}
+		}
+
+		if (treatTid != -1) {
+			editTreatMent(treatTid, ClsLanguageExmp.commonGet("自动恢复"));
+		}
+
+	}
+
+	private void coverOnlineTrap(nojuTrapLogTableRow aCurrentrow) {
+		int treatTid = -1;
+
+		Iterator it1 = allRows.iterator();
+		while (it1.hasNext()) {
+			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
+			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.TrapLogType == TrapLogTypes.Offline) {
+				treatTid = item.TrapLogID;
+				break;
+
+			}
+		}
+
+		if (treatTid != -1) {
+			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过期失效"));
+		}
+
+	}
+
+	private void coverParamTrap(nojuTrapLogTableRow aCurrentrow) {
+		int treatTid = -1;
+
+		Iterator it1 = allRows.iterator();
+		while (it1.hasNext()) {
+			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
+			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.parmName.equalsIgnoreCase(aCurrentrow.parmName)) {
+				treatTid = item.TrapLogID;
+				break;
+
+			}
+		}
+
+		if (treatTid != -1) {
+			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过期失效"));
+		}
+
+	}
+
+
 
 	public void editTreatMent(int TrapLogID, String content) {
 		// DataRow ros;
@@ -502,10 +550,7 @@ public class CurrentAlarmModel extends Thread {
 
 	}
 
-	public String getPath() {
-
-		return "";
-	}
+	
 
 	public void clearAllTrapLogRows() {
 		this.allRows.clear();
@@ -513,6 +558,7 @@ public class CurrentAlarmModel extends Thread {
 
 	}
 
+	
 	public nojuOperLogTableRow InsertOperLog(OperLogTypes type, String content, String usrName) {
 		nojuOperLogTableRow row = new nojuOperLogTableRow(type, content, new Date(), usrName);
 
