@@ -2,7 +2,6 @@ package wl.hfc.topd;
 
 
 import java.io.IOException;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -821,6 +820,7 @@ public class MainKernel {
 		log.info("------->>>" + jsondata.toJSONString());
 		return jsondata.toJSONString();
 	}
+
 
 	private void handleAuthUser(JSONObject jsondata) {
 		AuthResult rst;
