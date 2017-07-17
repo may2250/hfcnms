@@ -69,9 +69,8 @@
         	    $.contextMenu({
         	      selector: '#tbl_devalarm tbody tr td',
         	      callback: function(key, options) {
-        	        var id = options.$trigger[0].parentElement.id;
-        	        var m = "clicked: " + key + ' ' + id;
-        	        window.console && console.log(m) || alert(m);
+        	        var addr = options.$trigger[0].parentElement.cells[2].textContent;
+        	        
         	      },
         	      items: {
         	        "edit": {
@@ -830,7 +829,7 @@
 	        	              }
         	         }
       	          },    	
-    	        "add": {name: "添加节点", icon: "add",
+    	        "add": {name: "添加组", icon: "add",
     	        	disabled: function(key, opt){
     	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
         	              if(node.data.type == "group"){

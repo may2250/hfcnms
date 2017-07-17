@@ -16,6 +16,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
+
 import com.xinlong.util.RedisUtil;
 import com.xinlong.util.StaticMemory;
 
@@ -33,6 +34,7 @@ import wl.hfc.traprcss.TrapPduServer;
 public class MainKernel {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	private static final String PARAMKERNEL_MESSAGE = "paramkernel.message";
+	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	private static Logger log = Logger.getLogger(MainKernel.class);
 
 	private CDatabaseEngine ICDatabaseEngine1;
@@ -111,10 +113,8 @@ public class MainKernel {
 
 		}
 
-		if (cmd.equalsIgnoreCase("getLoginInit")) {
-			staticmemory.sendRemoteStr(getInitTree(rootjson), jsondata.get("sessionid").toString());
-			//staticmemory.sendRemoteStr(getInitLog(rootjson), jsondata.get("sessionid").toString());
-			staticmemory.sendRemoteStr(getDBstatus(), jsondata.get("sessionid").toString());
+		if (cmd.equalsIgnoreCase("loginAuth")) {
+			userAuth(jsondata);			
 		} else if (cmd.equalsIgnoreCase("getgrouptree")) {
 			staticmemory.sendRemoteStr(getGroupTree(rootjson), jsondata.get("sessionid").toString());
 		} else if (cmd.equalsIgnoreCase("nodeadd")) {
@@ -189,6 +189,28 @@ public class MainKernel {
 
 		int xxx = 12;
 
+	}
+	
+	private void userAuth(JSONObject jsondata){
+		JSONObject rootjson = new JSONObject();
+		AuthResult rst = handleAuthUser(jsondata.get("username").toString(),jsondata.get("password").toString());
+		String sessionid = jsondata.get("sessionid").toString();
+		if(rst == AuthResult.SUCCESS){
+			jsondata.put("Authed", true);
+			staticmemory.sendRemoteStr(jsondata.toJSONString(), sessionid);
+			//初始化
+			staticmemory.sendRemoteStr(getInitTree(rootjson), sessionid);
+			staticmemory.sendRemoteStr(getDBstatus(), sessionid);
+			rootjson = new JSONObject();
+			rootjson.put("cmd", "getLoginInit");
+			rootjson.put("sessionid", sessionid);
+			sendToQueue(rootjson.toJSONString(), HFCALARM_MESSAGE);
+		}else{			
+			jsondata.put("Authed", false);
+			staticmemory.sendRemoteStr(jsondata.toJSONString(), sessionid);
+			staticmemory.RemoveSession(staticmemory.getSessionByID(sessionid));
+		}
+		
 	}
 
 	private String getInitTree(JSONObject rootjson) {
@@ -825,8 +847,8 @@ public class MainKernel {
 	}
 
 
-	private void handleAuthUser(JSONObject jsondata) {
-		AuthResult rst;
+	private AuthResult handleAuthUser(String username, String password) {
+		AuthResult rst = AuthResult.SUCCESS;
 		boolean isExist = false;
 		ArrayList<nojuUserAuthorizeTableRow> mUserAuthorizeTableRowList ;
 		try {
@@ -835,15 +857,15 @@ public class MainKernel {
 		} catch (Exception e) {
 			
 			rst = AuthResult.USER_NOT_EXIST;
-			return;
+			return rst;
 			// TODO: handle exception
 		}
 
 		for (nojuUserAuthorizeTableRow prow : mUserAuthorizeTableRowList) {
 
-			if (prow.UserName == jsondata.get("username").toString()) {
+			if (prow.UserName.equalsIgnoreCase(username)) {
 				isExist = true;
-				if (prow.PassWord == jsondata.get("password").toString()) {
+				if (prow.PassWord.equalsIgnoreCase(password)) {
 					// login success
 					rst = AuthResult.SUCCESS;
 
@@ -859,7 +881,7 @@ public class MainKernel {
 		if (!isExist) {
 			rst = AuthResult.USER_NOT_EXIST;
 		}
-
+		return rst;
 	}
 
 	

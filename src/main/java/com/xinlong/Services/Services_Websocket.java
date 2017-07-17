@@ -35,6 +35,8 @@ import com.xinlong.util.StaticMemory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 import sun.misc.BASE64Decoder;
+import wl.hfc.common.NlogType.AuthResult;
+import wl.hfc.topd.MainKernel;
 
 
 
@@ -72,17 +74,9 @@ public class Services_Websocket {
 			JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 			String cmd = jsondata.get("cmd").toString();
 			JSONObject rootjson = new JSONObject();
-			if(cmd.equalsIgnoreCase("getInitTree")){
-				//获取设备数结构
-				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);				
-			}else if(cmd.equalsIgnoreCase("getgrouptree")){
+			if(cmd.equalsIgnoreCase("getgrouptree")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
-			}else if(cmd.equalsIgnoreCase("getInitLog")){
-				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
-				sendToQueue(jsondata.toJSONString(), HFCALARM_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("nodeadd")){
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("nodeedit")){
@@ -158,25 +152,12 @@ public class Services_Websocket {
 				String passWord = decrypt(password, deskey);
 				System.out.println("username::des::" + username + ":::password:des::"+ passWord);
 				//用户认证
-	    		//TODO
-				
-				if(true){
-					//认证成功
-					rootjson.put("Authed", true);
-		    		staticmemory.AddSession(session);
-		            System.out.println("Client connected::::" + staticmemory.getCount());
-				}else{
-					rootjson.put("Authed", false);
-				}				
-		    	try {
-					session.getBasicRemote().sendText(rootjson.toJSONString());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-		    	rootjson = new JSONObject();
-		    	rootjson.put("cmd", "getLoginInit");
-		    	rootjson.put("sessionid", session.getId());
-		    	sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+				staticmemory.AddSession(session);
+				rootjson.put("sessionid", session.getId());
+				rootjson.put("username", username);
+				rootjson.put("password", passWord);
+		    	sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);				
+		    	
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
