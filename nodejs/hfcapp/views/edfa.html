@@ -1,0 +1,305 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript">		
+		$(".trapaddr").dblclick(function(){
+			var domstr = $(this).data("paramname");
+			var rownum = $(this).data("rownum");
+			$( "#dialog-form" ).dialog({
+        	      autoOpen: false,
+        	      height: 240,
+        	      width: 300,
+        	      modal: true,
+        	      buttons: {
+        	    	  Ok: function() {	   
+        	    		  if(ipvalidate($("#set_value").val())){
+        	    			  var node = __globalobj__._realDevice.getFirstChild();
+            	    		  var datastring = '{"cmd":"hfcvalueset","target":"setTrapHost","ip":"' + __globalobj__._realDevice.key +'","domstr":"'+ domstr +'","isRow":"true","rowNum":"'+ rownum+'","value":"'+ $("#set_value").val()+'"}';
+            	    		  __globalobj__._send(datastring);
+            	              $( this ).dialog( "close" );
+        	    		  }else{
+        	    			  $("#set_value").addClass( "ui-state-error-custom" )
+        	    		  }        	    		  
+        	            }
+        	      },
+        	      close: function() {
+	        	    	$("#set_value").removeClass("ui-state-error-custom");
+	        	  }
+    	    });
+            $("#set_value").val($(this)[0].textContent);
+            updateTips("请输入新的Trap地址:");
+            $("#dialog-form").dialog("open");
+		});
+		
+		$(".hfcunit").dblclick(function(){
+			var domstr = $(this)[0].id;
+			$( "#dialog-form" ).dialog({
+        	      autoOpen: false,
+        	      height: 240,
+        	      width: 300,
+        	      modal: true,
+        	      buttons: {
+        	    	  Ok: function() {
+        	    		  if(checkInt($("#set_value").val())){
+        	    			  var node = __globalobj__._realDevice.getFirstChild();
+            	    		  var datastring = '{"cmd":"hfcvalueset","target":"setVars","ip":"' + __globalobj__._realDevice.key+'","isRow":"false","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
+            	    		  __globalobj__._send(datastring);
+            	              $( this ).dialog( "close" );
+        	    		  }else{
+        	    			  $("#set_value").addClass( "ui-state-error-custom" )
+        	    		  }
+        	    		  
+        	            }
+        	      },
+        	      close: function() {
+	        	    	$("#set_value").removeClass("ui-state-error-custom");
+	        	  }
+    	    });
+            $("#set_value").val($(this).val());
+            updateTips("请输入新值:");
+            $("#dialog-form").dialog("open");
+		}); 
+		
+		$(".tbl_hfcunit").dblclick(function(){
+			var domstr = $(this).data("paramname");			
+			var rownum = $(this).data("rownum");
+			$( "#dialog-form" ).dialog({
+        	      autoOpen: false,
+        	      height: 240,
+        	      width: 300,
+        	      modal: true,
+        	      buttons: {
+        	    	  Ok: function() {
+        	    		  if(checkInt($("#set_value").val())){
+        	    			  var node = __globalobj__._realDevice.getFirstChild();
+            	    		  var datastring = '{"cmd":"hfcvalueset","target":"setVars","ip":"' + __globalobj__._realDevice.key + '","rowNum":"'+ rownum 
+            	    			  +'","isRow":"true","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
+            	    		  __globalobj__._send(datastring);
+            	              $( this ).dialog( "close" );
+        	    		  }else{
+        	    			  $("#set_value").addClass( "ui-state-error-custom" )
+        	    		  }
+        	    		  
+        	            }
+        	      },
+        	      close: function() {
+	        	    	$("#set_value").removeClass("ui-state-error-custom");
+	        	  }
+    	    });
+            $("#set_value").val($(this).val());
+            updateTips("请输入新值:");
+            $("#dialog-form").dialog("open");
+		}); 
+		
+		$(".isalarmThreshold").dblclick(function(){
+			var node = __globalobj__._realDevice.getFirstChild();
+			var domstr = $(this)[0].id;
+			var datastring = '{"cmd":"hfcvalueset","target":"getalarmThreshold","ip":"' + __globalobj__._realDevice.key +'","domstr":"'+ domstr 
+			+'","isRow":"false","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity + '","devtype":"'+ __globalobj__._realDevice.getLastChild().key + '"}';
+  		  	__globalobj__._send(datastring);			
+		}); 
+		
+		$(".tbl_isalarmThreshold").dblclick(function(){
+			var node = __globalobj__._realDevice.getFirstChild();
+			var domstr = $(this).data("paramname");			
+			var rownum = $(this).data("rownum");
+			var datastring = '{"cmd":"hfcvalueset","target":"getalarmThreshold","ip":"' + __globalobj__._realDevice.key +'","domstr":"'+ domstr +'","rowNum":"'+ rownum 
+				+'","isRow":"true","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity + '","devtype":"'+ __globalobj__._realDevice.getLastChild().key + '"}';
+  		  	__globalobj__._send(datastring);			
+		}); 
+		
+		$('.device-close').click(function(){
+			var node = __globalobj__._realDevice.getFirstChild();
+			var datastring = '{"cmd":"deviceclose","ip":"' + __globalobj__._realDevice.key + '"}';
+  		  	__globalobj__._send(datastring);
+  		  	$('.candile').empty();
+		});
+	</script>
+</head>
+<body>
+	<div class="devdetail">
+		<button type="button" class="close device-close" aria-hidden="true">&times;</button>
+		<ul class = "devdetail-header">
+			<li class="dev-img"><img src = "../images/EDFA_HD.png" /></li>
+			<li class="dev-status"><span id="dev-status-text">设备连接正常...</span></li>
+			<li>
+				<table class="table tbl_noborder tbl_devtips">
+	        		<tr>
+	        			<td>设备IP:</td>
+	        			<td id="panel-devip"></td>
+	        			<td>系统描述:</td>
+	        			<td id="panel-devinfo"></td>	        			
+	        		</tr>
+	        		<tr>
+	        			<td>联系信息:</td>
+	        			<td id="panel-devcontact"></td>
+	        			<td>在线时间:</td>
+	        			<td id="panel-onlinetimeticks"></td>
+	        		</tr>
+	        	</table>
+			</li>
+		</ul>	
+		<div class = "devdetail-content">
+			<div class="tabbable">
+				<ul class="nav nav-tabs" role="tablist">
+				    <li class="active"><a href="#tab-dev1" data-toggle="tab">EDFA设备参数</a></li>
+				    <li><a href="#tab-dev2" data-toggle="tab">HFC公共库参数</a></li>				    
+				</ul>
+				<div class="tab-content">
+				    <div class="tab-pane tab-devpane active" id="tab-dev1">
+					    <div class="devdetail-content">			
+					    	<table class="tbl_devdetail-content">
+					    		<tr>
+					    			<td>
+					    				<table class="table tbl_detail">
+										  <tbody>
+											    <tr>
+											      <td>输入光功率:</td>
+											      <td><input type="text" class="form-control isalarmThreshold" id="oaInputOpticalPower" readonly></td>
+											    </tr>
+											    <tr>
+											      <td>输出光功率:</td>
+											      <td><input type="text" class="form-control isalarmThreshold" id="oaOutputOpticalPower" readonly></td>
+											    </tr>
+											    <tr>
+											      <td>光衰减值:</td>
+											      <td><input type="text" class="form-control" id="fnRFChannelNum" readonly></td>
+											    </tr>
+										  </tbody>
+										</table>
+					    			</td>
+					    		</tr>
+					    		<tr>
+					    			<td>
+					    				<table class="table tbl_power" style="width:30%">
+										   <thead>
+											    <tr>
+											      <th>电源输出表</th>
+											      <th>输出电压</th>
+											    </tr>
+										  </thead>
+										  <tbody>
+												<tr>
+													<td><label class="oaDCPowerName_row0"></label></td>
+													<td><label class="oaDCPowerVoltage_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="oaDCPowerVoltage" id="oaDCPowerVoltage_row0"></label></td>
+												</tr>
+												<tr>
+													<td><label class="oaDCPowerName_row1"></label></td>
+													<td><label class="oaDCPowerVoltage_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="oaDCPowerVoltage" id="oaDCPowerVoltage_row1"></label></td>
+												</tr>
+										  </tbody>
+										</table>
+					    			</td>
+					    		</tr>
+					    		<tr>
+					    			<td>
+					    				<table class="table tbl_devmiddle tbl_devcontent" style="width:30%">
+										   <thead>
+											    <tr>
+											      <th>激光器表</th>
+											      <th>偏置电流</th>
+											      <th>制冷电流</th>
+											      <th>温度</th>
+											    </tr>
+										  </thead>
+										  <tbody>
+												<tr>
+													<td><label class="oaPumpIndex_row0"></label></td>
+													<td><label class="oaPumpBIAS_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="oaPumpBIAS" id="oaPumpBIAS_row0"></label></td>
+													<td><label class="oaPumpTEC_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="oaPumpTEC" id="oaPumpTEC_row0"></label></td>
+													<td><label class="oaPumpTemp_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="oaPumpTemp" id="oaPumpTemp_row0"></label></td>
+												</tr>
+												<tr>
+													<td><label class="oaPumpIndex_row0"></label></td>
+													<td><label class="oaPumpBIAS_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="oaPumpBIAS" id="oaPumpBIAS_row1"></label></td>
+													<td><label class="oaPumpTEC_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="oaPumpTEC" id="oaPumpTEC_row1"></label></td>
+													<td><label class="oaPumpTemp_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="oaPumpTemp" id="oaPumpTemp_row1"></label></td>
+												</tr>
+										  </tbody>
+										</table>
+					    			</td>
+					    		</tr>
+					    	</table>						
+					    </div>				    	
+				    </div>
+				    <div class="tab-pane tab-devpane" id="tab-dev2">
+				    	<div class="devdetail-public">
+				    		<div>
+				    			<table class="table table-bordered">
+								   <caption>Trap目标主机表</caption>
+								   <thead>
+									    <tr>
+									      <th>序号.</th>
+									      <th>目标IP地址</th>
+									    </tr>
+								  </thead>
+								  <tbody>
+									    <tr>
+									      <td>1.</td>
+									      <td class="trapaddr" data-rownum="0" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row0">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>2.</td>
+									      <td class="trapaddr" data-rownum="1" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row1">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>3.</td>
+									      <td class="trapaddr" data-rownum="2" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row2">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>4.</td>
+									      <td class="trapaddr" data-rownum="3" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row3">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>5.</td>
+									      <td class="trapaddr" data-rownum="4" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row4">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>6.</td>
+									      <td class="trapaddr" data-rownum="5" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row5">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>7.</td>
+									      <td class="trapaddr" data-rownum="6" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row6">0.0.0.0</td>
+									    </tr>
+									    <tr>
+									      <td>8.</td>
+									      <td class="trapaddr" data-rownum="7" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row7">0.0.0.0</td>
+									    </tr>
+								  </tbody>
+								</table>
+				    		</div>
+					    	<div>
+					    		<table class="table tbl_hfcpublic">
+								  <tbody>
+									    <tr>
+									      <td>温度:</td>
+									      <td><input type="text" class="form-control" id="commonInternalTemperature" readonly></td>									      
+									    </tr>
+									    <tr>
+									      <td>逻辑ID:</td>
+									      <td><input type="text" class="form-control" id="commonNELogicalID" readonly></td>
+									    </tr>
+									    <tr>
+									      <td>型号:</td>
+									      <td><input type="text" class="form-control" id="commonNEModelNumber" readonly></td>
+									    </tr>
+									    <tr>
+									      <td>序列号:</td>
+									      <td><input type="text" class="form-control" id="commonNESerialNumber" readonly></td>
+									    </tr>
+									    <tr>
+									      <td>MAC:</td>
+									      <td><input type="text" class="form-control" id="commonDeviceMACAddress" readonly></td>
+									    </tr>
+								  </tbody>
+								</table>
+					    	</div>							
+					    </div>				    	
+				    </div>
+				</div>
+			</div>
+		</div>
+	</div>	
+</body>

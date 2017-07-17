@@ -168,6 +168,7 @@ public class CurrentAlarmModel extends Thread {
 			logjson = new JSONObject();
 			logjson.put("id", prow.TrapLogID);
 			logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+			logjson.put("addr", prow.TrapDevAddress);
 			logjson.put("path", "grp1/xxxx");
 			logjson.put("type", prow.TrapLogType.toString());
 			logjson.put("paramname", prow.parmName);
@@ -185,6 +186,7 @@ public class CurrentAlarmModel extends Thread {
 			logjson = new JSONObject();
 			logjson.put("id", prow.TrapLogID);
 			logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+			logjson.put("addr", prow.TrapDevAddress);
 			logjson.put("path", "grp1/xxxx");
 			logjson.put("type", prow.TrapLogType.toString());
 			logjson.put("paramname", prow.parmName);
@@ -269,6 +271,7 @@ public class CurrentAlarmModel extends Thread {
 				logjson = new JSONObject();
 				logjson.put("id", prow.TrapLogID);
 				logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+				logjson.put("addr", prow.TrapDevAddress);
 				logjson.put("path", prow.neName);
 				logjson.put("type", prow.TrapLogType.toString());
 				logjson.put("paramname", prow.parmName);
@@ -353,7 +356,7 @@ public class CurrentAlarmModel extends Thread {
 			logjson.put("opt", true);
 			logjson.put("id", aCurrentrow.TrapLogID);
 			logjson.put("level", NlogType.getAlarmString(type));
-			// logjson.put("source", aCurrentrow.neName);
+			logjson.put("addr", aCurrentrow.TrapDevAddress);
 			logjson.put("path", aCurrentrow.neName);
 			logjson.put("type", aCurrentrow.TrapLogType.toString());
 			logjson.put("paramname", aCurrentrow.parmName);
@@ -505,6 +508,7 @@ public class CurrentAlarmModel extends Thread {
 				logjson.put("opt", false);
 				logjson.put("id", item.TrapLogID);
 				logjson.put("level", NlogType.getAlarmString(item.TrapLogType));
+				logjson.put("addr", item.TrapDevAddress);
 				logjson.put("path", "grp1/xxxx");
 				logjson.put("type", item.TrapLogType.toString());
 				logjson.put("paramname", item.parmName);

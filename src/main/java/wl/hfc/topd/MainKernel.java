@@ -292,17 +292,20 @@ public class MainKernel {
 				subjson.put("wcommunity", dev.BindnojuDeviceTableRow._RWCommunity);
 				subjson.put("isonline", dev.isOline);
 				String imgstr = "images/devoff.png";
-				switch (dev.mNetType) {
-				case rece_workstation:
+				switch (dev.HFCType1) {
+				case HfcMinWorkstation:
+				case HfcWorkstation:
 					imgstr = "images/treeRece.png";
 					break;
 				case EDFA:
 					imgstr = "images/treeEDFA.png";
 					break;
-				case Trans:
+				case Trans1310DM:
+				case Trans1550DM:
+				case TransEM:
 					imgstr = "images/treeTrans.png";
 					break;
-				case other:
+				case Unknown:
 					imgstr = "images/device.png";
 					break;
 				case OSW:
@@ -317,9 +320,9 @@ public class MainKernel {
 				infojson.put("icon", "images/net_info.ico");
 				subjsonarray.add(infojson);
 				infojson = new JSONObject();
-				infojson.put("key", dev.mNetType.toString());
+				infojson.put("key", dev.HFCType1.ordinal());
 				infojson.put("title", "<span class='net-info' >" + DProcess.getDevDISCRIPTIONByNettypeString(dev.mNetType) + "</span>");
-				infojson.put("hfctype", dev.HFCType1.toString());
+				infojson.put("hfctype", dev.HFCType1.ordinal());
 				infojson.put("icon", "images/net_info.ico");
 				subjsonarray.add(infojson);
 				subjson.put("children", subjsonarray);

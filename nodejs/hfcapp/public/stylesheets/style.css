@@ -265,7 +265,7 @@ div.dataTables_wrapper {
 
 .devdetail-content{
 	text-align: center;
-	height:290px;
+	height:300px;
 	min-height:275px;
 }
 
@@ -624,7 +624,7 @@ li#menu-academico{
 	min-width:100px;
     height: 100px;
     background-color: black;
-    color: red;
+    color: lightgreen;
     text-align: center;
     line-height: 100px;
 }

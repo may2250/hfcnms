@@ -48,21 +48,21 @@ public class Realtime_param_call extends Thread {
 							
 							//if(osp.snmpPreail.thisDev.HFCType1==HFCTypes.HfcMinWorkstation){
 								json = osp.snmpPreail.getPmWithModelNumber(json);
-								//commonjson=((CommonSnmpPrevail)osp.commonSnmpPreail).getPmWithModelNumber(commonjson);
+								commonjson=((CommonSnmpPrevail)osp.commonSnmpPreail).getPmWithModelNumber(commonjson);
 							//}
 							if(json == null)
 								continue;
 							
-							//json.put("common", commonjson);							
+							json.put("common", commonjson);							
 							String jsonstr = json.toJSONString();
-							System.out.println(jsonstr);
+							//System.out.println(jsonstr);
 							for(Iterator it2 = osp.sessionList.iterator();it2.hasNext();){
 								 staticmemory.sendRemoteStr(jsonstr, it2.next().toString());
 					        }
 						}
 					} catch (Exception e) {
 						//e.printStackTrace();
-						//log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
+						log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
 
 					}
 				}

@@ -11,8 +11,10 @@ function __getDeviceDetail(devnode, jsonobj){
 	case "other":
 		$(".candile").load("/rece_workstation");
 		break;
-	case "EDFA":
-		$(".candile").load("/opticalTran");
+	case 1:
+		$(".candile").load("/edfa", function(){
+			parse_edfa(jsonobj);
+		});
 		break;
 	case "HfcMinWorkstation":
 	case 14:
@@ -48,7 +50,7 @@ function parseHfcDevice(jsonobj){
 		
 		break;
 	case "EDFA":
-		
+		parse_edfa(jsonobj);
 		break;
 	case "HfcMinWorkstation":
 		parse_rece_workstation(jsonobj);
@@ -210,6 +212,171 @@ function parse_rece_workstation(jsonobj){
     case "4":
         //lo
     	$('.fnRFPortOutputRFLevel_row1').css("background-color", "yellow");
+        break;
+	}
+	
+}
+
+function parse_edfa(jsonobj){	
+	$('#panel-devip')[0].textContent = __globalobj__._realDevice.key;
+	$('#panel-onlinetimeticks')[0].textContent = jsonobj.common.sysUpTime;
+	$('#panel-devinfo')[0].textContent = jsonobj.common.sysDescr;
+	$('#panel-devcontact')[0].textContent = jsonobj.common.sysContact;
+	$('#commonInternalTemperature').val(jsonobj.common.commonInternalTemperature);
+	$('#commonNELogicalID').val(jsonobj.common.commonNELogicalID);
+	$('#commonNEModelNumber').val(jsonobj.common.commonNEModelNumber);	
+	$('#commonNESerialNumber').val(jsonobj.common.commonNESerialNumber);
+	$('#commonDeviceMACAddress').val(jsonobj.common.commonDeviceMACAddress);
+	$('#oaInputOpticalPower').val(jsonobj.oaInputOpticalPower); 
+	$('#oaOutputOpticalPower').val(jsonobj.oaOutputOpticalPower); 
+	switch(jsonobj.oaInputOpticalPower6){
+	case "1":
+        //normal
+		$('#oaInputOpticalPower').css("background-color", "green");
+        break;
+    case "2":
+    //hihi
+    case "5":
+        //lolo
+    	$('#oaInputOpticalPower').css("background-color", "red");
+        break;
+    case "3":
+    //hi
+    case "4":
+        //lo
+    	$('#oaInputOpticalPower').css("background-color", "yellow");
+        break;
+	}
+	switch(jsonobj.oaOutputOpticalPower6){
+	case "1":
+        //normal
+		$('#oaOutputOpticalPower').css("background-color", "green");
+        break;
+    case "2":
+    //hihi
+    case "5":
+        //lolo
+    	$('#oaOutputOpticalPower').css("background-color", "red");
+        break;
+    case "3":
+    //hi
+    case "4":
+        //lo
+    	$('#oaOutputOpticalPower').css("background-color", "yellow");
+        break;
+	}
+	var i = 0;
+	$.each(jsonobj.powertbl, function(key, itemv) {
+		$('.oaDCPowerName_row' + i)[0].textContent = itemv.oaDCPowerName_row;
+		$('.oaDCPowerVoltage_row' + i)[0].textContent = itemv.oaDCPowerVoltage_row;
+		i++;
+	});	
+	i = 0;
+	$.each(jsonobj.pumptbl, function(key, itemv) {
+		$('.oaPumpIndex_row' + i)[0].textContent = itemv.oaPumpIndex_row;
+		$('.oaPumpBIAS_row' + i)[0].textContent = itemv.oaPumpBIAS_row;
+		$('.oaPumpTEC_row' + i)[0].textContent = itemv.oaPumpTEC_row;
+		$('.oaPumpTemp_row' + i)[0].textContent = itemv.oaPumpTemp_row;
+		i++;
+	});
+	i = 0;
+	$.each(jsonobj.common.traptbl, function(key, itemv) {
+		$('#commonAgentTrapIP_row' + i)[0].textContent = itemv.commonAgentTrapIP_row;
+		i++;
+	});
+	switch(jsonobj.oaDCPowerVoltage06){
+	case "1":
+        //normal
+		$('.oaDCPowerVoltage_row0').css("background-color", "green");
+        //textBoxVariable.BackColor = Color.LightGreen;
+        break;
+    case "2":
+    //hihi
+    case "5":
+        //lolo
+    	$('.oaDCPowerVoltage_row0').css("background-color", "red");
+        break;
+    case "3":
+    //hi
+    case "4":
+        //lo
+    	$('.oaDCPowerVoltage_row0').css("background-color", "yellow");
+        break;
+	}
+	switch(jsonobj.oaDCPowerVoltage16){
+	case "1":
+        //normal
+		$('.oaDCPowerVoltage_row1').css("background-color", "green");
+        //textBoxVariable.BackColor = Color.LightGreen;
+        break;
+    case "2":
+    //hihi
+    case "5":
+        //lolo
+    	$('.oaDCPowerVoltage_row1').css("background-color", "red");
+        break;
+    case "3":
+    //hi
+    case "4":
+        //lo
+    	$('.oaDCPowerVoltage_row1').css("background-color", "yellow");
+        break;
+	}
+	switch(jsonobj.oaPumpBIAS06){
+	case "1":
+        //normal
+		$('.oaPumpBIAS_row0').css("background-color", "green");
+        //textBoxVariable.BackColor = Color.LightGreen;
+        break;
+    case "2":
+    //hihi
+    case "5":
+        //lolo
+    	$('.oaPumpBIAS_row0').css("background-color", "red");
+        break;
+    case "3":
+    //hi
+    case "4":
+        //lo
+    	$('.oaPumpBIAS_row0').css("background-color", "yellow");
+        break;
+	}
+	switch(jsonobj.oaPumpTEC06){
+	case "1":
+        //normal
+		$('.oaPumpTEC_row0').css("background-color", "green");
+        //textBoxVariable.BackColor = Color.LightGreen;
+        break;
+    case "2":
+    //hihi
+    case "5":
+        //lolo
+    	$('.oaPumpTEC_row0').css("background-color", "red");
+        break;
+    case "3":
+    //hi
+    case "4":
+        //lo
+    	$('.oaPumpTEC_row0').css("background-color", "yellow");
+        break;
+	}
+	switch(jsonobj.oaPumpTemp06){
+	case "1":
+        //normal
+		$('.oaPumpTemp_row0').css("background-color", "green");
+        //textBoxVariable.BackColor = Color.LightGreen;
+        break;
+    case "2":
+    //hihi
+    case "5":
+        //lolo
+    	$('.oaPumpTemp_row0').css("background-color", "red");
+        break;
+    case "3":
+    //hi
+    case "4":
+        //lo
+    	$('.oaPumpTemp_row0').css("background-color", "yellow");
         break;
 	}
 	

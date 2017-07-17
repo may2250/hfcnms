@@ -22,4 +22,8 @@ router.get('/rece_workstation', function(req, res, next) {
 	  res.render('rece_workstation', { title: 'Express' });
 	});
 
+router.get('/edfa', function(req, res, next) {
+	  res.render('edfa', { title: 'Express' });
+	});
+
 module.exports = router;

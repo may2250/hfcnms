@@ -56,6 +56,7 @@
             columns: [
                       { title: "ID" },
                       { title: "级别" },
+                      { title: "IP地址" },
                       { title: "路径" },
                       { title: "类型" },
                       { title: "参数名" },
@@ -82,10 +83,10 @@
         	  },
         	  "createdRow": function ( row, data, index ) {
         		  $(row).attr('id', data[0]);
-                  if ( data[1] == "紧急告警" ) {
+                  if ( data[1] == "重要告警" ) {
                 	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-warning');
-                  }else if(data[1] == "重要告警"){
+                  }else if(data[1] == "紧急告警"){
                 	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-danger');                  
                   }
@@ -103,6 +104,7 @@
             columns: [
                       { title: "ID" },
                       { title: "级别" },
+                      { title: "IP地址" },
                       { title: "路径" },
                       { title: "类型" },
                       { title: "参数名" },
@@ -113,10 +115,10 @@
                   ],
         	  "createdRow": function ( row, data, index ) {
         		  $(row).attr('id', data[0]);
-                  if ( data[1] == "紧急告警" ) {
+                  if ( data[1] == "重要告警" ) {
                 	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-warning');
-                  }else if(data[1] == "重要告警"){
+                  }else if(data[1] == "紧急告警"){
                 	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-danger');                  
                   }
@@ -342,10 +344,10 @@
                           ],
                   "createdRow": function ( row, data, index ) {
             		  $(row).attr('id', data[0]);
-                      if ( data[1] == "紧急告警" ) {
+                      if ( data[1] == "重要告警" ) {
                     	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
                     	  $('td', row).parent().addClass('alarm-warning');
-                      }else if(data[1] == "重要告警"){
+                      }else if(data[1] == "紧急告警"){
                     	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
                     	  $('td', row).parent().addClass('alarm-danger');                  
                       }
@@ -597,6 +599,7 @@
     		tbl_devalarm_old.row.add( [
        		       	            jsonobj.id,
        		       	            jsonobj.level,
+       		       	            jsonobj.addr,
        		       	            jsonobj.path,
        		       	            jsonobj.type,
        		       	            jsonobj.paramname,
@@ -610,6 +613,7 @@
     		tbl_devalarm.row.add( [
     		       	            jsonobj.id,
     		       	            jsonobj.level,
+    		       	            jsonobj.addr,
     		       	            jsonobj.path,
     		       	            jsonobj.type,
     		       	            jsonobj.paramname,
@@ -648,7 +652,19 @@
     	if(node != undefined){
     		if(jsonobj.isonline == true){
     			node.data.isonline = true;
-    			if(node.getLastChild().key == "rece_workstation"){
+    			switch(jsonobj.hfctype){
+    			case 1:
+    				node.icon = "../images/treeEDFA.png";
+    				break;
+    			case 14:
+    				node.icon = "../images/treeRece.png";
+    				break;
+    				
+				default:
+					node.icon = "../images/device.png";
+					break;
+    			}
+    			/*if(node.getLastChild().key == "rece_workstation"){
     				node.icon = "../images/treeRece.png";
     			}else if(node.getLastChild().key == "EDFA"){
     				node.icon = "../images/treeEDFA.png";
@@ -656,7 +672,7 @@
     				node.icon = "../images/treeTrans.png";
     			}else{
     				node.icon = "../images/device.png";
-    			}        			
+    			}  */      			
     			node.getLastChild().data.hfctype = jsonobj.hfctype;
     			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
         			if(jsonobj.ip == __globalobj__._realDevice.key){
@@ -1017,6 +1033,7 @@
     		tbl_devalarm.row.add( [
     		            value.id,
     		            value.level,
+    		            value.addr,
     		            value.path,
     		            value.type,
     		            value.paramname,
@@ -1031,6 +1048,7 @@
     		tbl_devalarm_old.row.add( [
     		            value.id,
     		            value.level,
+    		            value.addr,
     		            value.path,
     		            value.type,
     		            value.paramname,
