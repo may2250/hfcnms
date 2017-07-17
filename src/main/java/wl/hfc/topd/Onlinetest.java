@@ -35,7 +35,7 @@ public class Onlinetest {
 		new pmls();
 
 		JSONObject json = new JSONObject();
-		ReceiverSnmpPrevail snmpInstance7 = new ReceiverSnmpPrevail(".1");
+		ReceiverSnmpPrevail snmpInstance7 = new ReceiverSnmpPrevail(".1","");
 		snmpInstance7.thisDev = new CDevForCMD("public", "public", "192.168.1.243");
 		snmpInstance7.sver = new PDUServerForOneDev(0);
 		try {
@@ -70,7 +70,7 @@ public class Onlinetest {
 		new pmls();
 
 		JSONObject json = new JSONObject();
-		EDFASnmpPrevail snmpInstance7 = new EDFASnmpPrevail(".1");
+		EDFASnmpPrevail snmpInstance7 = new EDFASnmpPrevail(".1","");
 		snmpInstance7.thisDev = new CDevForCMD("public", "public", "192.168.1.170");
 		snmpInstance7.sver = new PDUServerForOneDev(0);
 		try {

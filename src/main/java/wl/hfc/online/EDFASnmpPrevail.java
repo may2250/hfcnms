@@ -21,6 +21,7 @@ import org.snmp4j.smi.VariableBinding;
 
 
 
+
 import java.util.ArrayList;
 
 import org.snmp4j.PDU;
@@ -41,8 +42,7 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 	public VariableSnmpVar[] cInputVariables;
 	public VariableSnmpVar[] cOutputVariables;
 
-	private SnmpTableInfo InputTableInfo;
-	private SnmpTableInfo outputTable;
+
 
 	// pdus
 	private PDU majorVarPdu;
@@ -142,7 +142,7 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 					headerinfos[enumi].MibDefinedOid));
 		}
 
-		// majorVarPdu=tablepdu;
+
 		me = this;
 
 	}
@@ -193,6 +193,10 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 				(PDU) this.tableOutpdu.clone(), cTgt, sver);
 
 		pJson.put("outtablerownum", reTable1.RowNum);
+		
+		
+		SnmpEngine.tabVarToJason(this.cInputVariables,this.cOutputVariables,reTable, reTable1, pJson);
+
 		
 		for (int j = 0; j < this.cInputVariables.length; j++) {
 
@@ -250,98 +254,9 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 
 	}
 
-
 	
-	
-	public JSONObject ThreadTablePramVarToJasonWithParamString(VariableSnmpVar tableVariable,
-			JSONObject pJson,int row) {
 
-		// System.out.print(arr[i] + "  ");
-		String vale;
-		if (tableVariable.withNoThreashold) {
-			for (int j = 0; j < tableVariable.subVariableSnmpVarS.length; j++) {
 
-				if (j == 5) {
-					vale = tableVariable.subVariableSnmpVarS[j].ToDispString();
-					byte brst = (byte) Integer.parseInt(vale, 16);
-					if ((brst & 0x08) != 0)
-						pJson.put(tableVariable.VarInfo.ParamMibLabel+row
-								+ "HIHI", "1");
-					else
-						pJson.put(tableVariable.VarInfo.ParamMibLabel +row
-								+ "HIHI", "0");
-					if ((brst & 0x04) != 0)
-						pJson.put(tableVariable.VarInfo.ParamMibLabel +row
-								+ "HI", "1");
-					else
-						pJson.put(tableVariable.VarInfo.ParamMibLabel +row
-								+ "HI", "0");
-					if ((brst & 0x02) != 0)
-						pJson.put(tableVariable.VarInfo.ParamMibLabel +row
-								+ "LO", "1");
-					else
-						pJson.put(tableVariable.VarInfo.ParamMibLabel+row
-								+ "LO", "0");
-					if ((brst & 0x01) != 0)
-						pJson.put(tableVariable.VarInfo.ParamMibLabel+row
-								+ "LOLO", "1");
-					else
-						pJson.put(tableVariable.VarInfo.ParamMibLabel +row
-								+ "LOLO", "0");
-
-				} else
-
-				{
-					vale = tableVariable.subVariableSnmpVarS[j].ToDispString();
-					pJson.put(tableVariable.VarInfo.ParamMibLabel +row+ j, vale);
-
-				}
-
-			}
-
-		}
-
-		return pJson;
-
-	}
-
-	
-	
-	
-	public JSONObject tabVarToJason(SnmpTableInfo tabVariables,
-			SnmpTableInfo pOutVariables, JSONObject pJson) {
-		int enumi, enumj;
-		int i = 0;
-
-		for (enumi = 0; enumi < tabVariables.RowNum; enumi++) {
-			for (enumj = 0; enumj < tabVariables.ColNum; enumj++) {
-
-				String vale = cInputVariables[enumj]
-						.ToDispString(tabVariables.TableCells.get(i));
-				pJson.put(cInputVariables[enumj].VarInfo.ParamMibLabel + "_row"
-						+ enumi, vale);
-				i++;
-			}
-		}
-
-		i = 0;
-
-		for (enumi = 0; enumi < pOutVariables.RowNum; enumi++) {
-			for (enumj = 0; enumj < pOutVariables.ColNum; enumj++) {
-
-				String vale = cOutputVariables[enumj]
-						.ToDispString(pOutVariables.TableCells.get(i));
-				pJson.put(cOutputVariables[enumj].VarInfo.ParamMibLabel
-						+ "_row" + enumi, vale);
-				i++;
-			}
-		}
-
-		return pJson;
-
-	}
-
-	// return json result//�����tableparam��paramname�����һλ�������кţ����������
 	public void getSubVarsWithTagInfoBYparamname(String paramname,
 			JSONObject jsobj) {
 		if (paramname.equalsIgnoreCase("hfc_ingonglv")) {
