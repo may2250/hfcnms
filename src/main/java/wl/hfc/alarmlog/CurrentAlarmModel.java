@@ -143,8 +143,10 @@ public class CurrentAlarmModel extends Thread {
 
 					InsertOperLog(OperLogTypes.DeviceOpration, (ClsLanguageExmp.isEn ? "Update: " : "更新：") + "： " + jsondata.get("title").toString() + " @ "
 							+ jsondata.get("key").toString(), "admin");
-				} else if (cmd.equalsIgnoreCase("optlogsearch")) {
-					//获取历史操作日志
+				} else if (cmd.equalsIgnoreCase("optlogsearch")) {				
+					
+
+					staticmemory.sendRemoteStr(getHistoryoperlogs(jsondata), jsondata.get("sessionid").toString());
 					
 				}
 
@@ -286,6 +288,50 @@ public class CurrentAlarmModel extends Thread {
 			ex.printStackTrace();
 		}
 		rootjson.put("alarms", jsonarray);
+		return rootjson.toJSONString();
+	}
+	private String getHistoryoperlogs(JSONObject jsondata) {
+		JSONObject rootjson = new JSONObject();
+		JSONObject logjson;
+		rootjson.put("cmd", jsondata.get("cmd").toString());
+		JSONArray jsonarray = new JSONArray();
+		Date datestart ;
+		Date dateend ;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+
+			 datestart = sdf.parse(jsondata.get("start").toString());//已经是零点
+			 dateend = sdf.parse(jsondata.get("end").toString());
+				
+				
+			 //结束日的24点
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dateend);
+            calendar.add(calendar.DATE,1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            dateend = calendar.getTime();
+
+
+	
+			ArrayList<nojuOperLogTableRow> traprow = this.logEngine.getOperRowsWithTime(datestart, dateend);
+			// System.out.println("-------------traprow-size =" +
+			// traprow.size());
+			for (nojuOperLogTableRow prow : traprow) {
+				logjson = new JSONObject();
+				logjson.put("id", prow.OperLogID);
+				logjson.put("type", prow.OperLogType.toString());
+				logjson.put("content", prow.OperLogContent);
+				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				logjson.put("time", sdf.format(prow.OperLogTime));	
+				jsonarray.add(logjson);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		rootjson.put("oplogs", jsonarray);
 		return rootjson.toJSONString();
 	}
 
