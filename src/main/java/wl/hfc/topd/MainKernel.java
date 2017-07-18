@@ -171,7 +171,8 @@ public class MainKernel {
 		Realtime_param_call.me.start();
 
 		Sstatus stsengine = new Sstatus(redisUtil);
-
+		stsengine.start();
+		
 		Jedis jedis = null;
 		try {
 
@@ -541,7 +542,7 @@ public class MainKernel {
 			// for syslog
 			rootjson = new JSONObject();
 			rootjson.put("cmd", "grpaddlog");
-			rootjson.put("title", jsondata.get("value").toString());
+			rootjson.put("title", mDevGrpTableRow.UserGroupName);
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 
 		}
