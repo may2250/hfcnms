@@ -321,6 +321,7 @@ div.dataTables_wrapper {
 	margin: 20px auto 0px auto;
     width: 70%;
     min-width: 545px;
+    text-align: left;
 }
 
 .devdetail-public div{

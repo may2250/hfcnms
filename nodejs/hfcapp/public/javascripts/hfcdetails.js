@@ -281,6 +281,7 @@ function parse_edfa(jsonobj){
 	});
 	i = 0;
 	$.each(jsonobj.common.traptbl, function(key, itemv) {
+		$('.commonAgentTrapIndex_row' + i)[0].textContent = itemv.commonAgentTrapIndex_row;
 		$('#commonAgentTrapIP_row' + i)[0].textContent = itemv.commonAgentTrapIP_row;
 		i++;
 	});
