@@ -8,6 +8,10 @@
 	var lazyLoadData = null;
 	$(function() {
 		var encstr = localStorage.userName+'/'+ sessionStorage.passWord;
+		if(localStorage.void == undefined){
+			localStorage.void = 'on';
+		}
+		loadProperties();
 		initWebSocket(encstr);	   	
     	
     	window.__globalobj__ = {
@@ -45,6 +49,7 @@
     		    }
     		};
     	
+    	var xxx = $('#alarmfilter-date');
     	tbl_devalarm = $('#tbl_devalarm').DataTable({
     		scrollY:        130,
     		scrollX: 		true,
@@ -53,17 +58,17 @@
             paging:         false,
             info:     		false,
             searching: 		false,
-            columns: [
+            /*columns: [
                       { title: "ID" },
-                      { title: "级别" },
-                      { title: "IP地址" },
-                      { title: "路径" },
-                      { title: "类型" },
-                      { title: "参数名" },
-                      { title: "参数值" },
-                      { title: "发生时间" },
-                      { title: "处理提交" },
-                      { title: "确认时间" }
+                      { title: $.i18n.prop('message_tbllevel') },
+                      { title: $.i18n.prop('message_tblip') },
+                      { title: $.i18n.prop('message_tblpath') },
+                      { title: $.i18n.prop('message_tbloptype') },
+                      { title: $.i18n.prop('message_tblparam') },
+                      { title: $.i18n.prop('message_tblparamv') },
+                      { title: $.i18n.prop('message_tbloptime') },
+                      { title: $.i18n.prop('message_tblconfirmation') },
+                      { title: $.i18n.prop('message_tblconfirmtime') }
                   ],
             drawCallback: function() {
         	    $.contextMenu({
@@ -79,7 +84,7 @@
         	        }
         	      }
         	    });
-        	  },
+        	  },*/
         	  "createdRow": function ( row, data, index ) {
         		  $(row).attr('id', data[0]);
                   if ( data[1] == "重要告警" ) {
@@ -100,18 +105,18 @@
             paging:         false,
             info:     		false,
             searching: 		false,
-            columns: [
+            /*columns: [
                       { title: "ID" },
-                      { title: "级别" },
-                      { title: "IP地址" },
-                      { title: "路径" },
-                      { title: "类型" },
-                      { title: "参数名" },
-                      { title: "参数值" },
-                      { title: "发生时间" },
-                      { title: "处理提交" },
-                      { title: "确认时间" }
-                  ],
+                      { title: $.i18n.prop('message_tbllevel') },
+                      { title: $.i18n.prop('message_tblip') },
+                      { title: $.i18n.prop('message_tblpath') },
+                      { title: $.i18n.prop('message_tbloptype') },
+                      { title: $.i18n.prop('message_tblparam') },
+                      { title: $.i18n.prop('message_tblparamv') },
+                      { title: $.i18n.prop('message_tbloptime') },
+                      { title: $.i18n.prop('message_tblconfirmation') },
+                      { title: $.i18n.prop('message_tblconfirmtime') }
+                  ],*/
         	  "createdRow": function ( row, data, index ) {
         		  $(row).attr('id', data[0]);
                   if ( data[1] == "重要告警" ) {
@@ -155,26 +160,28 @@
 	        	      width: 890,
 	        	      modal: true,
 	        	      buttons: {
-	        	    	  "开始": function() {	    
-		        	    		  if(!ipvalidate($("#search-sip").val())){
-		        	    			  $("#search-sip").addClass( "ui-state-error-custom" );
-		        	    			  return;
-		        	    		  }else{
-		        	    			  $("#search-sip").removeClass("ui-state-error-custom");
-		        	    		  };
-		        	    		  if(!ipvalidate($("#search-eip").val())){
-		        	    			  $("#search-eip").addClass( "ui-state-error-custom" );
-		        	    			  return;
-		        	    		  }else{
-		        	    			  $("#search-eip").removeClass("ui-state-error-custom");
-		        	    		  };
-		        	              if(compareIP($("#search-sip").val(), $("#search-eip").val()) == 1){
-		        	            	  $("#search-eip").addClass( "ui-state-error-custom" );
-		        	    			  return;
-		        	              };  
-		        	              
-		        	              var datastring = '{"cmd":"devsearch","community":"'+$("#search-community").val() +'","devtype":"'+ $("#search-stype").prop('selectedIndex') +'","startip":"'+ $("#search-sip").val()+'","endip":"'+ $("#search-eip").val() +'","target":"start"}';
-	      	        	    	  webSocket.send(datastring);
+	        	    	  "Start": function() {	    
+	        	    		  	  if($(".progress-bar").width() == 0 || $(".progress-bar").width() == 100){
+	        	    		  		if(!ipvalidate($("#search-sip").val())){
+			        	    			  $("#search-sip").addClass( "ui-state-error-custom" );
+			        	    			  return;
+			        	    		  }else{
+			        	    			  $("#search-sip").removeClass("ui-state-error-custom");
+			        	    		  };
+			        	    		  if(!ipvalidate($("#search-eip").val())){
+			        	    			  $("#search-eip").addClass( "ui-state-error-custom" );
+			        	    			  return;
+			        	    		  }else{
+			        	    			  $("#search-eip").removeClass("ui-state-error-custom");
+			        	    		  };
+			        	              if(compareIP($("#search-sip").val(), $("#search-eip").val()) == 1){
+			        	            	  $("#search-eip").addClass( "ui-state-error-custom" );
+			        	    			  return;
+			        	              };  
+			        	              
+			        	              var datastring = '{"cmd":"devsearch","community":"'+$("#search-community").val() +'","devtype":"'+ $("#search-stype").prop('selectedIndex') +'","startip":"'+ $("#search-sip").val()+'","endip":"'+ $("#search-eip").val() +'","target":"start"}';
+		      	        	    	  webSocket.send(datastring);
+	        	    		  	  };		        	    		  
 	        	            }
 	        	      },
 	        	      close: function() {
@@ -214,16 +221,18 @@
     	});
     	
     	$('.nav_sound').click(function(){
-    		if($('.nav_sound p')[0].textContent == "声讯告警控制开"){
+    		if(localStorage.void == "on"){
     			$('.nav_sound i').addClass("icon-volume-off");
     			$('.nav_sound i').removeClass("icon-volume-up"); 
-    			$('.nav_sound p')[0].textContent = "声讯告警控制关";
+    			$('.nav_sound p')[0].textContent = $.i18n.prop('message_navvoidoff');
     			playVideo("/alarmwavs/alarm offline.wav");
+    			localStorage.void = "off";
     		}else{
     			$('.nav_sound i').addClass("icon-volume-up");
     			$('.nav_sound i').removeClass("icon-volume-off"); 
-    			$('.nav_sound p')[0].textContent = "声讯告警控制开";
+    			$('.nav_sound p')[0].textContent = $.i18n.prop('message_navvoidon');
     			playVideo("/alarmwavs/alarm online.wav");
+    			localStorage.void = "on";
     		};    		
     	});
     	
@@ -245,7 +254,7 @@
     	
     	$('#modal_searchresult').on('hidden.bs.modal', function (e) {
     		$('#list-newdevs').empty();
-    		$('#list-newdevs').append('<a class="list-group-item active"><h4 class="list-group-item-heading">新设备列表</h4></a>');
+    		$('#list-newdevs').append('<a class="list-group-item active"><h4 class="list-group-item-heading">Device List</h4></a>');
     	})
     	
     	$('#btn-regdev').click(function(){
@@ -270,7 +279,7 @@
     		});
     	});
     	$("select#alarmfilter-date").change(function(){
-    		if($(this).val() == "自选日期"){
+    		if($(this).val() == $.i18n.prop('message_optionaldate')){
     			$("#datepicker_start").datepicker("enable").removeAttr("readonly");
     			$("#datepicker_end").datepicker("enable").removeAttr("readonly");
     		}else{
@@ -314,13 +323,13 @@
     		 + '","level":"'+ $("#alarmfilter-level").prop('selectedIndex') + '","type":"'+ $('#alarmfilter-type').val()
     		 + '","treatment":"'+ $("#alarmfilter-istreatment").prop('selectedIndex') + '","nename":"'+ $('#alarmfilter-nename').val() +'"}';
     		 webSocket.send(datastring);
-    		 $("#alarmlist-title")[0].textContent = "历史告警日志";
+    		 $("#alarmlist-title")[0].textContent = $.i18n.prop('message_navhistoryalarm');
     		 $("#modal_alarm").modal('hide');
     		 $("#modal_alarmlists").modal();
     	});
     	
     	$('#modal_alarmlists').on('show.bs.modal', function () {
-    		if($("#alarmlist-title")[0].textContent == "历史告警日志"){
+    		if($("#alarmlist-title")[0].textContent == $.i18n.prop('message_navhistoryalarm')){
     			tbl_loglists = $('#tbl_loglists').DataTable({
             		scrollY:        430,
             		scrollX: 		true,
@@ -332,14 +341,15 @@
                     bRetrieve: 		true,
                     columns: [
                               { title: "ID" },
-                              { title: "级别" },
-                              { title: "路径" },
-                              { title: "类型" },
-                              { title: "参数名" },
-                              { title: "参数值" },
-                              { title: "发生时间" },
-                              { title: "处理提交" },
-                              { title: "确认时间" }
+		                      { title: $.i18n.prop('message_tbllevel') },
+		                      { title: $.i18n.prop('message_tblip') },
+		                      { title: $.i18n.prop('message_tblpath') },
+		                      { title: $.i18n.prop('message_tbloptype') },
+		                      { title: $.i18n.prop('message_tblparam') },
+		                      { title: $.i18n.prop('message_tblparamv') },
+		                      { title: $.i18n.prop('message_tbloptime') },
+		                      { title: $.i18n.prop('message_tblconfirmation') },
+		                      { title: $.i18n.prop('message_tblconfirmtime') }
                           ],
                   "createdRow": function ( row, data, index ) {
             		  $(row).attr('id', data[0]);
@@ -363,11 +373,11 @@
                     searching: 		false,
                     bRetrieve: 		true,
                     columns: [
-                              { title: "日志编号" },
-                              { title: "操作用户" },
-                              { title: "日志类型" },
-                              { title: "日志内容" },
-                              { title: "登记时间" }
+                              { title: $.i18n.prop('message_tbloptid') },
+                              { title: $.i18n.prop('message_tbloptuser') },
+                              { title: $.i18n.prop('message_tbloptype') },
+                              { title: $.i18n.prop('message_tbloptcontent') },
+                              { title: $.i18n.prop('message_tbloptime') }
                           ]
                 } );
     		}
@@ -392,7 +402,7 @@
    		 var datastring = '{"cmd":"optlogsearch","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
    		 + '","optname":"'+ $('#optfilter-name').val() +'"}';
    		 webSocket.send(datastring);
-   		 $("#alarmlist-title")[0].textContent = "历史/事件日志";
+   		 $("#alarmlist-title")[0].textContent = $.i18n.prop('message_navoptlog');
    		 $("#modal_optlog").modal('hide');
    		 $("#modal_alarmlists").modal();
    	});
@@ -568,6 +578,7 @@
         		tbl_loglists.row.add( [
         		            value.id,
         		            value.level,
+        		            value.addr,
         		            value.path,
         		            value.type,
         		            value.paramname,
@@ -626,10 +637,7 @@
 
  
     function onOpen(event) {
-    	/*var datastring = '{"cmd":"getInitTree","message":""}';
-    	send(datastring);
-    	var datastring = '{"cmd":"getInitLog","message":""}';
-    	send(datastring);*/
+
     }
  
     function onError(event) {
@@ -1131,6 +1139,92 @@
         return decrypted.toString(CryptoJS.enc.Utf8);    
     }            
  
-    
+    function loadProperties() {
+    	$.i18n.properties({
+            name : 'strings', //资源文件名称
+            path : '../i18n/', //资源文件路径
+            mode : 'both', //用Map的方式使用资源文件中的值
+            language : 'en',
+            async: true,
+            callback : function() {//加载成功后设置显示内容
+                $('.nav_search p')[0].textContent = $.i18n.prop('message_navsearch');
+                $('.nav_manageralarm p')[0].textContent = $.i18n.prop('message_navhistoryalarm');
+                $('.nav_managerlog p')[0].textContent = $.i18n.prop('message_navoptlog');
+                if(localStorage.void == 'on'){
+                	$('.nav_sound p')[0].textContent = $.i18n.prop('message_navvoidon');
+                }else{
+                	$('.nav_sound p')[0].textContent = $.i18n.prop('message_navvoidoff');
+                }                
+                $('.nav_about p')[0].textContent = $.i18n.prop('message_navabout');
+                $('#md-password')[0].textContent = $.i18n.prop('message_navchangep');
+                $('#user-logout')[0].textContent = $.i18n.prop('message_navlogout');
+                $('#footer_tblalarm')[0].textContent = $.i18n.prop('message_tblalarm');
+                $('#footer_tblinvalidalarm')[0].textContent = $.i18n.prop('message_tblalarminvalid');
+                $('#footer_tbloptlog')[0].textContent = $.i18n.prop('message_tbllog');                
+                $('#tbl_optid')[0].textContent = $.i18n.prop('message_tbloptid');
+                $('#tbl_optuser')[0].textContent = $.i18n.prop('message_tbloptuser');
+                $('#tbl_optype')[0].textContent = $.i18n.prop('message_tbloptype');
+                $('#tbl_optcontent')[0].textContent = $.i18n.prop('message_tbloptcontent');
+                $('#tbl_optime')[0].textContent = $.i18n.prop('message_tbloptime');                
+                $('.validateTips')[0].textContent = $.i18n.prop('message_validateTips');
+                $('#dilg-sdevtype')[0].textContent = $.i18n.prop('message_searchdevtype');                
+                $('#dilg-rcommunity')[0].textContent = $.i18n.prop('message_rcommunity');
+                $('#dilg-wcommunity')[0].textContent = $.i18n.prop('message_wcommunity');
+                $('#dilg-devname')[0].textContent = $.i18n.prop('message_devname');
+                $('#dilg-invalidchar')[0].textContent = $.i18n.prop('message_invalidcharater');
+                $('#dilg-community')[0].textContent = $.i18n.prop('message_community');                
+                $('#dilg-startIP')[0].textContent = $.i18n.prop('message_beginip');
+                $('#dilg-endIP')[0].textContent = $.i18n.prop('message_endip');
+                $('#dilg-devtype')[0].textContent = $.i18n.prop('message_searchdevtype'); 
+                $('#reg-newdev')[0].textContent = $.i18n.prop('message_regnewdev');
+                $('.list-group-item-heading')[0].textContent = $.i18n.prop('message_newdevlist');
+                $('#btn-regdev')[0].textContent = $.i18n.prop('message_register'); 
+                $('#btn_regclose')[0].textContent = $.i18n.prop('message_close');
+                $('#dilg-historytitle')[0].textContent = $.i18n.prop('message_navhistoryalarm');
+                $('#dilg-start')[0].textContent = $.i18n.prop('message_start');
+                $('#dilg-end')[0].textContent = $.i18n.prop('message_stop');
+                $('#dilg-source')[0].textContent = $.i18n.prop('message_source');                
+                $('#btn-alarmok')[0].textContent = $.i18n.prop('message_ok');
+                $('#btn-alarmclose')[0].textContent = $.i18n.prop('message_close');
+                $('#btn-alarmclose1')[0].textContent = $.i18n.prop('message_close');
+                $('#alarmlist-title')[0].textContent = $.i18n.prop('message_navhistoryalarm');
+                $('#btn-alarmexports')[0].textContent = $.i18n.prop('message_export');
+                $('#dilg-optlogtitle')[0].textContent = $.i18n.prop('message_navoptlog');
+                $('#dilg-start1')[0].textContent = $.i18n.prop('message_start');
+                $('#dilg-end1')[0].textContent = $.i18n.prop('message_stop');
+                $('#dilg-operater')[0].textContent = $.i18n.prop('message_tbloptuser');
+                $('#btn-optlogok')[0].textContent = $.i18n.prop('message_ok');
+                $('#btn-alarmclose2')[0].textContent = $.i18n.prop('message_close');
+                $('#btn-alarmclose3')[0].textContent = $.i18n.prop('message_close');
+                $('#mymodal_about')[0].textContent = $.i18n.prop('message_navabout');
+                $('#dialog-alarmThreshold')[0].title = $.i18n.prop('message_alarmThreshold');
+                $('#newdev_devname').val($.i18n.prop('message_newdev'));
+                $('#dialog-devsearch')[0].title = $.i18n.prop('message_search');
+                $('#alarmfilter-date')[0].options[0].textContent = $.i18n.prop('message_optionaldate');
+                $('#alarmfilter-date')[0].options[1].textContent = $.i18n.prop('message_recentday');
+                $('#alarmfilter-date')[0].options[2].textContent = $.i18n.prop('message_recentweek');
+                $('#alarmfilter-date')[0].options[3].textContent = $.i18n.prop('message_recentmonth');
+                
+                $('#tbl_alarmlevel')[0].textContent = $.i18n.prop('message_tbllevel');
+                $('#tbl_alarmip')[0].textContent = $.i18n.prop('message_tblip');
+                $('#tbl_alarmpath')[0].textContent = $.i18n.prop('message_tblpath');                
+                $('#tbl_alarmtype')[0].textContent = $.i18n.prop('message_tbloptype');
+                $('#tbl_alarmpname')[0].textContent = $.i18n.prop('message_tblparam');
+                $('#tbl_alarmvalue')[0].textContent = $.i18n.prop('message_tblparamv');
+                $('#tbl_alarmtime')[0].textContent = $.i18n.prop('message_tbloptime');
+                $('#tbl_alarmcomfirm')[0].textContent = $.i18n.prop('message_tblconfirmation');
+                $('#tbl_alarmcomfirmtime')[0].textContent = $.i18n.prop('message_tblconfirmtime');
+                $('#tbl_alarmlevel1')[0].textContent = $.i18n.prop('message_tbllevel');
+                $('#tbl_alarmip1')[0].textContent = $.i18n.prop('message_tblip');
+                $('#tbl_alarmpath1')[0].textContent = $.i18n.prop('message_tblpath');                
+                $('#tbl_alarmtype1')[0].textContent = $.i18n.prop('message_tbloptype');
+                $('#tbl_alarmpname1')[0].textContent = $.i18n.prop('message_tblparam');
+                $('#tbl_alarmvalue1')[0].textContent = $.i18n.prop('message_tblparamv');
+                $('#tbl_alarmtime1')[0].textContent = $.i18n.prop('message_tbloptime');
+                $('#tbl_alarmcomfirm1')[0].textContent = $.i18n.prop('message_tblconfirmation');
+                $('#tbl_alarmcomfirmtime1')[0].textContent = $.i18n.prop('message_tblconfirmtime');
+            }
+        });
+    }
     
 })(jQuery);

@@ -12,6 +12,7 @@
 <link href="/stylesheets/jquery.contextMenu.min.css" rel='stylesheet' type='text/css' />
 <link href="/stylesheets/jquery.dataTables.min.css" rel='stylesheet' type='text/css' />
 <script src="/javascripts/jquery-3.2.1.min.js"></script>
+<script src="/javascripts/jquery.i18n.properties.min.js"></script>
  <!-- Bootstrap Core CSS -->
 <link href="/stylesheets/bootstrap.min.css" rel='stylesheet' type='text/css' />
 <!-- Custom CSS -->
@@ -27,13 +28,12 @@
 <script src="/javascripts/jquery.ui-contextmenu.min.js"></script>
 <script src="/javascripts/jquery.fancytree.dnd.js"></script>
 <script src="/javascripts/jquery.dataTables.min.js"></script>
+
 <!-- DES -->
 <script src="/javascripts/tripledes2.js"></script>
 <script src="/javascripts/mode-ecb.js"></script>
 <script src="/javascripts/md5.js"></script>
-<script type="text/javascript">
 
-</script>
 </head> 
 <body>
    <div class="page-container">
@@ -48,7 +48,7 @@
 							<ul class="navigation">
 								<li class="nav_search icon-nav">
 									<i class="icon-search icon-2x" ></i>
-									<p>地址段搜索设备</p>
+									<p class="i18n_nav_search">地址段搜索设备</p>
 								</li>
 								<!-- <li class="nav_managerauth">
 									<i class="icon-lock icon-2x  icon-nav" ></i>
@@ -106,30 +106,56 @@
 				<footer class="left-content">
 				  <div class="tabbable"> <!-- Only required for left/right tabs -->
 					  <ul class="nav nav-tabs" role="tablist">
-					    <li class="active"><a href="#tab-table1" data-toggle="tab">设备告警</a></li>
-					    <li><a href="#tab-table3" data-toggle="tab">失效告警</a></li>
-					    <li><a href="#tab-table2" data-toggle="tab">操作日志</a></li>
+					    <li class="active"><a href="#tab-table1" data-toggle="tab" id="footer_tblalarm">设备告警</a></li>
+					    <li><a href="#tab-table3" data-toggle="tab" id="footer_tblinvalidalarm">失效告警</a></li>
+					    <li><a href="#tab-table2" data-toggle="tab" id="footer_tbloptlog">操作日志</a></li>
 					  </ul>
 					  <div class="tab-content">
 					    <div class="tab-pane tab-log active" id="tab-table1">
 					      <table id="tbl_devalarm" class="table table-striped table-bordered" cellspacing="0" width="100%">
-					      	
+					      		<thead>
+					            <tr>
+					                <th>ID</th>
+					                <th id="tbl_alarmlevel"></th>
+					                <th id="tbl_alarmip"></th>
+					                <th id="tbl_alarmpath"></th>
+					                <th id="tbl_alarmtype"></th>
+					                <th id="tbl_alarmpname"></th>
+					                <th id="tbl_alarmvalue"></th>
+					                <th id="tbl_alarmtime"></th>
+					                <th id="tbl_alarmcomfirm"></th>
+					                <th id="tbl_alarmcomfirmtime"></th>
+					            </tr>
+					        </thead>		
 					      </table>				          
 					    </div>
 					    <div class="tab-pane tab-log" id="tab-table3">
 					      <table id="tbl_devalarm_old" class="table table-striped table-bordered" cellspacing="0" width="100%">
-					      	
+					      		<thead>
+					            <tr>
+					                <th>ID</th>
+					                <th id="tbl_alarmlevel1"></th>
+					                <th id="tbl_alarmip1"></th>
+					                <th id="tbl_alarmpath1"></th>
+					                <th id="tbl_alarmtype1"></th>
+					                <th id="tbl_alarmpname1"></th>
+					                <th id="tbl_alarmvalue1"></th>
+					                <th id="tbl_alarmtime1"></th>
+					                <th id="tbl_alarmcomfirm1"></th>
+					                <th id="tbl_alarmcomfirmtime1"></th>
+					            </tr>
+					        </thead>
 					      </table>				          
 					    </div>
 					    <div class="tab-pane tab-log" id="tab-table2">
 					      <table id="tbl_optlog" class="table table-striped table-bordered" cellspacing="0" width="100%">
 					      	<thead>
 					            <tr>
-					                <th>日志编号</th>
-					                <th>操作用户</th>
-					                <th>日志类型</th>
-					                <th>日志内容</th>
-					                <th>登记时间</th>
+					                <th id="tbl_optid">日志编号</th>
+					                <th id="tbl_optuser">操作用户</th>
+					                <th id="tbl_optype">日志类型</th>
+					                <th id="tbl_optcontent">日志内容</th>
+					                <th id="tbl_optime">登记时间</th>
 					            </tr>
 					        </thead>					      	
 					      </table>
@@ -158,7 +184,7 @@
 	 			<div class="sidebar-tree">
 	 				<div id="dev-fancytree"></div>
 	 			</div>
-	 			<div class="panel panel-info sidebar-info">
+	 			<!-- <div class="panel panel-info sidebar-info">
 				    <div class="panel-heading" style="padding: 5px 8px;">
 				        <h3 class="panel-title">状态信息</h3>
 				    </div>
@@ -174,7 +200,7 @@
 				        	</tr>
 				        </table>
 				    </div>
-				</div>
+				</div> -->
 			</div>
 			<div class="clearfix"></div>		
 		</div>
@@ -210,7 +236,7 @@
 
 	</div>
 	<!-- hide div -->
-	<div id="dialog-form" title="配置" style="display:none">
+	<div id="dialog-form" title="Setting" style="display:none">
 		<p class="validateTips">在文本框中输入.</p>
 	 	<input type="text" id="set_value" value="" >
 	  
@@ -219,7 +245,7 @@
 		<table class="table">
 			<tr>
 				<td>
-					<input id="needtype" type="checkbox" value="" />指定设备类型 
+					<input id="needtype" type="checkbox" value="" /><lable id="dilg-sdevtype">指定设备类型</lable> 
   				</td>
   				<td>IP地址:</td>
   				<td>
@@ -239,7 +265,7 @@
 				      <option value="wos">光平台</option>
 				    </select>
 				</td>
-				<td>只读团体名:</td>
+				<td id="dilg-rcommunity">只读团体名:</td>
   				<td>
 					<input type="text" class="form-control" id="newdev_rcommunity" value="public" >
   				</td>
@@ -247,7 +273,7 @@
 			<tr>
 				<td>						
 				</td>
-				<td>读写团体名:</td>
+				<td id="dilg-wcommunity">读写团体名:</td>
   				<td>
 					<input type="text" class="form-control" id="newdev_wcommunity" value="public" >
   				</td>
@@ -255,8 +281,8 @@
 		</table>
 	  	<div>
    			<div >
-		               设备名称:<input type="text" class="form-control" id="newdev_devname" value="新设备" >
-		        	设备组名请勿包含以下字符:/ \ #
+		        <lable id="dilg-devname">设备名称:</lable><input type="text" class="form-control" id="newdev_devname" value="新设备" >
+		        	<lable id="dilg-invalidchar">设备组名请勿包含以下字符:/ \ #</lable>
 		    </div>
 		</div>
 	</div>
@@ -323,13 +349,13 @@
 	<div id="dialog-devsearch" title="搜索" style="display:none">
 		<table class="table">
 			<tr>
-				<td>
+				<td id="dilg-community">
 					团体名: 
   				</td>
   				<td>
 					<input type="text" class="form-control" id="search-community" value="public" >
   				</td>
-  				<td>
+  				<td id="dilg-startIP">
 					起始IP: 
   				</td>
   				<td>
@@ -337,16 +363,16 @@
   				</td>
 			</tr>
 			<tr>
-				<td>
+				<td id="dilg-devtype">
 					请选择设备类型: 
   				</td>
   				<td>
 					<select name="search-stype" id="search-stype">
-				      <option selected>国标设备</option>
+				      <option selected>National standard</option>
 				      <option>Wos4000,Wos3000_SCTE</option>
 				    </select>
   				</td>
-  				<td>
+  				<td id="dilg-endIP">
 					结束IP: 
   				</td>
   				<td>
@@ -363,14 +389,14 @@
 		</div>
 	</div>
 	<!-- 模态框（Modal） -->
-	<div class="modal fade bs-example-modal-lg" id="modal_searchresult" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade bs-example-modal-lg" id="modal_searchresult" tabindex="-1" role="dialog" aria-labelledby="reg-newdev" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 						&times;
 					</button>
-					<h4 class="modal-title" id="myModalLabel">
+					<h4 class="modal-title" id="reg-newdev">
 						新发现设备注册
 					</h4>
 				</div>
@@ -391,29 +417,29 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" id="btn-regdev" >注册
 					</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="btn_regclose">关闭
 					</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal -->
 	</div>
-	<div class="modal fade bs-example-modal-lg" id="modal_alarm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade bs-example-modal-lg" id="modal_alarm" tabindex="-1" role="dialog" aria-labelledby="dilg-historytitle" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 						&times;
 					</button>
-					<h4 class="modal-title" id="myModalLabel">
+					<h4 class="modal-title" id="dilg-historytitle">
 						历史告警日志
 					</h4>
 				</div>
 				<div class="modal-body modal-search-content-m">					
 		 			<table class="table tbl_noborder">
 		 				<tr>
-		 					<td>开始</td>
+		 					<td id="dilg-start">开始</td>
 		 					<td><input type="text" id="datepicker_start"></td>
-		 					<td>结束</td>
+		 					<td id="dilg-end">结束</td>
 		 					<td><input type="text" id="datepicker_end"></td>
 		 					<td>
 								<select name="alarmfilter-date" id="alarmfilter-date">
@@ -425,7 +451,7 @@
 							</td>
 		 				</tr>
 		 				<tr>
-		 					<td>来源</td>
+		 					<td id="dilg-source">来源</td>
 		 					<td><input type="text" class="form-control" id="alarmfilter-source" value="" ></td>
 		 				</tr>
 		 				<!-- <tr>
@@ -461,7 +487,7 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" id="btn-alarmok" >确定
 					</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="btn-alarmclose">关闭
 					</button>
 				</div>
 			</div><!-- /.modal-content -->
@@ -486,34 +512,34 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" id="btn-alarmexports" >导出到EXCEL
 					</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="btn-alarmclose1">关闭
 					</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal -->
 	</div>
-	<div class="modal fade bs-example-modal" id="modal_optlog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade bs-example-modal" id="modal_optlog" tabindex="-1" role="dialog" aria-labelledby="dilg-optlogtitle" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 						&times;
 					</button>
-					<h4 class="modal-title" id="myModalLabel">
+					<h4 class="modal-title" id="dilg-optlogtitle">
 						历史/事件日志
 					</h4>
 				</div>
 				<div class="modal-body modal-search-content-m">					
 		 			<table class="table tbl_noborder">
 		 				<tr>
-		 					<td>开始</td>
+		 					<td id="dilg-start1">开始</td>
 		 					<td><input type="text" id="datepicker_optstart"></td>
-		 					<td>结束</td>
+		 					<td id="dilg-end1">结束</td>
 		 					<td><input type="text" id="datepicker_optend"></td>
 		 					
 		 				</tr>
 		 				<tr>
-		 					<td>操作者</td>
+		 					<td id="dilg-operater">操作者</td>
 		 					<td><input type="text" class="form-control" id="optfilter-name" value="" ></td>
 		 				</tr>		 				
 		 			</table>
@@ -521,7 +547,7 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" id="btn-optlogok" >确定
 					</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="btn-alarmclose2">关闭
 					</button>
 				</div>
 			</div><!-- /.modal-content -->
@@ -552,7 +578,7 @@
 		 			</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="btn-alarmclose3">关闭
 					</button>
 				</div>
 			</div><!-- /.modal-content -->
