@@ -56,7 +56,7 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 
 	public EDFASnmpPrevail(String phsicIndex,String PDeviceID) {
 		super(phsicIndex);
-		mjVariables = new VariableSnmpVar[2];
+		mjVariables = new VariableSnmpVar[3];
 		// tables
 		cInputVariables = new VariableSnmpVar[2];
 		cOutputVariables = new VariableSnmpVar[4];
@@ -82,7 +82,13 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 
-		
+		row1 = pmls.tab1.get("oaOptAtt");
+		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
+				ToValueMode.FmtInteger, false);
+		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
+		this.majorVarPdu.add(new VariableBinding(
+				mjVariables[vIns++].FullSnmpOid));
+
 		
 		
 
@@ -172,7 +178,9 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		SnmpEngine.snmpVarToJason(mjVariables, pJson);
 		
 		for (int i = 0; i < this.mjVariables.length; i++) {
-			getSubVarsWithTagInfo(this.mjVariables[i]);
+			if (this.mjVariables[i].withNoThreashold) {
+				getSubVarsWithTagInfo(this.mjVariables[i]);
+			}			
 
 		}		
 		

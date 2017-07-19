@@ -152,7 +152,7 @@ public class MainKernel {
 	public void start() {
 
 		log.info("[#3] .....MainKernel starting.......");
-		ClsLanguageExmp.init(false, false);
+		ClsLanguageExmp.init(true, true);
 		ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);
 
 		// CurrentAlarmModel.me.logEngine=ICDatabaseEngine1;
