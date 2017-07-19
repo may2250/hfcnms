@@ -87,10 +87,10 @@
         	  },*/
         	  "createdRow": function ( row, data, index ) {
         		  $(row).attr('id', data[0]);
-                  if ( data[1] == "重要告警" ) {
+                  if ( data[1] == $.i18n.prop('message_secalarm') ) {
                 	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-warning');
-                  }else if(data[1] == "紧急告警"){
+                  }else if(data[1] == $.i18n.prop('message_urgentalarm')){
                 	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-danger');                  
                   }
@@ -119,10 +119,10 @@
                   ],*/
         	  "createdRow": function ( row, data, index ) {
         		  $(row).attr('id', data[0]);
-                  if ( data[1] == "重要告警" ) {
+                  if ( data[1] == $.i18n.prop('message_secalarm') ) {
                 	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-warning');
-                  }else if(data[1] == "紧急告警"){
+                  }else if(data[1] == $.i18n.prop('message_urgentalarm')){
                 	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-danger');                  
                   }
@@ -212,6 +212,12 @@
     		};    		
     	});
     	
+    	$('.nav_server').click(function(){    		
+    		var datastring = '{"cmd":"severstatus"}';
+	    	webSocket.send(datastring);
+    		$("#dialog-server").modal();
+    	});
+    	
     	$('.nav_manageralarm').click(function(){
     		$("#modal_alarm").modal();
     	});
@@ -243,7 +249,8 @@
     	$('#needtype').change(function(){ 
     		$('#salutation').attr("disabled", !$(this).is(':checked'));
     		if(!$(this).is(':checked')){
-    			$("#salutation").find("option[text='其它设备']").attr("selected",true);
+    			//$("#salutation").find("option[text='其它设备']").attr("selected",true);
+    			$("#salutation").val("other");
     		}
     	});
     	
@@ -260,11 +267,11 @@
     	$('#btn-regdev').click(function(){
     		var node = $("#reg-grouptree").fancytree("getActiveNode");
     		if(node == null || node == undefined){
-    			alert("请指定要注册设备的组!");
+    			alert($.i18n.prop('message_sgroup'));
     			return;
     		}
     		if($('input:checkbox[name=dev]:checked').length < 1){
-    			alert("请指定要注册设备!");
+    			alert($.i18n.prop('message_sdevice'));
     			return;
     		}
     		$('input:checkbox[name=dev]:checked').each(function(i){
@@ -315,7 +322,7 @@
       	
     	$('#btn-alarmok').click(function(){
     		if(getDays($('#datepicker_start').val(), $('#datepicker_end').val()) > 92){
-    			alert("查询间隔不能大于3个月!");
+    			alert($.i18n.prop('message_searchdate_error'));
     			return;
     		}
     		 var datastring = '{"cmd":"alarmsearch","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
@@ -353,10 +360,10 @@
                           ],
                   "createdRow": function ( row, data, index ) {
             		  $(row).attr('id', data[0]);
-                      if ( data[1] == "重要告警" ) {
+                      if ( data[1] == $.i18n.prop('message_secalarm')) {
                     	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
                     	  $('td', row).parent().addClass('alarm-warning');
-                      }else if(data[1] == "紧急告警"){
+                      }else if(data[1] == $.i18n.prop('message_urgentalarm')){
                     	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
                     	  $('td', row).parent().addClass('alarm-danger');                  
                       }
@@ -399,7 +406,7 @@
     	});
     	
     	$('#btn-optlogok').click(function(){
-   		 var datastring = '{"cmd":"optlogsearch","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
+   		 var datastring = '{"cmd":"optlogsearch","start":"'+ $('#datepicker_optstart').val() + '","end":"'+ $('#datepicker_optend').val() 
    		 + '","optname":"'+ $('#optfilter-name').val() +'"}';
    		 webSocket.send(datastring);
    		 $("#alarmlist-title")[0].textContent = $.i18n.prop('message_navoptlog');
@@ -588,6 +595,16 @@
         		            value.solvetime
         		        ] ).draw( false );
             });
+        }else if(jsonobj.cmd == "optlogsearch"){
+        	$.each(jsonobj.oplogs, function (n, value) {
+        		tbl_loglists.row.add( [
+        		            value.id,
+        		            value.user,
+        		            value.type,
+        		            value.content,
+        		            value.time
+        		        ] ).draw( false );
+            });
         }else if(jsonobj.cmd == "dbclosed"){
         	if(jsonobj.flag){
         		$('.dbstatus').removeClass("icon-ok-circle");
@@ -598,11 +615,35 @@
         		$('.dbstatus').addClass("icon-ok-circle");
         		$('.dbstatus-lb').removeClass("ui-state-error-custom"); 
         	}
+        }else if(jsonobj.cmd == "severstatus"){
+        	parseServer(jsonobj);
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;
         }
     }
+	
+	function parseServer(jsonobj){
+		if(!jsonobj.CDatabaseEngineflag){
+    		$('.dbstatus').removeClass("icon-ok-circle");
+    		$('.dbstatus').addClass("icon-remove-circle");   
+    		$('.dbstatus-lb').addClass("ui-state-error-custom");        		
+    	}else{
+    		$('.dbstatus').removeClass("icon-remove-circle");
+    		$('.dbstatus').addClass("icon-ok-circle");
+    		$('.dbstatus-lb').removeClass("ui-state-error-custom"); 
+    	}
+    	if(!jsonobj.TrapPduServerstatus){
+    		$('.trapstatus').removeClass("icon-ok-circle");
+    		$('.trapstatus').addClass("icon-remove-circle");   
+    		$('.trapstatus-lb').addClass("ui-state-error-custom");        		
+    	}else{
+    		$('.trapstatus').removeClass("icon-remove-circle");
+    		$('.trapstatus').addClass("icon-ok-circle");
+    		$('.trapstatus-lb').removeClass("ui-state-error-custom"); 
+    	}
+    	$('#server-clients')[0].textContent = jsonobj.clientNum;
+	}
 	
 	function alarmSolve(jsonobj){
 		if(jsonobj.opt == false){    		
@@ -681,12 +722,12 @@
     				node.icon = "../images/device.png";
     			}  */      			
     			node.getLastChild().data.hfctype = jsonobj.hfctype;
-    			if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
+    			/*if(__globalobj__._realDevice != undefined && __globalobj__._realDevice != null){
         			if(jsonobj.ip == __globalobj__._realDevice.key){
         				$(".dev-status").css("color", "lightgreen");
-        				$("#dev-status-text")[0].textContent = "设备连接正常...";
+        				$("#dev-status-text")[0].textContent = $.i18n.prop('message_devconnected');
         			}
-        		}
+        		}*/
     			if($(".nav_sound i").hasClass("icon-volume-up")){
     				playVideo("/alarmwavs/alarm online.wav");
     			}
@@ -753,7 +794,7 @@
                 }
               },*/
               lazyLoad: lazyLoad
-          });
+          });    	
     	
     	$.contextMenu({
     	      selector: "#dev-fancytree span.fancytree-title",
@@ -832,7 +873,7 @@
 	  	      	        	      }
 	        	        	    });
 		  	      	            $("#set_value").val(node.data.wcommunity);
-		  	      	            updateTips("请输入新的团体名:");
+		  	      	            updateTips($.i18n.prop('message_newcommunity'));
 		  	      	            $("#dialog-form").dialog("open");
 	        	              }
         	         }
@@ -872,7 +913,7 @@
 	      	        	      }
       	        	    });
 	      	            $("#set_value").val("");
-	      	            updateTips("请输入添加节点名称:");
+	      	            updateTips($.i18n.prop('message_newgroupname'));
 	      	            $("#dialog-form").dialog("open");
       	              }
       	            }
@@ -912,7 +953,7 @@
 			      	        	  }
 	      	        	    });
 		      	            $("#set_value").val("");
-		      	            updateTips("请输入要更改的内容:");
+		      	            updateTips($.i18n.prop('message_modifyname'));
 		      	            $("#dialog-form").dialog("open");
 	      	              }
       	            }
@@ -968,10 +1009,10 @@
     	        	callback: function(key, opt){
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
       	              	if(node.data.type == "group" && node.hasChildren()){
-      	              		alert("不是子节点，无法删除!");
+      	              		alert($.i18n.prop('message_nodedel'));
       	              		return false;
       	              	}
-      	              	if((confirm( "确定要删除？ ")==true))
+      	              	if((confirm( $.i18n.prop('message_sure'))==true))
       	              	{
       	              		//删除节点
       	              		var datastring = '{"cmd":"nodedel","key":"'+node.key +'","type":"'+ node.data.type +'","pkey":"'+ node.data.pkey +'"}';
@@ -1144,12 +1185,13 @@
             name : 'strings', //资源文件名称
             path : '../i18n/', //资源文件路径
             mode : 'both', //用Map的方式使用资源文件中的值
-            language : 'en',
+            language : 'zh',
             async: true,
             callback : function() {//加载成功后设置显示内容
                 $('.nav_search p')[0].textContent = $.i18n.prop('message_navsearch');
                 $('.nav_manageralarm p')[0].textContent = $.i18n.prop('message_navhistoryalarm');
                 $('.nav_managerlog p')[0].textContent = $.i18n.prop('message_navoptlog');
+                $('.nav_server p')[0].textContent = $.i18n.prop('message_navserver');
                 if(localStorage.void == 'on'){
                 	$('.nav_sound p')[0].textContent = $.i18n.prop('message_navvoidon');
                 }else{
@@ -1167,6 +1209,12 @@
                 $('#tbl_optcontent')[0].textContent = $.i18n.prop('message_tbloptcontent');
                 $('#tbl_optime')[0].textContent = $.i18n.prop('message_tbloptime');                
                 $('.validateTips')[0].textContent = $.i18n.prop('message_validateTips');
+                
+                $('#server-info')[0].textContent = $.i18n.prop('message_statusinfo');
+                $('#server-trap')[0].textContent = $.i18n.prop('message_traplisten');
+                $('#server-db')[0].textContent = $.i18n.prop('message_dbstatus');
+                $('#server-client')[0].textContent = $.i18n.prop('message_clients');
+                
                 $('#dilg-sdevtype')[0].textContent = $.i18n.prop('message_searchdevtype');                
                 $('#dilg-rcommunity')[0].textContent = $.i18n.prop('message_rcommunity');
                 $('#dilg-wcommunity')[0].textContent = $.i18n.prop('message_wcommunity');
@@ -1223,6 +1271,39 @@
                 $('#tbl_alarmtime1')[0].textContent = $.i18n.prop('message_tbloptime');
                 $('#tbl_alarmcomfirm1')[0].textContent = $.i18n.prop('message_tblconfirmation');
                 $('#tbl_alarmcomfirmtime1')[0].textContent = $.i18n.prop('message_tblconfirmtime');
+                $('#dialog-newdev')[0].title = $.i18n.prop('message_newdev');
+                $('#server-status')[0].textContent = $.i18n.prop('message_navserver');
+                $('#dilg-ipaddr')[0].textContent = $.i18n.prop('message_ipaddr');
+                $('#salutation')[0].options[0].textContent = $.i18n.prop('message_other');
+                $('#salutation')[0].options[2].textContent = $.i18n.prop('message_trans');
+                $('#salutation')[0].options[3].textContent = $.i18n.prop('message_rece');
+                $('#salutation')[0].options[4].textContent = $.i18n.prop('message_osw');
+                $('#salutation')[0].options[5].textContent = $.i18n.prop('message_rfsw');
+                $('#salutation')[0].options[6].textContent = $.i18n.prop('message_preamp');
+                $('#salutation')[0].options[7].textContent = $.i18n.prop('message_wos');
+                
+                $(".context-menu-list li").each(function(i){
+        			switch(i){
+        			case 0:
+        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_mrocommunity');
+        				break;
+        			case 1:
+        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_mwocommunity');
+        				break;
+        			case 2:
+        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_addgroup');
+        				break;
+        			case 3:
+        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_edit');
+        				break;
+        			case 5:
+        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_adddevice');
+        				break;
+        			case 6:
+        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_del');
+        				break;
+        			}
+           		});
             }
         });
     }

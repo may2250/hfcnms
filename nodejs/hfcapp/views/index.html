@@ -48,7 +48,7 @@
 							<ul class="navigation">
 								<li class="nav_search icon-nav">
 									<i class="icon-search icon-2x" ></i>
-									<p class="i18n_nav_search">地址段搜索设备</p>
+									<p class="i18n_nav_search"></p>
 								</li>
 								<!-- <li class="nav_managerauth">
 									<i class="icon-lock icon-2x  icon-nav" ></i>
@@ -56,30 +56,30 @@
 								</li> -->
 								<li class="nav_manageralarm icon-nav">
 									<i class="icon-bar-chart icon-2x" ></i>
-									<p>历史告警日志</p>
+									<p></p>
 								</li>
 								<li class="nav_managerlog icon-nav">
 									<i class="icon-briefcase icon-2x" ></i>
-									<p>历史操作日志</p>
+									<p></p>
 								</li>
-								<!-- <li class="nav_displaylog icon-nav">
-									<i class="icon-eye-open icon-2x" ></i>
-									<p>隐藏日志栏</p>
-								</li> -->
+								<li class="nav_server icon-nav">
+									<i class="icon-hdd icon-2x" ></i>
+									<p></p>
+								</li>
 								<li class="nav_sound icon-nav">
 									<i class="icon-volume-up icon-2x" ></i>
-									<p>声讯告警控制开</p>
+									<p></p>
 								</li>
 								<li class="nav_about icon-nav">
 									<i class="icon-question icon-2x" ></i>
-									<p>关于</p>
+									<p></p>
 								</li>
 							</ul>
 						</div>
 						<!--/profile_details-->
 						<div class="users_details_left">
 							<div class="btn-group">
-							    <a class="btn loguser" href="#"><i class="icon-user"></i><lable id="username"></lable> </a>
+							    <a class="btn loguser" href="#"><i class="icon-user"></i><label id="username"></label> </a>
 							    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-caret-down"></span></a>
 							    <ul class="dropdown-menu">
 							        <li><a href="#" id="md-password"><i class="icon-pencil"></i> 修改密码</a></li>
@@ -241,13 +241,50 @@
 	 	<input type="text" id="set_value" value="" >
 	  
 	</div>
+	<div class="modal fade bs-example-modal-lg" id="dialog-server" tabindex="-1" role="dialog" aria-labelledby="server-status" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="server-status">
+						服务器状态
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="panel panel-info sidebar-info">
+					    <div class="panel-heading" style="padding: 5px 8px;">
+					        <h3 class="panel-title" id="server-info">状态信息</h3>
+					    </div>
+					    <div class="panel-body">
+					        <table>
+					        	<tr class="trapstatus-lb">
+					        		<td id="server-trap">trap监听模块:</td>
+					        		<td><i class="icon-ok-circle trapstatus"></i></td>
+					        	</tr>
+					        	<tr class="dbstatus-lb">
+					        		<td id="server-db">数据库状态:</td>
+					        		<td><i class="icon-ok-circle dbstatus"></i></td>
+					        	</tr>
+					        	<tr>
+					        		<td id="server-client">已连接客户端数量:</td>
+					        		<td><label id="server-clients"></label></td>
+					        	</tr>
+					        </table>
+					    </div>
+					</div> 
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
 	<div id="dialog-newdev" title="添加新的二类设备" style="display:none">
 		<table class="table">
 			<tr>
 				<td>
-					<input id="needtype" type="checkbox" value="" /><lable id="dilg-sdevtype">指定设备类型</lable> 
+					<input id="needtype" type="checkbox" value="" /><label id="dilg-sdevtype">指定设备类型</label> 
   				</td>
-  				<td>IP地址:</td>
+  				<td id="dilg-ipaddr">IP地址:</td>
   				<td>
 					<input type="text" class="form-control" id="newdev_ip" >
   				</td>
@@ -281,8 +318,8 @@
 		</table>
 	  	<div>
    			<div >
-		        <lable id="dilg-devname">设备名称:</lable><input type="text" class="form-control" id="newdev_devname" value="新设备" >
-		        	<lable id="dilg-invalidchar">设备组名请勿包含以下字符:/ \ #</lable>
+		        <label id="dilg-devname">设备名称:</label><input type="text" class="form-control" id="newdev_devname" value="新设备" >
+		        	<label id="dilg-invalidchar">设备组名请勿包含以下字符:/ \ #</label>
 		    </div>
 		</div>
 	</div>

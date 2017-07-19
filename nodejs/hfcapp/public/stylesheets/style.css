@@ -344,8 +344,12 @@ div.dataTables_wrapper {
 }
 
 .sidebar-info table{
-	text-align: center;
+	text-align: left;
 	width: 90%;
+}
+
+.sidebar-info table td{
+	padding-left:10px;
 }
 
 .sidebar-menu {

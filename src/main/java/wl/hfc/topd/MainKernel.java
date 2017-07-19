@@ -143,6 +143,8 @@ public class MainKernel {
 			staticmemory.broadCast(message);
 		} else if (cmd.equalsIgnoreCase("dbclosed")) {
 			staticmemory.broadCast(message);
+		} else if (cmd.equalsIgnoreCase("severstatus")) {
+			staticmemory.sendRemoteStr(message, jsondata.get("sessionid").toString());
 		}
 	}
 
@@ -184,7 +186,7 @@ public class MainKernel {
 			e.printStackTrace();
 			log.info(e.getMessage());
 
-			redisUtil.getJedisPool().returnBrokenResource(jedis);
+			redisUtil.getJedisPool().returnResource(jedis);
 
 		}
 

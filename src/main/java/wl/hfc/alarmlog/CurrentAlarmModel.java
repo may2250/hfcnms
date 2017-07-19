@@ -317,11 +317,11 @@ public class CurrentAlarmModel extends Thread {
 
 	
 			ArrayList<nojuOperLogTableRow> traprow = this.logEngine.getOperRowsWithTime(datestart, dateend);
-			// System.out.println("-------------traprow-size =" +
-			// traprow.size());
+			System.out.println("-------------traprow-size =" + traprow.size());
 			for (nojuOperLogTableRow prow : traprow) {
 				logjson = new JSONObject();
 				logjson.put("id", prow.OperLogID);
+				logjson.put("user", prow.OperLogUser);
 				logjson.put("type", prow.OperLogType.toString());
 				logjson.put("content", prow.OperLogContent);
 				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

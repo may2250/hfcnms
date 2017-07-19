@@ -21,6 +21,7 @@ import com.xinlong.util.StaticMemory;
 public class Sstatus extends Thread{	
 
 		private static final String  Sstatus_MESSAGE =  "sstatus.message";
+		private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 		private static Logger log = Logger.getLogger(Sstatus.class);	
 		private    RedisUtil redisUtil;
 		
@@ -31,9 +32,19 @@ public class Sstatus extends Thread{
 
 		public void run() {
 			Jedis jedis = null;
-			jedis = redisUtil.getConnection();
-			jedis.psubscribe(jedissubSub, Sstatus_MESSAGE);
-			redisUtil.getJedisPool().returnResource(jedis);
+			try {
+
+				jedis = redisUtil.getConnection();
+				jedis.psubscribe(jedissubSub, Sstatus_MESSAGE);
+				redisUtil.getJedisPool().returnResource(jedis);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.info(e.getMessage());
+
+				redisUtil.getJedisPool().returnResource(jedis);
+
+			}
 		}
 		
 		private   JedisPubSub jedissubSub = new JedisPubSub() {
@@ -86,13 +97,26 @@ public class Sstatus extends Thread{
 				jsondata.put("clientNum", StaticMemory.webSocketClients.size());//	pduserver init			
 				
 				
-				//send to client
+				//send to mainkernel
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 				//staticmemory.sendRemoteStr(jsondata, jsondata.get("sessionid").toString());	
 		}
 
 		}
 		
+		public void sendToQueue(String msg, String queue) {
+			Jedis jedis = null;
+			try {
+				jedis = redisUtil.getConnection();
+				jedis.publish(queue, msg);
 
+			} catch (Exception e) {
+				log.info(e.getMessage());
+
+			} finally {
+				redisUtil.closeConnection(jedis);
+			}
+		}
 
 		public boolean testJedis(){
 	    	Jedis jedis=null;
