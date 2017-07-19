@@ -87,10 +87,10 @@
         	  },*/
         	  "createdRow": function ( row, data, index ) {
         		  $(row).attr('id', data[0]);
-                  if ( data[1] == $.i18n.prop('message_secalarm') ) {
+        		  if ( data[1] == "重要告警" || data[1] == "Secondary alarm")  {
                 	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-warning');
-                  }else if(data[1] == $.i18n.prop('message_urgentalarm')){
+                  }else if(data[1] == "紧急告警" || data[1] == "Urgent alarm"){
                 	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-danger');                  
                   }
@@ -119,10 +119,10 @@
                   ],*/
         	  "createdRow": function ( row, data, index ) {
         		  $(row).attr('id', data[0]);
-                  if ( data[1] == $.i18n.prop('message_secalarm') ) {
+                  if ( data[1] == "重要告警" || data[1] == "Secondary alarm")  {
                 	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-warning');
-                  }else if(data[1] == $.i18n.prop('message_urgentalarm')){
+                  }else if(data[1] == "紧急告警" || data[1] == "Urgent alarm"){
                 	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
                 	  $('td', row).parent().addClass('alarm-danger');                  
                   }
@@ -952,7 +952,7 @@
 			      	        	    	$("#set_value").removeClass("ui-state-error-custom");
 			      	        	  }
 	      	        	    });
-		      	            $("#set_value").val("");
+		      	            $("#set_value").val(node.data.title);
 		      	            updateTips($.i18n.prop('message_modifyname'));
 		      	            $("#dialog-form").dialog("open");
 	      	              }
@@ -1185,7 +1185,7 @@
             name : 'strings', //资源文件名称
             path : '../i18n/', //资源文件路径
             mode : 'both', //用Map的方式使用资源文件中的值
-            language : 'zh',
+            language : 'en',
             async: true,
             callback : function() {//加载成功后设置显示内容
                 $('.nav_search p')[0].textContent = $.i18n.prop('message_navsearch');
@@ -1196,6 +1196,8 @@
                 	$('.nav_sound p')[0].textContent = $.i18n.prop('message_navvoidon');
                 }else{
                 	$('.nav_sound p')[0].textContent = $.i18n.prop('message_navvoidoff');
+                	$('.nav_sound i').addClass("icon-volume-off");
+        			$('.nav_sound i').removeClass("icon-volume-up"); 
                 }                
                 $('.nav_about p')[0].textContent = $.i18n.prop('message_navabout');
                 $('#md-password')[0].textContent = $.i18n.prop('message_navchangep');

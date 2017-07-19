@@ -115,6 +115,30 @@
   		  	__globalobj__._send(datastring);
   		  	$('.candile').empty();
 		});
+		
+		$('#dev-status-text')[0].textContent = $.i18n.prop('message_devconnected');
+		$('#i18n-devip')[0].textContent = $.i18n.prop('message_devip');
+		$('#i18n-sysdesc')[0].textContent = $.i18n.prop('message_devsysdesc');
+		$('#i18n-contact')[0].textContent = $.i18n.prop('message_devcontact');
+		$('#i18n-uptime')[0].textContent = $.i18n.prop('message_devuptime');
+		$('#i18n-devparam')[0].textContent = $.i18n.prop('message_devparam');
+		$('#i18n-publicparam')[0].textContent = $.i18n.prop('message_devpublicparam');		
+		$('#i18n-inputpower')[0].textContent = $.i18n.prop('message_devinpower');
+		$('#i18n-outputpower')[0].textContent = $.i18n.prop('message_devoutpower');
+		$('#i18n-att')[0].textContent = $.i18n.prop('message_devatt');		
+		$('#i18n-powername')[0].textContent = $.i18n.prop('message_devpowername');
+		$('#i18n-powerval')[0].textContent = $.i18n.prop('message_devpowerval');		
+		$('#i18n-lasertbl')[0].textContent = $.i18n.prop('message_devlasertbl');
+		$('#i18n-bias')[0].textContent = $.i18n.prop('message_devbias');		
+		$('#i18n-current')[0].textContent = $.i18n.prop('message_devcurrent');
+		$('#i18n-temper')[0].textContent = $.i18n.prop('message_devtemper');		
+		$('#i18n-traptbl')[0].textContent = $.i18n.prop('message_devtraptbl');		
+		$('#i18n-trapindex')[0].textContent = $.i18n.prop('message_devtrapindex');
+		$('#i18n-trapip')[0].textContent = $.i18n.prop('message_devtrapip');		
+		$('#i18n-publictemper')[0].textContent = $.i18n.prop('message_devtemper');
+		$('#i18n-publicID')[0].textContent = $.i18n.prop('message_devlogicid');		
+		$('#i18n-publictype')[0].textContent = $.i18n.prop('message_devtype');		
+		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');
 	</script>
 </head>
 <body>
@@ -122,19 +146,19 @@
 		<button type="button" class="close device-close" aria-hidden="true">&times;</button>
 		<ul class = "devdetail-header">
 			<li class="dev-img"><img src = "../images/EDFA_HD.png" /></li>
-			<li class="dev-status"><span id="dev-status-text">设备连接正常...</span></li>
+			<li class="dev-status"><span id="dev-status-text"></span></li>
 			<li>
 				<table class="table tbl_noborder tbl_devtips">
 	        		<tr>
-	        			<td>设备IP:</td>
+	        			<td id="i18n-devip"></td>
 	        			<td id="panel-devip"></td>
-	        			<td>系统描述:</td>
+	        			<td id="i18n-sysdesc">系统描述:</td>
 	        			<td id="panel-devinfo"></td>	        			
 	        		</tr>
 	        		<tr>
-	        			<td>联系信息:</td>
+	        			<td id="i18n-contact">联系信息:</td>
 	        			<td id="panel-devcontact"></td>
-	        			<td>在线时间:</td>
+	        			<td id="i18n-uptime">在线时间:</td>
 	        			<td id="panel-onlinetimeticks"></td>
 	        		</tr>
 	        	</table>
@@ -143,8 +167,8 @@
 		<div class = "devdetail-content">
 			<div class="tabbable">
 				<ul class="nav nav-tabs" role="tablist">
-				    <li class="active"><a href="#tab-dev1" data-toggle="tab">EDFA设备参数</a></li>
-				    <li><a href="#tab-dev2" data-toggle="tab">HFC公共库参数</a></li>				    
+				    <li class="active"><a href="#tab-dev1" data-toggle="tab" id="i18n-devparam">EDFA设备参数</a></li>
+				    <li><a href="#tab-dev2" data-toggle="tab" id="i18n-publicparam">HFC公共库参数</a></li>				    
 				</ul>
 				<div class="tab-content">
 				    <div class="tab-pane tab-devpane active" id="tab-dev1">
@@ -155,16 +179,16 @@
 					    				<table class="table tbl_detail">
 										  <tbody>
 											    <tr>
-											      <td>输入光功率:</td>
+											      <td id="i18n-inputpower">输入光功率:</td>
 											      <td><input type="text" class="form-control isalarmThreshold" id="oaInputOpticalPower" readonly></td>
 											    </tr>
 											    <tr>
-											      <td>输出光功率:</td>
+											      <td id="i18n-outputpower">输出光功率:</td>
 											      <td><input type="text" class="form-control isalarmThreshold" id="oaOutputOpticalPower" readonly></td>
 											    </tr>
 											    <tr>
-											      <td>光衰减值:</td>
-											      <td><input type="text" class="form-control" id="fnRFChannelNum" readonly></td>
+											      <td id="i18n-att">光衰减值:</td>
+											      <td><input type="text" class="form-control" id="oaOptAtt" readonly></td>
 											    </tr>
 										  </tbody>
 										</table>
@@ -175,8 +199,8 @@
 					    				<table class="table tbl_power" style="width:30%">
 										   <thead>
 											    <tr>
-											      <th>电源输出表</th>
-											      <th>输出电压</th>
+											      <th id="i18n-powername">电源输出表</th>
+											      <th id="i18n-powerval">输出电压</th>
 											    </tr>
 										  </thead>
 										  <tbody>
@@ -197,10 +221,10 @@
 					    				<table class="table tbl_devmiddle tbl_devcontent" style="width:30%">
 										   <thead>
 											    <tr>
-											      <th>激光器表</th>
-											      <th>偏置电流</th>
-											      <th>制冷电流</th>
-											      <th>温度</th>
+											      <th id="i18n-lasertbl">激光器表</th>
+											      <th id="i18n-bias">偏置电流</th>
+											      <th id="i18n-current">制冷电流</th>
+											      <th id="i18n-temper">温度</th>
 											    </tr>
 										  </thead>
 										  <tbody>
@@ -227,11 +251,11 @@
 				    	<div class="devdetail-public">
 				    		<div>
 				    			<table class="table table-bordered">
-								   <caption>Trap目标主机表</caption>
+								   <caption id="i18n-traptbl">Trap目标主机表</caption>
 								   <thead>
 									    <tr>
-									      <th>序号.</th>
-									      <th>目标IP地址</th>
+									      <th id="i18n-trapindex">序号.</th>
+									      <th id="i18n-trapip">目标IP地址</th>
 									    </tr>
 								  </thead>
 								  <tbody>
@@ -274,23 +298,23 @@
 					    		<table class="table tbl_hfcpublic">
 								  <tbody>
 									    <tr>
-									      <td>温度:</td>
+									      <td id="i18n-publictemper">温度:</td>
 									      <td><input type="text" class="form-control" id="commonInternalTemperature" readonly></td>									      
 									    </tr>
 									    <tr>
-									      <td>逻辑ID:</td>
+									      <td id="i18n-publicID">逻辑ID:</td>
 									      <td><input type="text" class="form-control" id="commonNELogicalID" readonly></td>
 									    </tr>
 									    <tr>
-									      <td>型号:</td>
+									      <td id="i18n-publictype">型号:</td>
 									      <td><input type="text" class="form-control" id="commonNEModelNumber" readonly></td>
 									    </tr>
 									    <tr>
-									      <td>序列号:</td>
+									      <td id="i18n-publicsn">序列号:</td>
 									      <td><input type="text" class="form-control" id="commonNESerialNumber" readonly></td>
 									    </tr>
 									    <tr>
-									      <td>MAC:</td>
+									      <td>MAC</td>
 									      <td><input type="text" class="form-control" id="commonDeviceMACAddress" readonly></td>
 									    </tr>
 								  </tbody>

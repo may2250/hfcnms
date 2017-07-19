@@ -229,6 +229,7 @@ function parse_edfa(jsonobj){
 	$('#commonDeviceMACAddress').val(jsonobj.common.commonDeviceMACAddress);
 	$('#oaInputOpticalPower').val(jsonobj.oaInputOpticalPower); 
 	$('#oaOutputOpticalPower').val(jsonobj.oaOutputOpticalPower); 
+	$('#oaOptAtt').val(jsonobj.oaOptAtt); 
 	switch(jsonobj.oaInputOpticalPower6){
 	case "1":
         //normal
