@@ -415,18 +415,6 @@ public class CurrentAlarmModel extends Thread {
 			// logjson.toJSONString());
 			sendToQueue(logjson.toJSONString(), MAINKERNEL_MESSAGE);
 
-			// 閫氱煡 瀹㈡埛绔�
-			/*
-			 * if (view1 != null) view1.appendnewTrapLogRow(aCurrentrow); if
-			 * (view2 != null) view2.appendnewTrapLogRow(aCurrentrow); if (view3
-			 * != null) view3.appendOneTrap(aCurrentrow); if (viewDevGrpModel !=
-			 * null) viewDevGrpModel.appendOneTrap(aCurrentrow); if (smtpEngine
-			 * != null) { WiseCommand cmd = new
-			 * WiseCommand(aCurrentrow.TrapLogContent, CMDType.catchNewTrap);
-			 * cmd.Property2 = aCurrentrow.neName + "  " +
-			 * aCurrentrow.TrapDevAddress;//path smtpEngine.EnqueueCmd(cmd); }
-			 */
-
 		}
 
 		return aCurrentrow;
@@ -491,7 +479,7 @@ public class CurrentAlarmModel extends Thread {
 		}
 
 		if (treatTid != -1) {
-			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过期失效"));
+			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过时失效"));
 		}
 
 	}
@@ -510,7 +498,7 @@ public class CurrentAlarmModel extends Thread {
 		}
 
 		if (treatTid != -1) {
-			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过期失效"));
+			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过时失效"));
 		}
 
 	}
@@ -518,7 +506,7 @@ public class CurrentAlarmModel extends Thread {
 
 
 	public void editTreatMent(int TrapLogID, String content) {
-		// DataRow ros;
+
 		try {
 			int rst = logEngine.trapLogEditRow(TrapLogID, content);
 		} catch (Exception e) {
@@ -609,11 +597,15 @@ public class CurrentAlarmModel extends Thread {
 	}
 
 	
-	public nojuOperLogTableRow InsertOperLog(OperLogTypes type, String content, String usrName) {
+	public void  InsertOperLog(OperLogTypes type, String content, String usrName) {
 		nojuOperLogTableRow row = new nojuOperLogTableRow(type, content, new Date(), usrName);
 
 		row.OperLogID = logEngine.operLogInsertRow(row);
 
+		
+		if (row.OperLogID==-1) {
+			return 	;	
+		}
 		// send row to clinet
 		JSONObject logjson = new JSONObject();
 		logjson.put("cmd", "log_message");
@@ -624,7 +616,7 @@ public class CurrentAlarmModel extends Thread {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		logjson.put("time", sdf.format(row.OperLogTime));
 		sendToQueue(logjson.toJSONString(), MAINKERNEL_MESSAGE);
-		return row;
+
 	}
 
 	public void addLogTest() {

@@ -248,9 +248,7 @@ public class PDUServer extends Thread {
 
 		}
 
-		// stopwatch.Stop(); // 停止监视
-		// TimeSpan timeSpan = stopwatch.Elapsed; // 获取总时间
-		// Console.WriteLine(timeSpan.ToString() + "result resultresultresult");
+	
 	}
 
 	@SuppressWarnings("static-access")

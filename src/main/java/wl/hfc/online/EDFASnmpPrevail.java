@@ -18,10 +18,6 @@ import org.snmp4j.smi.VariableBinding;
 
 
 
-
-
-
-
 import java.util.ArrayList;
 
 import org.snmp4j.PDU;
@@ -34,11 +30,10 @@ import wl.hfc.common.VariableSnmpVar.ToValueMode;
 import wl.hfc.online.pmls;
 
 public class EDFASnmpPrevail extends WosBaseSnmp {
-	// 0����snmpv1��1����snmpv2
+
 
 	// VariableSnmpVars
 	public VariableSnmpVar[] mjVariables;
-	public VariableSnmpVar[] commonVariables;
 	public VariableSnmpVar[] cInputVariables;
 	public VariableSnmpVar[] cOutputVariables;
 
@@ -46,7 +41,6 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 
 	// pdus
 	private PDU majorVarPdu;
-	private PDU CommonVarPdu;
 	private PDU tableDCPdu;
 	private PDU tableOutpdu;
 
@@ -60,11 +54,10 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		// tables
 		cInputVariables = new VariableSnmpVar[2];
 		cOutputVariables = new VariableSnmpVar[4];
-		commonVariables = new VariableSnmpVar[4];
+
 		majorVarPdu = new PDU();
-		CommonVarPdu = new PDU();
 		majorVarPdu.setType(PDU.GET);
-		CommonVarPdu.setType(PDU.GET);
+
 
 		// major
 		int vIns = 0;
@@ -192,8 +185,7 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		}
 		
 		
-		
-
+		//table params
 		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress,
 				this.thisDev.ROCommunity, SnmpConstants.version1);
 		SnmpTableInfo reTable = SnmpEngine.GetMibTableVariables(
@@ -207,13 +199,14 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 				this.thisDev.ROCommunity, SnmpConstants.version1);
 		SnmpTableInfo reTable1 = SnmpEngine.GetMibTableVariables(
 				(PDU) this.tableOutpdu.clone(), cTgt, sver);
-
 		pJson.put("outtablerownum", reTable1.RowNum);
 		
 		
+
 		SnmpEngine.tabVarToJason(this.cInputVariables,this.cOutputVariables,reTable, reTable1, pJson);
 
 		
+		//table thread
 		for (int j = 0; j < this.cInputVariables.length; j++) {
 
 			if (this.cInputVariables[j].withNoThreashold) {
@@ -222,8 +215,7 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 					SnmpEngine.ThreadPramVarToJason(this.cInputVariables[j], pJson, i, true);
 				}
 			}
-		}
-		
+		}		
 		
 		for (int j = 0; j < this.cOutputVariables.length; j++) {
 
@@ -271,99 +263,4 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 	}
 
 	
-
-
-	public void getSubVarsWithTagInfoBYparamname(String paramname,
-			JSONObject jsobj) {
-		if (paramname.equalsIgnoreCase("hfc_ingonglv")) {
-
-			getSubVarsWithTagInfo(this.mjVariables[1]);
-
-			SnmpEngine.ThreadPramVarToJason(this.mjVariables[1], jsobj);
-
-		} else if (paramname.equalsIgnoreCase("hfc_powerv2")
-				|| paramname.equalsIgnoreCase("hfc_powerv1")) {
-
-			String rowString = paramname.substring(paramname.length() - 1,
-					paramname.length());
-
-			int row = Integer.parseInt(rowString);
-
-		//	this.getSubvarsTableWithTagInfo(this.cInputVariables[1], row);
-
-			//SnmpEngine.ThreadPramVarToJason(this.cInputVariables[1], jsobj);
-
-		}
-	}
-
-	private void setSubVarsWithTagInfoBYparamname(String paramname,
-			WosParamForSetInfo wosParamForSetInfo1) {
-
-		if (paramname.equalsIgnoreCase("hfc_ingonglv")) {
-
-			ArrayList<VariableBinding> lists = SnmpEngine
-					.cutMajorVaribaleWithThold(wosParamForSetInfo1,
-							this.mjVariables[1]);
-
-			this.setParam(lists);
-
-		} else if (paramname.equalsIgnoreCase("hfc_powerv2")
-				|| paramname.equalsIgnoreCase("hfc_powerv1")) {
-
-			String rowString = paramname.substring(paramname.length() - 1,
-					paramname.length());
-
-			int row = Integer.parseInt(rowString);
-
-			ArrayList<VariableBinding> lists = SnmpEngine
-					.cutTableVaribaleWithThold(wosParamForSetInfo1,	this.cInputVariables[1],row);
-
-			this.setParam(lists);
-
-		}
-
-	}
-
-	public void setSubVarsWithTagInfoBYparamnameFromJson(String paramname,
-			JSONObject jsondata) {
-		//
-		 String hihi = jsondata.get("hihi").toString();
-		 String hi = jsondata.get("hi").toString();
-		 String lo = jsondata.get("lo").toString();
-		 String lolo = jsondata.get("lolo").toString();
-		 String deadb = jsondata.get("deadb").toString();
-		
-		 byte en =Byte.class.cast(jsondata.get("en"));
-		
-
-//		String hihi = "9.0";
-//		String hi = "9.0";
-//		String lo = "-1.0";
-//		String lolo = "-7.2";
-//		String deadb = "-1.0";
-		WosParamForSetInfo wosParamForSetInfo1 = new WosParamForSetInfo();
-		int i = 0;
-		try {
-			Float rest = Float.valueOf(hihi)
-					/ this.mjVariables[1].VarInfo.FormatCoff;
-			wosParamForSetInfo1.pmSetList[i++] = rest.intValue();
-			rest = Float.valueOf(hi) / this.mjVariables[1].VarInfo.FormatCoff;
-			wosParamForSetInfo1.pmSetList[i++] = rest.intValue();
-			rest = Float.valueOf(lo) / this.mjVariables[1].VarInfo.FormatCoff;
-			wosParamForSetInfo1.pmSetList[i++] = rest.intValue();
-			rest = Float.valueOf(lolo) / this.mjVariables[1].VarInfo.FormatCoff;
-			wosParamForSetInfo1.pmSetList[i++] = rest.intValue();
-			rest = Float.valueOf(deadb)/ this.mjVariables[1].VarInfo.FormatCoff;
-			wosParamForSetInfo1.pmSetList[i++] = rest.intValue();
-			// wosParamForSetInfo1.sByte=Byte.parseByte(en);
-			wosParamForSetInfo1.sByte=en;
-			setSubVarsWithTagInfoBYparamname(paramname, wosParamForSetInfo1);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-
-	}
 }
