@@ -27,7 +27,7 @@ import wl.hfc.topd.MainKernel;
 
 
 //DevGrpModel将承担拓扑的组建，维护，以及组，设备的增删查改的响应
-public class ParamKernel {
+public class ParamKernel extends Thread{
 	private static final String  PARAMKERNEL_MESSAGE =  "paramkernel.message";
 	private static Logger log = Logger.getLogger(ParamKernel.class);	
 	public Hashtable listDevHash;
@@ -36,7 +36,9 @@ public class ParamKernel {
     public ParamKernel()
     {
     	 new pmls();
+   	  this.setName("ParamKernel");
     	  me=this;
+
     }
 
 	private static RedisUtil redisUtil;
@@ -197,10 +199,10 @@ public class ParamKernel {
 	}
   	
     
-    @SuppressWarnings("static-access")
-	public void start() throws InterruptedException{
+  
+	public void run() {
 
-		log.info("[#3] .....ParamKernel starting.......");
+		log.info(this.getName()+ "....starting.......");
 		Jedis jedis=null;
 		try {		
 		

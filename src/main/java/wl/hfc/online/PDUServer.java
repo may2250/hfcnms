@@ -66,6 +66,8 @@ public class PDUServer extends Thread {
 			ex1.printStackTrace();
 			log.info(ex1.getMessage());
 		}
+		
+		this.setName("PDUServer");
 		me=this;
 	}
 
@@ -255,7 +257,7 @@ public class PDUServer extends Thread {
 	public void run() {
 
 		// OnlineTestThread();
-		log.info("[#3] .....PDUServer starting.......");
+		log.info(this.getName()+ "....starting.......");
 		LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
 
 		PDU outpdu = new PDU();

@@ -15,6 +15,7 @@ import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.log4j.Logger;
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -70,15 +71,29 @@ public class CurrentAlarmModel extends Thread {
 
 		invalidRows = new ArrayList<nojuTrapLogTableRow>();
 		invalidRowsTable = new Hashtable();
+		
+		this.setName("CurrentAlarmModel");
 		me = this;
 
 	}
 
-	public void run() {
-		Jedis jedis = null;
-		jedis = redisUtil.getConnection();
-		jedis.psubscribe(jedissubSub, HFCALARM_MESSAGE);
-		redisUtil.getJedisPool().returnResource(jedis);
+	public void run() {			
+
+		log.info(this.getName()+ "....starting.......");
+		Jedis jedis=null;
+		try {		
+		
+			jedis = redisUtil.getConnection();		 
+			jedis.psubscribe(jedissubSub, HFCALARM_MESSAGE);
+			redisUtil.getJedisPool().returnResource(jedis); 
+			  
+		}catch(Exception e){
+			e.printStackTrace();
+			redisUtil.getJedisPool().returnBrokenResource(jedis);
+			
+		}
+		
+		
 	}
 
 	private JedisPubSub jedissubSub = new JedisPubSub() {

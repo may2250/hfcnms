@@ -155,23 +155,27 @@ public class MainKernel {
 		ClsLanguageExmp.init(true, true);
 		ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);
 
+		initTopodData();
+		
 		// CurrentAlarmModel.me.logEngine=ICDatabaseEngine1;
 		CurrentAlarmModel cam = new CurrentAlarmModel();
 		cam.logEngine = ICDatabaseEngine1;
 		cam.setRedisUtil(redisUtil);
 		cam.setStaticMemory(staticmemory);
 
+		
 		PDUServer.me.listDevHash = this.listDevHash;
 		TrapPduServer.me.listDevHash = this.listDevHash;
 		ParamKernel.me.listDevHash = this.listDevHash;
 
-		initTopodData();
+
 
 		cam.start();
 		TrapPduServer.me.start();
-		PDUServer.me.start();
-		Realtime_param_call.me.start();
-
+		PDUServer.me.start();	
+		Realtime_param_call.me.start();		
+		ParamKernel.me.start();
+		
 		Sstatus stsengine = new Sstatus(redisUtil);
 		stsengine.start();
 		
@@ -486,7 +490,7 @@ public class MainKernel {
 				dev.isOline = false;
 				dev.OnlineCount = 0;
 
-				System.out.println(dev.fullpath);
+				//System.out.println(dev.fullpath);
 
 			}
 		}

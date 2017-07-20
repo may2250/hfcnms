@@ -20,7 +20,8 @@ public class Realtime_param_call extends Thread {
 
 	public Realtime_param_call()
     {
-    	  me=this;
+		this.setName("Realtime_param_call");
+    	 me=this;
     }
 	
 	public static void setStaticMemory(StaticMemory staticmemory) {
@@ -29,7 +30,7 @@ public class Realtime_param_call extends Thread {
 	@SuppressWarnings("static-access")
 	public void run() {
 		
-		log.info("[#3] .....Realtime_param_call starting.......");
+		log.info(this.getName()+ "....starting.......");
 		
 		while (true) {
 			if(!staticmemory.getAllRealTimeDev().isEmpty()){

@@ -38,7 +38,6 @@ public class DeviceSearchEngine extends Thread{
 	private Snmp session;
 	public static PDUServerSearch pdusearcher;
 	private static StaticMemory staticmemory;
-    public static EnumLogoVersion logoVersion = EnumLogoVersion.prevail;//褰撳墠缃戠瀹氬埗鐗堟湰
     private int processint = 1;
     
 	public DeviceSearchEngine(SearchIpInfo sipIf,StaticMemory staticmemory) throws IOException{
@@ -48,7 +47,7 @@ public class DeviceSearchEngine extends Thread{
 	}
 	
 	private void initSnmpAPI() throws IOException {		
-		// 鍒涘缓SNMP鍗忚閫氫俊寮曟搸瀵硅薄銆�
+
 		DefaultUdpTransportMapping transport = new DefaultUdpTransportMapping();
 		session = new Snmp(transport);
 		session.listen();
@@ -81,7 +80,7 @@ public class DeviceSearchEngine extends Thread{
 
 		}
 		return response;
-		// System.Console.Out.WriteLine("杩涜浜嗕竴娆″悓姝ュ彂閫�");
+
 
 	}
 
@@ -102,7 +101,7 @@ public class DeviceSearchEngine extends Thread{
 			}
 		};
 
-		// 鍙戦�佹姤鏂�
+
 		try {
 			session.send(outpdu, target, null, listener);
 			return true;
@@ -114,8 +113,7 @@ public class DeviceSearchEngine extends Thread{
 	
 	@SuppressWarnings("unchecked")
 	public void readResponse(ResponseEvent respEvnt) {
-		// 瑙ｆ瀽Response
-		// System.out.println("------------>瑙ｆ瀽Response<----------");
+
 
 		if (respEvnt != null && respEvnt.getResponse() != null) {
 			Vector<VariableBinding> recVBs = respEvnt.getResponse().getVariableBindings();
