@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -280,8 +281,12 @@ public class CurrentAlarmModel extends Thread {
 				
 			}
 			
-	
-			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend, "");
+			
+			
+
+			
+			
+			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend,jsondata.get("source").toString());
 			// System.out.println("-------------traprow-size =" +
 			// traprow.size());
 			for (nojuTrapLogTableRow prow : traprow) {

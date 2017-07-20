@@ -2,6 +2,7 @@ package wl.hfc.topd;
 
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -16,6 +17,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
+
+
+import org.snmp4j.smi.IpAddress;
 
 import com.xinlong.util.RedisUtil;
 import com.xinlong.util.StaticMemory;
@@ -575,6 +579,13 @@ public class MainKernel {
 		 * .clearElemetTableByGID(cmd.mDevGrpTableRow.UserGroupID)) { return
 		 * false; }
 		 */
+		
+		//have child node
+		if(delgrp.Nodes.size()>0)
+		{
+			return false;			
+			
+		}
 
 		mStatus = this.ICDatabaseEngine1.UserGroupTableDeleteRow(mDevGrpTableRow.UserGroupID);
 		if (mStatus) {
@@ -669,8 +680,16 @@ public class MainKernel {
 		{
 			return null;
 		}
-
-		nojuDeviceTableRow mDeviceTableRow = new nojuDeviceTableRow(jsondata.get("netip").toString(), DProcess.netTypeFromStringNetTypes(devtypestr));
+		
+		 InetAddress addr;
+		try {
+			 addr = InetAddress.getByName(jsondata.get("netip").toString());
+		} catch (Exception e) {//invalid ip
+			return null;
+		}
+		
+	
+		nojuDeviceTableRow mDeviceTableRow = new nojuDeviceTableRow(addr.getHostAddress(), DProcess.netTypeFromStringNetTypes(devtypestr));
 		mDeviceTableRow.UserGroupID = usergroupID;
 		mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
 		mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();
