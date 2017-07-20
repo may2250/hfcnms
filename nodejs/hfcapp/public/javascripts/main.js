@@ -215,7 +215,7 @@
     	$('.nav_server').click(function(){    		
     		var datastring = '{"cmd":"severstatus"}';
 	    	webSocket.send(datastring);
-    		$("#dialog-server").modal();
+    		
     	});
     	
     	$('.nav_manageralarm').click(function(){
@@ -324,7 +324,12 @@
     		if(getDays($('#datepicker_start').val(), $('#datepicker_end').val()) > 92){
     			alert($.i18n.prop('message_searchdate_error'));
     			return;
+    		}    		
+    		if($('#alarmfilter-source').val() != "" && !ipvalidate($('#alarmfilter-source').val())){
+    			$('#alarmfilter-source').addClass("ui-state-error-custom"); 
+    			return;
     		}
+    		$('#alarmfilter-source').removeClass("ui-state-error-custom"); 
     		 var datastring = '{"cmd":"alarmsearch","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
     		 + '","customdate":"'+ $("#alarmfilter-date").prop('selectedIndex') + '","source":"'+ $('#alarmfilter-source').val() 
     		 + '","level":"'+ $("#alarmfilter-level").prop('selectedIndex') + '","type":"'+ $('#alarmfilter-type').val()
@@ -624,6 +629,7 @@
     }
 	
 	function parseServer(jsonobj){
+		$("#dialog-server").modal();
 		if(!jsonobj.CDatabaseEngineflag){
     		$('.dbstatus').removeClass("icon-ok-circle");
     		$('.dbstatus').addClass("icon-remove-circle");   
@@ -999,7 +1005,7 @@
       	          },    	 
     	          "delete": {name: "删除", icon: "delete",
     	        	  disabled: function(key, opt){
-      	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+      	        		  var node = $.ui.fancytree.getNode(opt.$trigger);      	        		  
           	              if(node.data.type == "group" || node.data.type == "device"){
           	            	  return false;
           	              }else{
@@ -1008,6 +1014,10 @@
       	        	  	},
     	        	callback: function(key, opt){
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
+      	              	if(!node.isLoaded()){
+      	              		alert($.i18n.prop('message_nodedelerr'));
+      	              		return false;
+      	              	}
       	              	if(node.data.type == "group" && node.hasChildren()){
       	              		alert($.i18n.prop('message_nodedel'));
       	              		return false;

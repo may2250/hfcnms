@@ -104,7 +104,7 @@ function parse_rece_workstation(jsonobj){
 	switch(jsonobj.fnOpticalReceiverPower6){
 	case "1":
         //normal
-		$('#fnOpticalReceiverPower').css("background-color", "green");
+		$('#fnOpticalReceiverPower').css("background-color", "white");
         break;
     case "2":
     //hihi
@@ -141,7 +141,7 @@ function parse_rece_workstation(jsonobj){
 	switch(jsonobj.fnDCPowerVoltage06){
 	case "1":
         //normal
-		$('.fnDCPowerVoltage_row0').css("background-color", "green");
+		$('.fnDCPowerVoltage_row0').css("background-color", "white");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
@@ -160,7 +160,7 @@ function parse_rece_workstation(jsonobj){
 	switch(jsonobj.fnDCPowerVoltage16){
 	case "1":
         //normal
-		$('.fnDCPowerVoltage_row1').css("background-color", "green");
+		$('.fnDCPowerVoltage_row1').css("background-color", "white");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
@@ -179,7 +179,7 @@ function parse_rece_workstation(jsonobj){
 	switch(jsonobj.fnRFPortOutputRFLevel06){
 	case "1":
         //normal
-		$('.fnRFPortOutputRFLevel_row0').css("background-color", "green");
+		$('.fnRFPortOutputRFLevel_row0').css("background-color", "white");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
@@ -198,7 +198,7 @@ function parse_rece_workstation(jsonobj){
 	switch(jsonobj.fnRFPortOutputRFLevel16){
 	case "1":
         //normal
-		$('.fnRFPortOutputRFLevel_row1').css("background-color", "green");
+		$('.fnRFPortOutputRFLevel_row1').css("background-color", "white");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
@@ -233,7 +233,7 @@ function parse_edfa(jsonobj){
 	switch(jsonobj.oaInputOpticalPower6){
 	case "1":
         //normal
-		$('#oaInputOpticalPower').css("background-color", "green");
+		$('#oaInputOpticalPower').css("background-color", "white");
         break;
     case "2":
     //hihi
@@ -251,7 +251,7 @@ function parse_edfa(jsonobj){
 	switch(jsonobj.oaOutputOpticalPower6){
 	case "1":
         //normal
-		$('#oaOutputOpticalPower').css("background-color", "green");
+		$('#oaOutputOpticalPower').css("background-color", "white");
         break;
     case "2":
     //hihi
@@ -289,7 +289,7 @@ function parse_edfa(jsonobj){
 	switch(jsonobj.oaDCPowerVoltage06){
 	case "1":
         //normal
-		$('.oaDCPowerVoltage_row0').css("background-color", "green");
+		$('.oaDCPowerVoltage_row0').css("background-color", "white");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
@@ -308,7 +308,7 @@ function parse_edfa(jsonobj){
 	switch(jsonobj.oaDCPowerVoltage16){
 	case "1":
         //normal
-		$('.oaDCPowerVoltage_row1').css("background-color", "green");
+		$('.oaDCPowerVoltage_row1').css("background-color", "white");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
@@ -327,7 +327,7 @@ function parse_edfa(jsonobj){
 	switch(jsonobj.oaPumpBIAS06){
 	case "1":
         //normal
-		$('.oaPumpBIAS_row0').css("background-color", "green");
+		$('.oaPumpBIAS_row0').css("background-color", "white");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
@@ -346,7 +346,7 @@ function parse_edfa(jsonobj){
 	switch(jsonobj.oaPumpTEC06){
 	case "1":
         //normal
-		$('.oaPumpTEC_row0').css("background-color", "green");
+		$('.oaPumpTEC_row0').css("background-color", "white");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
@@ -365,7 +365,7 @@ function parse_edfa(jsonobj){
 	switch(jsonobj.oaPumpTemp06){
 	case "1":
         //normal
-		$('.oaPumpTemp_row0').css("background-color", "green");
+		$('.oaPumpTemp_row0').css("background-color", "white");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
