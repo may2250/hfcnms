@@ -139,11 +139,13 @@
 	 <property name="concurrent" value="true" />	 	
 	</bean>-->
 
+<!--
 	<bean id="paramKernelJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="paramKernel" />
 	 <property name="targetMethod"  value="start"/>
 	 <property name="concurrent" value="true" />	 	
-	</bean>
+	</bean>-->
+
 <!--
 	<bean id="realreadingJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 <property name="targetObject" ref="realreading" />
@@ -193,12 +195,14 @@
 	 <property name="repeatCount" value="0" />		  	 
 	</bean>-->
 
+	<!--
 	<bean id="paramKernelTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-	 <property name="jobDetail" ref="paramKernelJob" />
-	 <property name="startDelay" value="3000" />
-	 <property name="repeatInterval" value="5" />
-	 <property name="repeatCount" value="0" />		  	 
-	</bean>
+		 <property name="jobDetail" ref="paramKernelJob" />
+		 <property name="startDelay" value="3000" />
+		 <property name="repeatInterval" value="5" />
+		 <property name="repeatCount" value="0" />		  	 
+		</bean>-->
+	
 <!--
 	<bean id="realreadingTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
 	 <property name="jobDetail" ref="realreadingJob" />
@@ -216,7 +220,7 @@
 <!--	            <ref bean="trapReceiverJob" /> -->
 	            <ref bean="mainKernelJob" />
 	 <!--           <ref bean="CurrentAlarmModelJob" />-->
-	            <ref bean="paramKernelJob" />
+<!--	            <ref bean="paramKernelJob" />-->
 	<!--            <ref bean="realreadingJob" />-->
 	        </list>  
 	    </property>  
@@ -227,7 +231,7 @@
 <!--	            <ref bean="trapReceierTrigger" />-->
 	            <ref bean="mainKernelTrigger" /> 
 	     <!--       <ref bean="CurrentAlarmModelTrigger" /> -->
-	            <ref bean="paramKernelTrigger" />
+<!--	            <ref bean="paramKernelTrigger" />-->
 	     <!--       <ref bean="realreadingTrigger" />-->
 	        </list>  
 	    </property>  

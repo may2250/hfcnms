@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +16,7 @@ import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.log4j.Logger;
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -70,15 +72,29 @@ public class CurrentAlarmModel extends Thread {
 
 		invalidRows = new ArrayList<nojuTrapLogTableRow>();
 		invalidRowsTable = new Hashtable();
+		
+		this.setName("CurrentAlarmModel");
 		me = this;
 
 	}
 
-	public void run() {
-		Jedis jedis = null;
-		jedis = redisUtil.getConnection();
-		jedis.psubscribe(jedissubSub, HFCALARM_MESSAGE);
-		redisUtil.getJedisPool().returnResource(jedis);
+	public void run() {			
+
+		log.info(this.getName()+ "....starting.......");
+		Jedis jedis=null;
+		try {		
+		
+			jedis = redisUtil.getConnection();		 
+			jedis.psubscribe(jedissubSub, HFCALARM_MESSAGE);
+			redisUtil.getJedisPool().returnResource(jedis); 
+			  
+		}catch(Exception e){
+			e.printStackTrace();
+			redisUtil.getJedisPool().returnBrokenResource(jedis);
+			
+		}
+		
+		
 	}
 
 	private JedisPubSub jedissubSub = new JedisPubSub() {
@@ -265,8 +281,12 @@ public class CurrentAlarmModel extends Thread {
 				
 			}
 			
-	
-			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend, "");
+			
+			
+
+			
+			
+			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend,jsondata.get("source").toString());
 			// System.out.println("-------------traprow-size =" +
 			// traprow.size());
 			for (nojuTrapLogTableRow prow : traprow) {
@@ -415,18 +435,6 @@ public class CurrentAlarmModel extends Thread {
 			// logjson.toJSONString());
 			sendToQueue(logjson.toJSONString(), MAINKERNEL_MESSAGE);
 
-			// 閫氱煡 瀹㈡埛绔�
-			/*
-			 * if (view1 != null) view1.appendnewTrapLogRow(aCurrentrow); if
-			 * (view2 != null) view2.appendnewTrapLogRow(aCurrentrow); if (view3
-			 * != null) view3.appendOneTrap(aCurrentrow); if (viewDevGrpModel !=
-			 * null) viewDevGrpModel.appendOneTrap(aCurrentrow); if (smtpEngine
-			 * != null) { WiseCommand cmd = new
-			 * WiseCommand(aCurrentrow.TrapLogContent, CMDType.catchNewTrap);
-			 * cmd.Property2 = aCurrentrow.neName + "  " +
-			 * aCurrentrow.TrapDevAddress;//path smtpEngine.EnqueueCmd(cmd); }
-			 */
-
 		}
 
 		return aCurrentrow;
@@ -491,7 +499,7 @@ public class CurrentAlarmModel extends Thread {
 		}
 
 		if (treatTid != -1) {
-			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过期失效"));
+			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过时失效"));
 		}
 
 	}
@@ -510,7 +518,7 @@ public class CurrentAlarmModel extends Thread {
 		}
 
 		if (treatTid != -1) {
-			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过期失效"));
+			editTreatMent(treatTid, ClsLanguageExmp.commonGet("过时失效"));
 		}
 
 	}
@@ -518,7 +526,7 @@ public class CurrentAlarmModel extends Thread {
 
 
 	public void editTreatMent(int TrapLogID, String content) {
-		// DataRow ros;
+
 		try {
 			int rst = logEngine.trapLogEditRow(TrapLogID, content);
 		} catch (Exception e) {
@@ -609,11 +617,15 @@ public class CurrentAlarmModel extends Thread {
 	}
 
 	
-	public nojuOperLogTableRow InsertOperLog(OperLogTypes type, String content, String usrName) {
+	public void  InsertOperLog(OperLogTypes type, String content, String usrName) {
 		nojuOperLogTableRow row = new nojuOperLogTableRow(type, content, new Date(), usrName);
 
 		row.OperLogID = logEngine.operLogInsertRow(row);
 
+		
+		if (row.OperLogID==-1) {
+			return 	;	
+		}
 		// send row to clinet
 		JSONObject logjson = new JSONObject();
 		logjson.put("cmd", "log_message");
@@ -624,7 +636,7 @@ public class CurrentAlarmModel extends Thread {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		logjson.put("time", sdf.format(row.OperLogTime));
 		sendToQueue(logjson.toJSONString(), MAINKERNEL_MESSAGE);
-		return row;
+
 	}
 
 	public void addLogTest() {

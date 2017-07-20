@@ -10,20 +10,10 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import org.snmp4j.CommandResponder;
-import org.snmp4j.CommandResponderEvent;
-import org.snmp4j.PDUv1;
-import org.snmp4j.Snmp;
-import org.snmp4j.TransportMapping;
-import org.snmp4j.mp.MPv1;
-import org.snmp4j.mp.MPv2c;
-import org.snmp4j.mp.MPv3;
-import org.snmp4j.smi.Address;
-import org.snmp4j.smi.GenericAddress;
-import org.snmp4j.smi.OID;
-import org.snmp4j.smi.UdpAddress;
-import org.snmp4j.smi.VariableBinding;
-import org.snmp4j.transport.DefaultUdpTransportMapping;
+import org.snmp4j.*;
+import org.snmp4j.mp.*;
+import org.snmp4j.smi.*;
+import org.snmp4j.transport.*;
 
 import redis.clients.jedis.Jedis;
 import wl.hfc.alarmlog.CurrentAlarmModel;
@@ -34,9 +24,10 @@ import wl.hfc.online.pmls;
 import wl.hfc.server.Sstatus;
 import wl.hfc.topd.MainKernel;
 
-import org.snmp4j.PDU;
-import org.snmp4j.Snmp;
-import org.snmp4j.smi.*;
+
+
+
+
 
 import com.xinlong.Services.TrapReceiverBean;
 import com.xinlong.util.RedisUtil;
@@ -67,7 +58,7 @@ public class TrapPduServer extends Thread {
 	//	System.out.println("----------------path--->>>" + filePath);
 		this.trpcss  = new TrapProCenter(true, filePath);
 
-
+		this.setName("TrapPduServer");
 		me=this;
 
 	}
@@ -85,7 +76,7 @@ public class TrapPduServer extends Thread {
 
 	public void run() {
 
-		logger.info("[#3] .....TrapPduServer starting.......");
+		logger.info(this.getName()+ "....starting.......");
 		try {
 
 			String trapport = "162";

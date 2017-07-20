@@ -2,6 +2,7 @@ package wl.hfc.topd;
 
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -16,6 +17,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
+
+
+import org.snmp4j.smi.IpAddress;
 
 import com.xinlong.util.RedisUtil;
 import com.xinlong.util.StaticMemory;
@@ -155,23 +159,27 @@ public class MainKernel {
 		ClsLanguageExmp.init(true, true);
 		ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);
 
+		initTopodData();
+		
 		// CurrentAlarmModel.me.logEngine=ICDatabaseEngine1;
 		CurrentAlarmModel cam = new CurrentAlarmModel();
 		cam.logEngine = ICDatabaseEngine1;
 		cam.setRedisUtil(redisUtil);
 		cam.setStaticMemory(staticmemory);
 
+		
 		PDUServer.me.listDevHash = this.listDevHash;
 		TrapPduServer.me.listDevHash = this.listDevHash;
 		ParamKernel.me.listDevHash = this.listDevHash;
 
-		initTopodData();
+
 
 		cam.start();
 		TrapPduServer.me.start();
-		PDUServer.me.start();
-		Realtime_param_call.me.start();
-
+		PDUServer.me.start();	
+		Realtime_param_call.me.start();		
+		ParamKernel.me.start();
+		
 		Sstatus stsengine = new Sstatus(redisUtil);
 		stsengine.start();
 		
@@ -486,7 +494,7 @@ public class MainKernel {
 				dev.isOline = false;
 				dev.OnlineCount = 0;
 
-				System.out.println(dev.fullpath);
+				//System.out.println(dev.fullpath);
 
 			}
 		}
@@ -571,6 +579,13 @@ public class MainKernel {
 		 * .clearElemetTableByGID(cmd.mDevGrpTableRow.UserGroupID)) { return
 		 * false; }
 		 */
+		
+		//have child node
+		if(delgrp.Nodes.size()>0)
+		{
+			return false;			
+			
+		}
 
 		mStatus = this.ICDatabaseEngine1.UserGroupTableDeleteRow(mDevGrpTableRow.UserGroupID);
 		if (mStatus) {
@@ -665,8 +680,16 @@ public class MainKernel {
 		{
 			return null;
 		}
-
-		nojuDeviceTableRow mDeviceTableRow = new nojuDeviceTableRow(jsondata.get("netip").toString(), DProcess.netTypeFromStringNetTypes(devtypestr));
+		
+		 InetAddress addr;
+		try {
+			 addr = InetAddress.getByName(jsondata.get("netip").toString());
+		} catch (Exception e) {//invalid ip
+			return null;
+		}
+		
+	
+		nojuDeviceTableRow mDeviceTableRow = new nojuDeviceTableRow(addr.getHostAddress(), DProcess.netTypeFromStringNetTypes(devtypestr));
 		mDeviceTableRow.UserGroupID = usergroupID;
 		mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
 		mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();

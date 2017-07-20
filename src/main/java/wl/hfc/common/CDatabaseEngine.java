@@ -1,5 +1,6 @@
 package wl.hfc.common;
 
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -603,8 +604,16 @@ public class CDatabaseEngine {
 			if (ip.equalsIgnoreCase("")) {
 				sqlInsert = "SELECT TrapLogTable.*FROM TrapLogTable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString + "';";
 			} else {
-				sqlInsert = "SELECT TrapLogTable.*FROM TrapLogTable WHERE TrapLogTime>'" + beginTime + "' AND TrapLogTime<'" + endTime
-						+ "' AND TrapDevAddress='" + ip + "';";
+				
+				
+				 InetAddress addr;
+				try {
+					 addr = InetAddress.getByName(ip);
+				} catch (Exception e) {//invalid ip
+					return results;
+				}
+				sqlInsert = "SELECT TrapLogTable.*FROM TrapLogTable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString
+						+ "' AND TrapDevAddress='" + addr.getHostAddress() + "';";
 			}
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
