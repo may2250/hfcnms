@@ -1,5 +1,6 @@
 package wl.hfc.online;
 
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 
@@ -56,7 +57,7 @@ public class Realtime_param_call extends Thread {
 							
 							json.put("common", commonjson);							
 							String jsonstr = json.toJSONString();
-							//System.out.println(jsonstr);
+							System.out.println("参数发送"+jsonstr+new Date().toString());
 							for(Iterator it2 = osp.sessionList.iterator();it2.hasNext();){
 								 staticmemory.sendRemoteStr(jsonstr, it2.next().toString());
 					        }

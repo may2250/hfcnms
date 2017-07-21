@@ -35,8 +35,11 @@ import com.xinlong.util.StaticMemory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 import sun.misc.BASE64Decoder;
+import wl.hfc.common.CDatabaseEngine;
 import wl.hfc.common.NlogType.AuthResult;
+import wl.hfc.server.Sstatus;
 import wl.hfc.topd.MainKernel;
+import wl.hfc.traprcss.TrapPduServer;
 
 
 
@@ -50,6 +53,7 @@ public class Services_Websocket {
 	private static final String deskey = "prevail0";
 	private static RedisUtil redisUtil;
 	private static StaticMemory staticmemory;
+
 
 	public static void setRedisUtil(RedisUtil redisUtil) {
 		Services_Websocket.redisUtil = redisUtil;
@@ -108,8 +112,30 @@ public class Services_Websocket {
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), HFCALARM_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("severstatus")){
-				jsondata.put("sessionid", session.getId());
-				sendToQueue(jsondata.toJSONString(), Sstatus_MESSAGE);
+     			jsondata.put("sessionid", session.getId());
+			//	sendToQueue(jsondata.toJSONString(), Sstatus_MESSAGE);*/
+				
+				
+				//trap监听模块
+				jsondata.put("TrapPduServerstatus", TrapPduServer.TrapPduServer_status);//trap listen status
+				
+				//数据库状态
+				jsondata.put("CDatabaseEngineflag", CDatabaseEngine.flag);//last time  database status		
+/*				
+				//参数轮询模块
+				jsondata.put("PDUServerstatus", PDUServer.PDUServer_status);//	pduserver init		
+				*/
+				
+				//已连接客户端数量
+				jsondata.put("clientNum", StaticMemory.webSocketClients.size());//	pduserver init			
+				
+
+				//redis连接状态
+				jsondata.put("redisStatus",Sstatus.redisStartus);//	pduserver init			
+				
+				
+				staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
+				//staticmemory.sendRemoteStr(jsondata, jsondata.get("sessionid").toString());
 			}else{
 				sendToQueue(message, MAINKERNEL_MESSAGE);
 			}

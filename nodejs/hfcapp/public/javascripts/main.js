@@ -642,7 +642,16 @@
     		$('.trapstatus').addClass("icon-ok-circle");
     		$('.trapstatus-lb').removeClass("ui-state-error-custom"); 
     	}
-    	$('#server-clients')[0].textContent = jsonobj.clientNum;
+    	
+    	       if(jsonobj.redisStatus){
+            $('#server-clients')[0].textContent = "true";  
+            }   
+            else{
+                            $('#server-clients')[0].textContent = "false";  
+            
+            }           
+        
+ 
 	}
 	
 	function alarmSolve(jsonobj){
