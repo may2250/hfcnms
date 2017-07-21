@@ -304,8 +304,9 @@ public class MainKernel {
 					subjson.put("lazy", false);
 					subjson.put("children", subjsonarray);
 				} else {
-					if (subjsonarray.size() == 0) {
+					if (subjsonarray.size() < 50) {
 						subjson.put("lazy", false);
+						subjson.put("children", subjsonarray);
 					} else {
 						subjson.put("lazy", true);
 					}

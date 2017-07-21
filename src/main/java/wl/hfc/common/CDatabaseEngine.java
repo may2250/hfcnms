@@ -794,6 +794,7 @@ public class CDatabaseEngine {
 		rs = pstmt.executeQuery(sqlInsert);
 
 		while (rs.next()) {
+			System.out.println("------------------->>>>has user!");
 			nojuUserAuthorizeTableRow newURow = new nojuUserAuthorizeTableRow(rs.getInt(1), rs.getString(2), rs.getByte(3), rs.getString(4));
 
 			retList.add(newURow);

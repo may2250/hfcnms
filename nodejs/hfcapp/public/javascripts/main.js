@@ -958,7 +958,7 @@
 			      	        	    	$("#set_value").removeClass("ui-state-error-custom");
 			      	        	  }
 	      	        	    });
-		      	            $("#set_value").val(node.data.title);
+		      	            $("#set_value").val(node.title);
 		      	            updateTips($.i18n.prop('message_modifyname'));
 		      	            $("#dialog-form").dialog("open");
 	      	              }
