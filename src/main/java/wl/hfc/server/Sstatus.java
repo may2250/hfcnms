@@ -24,7 +24,7 @@ public class Sstatus extends Thread{
 		private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 		private static Logger log = Logger.getLogger(Sstatus.class);	
 		private    RedisUtil redisUtil;
-		
+		public  static boolean redisStartus=true;
 	    public Sstatus( RedisUtil predisUtil)
 	    {	    	
 	    	redisUtil=predisUtil;
@@ -38,7 +38,10 @@ public class Sstatus extends Thread{
 				jedis.psubscribe(jedissubSub, Sstatus_MESSAGE);
 				redisUtil.getJedisPool().returnResource(jedis);
 
+
 			} catch (Exception e) {
+				redisStartus=false;
+
 				e.printStackTrace();
 				log.info(e.getMessage());
 
