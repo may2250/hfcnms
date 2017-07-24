@@ -87,6 +87,17 @@
 				var encstr = localStorage.userName+'/'+ sessionStorage.passWord;
 				initWebSocket(encstr);				
 			});
+			
+			$('#password').bind('keypress',function(event){		          
+		         if(event.keyCode == 13) 
+		         {  
+		        	 localStorage.userName = $('#user').val();
+					 sessionStorage.passWord = encryptByDES($('#password').val(),enc_key);
+					 var encstr = localStorage.userName+'/'+ sessionStorage.passWord;
+					 initWebSocket(encstr);
+		         } 
+		     });
+		     
 		});
 		
 		

@@ -66,7 +66,7 @@ public class CDatabaseEngine {
 	{
 		boolean tmpFlag = flag;
 
-		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
+		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8&useSSL=false";
 		// ����������
 		String driver = "com.mysql.jdbc.Driver";
 		String dbuser = "root";
@@ -98,7 +98,7 @@ public class CDatabaseEngine {
 
 	public void offNewTrapCoon() {
 
-		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8";
+		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8&useSSL=false";
 		// ����������
 		String driver = "com.mysql.jdbc.Driver";
 		String dbuser = "root";
@@ -569,7 +569,7 @@ public class CDatabaseEngine {
 			return -1;
 
 		}
-		String sqlInsert = "UPDATE TrapLogTable SET TrapTreatMent='" + treatment + "', IsTreatMent='" + IsTreatMent + "' WHERE TrapLogID='" + TrapLogID + "'";
+		String sqlInsert = "UPDATE traplogtable SET TrapTreatMent='" + treatment + "', IsTreatMent='" + IsTreatMent + "' WHERE TrapLogID='" + TrapLogID + "'";
 
 		PreparedStatement pstmt;
 		try {
@@ -602,7 +602,7 @@ public class CDatabaseEngine {
 			String sqlInsert;
 
 			if (ip.equalsIgnoreCase("")) {
-				sqlInsert = "SELECT TrapLogTable.*FROM TrapLogTable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString + "';";
+				sqlInsert = "SELECT TrapLogTable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString + "';";
 			} else {
 				
 				
@@ -612,7 +612,7 @@ public class CDatabaseEngine {
 				} catch (Exception e) {//invalid ip
 					return results;
 				}
-				sqlInsert = "SELECT TrapLogTable.*FROM TrapLogTable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString
+				sqlInsert = "SELECT TrapLogTable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString
 						+ "' AND TrapDevAddress='" + addr.getHostAddress() + "';";
 			}
 
@@ -696,7 +696,7 @@ public class CDatabaseEngine {
 		try {
 			String sqlInsert;
 
-			sqlInsert = "SELECT operLogTable.*FROM operLogTable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString + "';";
+			sqlInsert = "SELECT operLogTable.*FROM operlogtable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString + "';";
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 			rs = pstmt.executeQuery(sqlInsert);
@@ -734,7 +734,7 @@ public class CDatabaseEngine {
 
 		ResultSet rs = null;
 
-		String sqlInsert = "INSERT INTO UserAuthorizeTable(UserName,password1,phoneNmber,smtpAddress,AuthTotal,IsMsgDefi) VALUES(" + "'" + row.UserName + "','"
+		String sqlInsert = "INSERT INTO userauthorizetable(UserName,password1,phoneNmber,smtpAddress,AuthTotal,IsMsgDefi) VALUES(" + "'" + row.UserName + "','"
 				+ row.PassWord + "','" + row.PhoneNmbr + "','" + row.smtpAddress + "'," + row.AuthTotal + "," + "no" + ")";
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
@@ -762,7 +762,7 @@ public class CDatabaseEngine {
 			return false;
 
 		}
-		String sqlInsert = "DELETE FROM UserAuthorizeTable WHERE UserID=" + row.UserID;
+		String sqlInsert = "DELETE FROM userauthorizetable WHERE UserID=" + row.UserID;
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
 		try {
@@ -787,14 +787,11 @@ public class CDatabaseEngine {
 		ResultSet rs = null;
 
 		Connection con = offNewCoon();
-
-		String sqlInsert = "SELECT * FROM UserAuthorizeTable";
-
+		String sqlInsert = "SELECT * FROM userauthorizetable";
 		pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
-		rs = pstmt.executeQuery(sqlInsert);
+		rs = pstmt.executeQuery();
 
 		while (rs.next()) {
-			System.out.println("------------------->>>>has user!");
 			nojuUserAuthorizeTableRow newURow = new nojuUserAuthorizeTableRow(rs.getInt(1), rs.getString(2), rs.getByte(3), rs.getString(4));
 
 			retList.add(newURow);
