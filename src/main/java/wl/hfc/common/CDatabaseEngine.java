@@ -676,7 +676,7 @@ public class CDatabaseEngine {
 
 	}
 
-	public ArrayList<nojuOperLogTableRow> getOperRowsWithTime(Date beginTime, Date endTime) {
+	public ArrayList<nojuOperLogTableRow> getOperRowsWithTime(Date beginTime, Date endTime,String userNme) {
 
 		ArrayList<nojuOperLogTableRow> results = new ArrayList<nojuOperLogTableRow>();
 
@@ -696,7 +696,8 @@ public class CDatabaseEngine {
 		try {
 			String sqlInsert;
 
-			sqlInsert = "SELECT operLogTable.*FROM operlogtable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString + "';";
+			sqlInsert = "SELECT operLogTable.*FROM operlogtable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString
+					+"' AND OperLogUser='" + userNme + "';";
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 			rs = pstmt.executeQuery(sqlInsert);

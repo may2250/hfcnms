@@ -101,7 +101,7 @@ public class TrapPduServer extends Thread {
 		} catch (Exception e) {
 			TrapPduServer_status=false;
 			e.printStackTrace();
-			logger.info(e.getMessage());
+			logger.error(e.getMessage());
 			return;
 			
 		}

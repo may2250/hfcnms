@@ -29,12 +29,12 @@ public class nojuUserAuthorizeTableRow
 
 
 
-    public String PhoneNmbr;
+    public String PhoneNmbr="";
   
 
 
 
-    public String smtpAddress;
+    public String smtpAddress="";
 
 
     public byte AuthTotal;//1:super admin;2:admin;3:guest
@@ -44,8 +44,7 @@ public class nojuUserAuthorizeTableRow
     public nojuUserAuthorizeTableRow()
     {
         this.AuthTotal = 2;//默认普通观察者
-        //this._phoneNmbr = string.Empty;
-        //this.smtpAddress = string.Empty;
+
     }
 
     //public UserAuthorizeTableRow(int userid)
@@ -55,6 +54,7 @@ public class nojuUserAuthorizeTableRow
 
     public nojuUserAuthorizeTableRow(int userid, String username, byte authtotal,String password)
     {
+    	
         this._UserID = userid;
         this.UserName = username;
         this.PassWord = password;

@@ -336,7 +336,7 @@ public class CurrentAlarmModel extends Thread {
 
 
 	
-			ArrayList<nojuOperLogTableRow> traprow = this.logEngine.getOperRowsWithTime(datestart, dateend);
+			ArrayList<nojuOperLogTableRow> traprow = this.logEngine.getOperRowsWithTime(datestart, dateend,jsondata.get("optname").toString());
 			System.out.println("-------------traprow-size =" + traprow.size());
 			for (nojuOperLogTableRow prow : traprow) {
 				logjson = new JSONObject();
