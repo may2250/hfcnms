@@ -277,7 +277,7 @@ public class DeviceSearchEngine extends Thread{
 	    		for (CDevForCMD prow : searchRst) {
 	    			logjson = new JSONObject();
 	    			logjson.put("ipaddr", prow.mNetAddress);
-	    			logjson.put("devtype", "  ");
+	    			logjson.put("devtype", prow.mNetType.toString());
 	    			logjson.put("hfctype",OidToHFCType.GetHFCTypeString(prow.HFCType1 ));
 	    			logjson.put("rcommunity", ipinfo.community);
 	  

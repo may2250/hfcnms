@@ -120,7 +120,7 @@ public class CurrentAlarmModel extends Thread {
 
 		public void onPMessage(String arg0, String arg1, String msg) {
 			try {
-				System.out.println(" [x] CurrentAlarmModel Received: '" + msg + "'");
+				//System.out.println(" [x] CurrentAlarmModel Received: '" + msg + "'");
 				JSONObject jsondata = (JSONObject) new JSONParser().parse(msg);
 				String cmd = jsondata.get("cmd").toString();
 				JSONObject rootjson = new JSONObject();

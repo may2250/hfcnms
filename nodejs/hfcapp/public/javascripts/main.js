@@ -573,12 +573,9 @@
         }else if(jsonobj.cmd == "realtime-device"){
         	showHfcDevice(jsonobj);
         }else if(jsonobj.cmd == "devsearchprocess"){
-        	if(jsonobj.process == 100){
-        		$("#dialog-devsearch").dialog("close");
-        		$(".progress-bar").width( "0%");
+        	if(jsonobj.process == 100){        		
         		var datastring = '{"cmd":"getgrouptree"}';
-    	    	webSocket.send(datastring);
-    	    	$("#modal_searchresult").modal();
+    	    	webSocket.send(datastring);    	    	
         	}else{
         		$(".progress-bar").width(jsonobj.process+ "%");
         	}
@@ -589,9 +586,14 @@
                 clickFolderMode: 1,
                 minExpandLevel: 2
               });
-        }else if(jsonobj.cmd == "devsearch-result"){
-        	var paramstr = jsonobj.ipaddr+ '/' + jsonobj.devtype +'/'+jsonobj.hfctype;
-        	$('#list-newdevs').append('<li class="list-group-item"><label><input name="dev" type="checkbox" value="'+ paramstr + '" />'+jsonobj.ipaddr+ '/' + getNetTypeTostring(jsonobj.devtype)+'/'+jsonobj.hfctype+'</label></li>');
+        }else if(jsonobj.cmd == "devsearch-res"){
+        	$("#dialog-devsearch").dialog("close");
+    		$(".progress-bar").width( "0%");
+        	$("#modal_searchresult").modal();
+        	$.each(jsonobj.rsts, function (n, value) {
+        		var paramstr = value.ipaddr+ '/' + value.devtype +'/'+value.hfctype;
+            	$('#list-newdevs').append('<li class="list-group-item"><label><input name="dev" type="checkbox" value="'+ paramstr + '" />'+value.ipaddr+ '/' + getNetTypeTostring(value.devtype)+'/'+value.hfctype+'</label></li>');
+        	});        	
         }else if(jsonobj.cmd == "alarm_message"){
         	alarmSolve(jsonobj);
         }else if(jsonobj.cmd == "log_message"){
