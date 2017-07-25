@@ -35,10 +35,11 @@ public class Realtime_param_call extends Thread {
 		
 		while (true) {
 			if(!staticmemory.getAllRealTimeDev().isEmpty()){
-				//System.out.println("=====begin to realtime process=====");
+				System.out.println("RealTimeDev length is:  "+ staticmemory.getAllRealTimeDev().size());
 				Enumeration<String> e1 = staticmemory.getAllRealTimeDev().keys();
-				while (e1.hasMoreElements()) {   
+				while (e1.hasMoreElements()) { 			
 					String key = e1.nextElement();  
+					System.out.println("go to get param of ip :::  "+ key);
 					try {
 						JSONObject json = new JSONObject();
 						JSONObject commonjson = new JSONObject();
@@ -57,7 +58,7 @@ public class Realtime_param_call extends Thread {
 							
 							json.put("common", commonjson);							
 							String jsonstr = json.toJSONString();
-							System.out.println("参数发送"+jsonstr+new Date().toString());
+							//System.out.println("参数发送"+jsonstr+new Date().toString());
 							for(Iterator it2 = osp.sessionList.iterator();it2.hasNext();){
 								 staticmemory.sendRemoteStr(jsonstr, it2.next().toString());
 					        }
@@ -70,7 +71,7 @@ public class Realtime_param_call extends Thread {
 				}
 			}	
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(100);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}

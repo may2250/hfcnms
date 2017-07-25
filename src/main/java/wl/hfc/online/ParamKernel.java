@@ -194,8 +194,14 @@ public class ParamKernel extends Thread{
 		
 		SearchIpInfo searchinfo = new SearchIpInfo(InetAddress.getByName(jsondata.get("startip").toString()) , InetAddress.getByName(jsondata.get("endip").toString()),false, Integer.parseInt(devtype));
 		searchinfo.sessionid = jsondata.get("sessionid").toString();
-		DeviceSearchEngine dse = new DeviceSearchEngine(searchinfo, staticmemory);
-		dse.start();
+		
+		if (!DeviceSearchEngine.isInSerchProgress) {
+				DeviceSearchEngine.isInSerchProgress=true;
+				DeviceSearchEngine dse = new DeviceSearchEngine(searchinfo, staticmemory);
+				dse.start();
+		}
+		
+	
 	}
   	
     
