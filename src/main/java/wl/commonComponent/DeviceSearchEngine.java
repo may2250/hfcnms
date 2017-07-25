@@ -3,6 +3,8 @@ package wl.commonComponent;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 
@@ -20,16 +22,18 @@ import org.snmp4j.smi.UdpAddress;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-
 import com.xinlong.util.SearchIpInfo;
 import com.xinlong.util.StaticMemory;
 
+import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.CDevForCMD;
 import wl.hfc.common.ClsLanguageExmp.EnumLogoVersion;
 import wl.hfc.common.DProcess;
 import wl.hfc.common.NetDataProcess;
+import wl.hfc.common.NlogType;
 import wl.hfc.common.OidToHFCType;
 import wl.hfc.common.PduSevr;
+import wl.hfc.common.nojuTrapLogTableRow;
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
 import wl.hfc.topd.MainKernel;
 
@@ -39,7 +43,10 @@ public class DeviceSearchEngine extends Thread{
 	public static PDUServerSearch pdusearcher;
 	private static StaticMemory staticmemory;
     private int processint = 1;
+    public static  ArrayList<CDevForCMD> searchRst = new ArrayList<CDevForCMD>();
     
+    
+    public static boolean isInSerchProgress = false;
 	public DeviceSearchEngine(SearchIpInfo sipIf,StaticMemory staticmemory) throws IOException{
 		this.ipinfo = sipIf;
 		this.staticmemory = staticmemory;
@@ -140,8 +147,8 @@ public class DeviceSearchEngine extends Thread{
 		}
 		try
         {
-			System.out.println("------------>鍙戠幇璁惧.....<----------" + ipaddr);
-			//鍒ゆ柇璁惧鏄惁宸叉敞鍐�
+			System.out.println("------------>a serrch response of device.....<----------" + ipaddr);
+		
 			if(MainKernel.me.listDevHash.containsKey(ipaddr)){
 				return;
 			}
@@ -164,13 +171,16 @@ public class DeviceSearchEngine extends Thread{
 				result.SN = recVBs.elementAt(3).getVariable().toString();					
 				result.DEVICEID = recVBs.elementAt(6).getVariable().toString();				
 			}
-			JSONObject rootjson = new JSONObject();
+			
+			
+			searchRst.add(result);
+/*			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "devsearch-result");
 			rootjson.put("ipaddr", result.mNetAddress);
 			rootjson.put("devtype", "  ");
 			rootjson.put("hfctype",OidToHFCType.GetHFCTypeString(result.HFCType1 ));
 			rootjson.put("rcommunity", ipinfo.community);
-			staticmemory.sendRemoteStr(rootjson.toJSONString(), ipinfo.sessionid);
+			staticmemory.sendRemoteStr(rootjson.toJSONString(), ipinfo.sessionid);*/
         }
         catch (Exception e)
         {
@@ -228,7 +238,7 @@ public class DeviceSearchEngine extends Thread{
 	@Override
     public void run() {		
 		try{
-			//if骞挎挱鎼滅储
+			searchRst.clear();
 	        if (ipinfo.isBroadCast)
 	        {
 	            SearchAgentByIpAddressAnycBrdcst(ipinfo.community);
@@ -237,7 +247,7 @@ public class DeviceSearchEngine extends Thread{
 	        {
 	        	long startip = NetDataProcess.getIP(ipinfo.ipbegin);
 	        	long endip = NetDataProcess.getIP(ipinfo.ipend);
-	            //else 鏍规嵁鍦板潃鎼滅储
+
 	        	//System.out.println("--startip="+ startip+"----endip="+endip);
 	            while (startip <= endip)
 	            {
@@ -253,12 +263,40 @@ public class DeviceSearchEngine extends Thread{
 					//ipinfo.ipbegin = NetDataProcess.IncIpAddress(ipinfo.ipbegin);	  
 					startip++;
 	            }
+	            
+	        	Thread.sleep(3000);
+	        	
+	        	JSONObject rootjson = new JSONObject();
+	    		JSONObject logjson;
+	    		rootjson.put("cmd", "devsearch-res");
+	    		JSONArray jsonarray = new JSONArray();
+
+
+	    		// System.out.println("CurrentAlarmModel.me.allRows.size()==" +
+	    		// CurrentAlarmModel.me.allRows.size());
+	    		for (CDevForCMD prow : searchRst) {
+	    			logjson = new JSONObject();
+	    			logjson.put("ipaddr", prow.mNetAddress);
+	    			logjson.put("devtype", "  ");
+	    			logjson.put("hfctype",OidToHFCType.GetHFCTypeString(prow.HFCType1 ));
+	    			logjson.put("rcommunity", ipinfo.community);
+	  
+	    			jsonarray.add(logjson);
+	    		}
+	    		
+	    		rootjson.put("rsts", jsonarray);
+	  			staticmemory.sendRemoteStr(rootjson.toJSONString(), ipinfo.sessionid);
+	        	//build search response json 
+	        	
+	        	
 	        }
 		}catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
 		}
+		
+		DeviceSearchEngine.isInSerchProgress=false;
 		
     }
 }
