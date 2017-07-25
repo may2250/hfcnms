@@ -371,6 +371,10 @@ div.dataTables_wrapper {
 	font-size: 8px !important;
 }
 
+#modal_optlists {
+	font-size: 8px !important;
+}
+
 .alarm-danger {
 	background: #f566a0 !important;
 }

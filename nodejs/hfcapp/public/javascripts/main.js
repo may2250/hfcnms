@@ -5,6 +5,7 @@
 	var tbl_devalarm_old;
 	var tbl_optlog;
 	var tbl_loglists = null;
+	var tbl_alarmlists = null;
 	var lazyLoadData = null;
 	$(function() {
 		var encstr = localStorage.userName+'/'+ sessionStorage.passWord;
@@ -143,7 +144,7 @@
             $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
         } );
     	
-    	$('#tbl_devalarm tbody').on( 'click', 'tr', function () {
+    	/*$('#tbl_devalarm tbody').on( 'click', 'tr', function () {
             if ( $(this).hasClass('selected') ) {
                 $(this).removeClass('selected');
             }
@@ -152,7 +153,7 @@
                 $(this).addClass('selected');
             }
         } ); 
-    	
+    	*/
     	$('.nav_search').click(function(){
     		$( "#dialog-devsearch" ).dialog({
 	        	      autoOpen: false,
@@ -341,58 +342,64 @@
     	});
     	
     	$('#modal_alarmlists').on('show.bs.modal', function () {
-    		if($("#alarmlist-title")[0].textContent == $.i18n.prop('message_navhistoryalarm')){
-    			tbl_loglists = $('#tbl_loglists').DataTable({
-            		scrollY:        430,
-            		scrollX: 		true,
-            		scrollCollapse: true,
-            		order: 			[[ 0, "desc" ]],
-                    paging:         false,
-                    info:     		false,
-                    searching: 		false,
-                    bRetrieve: 		true,
-                    columns: [
-                              { title: "ID" },
-		                      { title: $.i18n.prop('message_tbllevel') },
-		                      { title: $.i18n.prop('message_tblip') },
-		                      { title: $.i18n.prop('message_tblpath') },
-		                      { title: $.i18n.prop('message_tbloptype') },
-		                      { title: $.i18n.prop('message_tblparam') },
-		                      { title: $.i18n.prop('message_tblparamv') },
-		                      { title: $.i18n.prop('message_tbloptime') },
-		                      { title: $.i18n.prop('message_tblconfirmation') },
-		                      { title: $.i18n.prop('message_tblconfirmtime') }
-                          ],
-                  "createdRow": function ( row, data, index ) {
-            		  $(row).attr('id', data[0]);
-                      if ( data[1] == $.i18n.prop('message_secalarm')) {
-                    	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
-                    	  $('td', row).parent().addClass('alarm-warning');
-                      }else if(data[1] == $.i18n.prop('message_urgentalarm')){
-                    	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
-                    	  $('td', row).parent().addClass('alarm-danger');                  
-                      }
+    		tbl_alarmlists = $('#tbl_alarmlists').DataTable({
+        		scrollY:        430,
+        		scrollX: 		true,
+        		scrollCollapse: true,
+        		order: 			[[ 0, "desc" ]],
+                paging:         false,
+                info:     		false,
+                searching: 		false,
+                bRetrieve: 		true,
+                columns: [
+                          { title: "ID" },
+	                      { title: $.i18n.prop('message_tbllevel') },
+	                      { title: $.i18n.prop('message_tblip') },
+	                      { title: $.i18n.prop('message_tblpath') },
+	                      { title: $.i18n.prop('message_tbloptype') },
+	                      { title: $.i18n.prop('message_tblparam') },
+	                      { title: $.i18n.prop('message_tblparamv') },
+	                      { title: $.i18n.prop('message_tbloptime') },
+	                      { title: $.i18n.prop('message_tblconfirmation') },
+	                      { title: $.i18n.prop('message_tblconfirmtime') }
+                      ],
+              "createdRow": function ( row, data, index ) {
+        		  $(row).attr('id', data[0]);
+                  if ( data[1] == $.i18n.prop('message_secalarm')) {
+                	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
+                	  $('td', row).parent().addClass('alarm-warning');
+                  }else if(data[1] == $.i18n.prop('message_urgentalarm')){
+                	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
+                	  $('td', row).parent().addClass('alarm-danger');                  
                   }
-                } );
-    		}else{
-    			tbl_loglists = $('#tbl_loglists').DataTable({
-            		scrollY:        430,
-            		scrollX: 		true,
-            		scrollCollapse: true,
-            		order: 			[[ 0, "desc" ]],
-                    paging:         false,
-                    info:     		false,
-                    searching: 		false,
-                    bRetrieve: 		true,
-                    columns: [
-                              { title: $.i18n.prop('message_tbloptid') },
-                              { title: $.i18n.prop('message_tbloptuser') },
-                              { title: $.i18n.prop('message_tbloptype') },
-                              { title: $.i18n.prop('message_tbloptcontent') },
-                              { title: $.i18n.prop('message_tbloptime') }
-                          ]
-                } );
-    		}
+              }
+            } );
+    			
+    		
+    		
+    		setTimeout(function() {
+				$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+			}, 400);
+    	});
+    	
+    	$('#modal_optlists').on('show.bs.modal', function () {
+			tbl_loglists = $('#tbl_loglists').DataTable({
+        		scrollY:        430,
+        		scrollX: 		true,
+        		scrollCollapse: true,
+        		order: 			[[ 0, "desc" ]],
+                paging:         false,
+                info:     		false,
+                searching: 		false,
+                bRetrieve: 		true,
+                columns: [
+                          { title: $.i18n.prop('message_tbloptid') },
+                          { title: $.i18n.prop('message_tbloptuser') },
+                          { title: $.i18n.prop('message_tbloptype') },
+                          { title: $.i18n.prop('message_tbloptcontent') },
+                          { title: $.i18n.prop('message_tbloptime') }
+                      ]
+            } );
     		
     		setTimeout(function() {
 				$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
@@ -400,24 +407,29 @@
     	});
     	
     	$('#modal_alarmlists').on('hide.bs.modal', function () {
+    		tbl_alarmlists.clear().draw();
+		});
+    	
+    	$('#modal_optlists').on('hide.bs.modal', function () {
     		tbl_loglists.clear().draw();
 		});
     	
     	$('#btn-alarmexports').click(function(){
-    		/*tbl_loglists.data().each( function (d) {
-    		    d.counter++;
-    		} );*/
+    		tableToExcel('tbl_alarmlists');
+    	});
+    	
+    	$('#btn-optexports').click(function(){
     		tableToExcel('tbl_loglists');
     	});
     	
     	$('#btn-optlogok').click(function(){
-   		 var datastring = '{"cmd":"optlogsearch","start":"'+ $('#datepicker_optstart').val() + '","end":"'+ $('#datepicker_optend').val() 
-   		 + '","optname":"'+ $('#optfilter-name').val() +'"}';
-   		 webSocket.send(datastring);
-   		 $("#alarmlist-title")[0].textContent = $.i18n.prop('message_navoptlog');
-   		 $("#modal_optlog").modal('hide');
-   		 $("#modal_alarmlists").modal();
-   	});
+	   		 var datastring = '{"cmd":"optlogsearch","start":"'+ $('#datepicker_optstart').val() + '","end":"'+ $('#datepicker_optend').val() 
+	   		 + '","optname":"'+ $('#optfilter-name').val() +'"}';
+	   		 webSocket.send(datastring);
+	   		 $("#optlist-title")[0].textContent = $.i18n.prop('message_navoptlog');
+	   		 $("#modal_optlog").modal('hide');
+	   		 $("#modal_optlists").modal();
+    	});
     	
     	$('#btn-tree-search').click(function(){
     		searchtreenode($("#searchbar-key").val());
@@ -428,6 +440,11 @@
     	    	searchtreenode($("#searchbar-key").val());
     	    }
     	});  
+    	
+    	$('#tbl_devalarm tbody').on('dblclick', 'tr', function () {
+            var data = tbl_devalarm.row( this ).data();
+            searchtreenode(data[2]);
+        } );
 		
     	var tableToExcel = (function() {
             var uri = 'data:application/vnd.ms-excel;base64,',
@@ -587,7 +604,7 @@
        		       	        ] ).draw( false );     	
         }else if(jsonobj.cmd == "alarmsearch"){
         	$.each(jsonobj.alarms, function (n, value) {
-        		tbl_loglists.row.add( [
+        		tbl_alarmlists.row.add( [
         		            value.id,
         		            value.level,
         		            value.addr,
@@ -1273,7 +1290,7 @@
                 $('#alarmfilter-date')[0].options[1].textContent = $.i18n.prop('message_recentday');
                 $('#alarmfilter-date')[0].options[2].textContent = $.i18n.prop('message_recentweek');
                 $('#alarmfilter-date')[0].options[3].textContent = $.i18n.prop('message_recentmonth');
-                
+                $('#btn-optclose1')[0].textContent = $.i18n.prop('message_close');
                 $('#tbl_alarmlevel')[0].textContent = $.i18n.prop('message_tbllevel');
                 $('#tbl_alarmip')[0].textContent = $.i18n.prop('message_tblip');
                 $('#tbl_alarmpath')[0].textContent = $.i18n.prop('message_tblpath');                
