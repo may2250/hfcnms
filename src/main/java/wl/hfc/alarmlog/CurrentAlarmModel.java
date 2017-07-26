@@ -40,13 +40,14 @@ import wl.hfc.traprcss.TrapProCenter;
 public class CurrentAlarmModel extends Thread {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	public static CurrentAlarmModel me;
-	public static int MAX_TRAPNUMBER = 500;
 	private static Logger log = Logger.getLogger(CurrentAlarmModel.class);
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
-
+	
+	private int MAX_TRAPNUMBER = 500;
 	public CDatabaseEngine logEngine;
 
 	private int commonLogIns = -1;
+	
 	// the real model,current trap rows
 	public CopyOnWriteArrayList<nojuTrapLogTableRow> allRows;
 	public Hashtable allRowsTable;

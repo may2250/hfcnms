@@ -33,34 +33,14 @@ public class CDatabaseEngine {
 	private static RedisUtil redisUtil;
 	public static boolean flag = false; // 数据库连接状态
 	public static CDatabaseEngine me;
-	private boolean isFirstTimeSucedCnt = true;
-
-	public CDatabaseEngine(RedisUtil redisUtil) {
-		this.redisUtil = redisUtil;
+	//private boolean isFirstTimeSucedCnt = true;
+	private boolean lastTrapInsertIsSucced = false;
+	public Connection trapcon;
+	
+	public CDatabaseEngine(RedisUtil predisUtil) {
+		redisUtil = predisUtil;
 		me = this;
 	}
-
-	/*
-	 * public Connection getConnection() { String url =
-	 * "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8"; //
-	 * ���������� String driver = "com.mysql.jdbc.Driver"; String dbuser =
-	 * "root"; String dbpass = "prevail"; try { if (con == null ||
-	 * con.isClosed()) { Class.forName(driver); con =
-	 * DriverManager.getConnection(url, dbuser, dbpass); flag = true;
-	 * 
-	 * JSONObject rootjson = new JSONObject(); rootjson.put("cmd",
-	 * "isFirstTimeSucedCnt"); sendToQueue(rootjson.toJSONString(),
-	 * MAINKERNEL_MESSAGE); isFirstTimeSucedCnt=false; }
-	 * 
-	 * } catch (Exception e) { // TODO: handle exception flag = false;
-	 * e.printStackTrace(); log.info(e.getMessage()); }
-	 * 
-	 * return con; }
-	 */
-
-	public Connection trapcon;
-
-	private boolean lastTrapInsertIsSucced = false;
 
 	public Connection offNewCoon()// 因为增删查改不需要关注或者维护“数据库连接”这个层面，本来不需要offnewcon，因为存在连接长期不用可能失效的情况，直接暴力新建短连接。
 	{
@@ -272,7 +252,7 @@ public class CDatabaseEngine {
 		
 		
 		PreparedStatement pstmt;
-		ResultSet rs = null;
+	//	ResultSet rs = null;
 		
 		String sqlInsert;
 /*		//is name exsit ?
