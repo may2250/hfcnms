@@ -144,16 +144,16 @@
             $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
         } );
     	
-    	/*$('#tbl_devalarm tbody').on( 'click', 'tr', function () {
+    	$('.tbl_authman tbody').on( 'click', 'tr', function () {
             if ( $(this).hasClass('selected') ) {
                 $(this).removeClass('selected');
             }
             else {
-            	tbl_devalarm.$('tr.selected').removeClass('selected');
+            	$('.tbl_authman tr.selected').removeClass('selected');
                 $(this).addClass('selected');
             }
         } ); 
-    	*/
+    	
     	$('.nav_search').click(function(){
     		$( "#dialog-devsearch" ).dialog({
 	        	      autoOpen: false,
@@ -217,6 +217,12 @@
     		var datastring = '{"cmd":"severstatus"}';
 	    	webSocket.send(datastring);
     		
+    	});
+    	
+    	$('.nav_managerauth').click(function(){
+    		var datastring = '{"cmd":"getuserlist"}';
+	    	webSocket.send(datastring);
+    		$("#modal_authman").modal();
     	});
     	
     	$('.nav_manageralarm').click(function(){
@@ -641,11 +647,34 @@
         	}
         }else if(jsonobj.cmd == "severstatus"){
         	parseServer(jsonobj);
+        }else if(jsonobj.cmd == "getuserlist"){
+        	parseUserlist(jsonobj);
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;
         }
     }
+	
+	function parseUserlist(jsonobj){
+		$('.tbl_authman tbody').empty();
+		$.each(jsonobj.userlist, function (n, value) {
+			var tr = '<tr>'+
+                '<td>'+
+                    '<label id="auth-username">' + value.username + '</label>'+                        
+                '</td>'+
+                '<td>'+
+                	'<label id="auth-userid">' + value.userid + '</label>'+  
+                '</td>'+
+                '<td>'+
+            		'<label id="auth-level">' + value.level + '</label>'+  
+            	'</td>'+
+            	'<td>'+
+	        		'<label id="auth-istrap">' + (value.istrap==true?"Yes":"No") + '</label>'+  
+	        	'</td>'+
+            '</tr>';
+			$('.tbl_authman tbody').append(tr);
+        });
+	}
 	
 	function parseServer(jsonobj){
 		$("#dialog-server").modal();
@@ -666,16 +695,18 @@
     		$('.trapstatus').removeClass("icon-remove-circle");
     		$('.trapstatus').addClass("icon-ok-circle");
     		$('.trapstatus-lb').removeClass("ui-state-error-custom"); 
-    	}
-    	
-    	       if(jsonobj.redisStatus){
-            $('#server-clients')[0].textContent = "true";  
-            }   
-            else{
-                            $('#server-clients')[0].textContent = "false";  
-            
-            }           
-        
+    	}    	
+	    if(jsonobj.redisStatus){  
+	    	$('.redisstatus').removeClass("icon-remove-circle");
+    		$('.redisstatus').addClass("icon-ok-circle");
+    		$('.redisstatus-lb').removeClass("ui-state-error-custom");
+        }   
+        else{
+        	$('.redisstatus').removeClass("icon-ok-circle");
+    		$('.redisstatus').addClass("icon-remove-circle");   
+    		$('.redisstatus-lb').addClass("ui-state-error-custom");         
+        }           
+	    $("#server-clients")[0].textContent = jsonobj.clientNum;
  
 	}
 	
@@ -832,8 +863,126 @@
     	
     	$.contextMenu({
     	      selector: "#dev-fancytree span.fancytree-title",
-    	      items: {
-    	    	  "rcommunity": {name: "修改只读团体名", icon: "edit",
+    	      items: {    	    	  
+    	        "add": {name: "添加组", icon: "add",
+    	        	disabled: function(key, opt){
+    	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+        	              if(node.data.type == "group"){
+        	            	  return false;
+        	              }else{
+        	            	  return true;
+        	              }
+    	        	  },
+    	        	callback: function(key, opt){
+      	              var node = $.ui.fancytree.getNode(opt.$trigger);
+      	              if(node.data.type == "group"){
+      	            	//添加节点
+	      	            $( "#dialog-form" ).dialog({
+	      	        	      autoOpen: false,
+	      	        	      height: 240,
+	      	        	      width: 300,
+	      	        	      modal: true,
+	      	        	      buttons: {
+	      	        	    	  Ok: function() {	    
+	      	        	    		  if($("#set_value").val() != ""){
+	      	        	    			  var datastring = '{"cmd":"nodeadd","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
+		      	        	    		  webSocket.send(datastring);
+		      	        	    		  $( this ).dialog( "close" );
+	      	        	    		  }else{
+	      	        	    			  $("#set_value").addClass( "ui-state-error-custom" )
+	      	        	    		  }   	        	    		  
+	      	        	              	      	        	              
+	      	        	            }
+	      	        	      },
+	      	        	      close: function() {
+	      	        	    	$("#set_value").removeClass("ui-state-error-custom");
+	      	        	      }
+      	        	    });
+	      	            $("#set_value").val("");
+	      	            updateTips($.i18n.prop('message_newgroupname'));
+	      	            $("#dialog-form").dialog("open");
+      	              }
+      	            }
+    	          }, 
+    	          "adddevice": {name: "添加设备", icon: "add",
+    	        	  disabled: function(key, opt){
+    	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+        	              if(node.data.type == "group"){
+        	            	  return false;
+        	              }else{
+        	            	  return true;
+        	              }
+    	        	  },
+      	        	  callback: function(key, opt){
+        	              var node = $.ui.fancytree.getNode(opt.$trigger);
+        	              if(node.data.type == "group"){
+        	            	//添加设备
+        	            	  $( "#dialog-newdev" ).dialog({
+    	      	        	      autoOpen: false,
+    	      	        	      height: 400,
+    	      	        	      width: 730,
+    	      	        	      modal: true,
+    	      	        	      buttons: {
+    	      	        	    	  Ok: function() {	   
+	    	      	        	    		if($("#newdev_ip").val() != "" && ipvalidate($("#newdev_ip").val())){
+	    	      	        	    			var datastring = '{"cmd":"deviceadd","key":"'+ node.key + '","devtype":"'+ $("#salutation").children('option:selected').val()+ '","rcommunity":"'+ $("#newdev_rcommunity").val()+ '","wcommunity":"'+ $("#newdev_wcommunity").val() + '","devname":"'+ $("#newdev_devname").val()+ '","netip":"'+ $("#newdev_ip").val()+'"}';
+	      	      	        	    		  	webSocket.send(datastring);
+	      	      	        	    		  	$( this ).dialog( "close" );
+	    	      	        	    		}else{
+	    	      	        	    			$("#newdev_ip").addClass( "ui-state-error-custom" );
+	    	      	        	    		}
+    	      	        	    	  }
+    	      	        	      },
+    	      	        	      close: function() {
+    		      	        	    	$("#newdev_ip").removeClass("ui-state-error-custom");
+    		      	        	  }
+	          	        	    });
+	    	      	            $("#newdev_ip").val("");
+	        	            	$("#dialog-newdev").dialog("open");
+	        	          }
+	        	     }
+      	          }, 
+    	        "edit": {name: "编辑", icon: "edit",
+    	        	disabled: function(key, opt){
+  	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+      	              if(node.data.type == "group" || node.data.type == "device"){
+      	            	  return false;
+      	              }else{
+      	            	  return true;
+      	              }
+  	        	  	},
+    	        	callback: function(key, opt){
+      	              	var node = $.ui.fancytree.getNode(opt.$trigger);
+	      	            if(node.data.type == "group" || node.data.type == "device"){
+	      	            	//编辑节点
+		      	            $( "#dialog-form" ).dialog({
+		      	        	      autoOpen: false,
+		      	        	      height: 240,
+		      	        	      width: 300,
+		      	        	      modal: true,
+		      	        	      buttons: {
+		      	        	    	  Ok: function() {	 
+		      	        	    		if($("#set_value").val() != ""){
+		      	        	    			var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","title":"'+ $("#set_value").val() +'","type":"'+ node.data.type +'","rcommunity":"'+ node.data.rcommunity +'","wcommunity":"'+ node.data.wcommunity+'"}';
+			      	        	    		webSocket.send(datastring);
+			      	        	            $( this ).dialog( "close" );
+		      	        	    		}else{
+		      	        	    			$("#set_value").addClass( "ui-state-error-custom" );
+		      	        	    		}
+		      	        	    		        	    		  
+		      	        	    	  }
+		      	        	      },
+		      	        	      close: function() {
+			      	        	    	$("#set_value").removeClass("ui-state-error-custom");
+			      	        	  }
+	      	        	    });
+		      	            $("#set_value").val(node.title);
+		      	            updateTips($.i18n.prop('message_modifyname'));
+		      	            $("#dialog-form").dialog("open");
+	      	              }
+      	            }
+    	          },
+    	          "rcommunity": {name: "修改只读团体名", icon: "edit",
     	    		  disabled: function(key, opt){
     	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
         	              if(node.data.type == "device"){
@@ -911,126 +1060,7 @@
 		  	      	            $("#dialog-form").dialog("open");
 	        	              }
         	         }
-      	          },    	
-    	        "add": {name: "添加组", icon: "add",
-    	        	disabled: function(key, opt){
-    	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
-        	              if(node.data.type == "group"){
-        	            	  return false;
-        	              }else{
-        	            	  return true;
-        	              }
-    	        	  },
-    	        	callback: function(key, opt){
-      	              var node = $.ui.fancytree.getNode(opt.$trigger);
-      	              if(node.data.type == "group"){
-      	            	//添加节点
-	      	            $( "#dialog-form" ).dialog({
-	      	        	      autoOpen: false,
-	      	        	      height: 240,
-	      	        	      width: 300,
-	      	        	      modal: true,
-	      	        	      buttons: {
-	      	        	    	  Ok: function() {	    
-	      	        	    		  if($("#set_value").val() != ""){
-	      	        	    			  var datastring = '{"cmd":"nodeadd","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
-		      	        	    		  webSocket.send(datastring);
-		      	        	    		  $( this ).dialog( "close" );
-	      	        	    		  }else{
-	      	        	    			  $("#set_value").addClass( "ui-state-error-custom" )
-	      	        	    		  }   	        	    		  
-	      	        	              	      	        	              
-	      	        	            }
-	      	        	      },
-	      	        	      close: function() {
-	      	        	    	$("#set_value").removeClass("ui-state-error-custom");
-	      	        	      }
-      	        	    });
-	      	            $("#set_value").val("");
-	      	            updateTips($.i18n.prop('message_newgroupname'));
-	      	            $("#dialog-form").dialog("open");
-      	              }
-      	            }
-    	          },    	        
-    	        "edit": {name: "编辑", icon: "edit",
-    	        	disabled: function(key, opt){
-  	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
-      	              if(node.data.type == "group" || node.data.type == "device"){
-      	            	  return false;
-      	              }else{
-      	            	  return true;
-      	              }
-  	        	  	},
-    	        	callback: function(key, opt){
-      	              	var node = $.ui.fancytree.getNode(opt.$trigger);
-	      	            if(node.data.type == "group" || node.data.type == "device"){
-	      	            	//编辑节点
-		      	            $( "#dialog-form" ).dialog({
-		      	        	      autoOpen: false,
-		      	        	      height: 240,
-		      	        	      width: 300,
-		      	        	      modal: true,
-		      	        	      buttons: {
-		      	        	    	  Ok: function() {	 
-		      	        	    		if($("#set_value").val() != ""){
-		      	        	    			var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","title":"'+ $("#set_value").val() +'","type":"'+ node.data.type +'","rcommunity":"'+ node.data.rcommunity +'","wcommunity":"'+ node.data.wcommunity+'"}';
-			      	        	    		webSocket.send(datastring);
-			      	        	            $( this ).dialog( "close" );
-		      	        	    		}else{
-		      	        	    			$("#set_value").addClass( "ui-state-error-custom" );
-		      	        	    		}
-		      	        	    		        	    		  
-		      	        	    	  }
-		      	        	      },
-		      	        	      close: function() {
-			      	        	    	$("#set_value").removeClass("ui-state-error-custom");
-			      	        	  }
-	      	        	    });
-		      	            $("#set_value").val(node.title);
-		      	            updateTips($.i18n.prop('message_modifyname'));
-		      	            $("#dialog-form").dialog("open");
-	      	              }
-      	            }
-    	          },
-    	          "sep1": "----",
-    	          "adddevice": {name: "添加设备", icon: "add",
-    	        	  disabled: function(key, opt){
-    	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
-        	              if(node.data.type == "group"){
-        	            	  return false;
-        	              }else{
-        	            	  return true;
-        	              }
-    	        	  },
-      	        	  callback: function(key, opt){
-        	              var node = $.ui.fancytree.getNode(opt.$trigger);
-        	              if(node.data.type == "group"){
-        	            	//添加设备
-        	            	  $( "#dialog-newdev" ).dialog({
-    	      	        	      autoOpen: false,
-    	      	        	      height: 400,
-    	      	        	      width: 730,
-    	      	        	      modal: true,
-    	      	        	      buttons: {
-    	      	        	    	  Ok: function() {	   
-	    	      	        	    		if($("#newdev_ip").val() != "" && ipvalidate($("#newdev_ip").val())){
-	    	      	        	    			var datastring = '{"cmd":"deviceadd","key":"'+ node.key + '","devtype":"'+ $("#salutation").children('option:selected').val()+ '","rcommunity":"'+ $("#newdev_rcommunity").val()+ '","wcommunity":"'+ $("#newdev_wcommunity").val() + '","devname":"'+ $("#newdev_devname").val()+ '","netip":"'+ $("#newdev_ip").val()+'"}';
-	      	      	        	    		  	webSocket.send(datastring);
-	      	      	        	    		  	$( this ).dialog( "close" );
-	    	      	        	    		}else{
-	    	      	        	    			$("#newdev_ip").addClass( "ui-state-error-custom" );
-	    	      	        	    		}
-    	      	        	    	  }
-    	      	        	      },
-    	      	        	      close: function() {
-    		      	        	    	$("#newdev_ip").removeClass("ui-state-error-custom");
-    		      	        	  }
-	          	        	    });
-	    	      	            $("#newdev_ip").val("");
-	        	            	$("#dialog-newdev").dialog("open");
-	        	          }
-	        	     }
-      	          },    	 
+      	          },    	   	             	 
     	          "delete": {name: "删除", icon: "delete",
     	        	  disabled: function(key, opt){
       	        		  var node = $.ui.fancytree.getNode(opt.$trigger);      	        		  
@@ -1230,6 +1260,7 @@
                 $('.nav_manageralarm p')[0].textContent = $.i18n.prop('message_navhistoryalarm');
                 $('.nav_managerlog p')[0].textContent = $.i18n.prop('message_navoptlog');
                 $('.nav_server p')[0].textContent = $.i18n.prop('message_navserver');
+                $('.nav_managerauth p')[0].textContent = $.i18n.prop('message_navauth');
                 if(localStorage.void == 'on'){
                 	$('.nav_sound p')[0].textContent = $.i18n.prop('message_navvoidon');
                 }else{
@@ -1284,6 +1315,7 @@
                 $('#btn-optlogok')[0].textContent = $.i18n.prop('message_ok');
                 $('#btn-alarmclose2')[0].textContent = $.i18n.prop('message_close');
                 $('#btn-alarmclose3')[0].textContent = $.i18n.prop('message_close');
+                //$('#btn-alarmclose4')[0].textContent = $.i18n.prop('message_close');
                 $('#mymodal_about')[0].textContent = $.i18n.prop('message_navabout');
                 $('#dialog-alarmThreshold')[0].title = $.i18n.prop('message_alarmThreshold');
                 $('#newdev_devname').val($.i18n.prop('message_newdev'));
@@ -1325,21 +1357,21 @@
                 $(".context-menu-list li").each(function(i){
         			switch(i){
         			case 0:
-        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_mrocommunity');
-        				break;
-        			case 1:
-        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_mwocommunity');
-        				break;
-        			case 2:
         				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_addgroup');
         				break;
-        			case 3:
-        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_edit');
-        				break;
-        			case 5:
+        			case 1:
         				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_adddevice');
         				break;
-        			case 6:
+        			case 2:
+        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_edit');
+        				break;
+        			case 3:
+        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_mrocommunity');
+        				break;
+        			case 4:
+        				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_mwocommunity');
+        				break;
+        			case 5:
         				$(this)[0].childNodes[0].textContent = $.i18n.prop('message_del');
         				break;
         			}

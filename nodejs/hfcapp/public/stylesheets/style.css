@@ -35,6 +35,9 @@ a {
 }
 a:hover { transition: all 200ms ease-in-out; }
 
+.selected {
+	background-color: lightblue;
+}
 
 .page-container {
   min-width: 1260px;
@@ -391,6 +394,19 @@ div.dataTables_wrapper {
 	background: #4ec57e !important;
 }
 
+.tbl_authman {
+	width:45%;
+	float:left;
+}
+
+.tbl_authman_base {
+	width:55%;
+	float:left;
+	font-size: 8px;
+	border-left: 1px ridge #e7e1e1;
+	height: 430px;
+}
+
 #menu {
   list-style: none;
   margin: 0;
@@ -569,6 +585,11 @@ li#menu-academico{
 
 .modal-search-content-m2 {
 	height: 250px;
+}
+
+.modal-search-content-m3 {
+	height: 450px;
+	font-size: 8px;
 }
 
 .about_pic {

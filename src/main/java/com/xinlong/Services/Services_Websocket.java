@@ -111,6 +111,9 @@ public class Services_Websocket {
 			}else if(cmd.equalsIgnoreCase("optlogsearch")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), HFCALARM_MESSAGE);
+			}else if(cmd.equalsIgnoreCase("getuserlist")){
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("severstatus")){
      			jsondata.put("sessionid", session.getId());
 			//	sendToQueue(jsondata.toJSONString(), Sstatus_MESSAGE);*/

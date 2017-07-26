@@ -50,10 +50,10 @@
 									<i class="icon-search icon-2x" ></i>
 									<p class="i18n_nav_search"></p>
 								</li>
-								<!-- <li class="nav_managerauth">
-									<i class="icon-lock icon-2x  icon-nav" ></i>
-									<p>权限管理</p>
-								</li> -->
+								<li class="nav_managerauth icon-nav">
+									<i class="icon-lock icon-2x" ></i>
+									<p></p>
+								</li>
 								<li class="nav_manageralarm icon-nav">
 									<i class="icon-bar-chart icon-2x" ></i>
 									<p></p>
@@ -267,10 +267,14 @@
 					        		<td id="server-db">数据库状态:</td>
 					        		<td><i class="icon-ok-circle dbstatus"></i></td>
 					        	</tr>
+					        	<tr class="redisstatus-lb">
+					        		<td id="server-redis">Redis Connection:</td>
+					        		<td><i class="icon-ok-circle redisstatus"></i></td>
+					        	</tr>
 					        	<tr>
 					        		<td id="server-client">已连接客户端数量:</td>
 					        		<td><label id="server-clients"></label></td>
-					        	</tr>
+					        	</tr>					        	
 					        </table>
 					    </div>
 					</div> 
@@ -642,6 +646,46 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal" id="btn-alarmclose3">关闭
 					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<div class="modal fade bs-example-modal" id="modal_authman" tabindex="-1" role="dialog" aria-labelledby="mymodal_authman" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="mymodal_authman">
+						权限管理
+					</h4>
+				</div>
+				<div class="modal-body modal-search-content-m3">					
+		 			<table class="table tbl_authman">
+					   <thead>
+						    <tr>
+						      <th>用户名</th>
+						      <th>用户ID</th>
+						      <th>级别</th>
+						      <th>告警通知</th>
+						    </tr>
+					  </thead>
+					  <tbody>
+							
+					  </tbody>
+					</table>
+					<div class="tbl_authman_base"> <!-- Only required for left/right tabs -->
+					  <ul class="nav nav-tabs" role="tablist">
+					    <li class="active"><a href="#tab-table1" data-toggle="tab" id="auth_base">基本</a></li>
+					  </ul>
+					  <div class="tab-content">
+					    <div class="tab-pane tab-log active" id="tab-table1">
+					     	      
+					    </div>
+
+					  </div>
+					</div>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal -->

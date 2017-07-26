@@ -33,7 +33,7 @@ public class Realtime_param_call extends Thread {
 		
 		log.info(this.getName()+ "....starting.......");
 		
-		while (true) {
+		while (true) {			
 			if(!staticmemory.getAllRealTimeDev().isEmpty()){
 				System.out.println("RealTimeDev length is:  "+ staticmemory.getAllRealTimeDev().size());
 				Enumeration<String> e1 = staticmemory.getAllRealTimeDev().keys();
@@ -48,14 +48,12 @@ public class Realtime_param_call extends Thread {
 							json.put("cmd", "realtime-device");
 							//String nettypes = osp.snmpPreail.thisDev.mNetType.toString();
 						   json.put("devtype", osp.snmpPreail.thisDev.HFCType1.toString());
-							
 							//if(osp.snmpPreail.thisDev.HFCType1==HFCTypes.HfcMinWorkstation){
 								json = osp.snmpPreail.getPmWithModelNumber(json);
 								commonjson=((CommonSnmpPrevail)osp.commonSnmpPreail).getPmWithModelNumber(commonjson);
 							//}
 							if(json == null)
 								continue;
-							
 							json.put("common", commonjson);							
 							String jsonstr = json.toJSONString();
 							//System.out.println("参数发送"+jsonstr+new Date().toString());
@@ -65,7 +63,7 @@ public class Realtime_param_call extends Thread {
 						}
 					} catch (Exception e) {
 						//e.printStackTrace();
-						log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
+						//log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
 
 					}
 				}

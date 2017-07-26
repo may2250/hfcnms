@@ -149,6 +149,8 @@ public class MainKernel {
 			staticmemory.broadCast(message);
 		} else if (cmd.equalsIgnoreCase("severstatus")) {
 			staticmemory.sendRemoteStr(message, jsondata.get("sessionid").toString());
+		} else if (cmd.equalsIgnoreCase("getuserlist")) {
+			staticmemory.sendRemoteStr(getUserList(jsondata), jsondata.get("sessionid").toString());
 		}
 	}
 
@@ -870,6 +872,29 @@ public class MainKernel {
 		jsondata.put("md", lNode.MD);
 		jsondata.put("sn", lNode.SN);
 		log.info("------->>>" + jsondata.toJSONString());
+		return jsondata.toJSONString();
+	}
+	
+	private String getUserList(JSONObject jsondata) {	
+		JSONArray jsonarray = new JSONArray();
+		JSONObject subjson;
+		ArrayList<nojuUserAuthorizeTableRow> mUserAuthorizeTableRowList ;
+		try {
+			 mUserAuthorizeTableRowList = ICDatabaseEngine1.UserAuthorizeTableGetAllRows();
+
+		} catch (Exception e) {
+			return jsondata.toJSONString();
+		}
+
+		for (nojuUserAuthorizeTableRow prow : mUserAuthorizeTableRowList) {
+			subjson = new JSONObject();
+			subjson.put("userid", prow.UserID);
+			subjson.put("username", prow.UserName);
+			subjson.put("level", prow.AuthTotal);
+			subjson.put("istrap", prow.Encrypted);
+			jsonarray.add(subjson);
+		}
+		jsondata.put("userlist", jsonarray);
 		return jsondata.toJSONString();
 	}
 
