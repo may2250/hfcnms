@@ -76,7 +76,7 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 				mjVariables[vIns++].FullSnmpOid));
 
 		row1 = pmls.tab1.get("oaOptAtt");
-		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
+		mjVariables[vIns] = new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 		this.majorVarPdu.add(new VariableBinding(
