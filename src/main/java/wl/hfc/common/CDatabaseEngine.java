@@ -715,8 +715,10 @@ public class CDatabaseEngine {
 
 		ResultSet rs = null;
 
+		
+		Byte ismsgByte=1;
 		String sqlInsert = "INSERT INTO userauthorizetable(UserName,password1,phoneNmber,smtpAddress,AuthTotal,IsMsgDefi) VALUES(" + "'" + row.UserName + "','"
-				+ row.PassWord + "','" + row.PhoneNmbr + "','" + row.smtpAddress + "'," + row.AuthTotal + "," + "no" + ")";
+				+ row.PassWord + "','" + row.PhoneNmbr + "','" + row.smtpAddress + "'," + row.AuthTotal + "," + ismsgByte+ ")";
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
 		try {
@@ -737,13 +739,13 @@ public class CDatabaseEngine {
 
 	}
 
-	public boolean UserAuthorizeTableDeleteRow(nojuUserAuthorizeTableRow row) {
+	public boolean UserAuthorizeTableDeleteRow(int  UserID) {
 		Connection con = offNewCoon();
 		if (con == null) {
 			return false;
 
 		}
-		String sqlInsert = "DELETE FROM userauthorizetable WHERE UserID=" + row.UserID;
+		String sqlInsert = "DELETE FROM userauthorizetable WHERE UserID=" + UserID;
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
 		try {
@@ -760,7 +762,35 @@ public class CDatabaseEngine {
 		return false;
 
 	}
+    
+	public boolean UserAuthorizeTableUpdateRow(int UserID,String pwd,Byte AuthTotal)
+    {  
 
+
+        Connection con = offNewCoon();
+		if (con == null) {
+			return false;
+
+		}	
+		
+		PreparedStatement pstmt;
+	//	ResultSet rs = null;
+		
+	     String sqlInsert = "UPDATE userauthorizeTable SET AuthTotal =" + AuthTotal
+                 + ",PassWord1='" + pwd + "' WHERE UserID=" + UserID;
+
+		try {
+			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+			if (pstmt.executeUpdate() > 0)
+				return true;
+
+		} catch (Exception EX) {
+
+		}
+
+		return false;
+
+    }
 	public ArrayList<nojuUserAuthorizeTableRow> UserAuthorizeTableGetAllRows() throws SQLException {
 		PreparedStatement pstmt;
 		ArrayList<nojuUserAuthorizeTableRow> retList = new ArrayList<nojuUserAuthorizeTableRow>();

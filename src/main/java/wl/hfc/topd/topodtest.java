@@ -29,6 +29,18 @@ public class topodtest {
 			Hashtable grpHash = ICDatabaseEngine1.UserGroupTableGetAllRows();
 			
 			  ArrayList<nojuUserAuthorizeTableRow> rowssss=ICDatabaseEngine1.UserAuthorizeTableGetAllRows();
+			  
+			  Byte bttByte=1;
+			  nojuUserAuthorizeTableRow newRow=new nojuUserAuthorizeTableRow(-1, "ds", bttByte, "999999");
+		       
+
+			  ICDatabaseEngine1.UserAuthorizeTableInsertRow(newRow);
+			  bttByte=2;
+		        ICDatabaseEngine1.UserAuthorizeTableUpdateRow(3,"dfsdf",bttByte);
+			  
+		        
+
+		        boolean mStatus = ICDatabaseEngine1.UserAuthorizeTableDeleteRow(4);
 				int rossns=1;
 				
 				

@@ -37,7 +37,7 @@ public class nojuUserAuthorizeTableRow
     public String smtpAddress="";
 
 
-    public byte AuthTotal;//1:super admin;2:admin;3:guest
+    public byte AuthTotal=3;//1:super admin;2:admin;3:guest
 
     //public List<int> GRPIDList = new List<int>();
 
