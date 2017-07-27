@@ -582,7 +582,7 @@ public class CDatabaseEngine {
 			String sqlInsert;
 
 			if (ip.equalsIgnoreCase("")) {
-				sqlInsert = "SELECT TrapLogTable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString + "';";
+				sqlInsert = "SELECT traplogtable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString + "';";
 			} else {
 				
 				
@@ -592,7 +592,7 @@ public class CDatabaseEngine {
 				} catch (Exception e) {//invalid ip
 					return results;
 				}
-				sqlInsert = "SELECT TrapLogTable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString
+				sqlInsert = "SELECT traplogtable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString
 						+ "' AND TrapDevAddress='" + addr.getHostAddress() + "';";
 			}
 
@@ -676,7 +676,7 @@ public class CDatabaseEngine {
 		try {
 			String sqlInsert;
 
-			sqlInsert = "SELECT operLogTable.*FROM operlogtable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString
+			sqlInsert = "SELECT operlogtable.*FROM operlogtable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString
 					+"' AND OperLogUser='" + userNme + "';";
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
