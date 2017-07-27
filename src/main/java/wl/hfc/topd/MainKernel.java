@@ -2,6 +2,7 @@ package wl.hfc.topd;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -14,7 +15,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import org.snmp4j.smi.IpAddress;
 
 import com.xinlong.util.RedisUtil;
@@ -147,6 +147,8 @@ public class MainKernel {
 			staticmemory.sendRemoteStr(message, jsondata.get("sessionid").toString());
 		} else if (cmd.equalsIgnoreCase("getuserlist")) {
 			staticmemory.sendRemoteStr(handleGetAllUsers(jsondata), jsondata.get("sessionid").toString());
+		} else if (cmd.equalsIgnoreCase("handleuser")) {
+			staticmemory.sendRemoteStr(handleUsers(jsondata), jsondata.get("sessionid").toString());
 		}
 	}
 
@@ -886,6 +888,22 @@ public class MainKernel {
 			jsonarray.add(subjson);
 		}
 		jsondata.put("userlist", jsonarray);
+		return jsondata.toJSONString();
+	}
+	
+	private String handleUsers(JSONObject jsondata) {
+		String cmd = jsondata.get("target").toString();
+		String uname = jsondata.get("username").toString();
+		if(cmd.equalsIgnoreCase("getuserinfo")){
+			try {
+				nojuUserAuthorizeTableRow uatr = ICDatabaseEngine1.UserAuthorizeTableFindUser(uname);
+				jsondata.put("AuthTotal", uatr.AuthTotal);
+				jsondata.put("PassWord1", uatr.PassWord);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return jsondata.toJSONString();
 	}
 

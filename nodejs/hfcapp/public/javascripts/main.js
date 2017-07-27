@@ -145,6 +145,8 @@
         } );
     	
     	$('.tbl_authman tbody').on( 'click', 'tr', function () {
+    		var datastring = '{"cmd":"handleuser","target":"getuserinfo","username":"' + $(this)[0].cells[0].textContent  + '"}';
+	    	webSocket.send(datastring);
             if ( $(this).hasClass('selected') ) {
                 $(this).removeClass('selected');
             }
@@ -649,11 +651,21 @@
         	parseServer(jsonobj);
         }else if(jsonobj.cmd == "getuserlist"){
         	parseUserlist(jsonobj);
+        }else if(jsonobj.cmd == "handleuser"){
+        	parseUserinfo(jsonobj);
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;
         }
     }
+	
+	function parseUserinfo(jsonobj){
+		$('#auth-usernamev').val(jsonobj.username);
+		$('#auth-oripassword').val(jsonobj.PassWord1);
+		$('#auth-password').val(jsonobj.PassWord1);
+		$('#auth-rpassword').val(jsonobj.PassWord1);
+		$("#userauth-level").get(0).selectedIndex = jsonobj.AuthTotal - 1; 
+	}
 	
 	function parseUserlist(jsonobj){
 		$('.tbl_authman tbody').empty();
@@ -1072,6 +1084,9 @@
       	        	  	},
     	        	callback: function(key, opt){
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
+      	              	if(node.key == "1"){
+      	              		return false;
+      	              	}
       	              	if(!node.isLoaded()){
       	              		alert($.i18n.prop('message_nodedelerr'));
       	              		return false;

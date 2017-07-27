@@ -810,5 +810,24 @@ public class CDatabaseEngine {
 
 		return retList;
 	}
+	
+	public nojuUserAuthorizeTableRow UserAuthorizeTableFindUser(String username) throws SQLException {
+		PreparedStatement pstmt;
+
+		ResultSet rs = null;
+
+		Connection con = offNewCoon();
+		String sqlInsert = "SELECT * FROM userauthorizetable WHERE UserName='" + username + "'";
+		System.out.println("------>>>"+sqlInsert);
+		pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+		rs = pstmt.executeQuery();
+		nojuUserAuthorizeTableRow newURow = null;
+		while (rs.next()) {
+			newURow = new nojuUserAuthorizeTableRow(rs.getInt(1), rs.getString(2), rs.getByte(3), rs.getString(4));
+			
+		}
+		return newURow;
+		
+	}
 
 }

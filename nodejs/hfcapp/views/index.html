@@ -681,7 +681,46 @@
 					  </ul>
 					  <div class="tab-content">
 					    <div class="tab-pane tab-log active" id="tab-table1">
-					     	      
+					     	 <table class="tbl_authdis">
+					     	 	<tr>
+					     	 		<td style="width:25%">用户名:</td>
+					     	 		<td><input type="text" class="form-control" id="auth-usernamev" readonly></td>
+					     	 	</tr>
+					     	 </table>   
+					     	 <hr />  
+					     	 <table class="tbl_authdis">
+					     	 	<tr class="tbl_authdis_tr">
+					     	 		<td style="width:25%">用户组:</td>
+					     	 		<td>
+										<select name="userauth-level" id="userauth-level" readonly>
+									      <option selected>超级管理员</option>
+									      <option>管理员</option>
+									      <option>观察者</option>
+									    </select>
+									</td>
+					     	 	</tr>
+					     	 	<tr class="tbl_authdis_tr">
+					     	 		<td>原密码:</td>
+					     	 		<td><input type="password" class="form-control" id="auth-oripassword" readonly></td>
+					     	 	</tr>
+					     	 	<tr class="tbl_authdis_tr">
+					     	 		<td>密码:</td>
+					     	 		<td><input type="password" class="form-control" id="auth-password" readonly></td>
+					     	 	</tr>
+					     	 	<tr class="tbl_authdis_tr">
+					     	 		<td>重复:</td>
+					     	 		<td><input type="password" class="form-control" id="auth-rpassword" readonly></td>
+					     	 	</tr>
+					     	 	<tr class="tbl_authdis_tr" style="text-align: end">
+					     	 		<td colspan="2"><button type="button" class="btn btn-default" id="btn-authsub" disabled>提交
+									</button></td>
+					     	 	</tr>
+					     	 </table>
+					     	 <hr /> 
+					     	 <button type="button" class="btn btn-default" id="btn-authdel" disabled>删除
+							 </button>
+					     	 <button type="button" class="btn btn-default" id="btn-authadd" style="float:right" disabled>添加
+							 </button>							 
 					    </div>
 
 					  </div>

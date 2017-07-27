@@ -266,6 +266,19 @@ div.dataTables_wrapper {
 	height:135px !important;
 }
 
+.tbl_authdis {
+	margin-top: 10px;
+	width: 90%;
+}
+
+.tbl_authdis_tr {
+	height: 30px;
+}
+
+.authdis {
+	margin-left: 15px;
+}
+
 .devdetail-content{
 	text-align: center;
 	height:300px;
