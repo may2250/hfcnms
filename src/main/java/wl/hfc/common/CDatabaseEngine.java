@@ -818,7 +818,6 @@ public class CDatabaseEngine {
 
 		Connection con = offNewCoon();
 		String sqlInsert = "SELECT * FROM userauthorizetable WHERE UserName='" + username + "'";
-		System.out.println("------>>>"+sqlInsert);
 		pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 		rs = pstmt.executeQuery();
 		nojuUserAuthorizeTableRow newURow = null;

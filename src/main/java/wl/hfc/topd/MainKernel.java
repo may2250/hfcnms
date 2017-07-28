@@ -148,7 +148,7 @@ public class MainKernel {
 		} else if (cmd.equalsIgnoreCase("getuserlist")) {
 			staticmemory.sendRemoteStr(handleGetAllUsers(jsondata), jsondata.get("sessionid").toString());
 		} else if (cmd.equalsIgnoreCase("handleuser")) {
-			staticmemory.sendRemoteStr(handleUsers(jsondata), jsondata.get("sessionid").toString());
+			handleUsers(jsondata);
 		}
 	}
 
@@ -891,7 +891,7 @@ public class MainKernel {
 		return jsondata.toJSONString();
 	}
 	
-	private String handleUsers(JSONObject jsondata) {
+	private void handleUsers(JSONObject jsondata) {
 		String cmd = jsondata.get("target").toString();
 		String uname = jsondata.get("username").toString();
 		if(cmd.equalsIgnoreCase("getuserinfo")){
@@ -903,8 +903,12 @@ public class MainKernel {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
+		}else if(cmd.equalsIgnoreCase("modifypassword")){
+			handleUpdateUser(jsondata);
+		}else if(cmd.equalsIgnoreCase("deluser")){
+			handleDeleteUser(jsondata);
 		}
-		return jsondata.toJSONString();
 	}
 
 	private AuthResult handleAuthUser(String username, String password) {
@@ -963,15 +967,18 @@ public class MainKernel {
 	}
 
 	private void handleDeleteUser(JSONObject jsondata) {
-		int userID = Integer.parseInt(jsondata.get("key").toString());// userid
+		String uname = jsondata.get("username").toString();// userid
+		nojuUserAuthorizeTableRow uatr;
+		boolean mStatus = true;
+		try {
+			uatr = ICDatabaseEngine1.UserAuthorizeTableFindUser(uname);
+			mStatus = this.ICDatabaseEngine1.UserAuthorizeTableDeleteRow(uatr.UserID);
 
-		// string currentUserNme = string.Empty;
-		// currentUserNme =
-		// this.ICDatabaseEngine1.UserAuthorizeTableSearchRow(cmd.mUserRow.UserID).UserName;
-
-		boolean mStatus = this.ICDatabaseEngine1.UserAuthorizeTableDeleteRow(userID);
-
-		// cmd.mUserRow.UserName = currentUserNme;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			mStatus = false;
+		}
 
 		if (mStatus) {
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
@@ -983,33 +990,36 @@ public class MainKernel {
 			 */
 
 		} else {
-			log.info("Del user :" + userID + " Error!");
+			log.info("Del user :" + uname + " Error!");
 		}
-
-		// lock (netBaseda.ClientInfoMap)
-		// {
-		// foreach (TcpClient c in netBaseda.ClientInfoMap.Keys)
-		// {
-		// if (c != mClient &&
-		// ((ClientInfo)netBaseda.ClientInfoMap[c]).isTopodLoaded)
-		// {
-		// cmd.mUserRow.UserName = currentUserNme;
-		// ((ClientInfo)netBaseda.ClientInfoMap[c]).CommandQueue.Enqueue(cmd);
-		// }
-		// }
-		// }
 
 	}
 
 	private void handleUpdateUser(JSONObject jsondata) {
-		int userID = Integer.parseInt(jsondata.get("key").toString());// userid
-
-		/*
-		 * byte[] buf = NetworkUtil.DecryptData(cmd.mUserRow.Passwd);
-		 * cmd.mUserRow.Passwd = buf; cmd.mUserRow.Encrypted = false;
-		 */
-		Byte AuthTotal = Byte.parseByte(jsondata.get("AuthTotal").toString());
-		boolean mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(userID, jsondata.get("PassWord1").toString(), AuthTotal);
+		String uname = jsondata.get("username").toString();// userid
+		nojuUserAuthorizeTableRow uatr;
+		boolean mStatus = true;
+		try {
+			uatr = ICDatabaseEngine1.UserAuthorizeTableFindUser(uname);
+			Byte AuthTotal = Byte.parseByte(jsondata.get("AuthTotal").toString());
+			
+			if(jsondata.get("oldpassword").toString().equalsIgnoreCase(uatr.PassWord)){
+				if(AuthTotal != 0){
+					mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID, jsondata.get("password").toString(), AuthTotal);
+				}else{
+					mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID, jsondata.get("password").toString(), uatr.AuthTotal);
+				}
+				
+			}else{
+				mStatus = false;
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			mStatus = false;
+		}
+		
 
 		if (mStatus) {
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());

@@ -50,7 +50,6 @@
     		    }
     		};
     	
-    	var xxx = $('#alarmfilter-date');
     	tbl_devalarm = $('#tbl_devalarm').DataTable({
     		scrollY:        130,
     		scrollX: 		true,
@@ -146,14 +145,15 @@
     	
     	$('.tbl_authman tbody').on( 'click', 'tr', function () {
     		var datastring = '{"cmd":"handleuser","target":"getuserinfo","username":"' + $(this)[0].cells[0].textContent  + '"}';
-	    	webSocket.send(datastring);
-            if ( $(this).hasClass('selected') ) {
-                $(this).removeClass('selected');
+	    	webSocket.send(datastring);            
+        	$('.tbl_authman tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            if($(this)[0].cells[0].textContent == 'admin'){
+            	$('#btn-authdel').attr("disabled", true);
+            }else{
+            	$('#btn-authdel').attr("disabled", false);
             }
-            else {
-            	$('.tbl_authman tr.selected').removeClass('selected');
-                $(this).addClass('selected');
-            }
+            
         } ); 
     	
     	$('.nav_search').click(function(){
@@ -222,9 +222,17 @@
     	});
     	
     	$('.nav_managerauth').click(function(){
-    		var datastring = '{"cmd":"getuserlist"}';
-	    	webSocket.send(datastring);
-    		$("#modal_authman").modal();
+    		var datastring = '';
+    		if(localStorage.userName == 'admin'){
+    			datastring = '{"cmd":"getuserlist"}';
+    			webSocket.send(datastring);
+    		}else{
+    			$('#auth-oripassword').val("");
+    			$('#auth-password').val("");
+    			$('#auth-rpassword').val("");	
+    			$("#modal_authmanbase").modal();
+    		}        	
+    		
     	});
     	
     	$('.nav_manageralarm').click(function(){
@@ -268,6 +276,33 @@
     		window.location.href="/login";
     	});
     	
+    	$('#btn-authdel').click(function(){
+    		if((confirm( $.i18n.prop('message_sure'))==true))
+        	{
+    			var datastring = '{"cmd":"handleuser","target":"deluser","username":"'+ $('#auth-usernamev').val() + '"}';
+       		 	webSocket.send(datastring);
+        	}
+    		 
+    	});
+    	
+    	$('#btn-authsub').click(function(){
+	   		 if($('#auth-password').val() != $('#auth-rpassword').val()){
+	   			 alert($.i18n.prop('message_passworderr'));
+	   			 return;
+	   		 }
+	   		 var datastring = '{"cmd":"handleuser","target":"modifypassword","username":"'+ $('#auth-usernamev').val() + '","oldpassword":"'+ $('#auth-oripassword').val() + '","password":"'+ $('#auth-password').val() + '","AuthTotal":'+ $('#userauth-level').val() + '}';
+	   		 webSocket.send(datastring);
+	   	});
+    	
+    	$('#btn-authsub1').click(function(){
+	   		 if($('#auth-password1').val() != $('#auth-rpassword1').val()){
+	   			 alert($.i18n.prop('message_passworderr'));
+	   			 return;
+	   		 }
+	   		 var datastring = '{"cmd":"handleuser","target":"modifypassword","username":"'+ localStorage.userName + '","oldpassword":"'+ $('#auth-oripassword1').val() + '","password":"'+ $('#auth-password1').val() + '","AuthTotal":0}';
+	   		 webSocket.send(datastring);
+	   	});
+    	
     	$('#modal_searchresult').on('hidden.bs.modal', function (e) {
     		$('#list-newdevs').empty();
     		$('#list-newdevs').append('<a class="list-group-item active"><h4 class="list-group-item-heading">Device List</h4></a>');
@@ -294,6 +329,7 @@
     			 $(this).parent().parent().remove();
     		});
     	});
+    	
     	$("select#alarmfilter-date").change(function(){
     		if($(this).val() == $.i18n.prop('message_optionaldate')){
     			$("#datepicker_start").datepicker("enable").removeAttr("readonly");
@@ -659,16 +695,41 @@
         }
     }
 	
-	function parseUserinfo(jsonobj){
-		$('#auth-usernamev').val(jsonobj.username);
-		$('#auth-oripassword').val(jsonobj.PassWord1);
-		$('#auth-password').val(jsonobj.PassWord1);
-		$('#auth-rpassword').val(jsonobj.PassWord1);
-		$("#userauth-level").get(0).selectedIndex = jsonobj.AuthTotal - 1; 
+	function parseUserinfo(jsonobj){		
+		$("#userauth-level").empty();
+		if(jsonobj.target == 'modifypassword'){
+			if(jsonobj.AuthTotal != 0){
+				$('#auth-oripassword').val(jsonobj.password);
+			}else{
+				$("#modal_authmanbase").modal('hide');
+			}			
+		}else if(jsonobj.target == 'deluser'){
+			$('.tbl_authman tr.selected').remove();
+			$('#auth-usernamev').val("");
+			$('#auth-oripassword').val("");
+			$('#auth-password').val("");
+			$('#auth-rpassword').val("");
+			$('#btn-authdel').attr("disabled", true);
+		}else{
+			$('#auth-usernamev').val(jsonobj.username);
+			$('#auth-oripassword').val(jsonobj.PassWord1);
+			$('#auth-password').val(jsonobj.PassWord1);
+			$('#auth-rpassword').val(jsonobj.PassWord1);		
+		}	
+		if(jsonobj.username == 'admin'){
+			$("#userauth-level").append("<option value='1'>"+$.i18n.prop('message_superadmin')+"</option>");
+			$("#userauth-level").get(0).selectedIndex = 0;
+			
+		}else{
+			$("#userauth-level").append("<option value='2'>"+$.i18n.prop('message_admin')+"</option>");
+			$("#userauth-level").append("<option value='3'>"+$.i18n.prop('message_observer')+"</option>");
+			$("#userauth-level").val(jsonobj.AuthTotal);
+		}		
 	}
 	
 	function parseUserlist(jsonobj){
 		$('.tbl_authman tbody').empty();
+		$("#modal_authman").modal();
 		$.each(jsonobj.userlist, function (n, value) {
 			var tr = '<tr>'+
                 '<td>'+
@@ -1330,7 +1391,6 @@
                 $('#btn-optlogok')[0].textContent = $.i18n.prop('message_ok');
                 $('#btn-alarmclose2')[0].textContent = $.i18n.prop('message_close');
                 $('#btn-alarmclose3')[0].textContent = $.i18n.prop('message_close');
-                //$('#btn-alarmclose4')[0].textContent = $.i18n.prop('message_close');
                 $('#mymodal_about')[0].textContent = $.i18n.prop('message_navabout');
                 $('#dialog-alarmThreshold')[0].title = $.i18n.prop('message_alarmThreshold');
                 $('#newdev_devname').val($.i18n.prop('message_newdev'));
@@ -1368,6 +1428,26 @@
                 $('#salutation')[0].options[5].textContent = $.i18n.prop('message_rfsw');
                 $('#salutation')[0].options[6].textContent = $.i18n.prop('message_preamp');
                 $('#salutation')[0].options[7].textContent = $.i18n.prop('message_wos');
+                
+                $('#mymodal_authman')[0].textContent = $.i18n.prop('message_navauth');
+                $('.i18n-level')[0].textContent = $.i18n.prop('message_tbllevel');
+                $('#auth_base')[0].textContent = $.i18n.prop('message_basic');
+                $('.i18n-username')[0].textContent = $.i18n.prop('message_username');
+                $('.i18n-username1')[0].textContent = $.i18n.prop('message_username');
+                $('.i18n-userid')[0].textContent = $.i18n.prop('message_userid');
+                $('.i18n-trapnotice')[0].textContent = $.i18n.prop('message_trapnotice');
+                $('.i18n-usergroup')[0].textContent = $.i18n.prop('message_usergroup');
+                $('.i18n-oripassword')[0].textContent = $.i18n.prop('message_oripassword');
+                $('.i18n-password')[0].textContent = $.i18n.prop('message_password');
+                $('.i18n-repeat')[0].textContent = $.i18n.prop('message_repeat');
+                $('.i18n-oripassword1')[0].textContent = $.i18n.prop('message_oripassword');
+                $('.i18n-password1')[0].textContent = $.i18n.prop('message_password');
+                $('.i18n-repeat1')[0].textContent = $.i18n.prop('message_repeat');
+                $('#btn-authsub')[0].textContent = $.i18n.prop('message_submit');
+                $('#btn-authsub1')[0].textContent = $.i18n.prop('message_submit');
+                $('#btn-authdel')[0].textContent = $.i18n.prop('message_del');
+                $('#btn-authadd')[0].textContent = $.i18n.prop('message_add');
+                $('#mymodal_authmanbase')[0].textContent = $.i18n.prop('message_navchangep');
                 
                 $(".context-menu-list li").each(function(i){
         			switch(i){

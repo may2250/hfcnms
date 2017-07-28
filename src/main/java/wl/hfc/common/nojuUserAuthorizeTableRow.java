@@ -56,6 +56,7 @@ public class nojuUserAuthorizeTableRow
     {
     	
         this._UserID = userid;
+        this.UserID = userid;
         this.UserName = username;
         this.PassWord = password;
         this.AuthTotal = authtotal;
