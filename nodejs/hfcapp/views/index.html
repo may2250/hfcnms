@@ -761,6 +761,47 @@
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal -->
 	</div>
+	<div class="modal fade bs-example-modal" id="modal_adduser" tabindex="-1" role="dialog" aria-labelledby="mymodal_adduser" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="mymodal_adduser">
+						添加用户
+					</h4>
+				</div>
+				<div class="modal-body modal-search-content-m2">					
+		 			<table class="table tbl_authmanbase">
+		 				<tr class="tbl_authdis_tr">
+			     	 		<td class="i18n-level1">级别:</td>
+			     	 		<td><select id="adduser-level">
+							      <option class="i18n-ladmin" selected value="2">管理员</option>
+							      <option class="i18n-lobserver" value="2">观察者</option>
+							    </select></td>
+			     	 	</tr>		 			
+						<tr class="tbl_authdis_tr">
+			     	 		<td class="i18n-username2">用户名:</td>
+			     	 		<td><input type="password" class="form-control" id="auth-username2"></td>
+			     	 	</tr>
+			     	 	<tr class="tbl_authdis_tr">
+			     	 		<td class="i18n-password2">密码:</td>
+			     	 		<td><input type="password" class="form-control" id="auth-password2"></td>
+			     	 	</tr>
+			     	 	<tr class="tbl_authdis_tr">
+			     	 		<td class="i18n-repeat2">重复:</td>
+			     	 		<td><input type="password" class="form-control" id="auth-rpassword2"></td>
+			     	 	</tr>
+			     	 	<tr class="tbl_authdis_tr" style="text-align: end">
+			     	 		<td colspan="2"><button type="button" class="btn btn-default" id="btn-adduser">添加
+							</button></td>
+			     	 	</tr>						
+					</table>					
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
    <script src="/javascripts/hfcdetails.js"></script>
    <script src="/javascripts/main.js"></script>
 </body>

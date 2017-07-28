@@ -908,6 +908,8 @@ public class MainKernel {
 			handleUpdateUser(jsondata);
 		}else if(cmd.equalsIgnoreCase("deluser")){
 			handleDeleteUser(jsondata);
+		}else if(cmd.equalsIgnoreCase("adduser")){
+			handleInsertUser(jsondata);
 		}
 	}
 
@@ -953,7 +955,7 @@ public class MainKernel {
 		boolean mStatus = false;
 		Byte AuthTotal = Byte.parseByte(jsondata.get("AuthTotal").toString());
 
-		nojuUserAuthorizeTableRow newRow = new nojuUserAuthorizeTableRow(-1, jsondata.get("UserName").toString(), AuthTotal, jsondata.get("PassWord1")
+		nojuUserAuthorizeTableRow newRow = new nojuUserAuthorizeTableRow(-1, jsondata.get("username").toString(), AuthTotal, jsondata.get("password")
 				.toString());
 
 		if (this.ICDatabaseEngine1.UserAuthorizeTableInsertRow(newRow) > 0) {

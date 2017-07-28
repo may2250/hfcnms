@@ -285,6 +285,14 @@
     		 
     	});
     	
+    	$('#md-password').click(function(){
+    		$('#auth-oripassword').val("");
+			$('#auth-password').val("");
+			$('#auth-rpassword').val("");	
+			$("#modal_authmanbase").modal();
+	   	});
+    	
+    	
     	$('#btn-authsub').click(function(){
 	   		 if($('#auth-password').val() != $('#auth-rpassword').val()){
 	   			 alert($.i18n.prop('message_passworderr'));
@@ -300,6 +308,28 @@
 	   			 return;
 	   		 }
 	   		 var datastring = '{"cmd":"handleuser","target":"modifypassword","username":"'+ localStorage.userName + '","oldpassword":"'+ $('#auth-oripassword1').val() + '","password":"'+ $('#auth-password1').val() + '","AuthTotal":0}';
+	   		 webSocket.send(datastring);
+	   	});
+    	
+    	$('#btn-authadd').click(function(){
+    		$('#auth-username2').val('');
+    		$('#auth-password2').val('');
+    		$('#auth-rpassword2').val('');
+    		$('#auth-username2').removeClass("ui-state-error-custom");
+    		$("#modal_adduser").modal();
+	   	});
+    	
+    	
+    	$('#btn-adduser').click(function(){
+    		 if($('#auth-username2').val() == ""){
+    			 $('#auth-username2').addClass("ui-state-error-custom");
+    			 return;
+    		 }
+	   		 if($('#auth-password2').val() != $('#auth-rpassword2').val()){
+	   			 alert($.i18n.prop('message_passworderr'));
+	   			 return;
+	   		 }
+	   		 var datastring = '{"cmd":"handleuser","target":"adduser","username":"'+ $('#auth-username2').val() + '","password":"'+ $('#auth-password2').val() + '","AuthTotal":"'+ $('#adduser-level').val() + '"}';
 	   		 webSocket.send(datastring);
 	   	});
     	
@@ -709,7 +739,24 @@
 			$('#auth-oripassword').val("");
 			$('#auth-password').val("");
 			$('#auth-rpassword').val("");
-			$('#btn-authdel').attr("disabled", true);
+			$('#btn-authdel').attr("disabled", true);			
+		}else if(jsonobj.target == 'adduser'){
+			$("#modal_adduser").modal('hide');
+			var tr = '<tr>'+
+            '<td>'+
+                '<label>' + jsonobj.username + '</label>'+                        
+            '</td>'+
+            '<td>'+
+            	'<label>' + jsonobj.key + '</label>'+  
+            '</td>'+
+            '<td>'+
+        		'<label>' + jsonobj.AuthTotal + '</label>'+  
+        	'</td>'+
+        	'<td>'+
+        		'<label>No</label>'+  
+        	'</td>'+
+        '</tr>';
+		$('.tbl_authman tbody').append(tr);
 		}else{
 			$('#auth-usernamev').val(jsonobj.username);
 			$('#auth-oripassword').val(jsonobj.PassWord1);
@@ -733,16 +780,16 @@
 		$.each(jsonobj.userlist, function (n, value) {
 			var tr = '<tr>'+
                 '<td>'+
-                    '<label id="auth-username">' + value.username + '</label>'+                        
+                    '<label>' + value.username + '</label>'+                        
                 '</td>'+
                 '<td>'+
-                	'<label id="auth-userid">' + value.userid + '</label>'+  
+                	'<label>' + value.userid + '</label>'+  
                 '</td>'+
                 '<td>'+
-            		'<label id="auth-level">' + value.level + '</label>'+  
+            		'<label>' + value.level + '</label>'+  
             	'</td>'+
             	'<td>'+
-	        		'<label id="auth-istrap">' + (value.istrap==true?"Yes":"No") + '</label>'+  
+	        		'<label>' + (value.istrap==true?"Yes":"No") + '</label>'+  
 	        	'</td>'+
             '</tr>';
 			$('.tbl_authman tbody').append(tr);
@@ -1434,12 +1481,15 @@
                 $('#auth_base')[0].textContent = $.i18n.prop('message_basic');
                 $('.i18n-username')[0].textContent = $.i18n.prop('message_username');
                 $('.i18n-username1')[0].textContent = $.i18n.prop('message_username');
+                $('.i18n-username2')[0].textContent = $.i18n.prop('message_username');
                 $('.i18n-userid')[0].textContent = $.i18n.prop('message_userid');
                 $('.i18n-trapnotice')[0].textContent = $.i18n.prop('message_trapnotice');
                 $('.i18n-usergroup')[0].textContent = $.i18n.prop('message_usergroup');
                 $('.i18n-oripassword')[0].textContent = $.i18n.prop('message_oripassword');
                 $('.i18n-password')[0].textContent = $.i18n.prop('message_password');
+                $('.i18n-password2')[0].textContent = $.i18n.prop('message_password');
                 $('.i18n-repeat')[0].textContent = $.i18n.prop('message_repeat');
+                $('.i18n-repeat2')[0].textContent = $.i18n.prop('message_repeat');
                 $('.i18n-oripassword1')[0].textContent = $.i18n.prop('message_oripassword');
                 $('.i18n-password1')[0].textContent = $.i18n.prop('message_password');
                 $('.i18n-repeat1')[0].textContent = $.i18n.prop('message_repeat');
@@ -1448,6 +1498,11 @@
                 $('#btn-authdel')[0].textContent = $.i18n.prop('message_del');
                 $('#btn-authadd')[0].textContent = $.i18n.prop('message_add');
                 $('#mymodal_authmanbase')[0].textContent = $.i18n.prop('message_navchangep');
+                $('.i18n-level1')[0].textContent = $.i18n.prop('message_tbllevel');
+                $('#btn-adduser')[0].textContent = $.i18n.prop('message_add');
+                $('#mymodal_adduser')[0].textContent = $.i18n.prop('message_adduser');
+                $('.i18n-ladmin')[0].textContent = $.i18n.prop('message_admin');
+                $('.i18n-lobserver')[0].textContent = $.i18n.prop('message_observer');
                 
                 $(".context-menu-list li").each(function(i){
         			switch(i){
