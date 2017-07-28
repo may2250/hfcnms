@@ -188,7 +188,7 @@ public class CurrentAlarmModel extends Thread {
 			logjson.put("id", prow.TrapLogID);
 			logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
 			logjson.put("addr", prow.TrapDevAddress);
-			logjson.put("path", "grp1/xxxx");
+			logjson.put("path", prow.neName);
 			logjson.put("type", prow.TrapLogType.toString());
 			logjson.put("paramname", prow.parmName);
 			logjson.put("paramvalue", prow.paramValue);
@@ -206,7 +206,7 @@ public class CurrentAlarmModel extends Thread {
 			logjson.put("id", prow.TrapLogID);
 			logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
 			logjson.put("addr", prow.TrapDevAddress);
-			logjson.put("path", "grp1/xxxx");
+			logjson.put("path", prow.neName);
 			logjson.put("type", prow.TrapLogType.toString());
 			logjson.put("paramname", prow.parmName);
 			logjson.put("paramvalue", prow.paramValue);
