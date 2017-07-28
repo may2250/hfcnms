@@ -713,14 +713,44 @@ public class CDatabaseEngine {
 
 		}
 
-		ResultSet rs = null;
+		
+		PreparedStatement pstmt;
+     	ResultSet rs = null;
+		
+		String sqlInsert;
+		//is name exsit ?
+		sqlInsert = "SELECT * FROM userauthorizetable where UserName='"+row.UserName+"'";	//username exsit	
+
+		try {
+			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
+			rs = pstmt.executeQuery(sqlInsert);
+			rs.last(); 
+			int rowCount = rs.getRow(); 
+			
+			if (rowCount>0) {
+				
+				//name exsit，return
+				return -1;
+			}
+			
+			
+		} catch (Exception e) {
+			return -1;
+		}
+	
+		
+		
+		
+		
+		
+
 
 		
 		Byte ismsgByte=1;
-		String sqlInsert = "INSERT INTO userauthorizetable(UserName,password1,phoneNmber,smtpAddress,AuthTotal,IsMsgDefi) VALUES(" + "'" + row.UserName + "','"
+		sqlInsert = "INSERT INTO userauthorizetable(UserName,password1,phoneNmber,smtpAddress,AuthTotal,IsMsgDefi) VALUES(" + "'" + row.UserName + "','"
 				+ row.PassWord + "','" + row.PhoneNmbr + "','" + row.smtpAddress + "'," + row.AuthTotal + "," + ismsgByte+ ")";
 		// sqlInsert += ";select @@IDENTITY";
-		PreparedStatement pstmt;
+
 		try {
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
 			pstmt.executeUpdate();
@@ -818,6 +848,7 @@ public class CDatabaseEngine {
 
 		Connection con = offNewCoon();
 		String sqlInsert = "SELECT * FROM userauthorizetable WHERE UserName='" + username + "'";
+		System.out.println("------>>>"+sqlInsert);
 		pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 		rs = pstmt.executeQuery();
 		nojuUserAuthorizeTableRow newURow = null;
