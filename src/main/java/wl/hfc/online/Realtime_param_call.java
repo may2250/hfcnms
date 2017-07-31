@@ -39,7 +39,7 @@ public class Realtime_param_call extends Thread {
 				Enumeration<String> e1 = staticmemory.getAllRealTimeDev().keys();
 				while (e1.hasMoreElements()) { 			
 					String key = e1.nextElement();  
-					System.out.println("go to get param of ip :::  "+ key);
+					//System.out.println("go to get param of ip :::  "+ key);
 					try {
 						JSONObject json = new JSONObject();
 						JSONObject commonjson = new JSONObject();

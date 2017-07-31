@@ -23,22 +23,41 @@ import wl.hfc.topd.MainKernel;
 
 public class StaticMemory {
 	// save web sessions
-	public static CopyOnWriteArraySet<Session> webSocketClients = new CopyOnWriteArraySet<Session>();
+	public static CopyOnWriteArraySet<UserSession> webSocketClients = new CopyOnWriteArraySet<UserSession>();
 	// 客户端需求实时数据的设备列表
 	private Hashtable<String, ObjSnmpPreail> realTimeDevHashtable = new Hashtable<String, ObjSnmpPreail>();
 	private static Logger log = Logger.getLogger(StaticMemory.class);
 
-	public void AddSession(Session session) {
+	public void AddSession(UserSession session) {
 		synchronized (this) {
 			webSocketClients.add(session);
+			System.out.println("Connection Size::::" + webSocketClients.size());
 		}
 	}
 
-	public void RemoveSession(Session session) {
+	public void RemoveSession(Session session) {		
 		synchronized (this) {
-			webSocketClients.remove(session);
-			removeRealTimeDev(session.getId());
+			for (UserSession usession : webSocketClients) {
+				if(session.getId() == usession.getId()){
+					webSocketClients.remove(usession);
+					removeRealTimeDev(session.getId());
+					System.out.println("Connection Size::::" + webSocketClients.size());
+				}
+			}
+			
 		}
+	}
+	
+	public boolean getSessionByuser(String username) {		
+		synchronized (this) {
+			for (UserSession usession : webSocketClients) {
+				if(username.equalsIgnoreCase(usession.username)){
+					return true;
+				}
+			}
+			
+		}
+		return false;
 	}
 
 	public int getCount() {
@@ -140,12 +159,12 @@ public class StaticMemory {
 
 	public Session getSessionByID(String sessionid) {
 		synchronized (this) {
-			for (Session session : webSocketClients) {
+			for (UserSession session : webSocketClients) {
 				try {
 					synchronized (session) {
 						if (session.getId().equalsIgnoreCase(sessionid)) {
 							// System.out.println("Session Got::" + sessionid);
-							return session;
+							return session.session;
 						}
 					}
 				} catch (Exception ex) {
@@ -154,7 +173,7 @@ public class StaticMemory {
 					System.out.println("Connection closed::::" + webSocketClients.size());
 					ex.printStackTrace();
 					try {
-						session.close();
+						session.session.close();
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -182,17 +201,17 @@ public class StaticMemory {
 
 	public void broadCast(String message) {
 		synchronized (this) {
-			for (Session session : webSocketClients) {
+			for (UserSession session : webSocketClients) {
 				try {
 					synchronized (session) {
-						session.getBasicRemote().sendText(message);
+						session.session.getBasicRemote().sendText(message);
 					}
 				} catch (IOException e) {
 					webSocketClients.remove(session);
 					removeRealTimeDev(session.getId());
 					System.out.println("Connection closed::::" + webSocketClients.size());
 					try {
-						session.close();
+						session.session.close();
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}

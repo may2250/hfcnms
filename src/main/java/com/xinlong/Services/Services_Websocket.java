@@ -31,6 +31,7 @@ import org.json.simple.parser.ParseException;
 
 import com.xinlong.util.RedisUtil;
 import com.xinlong.util.StaticMemory;
+import com.xinlong.util.UserSession;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
@@ -188,11 +189,20 @@ public class Services_Websocket {
 				String passWord = decrypt(password, deskey);
 				System.out.println("username::des::" + username + ":::password:des::"+ passWord);
 				//用户认证
-				staticmemory.AddSession(session);
-				rootjson.put("sessionid", session.getId());
-				rootjson.put("username", username);
-				rootjson.put("password", passWord);
-		    	sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);				
+				if(staticmemory.getSessionByuser(username)){
+					//已有同名用户登录
+					rootjson.put("Authed", false);
+					rootjson.put("desc", "User Already login!");
+					session.getBasicRemote().sendText(rootjson.toJSONString());
+				}else{
+					UserSession usession = new UserSession(username, session);
+					staticmemory.AddSession(usession);
+					rootjson.put("sessionid", session.getId());
+					rootjson.put("username", username);
+					rootjson.put("password", passWord);
+			    	sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+				}
+								
 		    	
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

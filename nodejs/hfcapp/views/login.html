@@ -149,6 +149,7 @@
         	var jsonobj =  eval('(' + event.data + ')');
             if(jsonobj.cmd == "loginAuth"){
             	if(!jsonobj.Authed){
+            		alert(jsonobj.desc);
             		window.location.href="/login";
             	}else{
             		window.location.href="/";

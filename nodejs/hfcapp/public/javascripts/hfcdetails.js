@@ -104,19 +104,19 @@ function parse_rece_workstation(jsonobj){
 	switch(jsonobj.fnOpticalReceiverPower6){
 	case "1":
         //normal
-		$('#fnOpticalReceiverPower').css("background-color", "green");
+		//$('#fnOpticalReceiverPower').css("background-color", "green");
         break;
     case "2":
     //hihi
     case "5":
         //lolo
-    	$('#fnOpticalReceiverPower').css("background-color", "red");
+    	$('#fnOpticalReceiverPower').css("background-color", "HotPink");
         break;
     case "3":
     //hi
     case "4":
         //lo
-    	$('#fnOpticalReceiverPower').css("background-color", "yellow");
+    	$('#fnOpticalReceiverPower').css("background-color", "Moccasin");
         break;
 	}
 	var i = 0;
@@ -141,77 +141,77 @@ function parse_rece_workstation(jsonobj){
 	switch(jsonobj.fnDCPowerVoltage06){
 	case "1":
         //normal
-		$('.fnDCPowerVoltage_row0').css("background-color", "green");
+		//$('.fnDCPowerVoltage_row0').css("background-color", "green");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
     //hihi
     case "5":
         //lolo
-    	$('.fnDCPowerVoltage_row0').css("background-color", "red");
+    	$('.fnDCPowerVoltage_row0').css("background-color", "HotPink");
         break;
     case "3":
     //hi
     case "4":
         //lo
-    	$('.fnDCPowerVoltage_row0').css("background-color", "yellow");
+    	$('.fnDCPowerVoltage_row0').css("background-color", "Moccasin");
         break;
 	}
 	switch(jsonobj.fnDCPowerVoltage16){
 	case "1":
         //normal
-		$('.fnDCPowerVoltage_row1').css("background-color", "green");
+		//$('.fnDCPowerVoltage_row1').css("background-color", "green");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
     //hihi
     case "5":
         //lolo
-    	$('.fnDCPowerVoltage_row1').css("background-color", "red");
+    	$('.fnDCPowerVoltage_row1').css("background-color", "HotPink");
         break;
     case "3":
     //hi
     case "4":
         //lo
-    	$('.fnDCPowerVoltage_row1').css("background-color", "yellow");
+    	$('.fnDCPowerVoltage_row1').css("background-color", "Moccasin");
         break;
 	}
 	switch(jsonobj.fnRFPortOutputRFLevel06){
 	case "1":
         //normal
-		$('.fnRFPortOutputRFLevel_row0').css("background-color", "green");
+		//$('.fnRFPortOutputRFLevel_row0').css("background-color", "green");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
     //hihi
     case "5":
         //lolo
-    	$('.fnRFPortOutputRFLevel_row0').css("background-color", "red");
+    	$('.fnRFPortOutputRFLevel_row0').css("background-color", "HotPink");
         break;
     case "3":
     //hi
     case "4":
         //lo
-    	$('.fnRFPortOutputRFLevel_row0').css("background-color", "yellow");
+    	$('.fnRFPortOutputRFLevel_row0').css("background-color", "Moccasin");
         break;
 	}
 	switch(jsonobj.fnRFPortOutputRFLevel16){
 	case "1":
         //normal
-		$('.fnRFPortOutputRFLevel_row1').css("background-color", "green");
+		//$('.fnRFPortOutputRFLevel_row1').css("background-color", "green");
         //textBoxVariable.BackColor = Color.LightGreen;
         break;
     case "2":
     //hihi
     case "5":
         //lolo
-    	$('.fnRFPortOutputRFLevel_row1').css("background-color", "red");
+    	$('.fnRFPortOutputRFLevel_row1').css("background-color", "HotPink");
         break;
     case "3":
     //hi
     case "4":
         //lo
-    	$('.fnRFPortOutputRFLevel_row1').css("background-color", "yellow");
+    	$('.fnRFPortOutputRFLevel_row1').css("background-color", "Moccasin");
         break;
 	}
 	

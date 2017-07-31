@@ -3,7 +3,6 @@ package wl.hfc.topd;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -15,7 +14,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.snmp4j.smi.IpAddress;
 
 import com.xinlong.util.RedisUtil;
 import com.xinlong.util.StaticMemory;
@@ -197,7 +195,6 @@ public class MainKernel {
 
 		}
 
-		int xxx = 12;
 
 	}
 
@@ -217,6 +214,11 @@ public class MainKernel {
 			sendToQueue(rootjson.toJSONString(), HFCALARM_MESSAGE);
 		} else {
 			jsondata.put("Authed", false);
+			if(rst == AuthResult.PASSWD_NOT_MATCH){
+				rootjson.put("desc", "Password Error!");
+			}else if(rst == AuthResult.USER_NOT_EXIST){
+				rootjson.put("desc", "User not Exist!");
+			}			
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), sessionid);
 			staticmemory.RemoveSession(staticmemory.getSessionByID(sessionid));
 		}
