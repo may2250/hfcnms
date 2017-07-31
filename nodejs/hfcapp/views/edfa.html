@@ -28,7 +28,7 @@
 	        	  }
     	    });
             $("#set_value").val($(this)[0].textContent);
-            updateTips("请输入新的Trap地址:");
+            updateTips($.i18n.prop('message_devnewtrap'));
             $("#dialog-form").dialog("open");
 		});
 		
@@ -56,8 +56,8 @@
 	        	    	$("#set_value").removeClass("ui-state-error-custom");
 	        	  }
     	    });
-            $("#set_value").val($(this).val());
-            updateTips("请输入新值:");
+            $("#set_value").val($(this).val().replace(/[^\d.]/g,''));
+            updateTips($.i18n.prop('message_devnewval'));
             $("#dialog-form").dialog("open");
 		}); 
 		
@@ -87,8 +87,8 @@
 	        	    	$("#set_value").removeClass("ui-state-error-custom");
 	        	  }
     	    });
-            $("#set_value").val($(this).val());
-            updateTips("请输入新值:");
+            $("#set_value").val($(this)[0].textContent.replace(/[^\d.]/g,''));
+            updateTips($.i18n.prop('message_devnewval'));
             $("#dialog-form").dialog("open");
 		}); 
 		

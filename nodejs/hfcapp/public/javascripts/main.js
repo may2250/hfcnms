@@ -562,6 +562,7 @@
         	$('#username')[0].textContent = localStorage.userName;
         	initTree(jsonobj.treenodes);        
         }else if(jsonobj.cmd == "loginAuth"){
+        	localStorage.authlevel = jsonobj.level;
         	if(!jsonobj.Authed){
         		window.location.href="/login";
         	}
