@@ -731,6 +731,13 @@
 		if(jsonobj.target == 'modifypassword'){
 			if(jsonobj.AuthTotal != 0){
 				$('#auth-oripassword').val(jsonobj.password);
+				if(localStorage.userName == 'admin'){
+					$(".tbl_authman").find("tr").each(function(){
+				       if($(this)[0].cells[0].textContent == jsonobj.username){
+				    	   $(this)[0].cells[2].textContent = jsonobj.AuthTotal;
+				       }
+				    });
+				}
 			}else{
 				$("#modal_authmanbase").modal('hide');
 			}			
@@ -740,21 +747,22 @@
 			$('#auth-oripassword').val("");
 			$('#auth-password').val("");
 			$('#auth-rpassword').val("");
-			$('#btn-authdel').attr("disabled", true);			
+			$('#btn-authdel').attr("disabled", true);		
+			$('#btn-authsub').attr("disabled", true);
 		}else if(jsonobj.target == 'adduser'){
 			$("#modal_adduser").modal('hide');
 			var tr = '<tr>'+
             '<td>'+
-                '<label>' + jsonobj.username + '</label>'+                        
+                jsonobj.username +                       
             '</td>'+
             '<td>'+
-            	'<label>' + jsonobj.key + '</label>'+  
+            	jsonobj.key + 
             '</td>'+
             '<td>'+
-        		'<label>' + jsonobj.AuthTotal + '</label>'+  
+        		jsonobj.AuthTotal +  
         	'</td>'+
         	'<td>'+
-        		'<label>No</label>'+  
+        		'No'+  
         	'</td>'+
         '</tr>';
 		$('.tbl_authman tbody').append(tr);
@@ -762,7 +770,8 @@
 			$('#auth-usernamev').val(jsonobj.username);
 			$('#auth-oripassword').val(jsonobj.PassWord1);
 			$('#auth-password').val(jsonobj.PassWord1);
-			$('#auth-rpassword').val(jsonobj.PassWord1);		
+			$('#auth-rpassword').val(jsonobj.PassWord1);	
+			$('#btn-authsub').attr("disabled", false);
 		}	
 		if(jsonobj.username == 'admin'){
 			$("#userauth-level").append("<option value='1'>"+$.i18n.prop('message_superadmin')+"</option>");
@@ -781,16 +790,16 @@
 		$.each(jsonobj.userlist, function (n, value) {
 			var tr = '<tr>'+
                 '<td>'+
-                    '<label>' + value.username + '</label>'+                        
+                    value.username +                       
                 '</td>'+
                 '<td>'+
-                	'<label>' + value.userid + '</label>'+  
+                	value.userid + 
                 '</td>'+
                 '<td>'+
-            		'<label>' + value.level + '</label>'+  
+            		value.level +
             	'</td>'+
             	'<td>'+
-	        		'<label>' + (value.istrap==true?"Yes":"No") + '</label>'+  
+	        		(value.istrap==true?"Yes":"No") + 
 	        	'</td>'+
             '</tr>';
 			$('.tbl_authman tbody').append(tr);

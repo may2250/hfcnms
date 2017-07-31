@@ -544,7 +544,7 @@ function compareIP(ipBegin, ipEnd)
 }  
 
 function checkInt(str){
-	var re = /^[1-9]+[0-9]*]*$/; 
+	var re = /^[0-9]+\.?[0-9]*$/; 
 　　 if (!re.test(str)) {
 　　　　return false;
 　　}
