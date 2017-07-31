@@ -62,8 +62,8 @@ public class Realtime_param_call extends Thread {
 					        }
 						}
 					} catch (Exception e) {
-						//e.printStackTrace();
-						//log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
+						e.printStackTrace();
+						log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
 
 					}
 				}

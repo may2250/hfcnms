@@ -56,7 +56,13 @@ public class TrapPduServer extends Thread {
 		filePath = filePath.substring(filePath.indexOf("file:") + 5);
 		filePath = filePath + "mibs";
 	//	System.out.println("----------------path--->>>" + filePath);
-		this.trpcss  = new TrapProCenter(true, filePath);
+		
+		try {
+			this.trpcss  = new TrapProCenter(true, filePath);
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 
 		this.setName("TrapPduServer");
 		me=this;
