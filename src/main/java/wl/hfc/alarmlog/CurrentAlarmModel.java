@@ -82,6 +82,7 @@ public class CurrentAlarmModel extends Thread {
 	public void run() {			
 
 		log.info(this.getName()+ "....starting.......");
+
 		Jedis jedis=null;
 		try {		
 		
