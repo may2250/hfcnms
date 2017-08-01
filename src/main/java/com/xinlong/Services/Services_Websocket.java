@@ -79,20 +79,24 @@ public class Services_Websocket {
     	try {
 			JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 			String cmd = jsondata.get("cmd").toString();
-			JSONObject rootjson = new JSONObject();
+			//JSONObject rootjson = new JSONObject();
 			if(cmd.equalsIgnoreCase("getgrouptree")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("nodeadd")){
+				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("nodeedit")){
-				sendToQueue(message, MAINKERNEL_MESSAGE);
+				jsondata.put("sessionid", session.getId());
+				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("nodedel")){
+				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("lazyLoad")){
 				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
-			}else if(cmd.equalsIgnoreCase("deviceadd")){				
+			}else if(cmd.equalsIgnoreCase("deviceadd")){		
+				jsondata.put("sessionid", session.getId());
 				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
 			}else if(cmd.equalsIgnoreCase("hfcvalueset")){
 				jsondata.put("sessionid", session.getId());
@@ -201,6 +205,14 @@ public class Services_Websocket {
 					rootjson.put("username", username);
 					rootjson.put("password", passWord);
 			    	sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+			    	
+			    	
+					// for syslog
+					rootjson = new JSONObject();
+					rootjson.put("cmd", "userlogin");
+					rootjson.put("title",username);
+					rootjson.put("operater",username);			
+					sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 				}
 								
 		    	

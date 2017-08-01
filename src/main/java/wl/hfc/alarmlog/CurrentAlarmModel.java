@@ -41,6 +41,8 @@ public class CurrentAlarmModel extends Thread {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	public static CurrentAlarmModel me;
 	private static Logger log = Logger.getLogger(CurrentAlarmModel.class);
+	
+	private static Logger log2 = Logger.getLogger("myTest1");
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	
 	private int MAX_TRAPNUMBER = 500;
@@ -80,9 +82,10 @@ public class CurrentAlarmModel extends Thread {
 	}
 
 	public void run() {			
+		
 
 		log.info(this.getName()+ "....starting.......");
-
+		
 		Jedis jedis=null;
 		try {		
 		
@@ -131,39 +134,56 @@ public class CurrentAlarmModel extends Thread {
 				}else if (cmd.equalsIgnoreCase("newalarm")) {
 
 					parseAlarm(msg);
-
+					
 				} else if (cmd.equalsIgnoreCase("alarmsearch")) {
 
 					staticmemory.sendRemoteStr(getHistoryTraplogs(jsondata), jsondata.get("sessionid").toString());
 
 				} else if (cmd.equalsIgnoreCase("grpaddlog")) {
 
-					InsertOperLog(OperLogTypes.UserGroupOpration, ClsLanguageExmp.formGet("创建分组") + "： " + jsondata.get("title").toString(), "admin");
+					InsertOperLog(OperLogTypes.UserGroupOpration, ClsLanguageExmp.formGet("创建分组") + "： " + jsondata.get("title").toString(), jsondata.get("operater").toString());
 
 				} else if (cmd.equalsIgnoreCase("devaddLog")) {
 
 					InsertOperLog(OperLogTypes.DeviceOpration, ClsLanguageExmp.formGet("创建IP设备") + "： " + jsondata.get("title").toString() + " @ "
-							+ jsondata.get("key").toString(), "admin");
+							+ jsondata.get("key").toString(), jsondata.get("operater").toString());
 
 				} else if (cmd.equalsIgnoreCase("grpdellog")) {
 
-					InsertOperLog(OperLogTypes.UserGroupOpration, ClsLanguageExmp.formGet("删除") + "： " + jsondata.get("title").toString(), "admin");
+					InsertOperLog(OperLogTypes.UserGroupOpration, ClsLanguageExmp.formGet("删除") + "： " + jsondata.get("title").toString(), jsondata.get("operater").toString());
 
 				} else if (cmd.equalsIgnoreCase("devdellog")) {
 
 					InsertOperLog(OperLogTypes.DeviceOpration,
-							ClsLanguageExmp.formGet("删除") + "： " + jsondata.get("title").toString() + " @ " + jsondata.get("key").toString(), "admin");
+							ClsLanguageExmp.formGet("删除") + "： " + jsondata.get("title").toString() + " @ " + jsondata.get("key").toString(), jsondata.get("operater").toString());
 				} else if (cmd.equalsIgnoreCase("grpeditlog")) {
 
-					InsertOperLog(OperLogTypes.UserGroupOpration, (ClsLanguageExmp.isEn ? "Update: " : "更新：") + jsondata.get("title").toString(), "admin");
+					InsertOperLog(OperLogTypes.UserGroupOpration, (ClsLanguageExmp.isEn ? "Update: " : "更新：") + jsondata.get("title").toString(), jsondata.get("operater").toString());
 
 				} else if (cmd.equalsIgnoreCase("deveditlog")) {
 
 					InsertOperLog(OperLogTypes.DeviceOpration, (ClsLanguageExmp.isEn ? "Update: " : "更新：") + "： " + jsondata.get("title").toString() + " @ "
-							+ jsondata.get("key").toString(), "admin");
-				} else if (cmd.equalsIgnoreCase("optlogsearch")) {				
-					
+							+ jsondata.get("key").toString(), jsondata.get("operater").toString());
+				} 
+				 else if (cmd.equalsIgnoreCase("insertuserlog")) {
 
+						InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Create user: " : "创建用户：") + "： " + jsondata.get("title").toString() + " @ "
+								+ jsondata.get("key").toString(), jsondata.get("operater").toString());
+					} 
+				 else if (cmd.equalsIgnoreCase("deluserlog")) {
+
+						InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Delete user: " : "删除用户：") + "： " + jsondata.get("title").toString(), jsondata.get("operater").toString());
+					} 
+				 else if (cmd.equalsIgnoreCase("updateuserlog")) {
+
+						InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Update user: " : "更新用户：") + "： " + jsondata.get("title").toString(), jsondata.get("operater").toString());
+					} 
+				 else if (cmd.equalsIgnoreCase("userlogin")) {
+
+						InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "User login: " : "用户登陆：") + "： " + jsondata.get("title").toString() , jsondata.get("title").toString());
+					} 
+				else if (cmd.equalsIgnoreCase("optlogsearch")) {				
+					
 					staticmemory.sendRemoteStr(getHistoryoperlogs(jsondata), jsondata.get("sessionid").toString());
 					
 				}

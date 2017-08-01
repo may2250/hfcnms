@@ -3,7 +3,7 @@ package com.xinlong.util;
 import javax.websocket.Session;
 
 public class UserSession {
-	String username;
+	public String username;
 	Session session;
 	
 	public UserSession(String uname, Session session){

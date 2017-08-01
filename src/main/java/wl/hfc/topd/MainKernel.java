@@ -17,6 +17,7 @@ import org.json.simple.parser.ParseException;
 
 import com.xinlong.util.RedisUtil;
 import com.xinlong.util.StaticMemory;
+import com.xinlong.util.UserSession;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
@@ -555,6 +556,10 @@ public class MainKernel {
 			rootjson = new JSONObject();
 			rootjson.put("cmd", "grpaddlog");
 			rootjson.put("title", mDevGrpTableRow.UserGroupName);
+			
+			UserSession userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
+			rootjson.put("operater", userSession.username);			
+
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 
 		}
@@ -610,6 +615,10 @@ public class MainKernel {
 			rootjson = new JSONObject();
 			rootjson.put("cmd", "grpdellog");
 			rootjson.put("title", delgrp.BindUserGroupTableRow.UserGroupName);
+
+			UserSession userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
+			rootjson.put("operater", userSession.username);			
+
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 
 			return true;
@@ -655,6 +664,9 @@ public class MainKernel {
 			rootjson = new JSONObject();
 			rootjson.put("cmd", "grpeditlog");
 			rootjson.put("title", jsondata.get("title").toString());
+
+			UserSession userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
+			rootjson.put("operater", userSession.username);			
 
 			// for syslog
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
@@ -743,6 +755,10 @@ public class MainKernel {
 			rootjson.put("cmd", "devaddlog");
 			rootjson.put("key", dev._NetAddress);
 			rootjson.put("title", dev.BindnojuDeviceTableRow.Name);
+
+			UserSession userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
+			rootjson.put("operater", userSession.username);			
+
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 
 			return dev;
@@ -786,11 +802,15 @@ public class MainKernel {
 			staticmemory.broadCast(jsondata.toJSONString());
 
 			// for syslog
-			jsondata = new JSONObject();
-			jsondata.put("cmd", "deveditlog");
-			jsondata.put("key", dev.BindnojuDeviceTableRow.get_NetAddress());
-			jsondata.put("title", dev.BindnojuDeviceTableRow.Name);
-			sendToQueue(jsondata.toJSONString(), "currentalarm.message");
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "deveditlog");
+			rootjson.put("key", dev.BindnojuDeviceTableRow.get_NetAddress());
+			rootjson.put("title", dev.BindnojuDeviceTableRow.Name);
+
+			UserSession userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
+			rootjson.put("operater", userSession.username);			
+
+			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 		} else {
 
 			mDeviceTableRow.Name = tmpNameString;
@@ -836,6 +856,10 @@ public class MainKernel {
 			rootjson.put("cmd", "devdellog");
 			rootjson.put("key", delDev.BindnojuDeviceTableRow.get_NetAddress());
 			rootjson.put("title", delDev.BindnojuDeviceTableRow.Name);
+
+			UserSession userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
+			rootjson.put("operater", userSession.username);			
+
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 
 		}
@@ -971,6 +995,17 @@ public class MainKernel {
 		if (mStatus) {
 			jsondata.put("key", newRow.UserID); // ParentGroupID
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
+			
+			// for syslog
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "insertuserlog");
+			rootjson.put("title",newRow.UserName);
+
+			UserSession userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
+			rootjson.put("operater", userSession.username);			
+
+			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
+			
 		}
 	}
 
@@ -990,13 +1025,14 @@ public class MainKernel {
 
 		if (mStatus) {
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
-			/*
-			 * // for syslog rootjson = new JSONObject(); rootjson.put("cmd",
-			 * "userdellog"); rootjson.put("title",
-			 * delgrp.BindUserGroupTableRow.UserGroupName);
-			 * sendToQueue(rootjson.toJSONString(), "currentalarm.message");
-			 */
+			// for syslog
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "deluserlog");
+			rootjson.put("title",jsondata.get("username").toString());
 
+			UserSession userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
+			rootjson.put("operater", userSession.username);			
+			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 		} else {
 			log.info("Del user :" + uname + " Error!");
 		}
@@ -1021,7 +1057,14 @@ public class MainKernel {
 
 		if (mStatus) {
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
+			// for syslog
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "updateuserlog");
+			rootjson.put("title",jsondata.get("username").toString());
 
+			UserSession userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
+			rootjson.put("operater", userSession.username);			
+			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 		}
 	}
 
@@ -1054,7 +1097,14 @@ public class MainKernel {
 
 		if (mStatus) {
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
+			// for syslog
+						JSONObject rootjson = new JSONObject();
+						rootjson.put("cmd", "updateuserlog");
+						rootjson.put("title",jsondata.get("username").toString());
 
+						UserSession userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
+						rootjson.put("operater", userSession.username);			
+						sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 		}
 	}
 

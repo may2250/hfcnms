@@ -183,6 +183,35 @@ public class StaticMemory {
 			return null;
 		}
 	}
+	
+	
+	public UserSession getUserSessionByID(String sessionid) {
+		synchronized (this) {
+			for (UserSession session : webSocketClients) {
+				try {
+					synchronized (session) {
+						if (session.getId().equalsIgnoreCase(sessionid)) {
+							// System.out.println("Session Got::" + sessionid);
+							return session;
+						}
+					}
+				} catch (Exception ex) {
+					webSocketClients.remove(session);
+					removeRealTimeDev(sessionid);
+					System.out.println("Connection closed::::" + webSocketClients.size());
+					ex.printStackTrace();
+					try {
+						session.session.close();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+
+				}
+			}
+			return null;
+		}
+	}
+
 
 	public void sendRemoteStr(String message, String sessionid) {
 		Session ses = getSessionByID(sessionid);
