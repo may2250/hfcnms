@@ -413,51 +413,60 @@ function parseHfcValueSet(jsonobj){
 		//	 $('#isdead').attr('checked', 'checked');
 		 //}
 		 $("#dead").val(jsonobj.detail.value4);
-		 $( "#dialog-alarmThreshold" ).dialog({
-	   	      autoOpen: false,
-	   	      height: 393,
-	   	      width: 390,
-	   	      modal: true,
-	   	      buttons: {
-	   	    	  Ok: function() {
-	   	    		  if(isNaN($("#hihi").val())){
-	   	    			  $("#hihi").addClass( "ui-state-error-custom" );	 
-	   	    			  return;
-	   	    		  }
-	   	    		  if(isNaN($("#hi").val())){
-	   	    			  $("#hi").addClass( "ui-state-error-custom" );
-	   	    			  return;
-	   	    		  }
-	   	    		  if(isNaN($("#lo").val())){
-	   	    			  $("#lo").addClass( "ui-state-error-custom" );
-	   	    			  return;
-	   	    		  }
-	   	    		  if(isNaN($("#lolo").val())){
-	   	    			  $("#lolo").addClass( "ui-state-error-custom" );
-	   	    			  return;
-	   	    		  }
-	   	    		  if(isNaN($("#dead").val())){
-	   	    			  $("#dead").addClass( "ui-state-error-custom" );
-	   	    			  return;
-	   	    		  }
-	   	    		  var node = __globalobj__._realDevice.getFirstChild();
-     	    		  var datastring = '{"cmd":"hfcvalueset","target":"setalarmThreshold","ip":"' + __globalobj__._realDevice.key +'","domstr":"'+ jsonobj.domstr +'","devtype":"'+ __globalobj__._realDevice.getLastChild().key
-     	    		  	+'","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity +'","wcommunity":"'+ __globalobj__._realDevice.data.wcommunity +'","HIHI":"'+ $("#hihi").val()
-     	    		  	+'","HI":"'+ $("#hi").val() +'","LO":"'+ $("#lo").val() +'","LOLO":"'+ $("#lolo").val() +'","DEAD":"'+ $("#dead").val() +'","ISHIHI":"'+ ($('#ishihi').attr('checked') =='checked'?true:false)
-     	    		  	+'","ISHI":"'+ ($('#ishi').attr('checked') =='checked'?true:false) +'","ISLO":"'+ ($('#islo').attr('checked') =='checked'?true:false) +'","ISLOLO":"'+ ($('#islolo').attr('checked') =='checked'?true:false)
-     	    		  	+'","isRow":"'+ jsonobj.isRow +'","rowNum":"'+ jsonobj.rowNum+'"}';
-     	    		  __globalobj__._send(datastring);
-     	              $( this ).dialog( "close" );
-	   	          }
-	   	      },
-	   	      close: function() {
-	   	    	  	$("#hihi").removeClass("ui-state-error-custom");
-		   	    	$("#hi").removeClass("ui-state-error-custom");
-		   	    	$("#lo").removeClass("ui-state-error-custom");
-		   	    	$("#lolo").removeClass("ui-state-error-custom");
-		   	    	$("#dead").removeClass("ui-state-error-custom");
-	       	  }
-		 });
+		 if(sessionStorage.authlevel == 3){
+			 $( "#dialog-alarmThreshold" ).dialog({
+	  	   	      autoOpen: false,
+	  	   	      height: 393,
+	  	   	      width: 390,
+	  	   	      modal: true
+	  		 });
+  		 }else{
+  			$( "#dialog-alarmThreshold" ).dialog({
+	  	   	      autoOpen: false,
+	  	   	      height: 393,
+	  	   	      width: 390,
+	  	   	      modal: true,
+	  	   	      buttons: {
+	  	   	    	  Ok: function() {
+	  	   	    		  if(isNaN($("#hihi").val())){
+	  	   	    			  $("#hihi").addClass( "ui-state-error-custom" );	 
+	  	   	    			  return;
+	  	   	    		  }
+	  	   	    		  if(isNaN($("#hi").val())){
+	  	   	    			  $("#hi").addClass( "ui-state-error-custom" );
+	  	   	    			  return;
+	  	   	    		  }
+	  	   	    		  if(isNaN($("#lo").val())){
+	  	   	    			  $("#lo").addClass( "ui-state-error-custom" );
+	  	   	    			  return;
+	  	   	    		  }
+	  	   	    		  if(isNaN($("#lolo").val())){
+	  	   	    			  $("#lolo").addClass( "ui-state-error-custom" );
+	  	   	    			  return;
+	  	   	    		  }
+	  	   	    		  if(isNaN($("#dead").val())){
+	  	   	    			  $("#dead").addClass( "ui-state-error-custom" );
+	  	   	    			  return;
+	  	   	    		  }
+	  	   	    		  var node = __globalobj__._realDevice.getFirstChild();
+	       	    		  var datastring = '{"cmd":"hfcvalueset","target":"setalarmThreshold","ip":"' + __globalobj__._realDevice.key +'","domstr":"'+ jsonobj.domstr +'","devtype":"'+ __globalobj__._realDevice.getLastChild().key
+	       	    		  	+'","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity +'","wcommunity":"'+ __globalobj__._realDevice.data.wcommunity +'","HIHI":"'+ $("#hihi").val()
+	       	    		  	+'","HI":"'+ $("#hi").val() +'","LO":"'+ $("#lo").val() +'","LOLO":"'+ $("#lolo").val() +'","DEAD":"'+ $("#dead").val() +'","ISHIHI":"'+ ($('#ishihi').attr('checked') =='checked'?true:false)
+	       	    		  	+'","ISHI":"'+ ($('#ishi').attr('checked') =='checked'?true:false) +'","ISLO":"'+ ($('#islo').attr('checked') =='checked'?true:false) +'","ISLOLO":"'+ ($('#islolo').attr('checked') =='checked'?true:false)
+	       	    		  	+'","isRow":"'+ jsonobj.isRow +'","rowNum":"'+ jsonobj.rowNum+'"}';
+	       	    		  __globalobj__._send(datastring);
+	       	              $( this ).dialog( "close" );
+	  	   	          }
+	  	   	      },
+	  	   	      close: function() {
+	  	   	    	  	$("#hihi").removeClass("ui-state-error-custom");
+	  		   	    	$("#hi").removeClass("ui-state-error-custom");
+	  		   	    	$("#lo").removeClass("ui-state-error-custom");
+	  		   	    	$("#lolo").removeClass("ui-state-error-custom");
+	  		   	    	$("#dead").removeClass("ui-state-error-custom");
+	  	       	  }
+	  		 });	  		 
+  		 }
 		 $("#dialog-alarmThreshold").dialog("open");
 		 break;
 	 }	     

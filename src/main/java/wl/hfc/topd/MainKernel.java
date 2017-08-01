@@ -201,7 +201,7 @@ public class MainKernel {
 
 	private void userAuth(JSONObject jsondata) {
 		JSONObject rootjson = new JSONObject();
-		AuthResult rst = handleAuthUser(jsondata.get("username").toString(), jsondata.get("password").toString());
+		AuthResult rst = handleAuthUser(jsondata);
 		String sessionid = jsondata.get("sessionid").toString();
 		if (rst == AuthResult.SUCCESS) {
 			jsondata.put("Authed", true);
@@ -943,7 +943,9 @@ public class MainKernel {
 		}
 	}
 
-	private AuthResult handleAuthUser(String username, String password) {
+	private AuthResult handleAuthUser(JSONObject jsondata) {
+		String username = jsondata.get("username").toString();
+		String password = jsondata.get("password").toString();
 		AuthResult rst = AuthResult.SUCCESS;
 		boolean isExist = false;
 		ArrayList<nojuUserAuthorizeTableRow> mUserAuthorizeTableRowList;
@@ -964,7 +966,7 @@ public class MainKernel {
 				if (prow.PassWord.equalsIgnoreCase(password)) {
 					// login success
 					rst = AuthResult.SUCCESS;
-
+					jsondata.put("level", prow.AuthTotal);
 				} else {
 					rst = AuthResult.PASSWD_NOT_MATCH;
 
