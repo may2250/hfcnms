@@ -420,6 +420,10 @@ div.dataTables_wrapper {
 	height: 430px;
 }
 
+.nav_disabled {
+	color: grey;
+}
+
 #menu {
   list-style: none;
   margin: 0;

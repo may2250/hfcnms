@@ -4,6 +4,9 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript">		
 		$(".trapaddr").dblclick(function(){
+			if(sessionStorage.authlevel == 3){
+	  			return;
+	  		}
 			var domstr = $(this).data("paramname");
 			var rownum = $(this).data("rownum");
 			$( "#dialog-form" ).dialog({
@@ -33,6 +36,9 @@
 		});
 		
 		$(".hfcunit").dblclick(function(){
+			if(sessionStorage.authlevel == 3){
+	  			return;
+	  		}
 			var domstr = $(this)[0].id;
 			$( "#dialog-form" ).dialog({
         	      autoOpen: false,
@@ -62,6 +68,9 @@
 		}); 
 		
 		$(".tbl_hfcunit").dblclick(function(){
+			if(sessionStorage.authlevel == 3){
+	  			return;
+	  		}
 			var domstr = $(this).data("paramname");			
 			var rownum = $(this).data("rownum");
 			$( "#dialog-form" ).dialog({

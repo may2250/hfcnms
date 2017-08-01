@@ -157,7 +157,8 @@
         } ); 
     	
     	$('.nav_search').click(function(){
-    		$( "#dialog-devsearch" ).dialog({
+    		if(!$('.nav_search').hasClass("nav_disabled")){
+    			$( "#dialog-devsearch" ).dialog({
 	        	      autoOpen: false,
 	        	      height: 300,
 	        	      width: 890,
@@ -191,8 +192,10 @@
 	        	    	  $("#search-sip").removeClass("ui-state-error-custom");
 	        	    	  $("#search-eip").removeClass("ui-state-error-custom");
 	        	      }
-      	    });
-            $("#dialog-devsearch").dialog("open");
+    			});
+    			$("#dialog-devsearch").dialog("open");
+    		}
+    		
     	});
     	
     	$('.nav_displaylog').click(function(){
@@ -396,10 +399,12 @@
       	$( "#datepicker_optend" ).datepicker( 'setDate' , new Date());
       	
     	$('#btn-alarmok').click(function(){
-    		if(getDays($('#datepicker_start').val(), $('#datepicker_end').val()) > 92){
-    			alert($.i18n.prop('message_searchdate_error'));
-    			return;
-    		}    		
+    		if($("#alarmfilter-date").prop('selectedIndex') == 0){
+    			if(getDays($('#datepicker_start').val(), $('#datepicker_end').val()) > 92){
+        			alert($.i18n.prop('message_searchdate_error'));
+        			return;
+        		}
+    		}    		    		
     		if($('#alarmfilter-source').val() != "" && !ipvalidate($('#alarmfilter-source').val())){
     			$('#alarmfilter-source').addClass("ui-state-error-custom"); 
     			return;
@@ -556,6 +561,10 @@
         }
     }
 	
+	function observerlimits(){
+		$('.nav_search').addClass("nav_disabled");
+	}
+	
 	function onMessage(event) {
     	var jsonobj =  eval('(' + event.data + ')');
         if(jsonobj.cmd == "getInitTree"){
@@ -563,6 +572,9 @@
         	initTree(jsonobj.treenodes);        
         }else if(jsonobj.cmd == "loginAuth"){
         	sessionStorage.authlevel = jsonobj.level;
+        	if(jsonobj.level == 3){
+        		observerlimits();
+        	}
         	if(!jsonobj.Authed){
         		window.location.href="/login";
         	}
@@ -994,6 +1006,9 @@
     	        "add": {name: "添加组", icon: "add",
     	        	disabled: function(key, opt){
     	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+    	        		  if(sessionStorage.authlevel == 3){
+	  	        			return true;
+	  	        		  }
         	              if(node.data.type == "group"){
         	            	  return false;
         	              }else{
@@ -1034,6 +1049,9 @@
     	          "adddevice": {name: "添加设备", icon: "add",
     	        	  disabled: function(key, opt){
     	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+    	        		  if(sessionStorage.authlevel == 3){
+	  	        			return true;
+	  	        		  }
         	              if(node.data.type == "group"){
         	            	  return false;
         	              }else{
@@ -1072,11 +1090,14 @@
     	        "edit": {name: "编辑", icon: "edit",
     	        	disabled: function(key, opt){
   	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+  	        		  if(sessionStorage.authlevel == 3){
+  	        			return true;
+  	        		  }
       	              if(node.data.type == "group" || node.data.type == "device"){
       	            	  return false;
       	              }else{
       	            	  return true;
-      	              }
+      	              }      	              
   	        	  	},
     	        	callback: function(key, opt){
       	              	var node = $.ui.fancytree.getNode(opt.$trigger);
@@ -1112,6 +1133,9 @@
     	          "rcommunity": {name: "修改只读团体名", icon: "edit",
     	    		  disabled: function(key, opt){
     	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+    	        		  if(sessionStorage.authlevel == 3){
+	  	        			return true;
+	  	        		  }
         	              if(node.data.type == "device"){
         	            	  return false;
         	              }else{
@@ -1152,6 +1176,9 @@
       	        "wcommunity": {name: "修改只写团体名", icon: "edit",
       	        	disabled: function(key, opt){
   	        		  var node = $.ui.fancytree.getNode(opt.$trigger);
+  	        		  if(sessionStorage.authlevel == 3){
+  	        			return true;
+  	        		  }
       	              if(node.data.type == "device"){
       	            	  return false;
       	              }else{
@@ -1190,7 +1217,10 @@
       	          },    	   	             	 
     	          "delete": {name: "删除", icon: "delete",
     	        	  disabled: function(key, opt){
-      	        		  var node = $.ui.fancytree.getNode(opt.$trigger);      	        		  
+      	        		  var node = $.ui.fancytree.getNode(opt.$trigger);    
+      	        		  if(sessionStorage.authlevel == 3){
+      	        			return true;
+      	        		  }
           	              if(node.data.type == "group" || node.data.type == "device"){
           	            	  return false;
           	              }else{
