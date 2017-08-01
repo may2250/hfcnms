@@ -8,7 +8,7 @@
 	var tbl_alarmlists = null;
 	var lazyLoadData = null;
 	$(function() {
-		var encstr = localStorage.userName+'/'+ sessionStorage.passWord;
+		var encstr = sessionStorage.userName+'/'+ sessionStorage.passWord;
 		if(localStorage.void == undefined){
 			localStorage.void = 'on';
 		}
@@ -223,7 +223,7 @@
     	
     	$('.nav_managerauth').click(function(){
     		var datastring = '';
-    		if(localStorage.userName == 'admin'){
+    		if(sessionStorage.userName == 'admin'){
     			datastring = '{"cmd":"getuserlist"}';
     			webSocket.send(datastring);
     		}else{
@@ -298,7 +298,7 @@
 	   			 alert($.i18n.prop('message_passworderr'));
 	   			 return;
 	   		 }
-	   		 var datastring = '{"cmd":"handleuser","target":"modifypassword","username":"'+ $('#auth-usernamev').val() + '","oldpassword":"'+ $('#auth-oripassword').val() + '","password":"'+ $('#auth-password').val() + '","AuthTotal":'+ $('#userauth-level').val() + '}';
+	   		 var datastring = '{"cmd":"handleuser","target":"modifypassword_admin","username":"'+ $('#auth-usernamev').val() + '","password":"'+ $('#auth-password').val() + '","AuthTotal":'+ $('#userauth-level').val() + '}';
 	   		 webSocket.send(datastring);
 	   	});
     	
@@ -307,7 +307,7 @@
 	   			 alert($.i18n.prop('message_passworderr'));
 	   			 return;
 	   		 }
-	   		 var datastring = '{"cmd":"handleuser","target":"modifypassword","username":"'+ localStorage.userName + '","oldpassword":"'+ $('#auth-oripassword1').val() + '","password":"'+ $('#auth-password1').val() + '","AuthTotal":0}';
+	   		 var datastring = '{"cmd":"handleuser","target":"modifypassword","username":"'+ sessionStorage.userName + '","oldpassword":"'+ $('#auth-oripassword1').val() + '","password":"'+ $('#auth-password1').val() + '","AuthTotal":0}';
 	   		 webSocket.send(datastring);
 	   	});
     	
@@ -559,10 +559,10 @@
 	function onMessage(event) {
     	var jsonobj =  eval('(' + event.data + ')');
         if(jsonobj.cmd == "getInitTree"){
-        	$('#username')[0].textContent = localStorage.userName;
+        	$('#username')[0].textContent = sessionStorage.userName;
         	initTree(jsonobj.treenodes);        
         }else if(jsonobj.cmd == "loginAuth"){
-        	localStorage.authlevel = jsonobj.level;
+        	sessionStorage.authlevel = jsonobj.level;
         	if(!jsonobj.Authed){
         		window.location.href="/login";
         	}
@@ -570,9 +570,6 @@
         	//解析日志并显示
         	parseLogs(jsonobj);
         	
-        }else if(jsonobj.cmd == "test"){
-        	document.getElementById('messages').innerHTML
-            += '<br />' + jsonobj.message;
         }else if(jsonobj.cmd == "nodeadd"){
         	 var rootNode = $("#dev-fancytree").fancytree("getTree").getNodeByKey(jsonobj.pkey);
         	 if(rootNode != undefined){
@@ -728,10 +725,10 @@
 	
 	function parseUserinfo(jsonobj){		
 		$("#userauth-level").empty();
-		if(jsonobj.target == 'modifypassword'){
+		if(jsonobj.target == 'modifypassword' || jsonobj.target == 'modifypassword_admin'){
 			if(jsonobj.AuthTotal != 0){
-				$('#auth-oripassword').val(jsonobj.password);
-				if(localStorage.userName == 'admin'){
+				//$('#auth-oripassword').val(jsonobj.password);
+				if(sessionStorage.userName == 'admin'){
 					$(".tbl_authman").find("tr").each(function(){
 				       if($(this)[0].cells[0].textContent == jsonobj.username){
 				    	   $(this)[0].cells[2].textContent = jsonobj.AuthTotal;
@@ -1495,7 +1492,7 @@
                 $('.i18n-userid')[0].textContent = $.i18n.prop('message_userid');
                 $('.i18n-trapnotice')[0].textContent = $.i18n.prop('message_trapnotice');
                 $('.i18n-usergroup')[0].textContent = $.i18n.prop('message_usergroup');
-                $('.i18n-oripassword')[0].textContent = $.i18n.prop('message_oripassword');
+                //$('.i18n-oripassword')[0].textContent = $.i18n.prop('message_oripassword');
                 $('.i18n-password')[0].textContent = $.i18n.prop('message_password');
                 $('.i18n-password2')[0].textContent = $.i18n.prop('message_password');
                 $('.i18n-repeat')[0].textContent = $.i18n.prop('message_repeat');

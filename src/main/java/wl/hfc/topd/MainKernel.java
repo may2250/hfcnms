@@ -908,6 +908,8 @@ public class MainKernel {
 				e.printStackTrace();
 			}
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
+		}else if(cmd.equalsIgnoreCase("modifypassword_admin")){
+			handleUpdateUser_admin(jsondata);
 		}else if(cmd.equalsIgnoreCase("modifypassword")){
 			handleUpdateUser(jsondata);
 		}else if(cmd.equalsIgnoreCase("deluser")){
@@ -1000,6 +1002,29 @@ public class MainKernel {
 		}
 
 	}
+	
+	private void handleUpdateUser_admin(JSONObject jsondata) {
+		String uname = jsondata.get("username").toString();// userid
+		nojuUserAuthorizeTableRow uatr;
+		boolean mStatus = true;
+		try {
+			uatr = ICDatabaseEngine1.UserAuthorizeTableFindUser(uname);
+			Byte AuthTotal = Byte.parseByte(jsondata.get("AuthTotal").toString());			
+			
+			mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID, jsondata.get("password").toString(), uatr.AuthTotal);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			mStatus = false;
+		}		
+
+		if (mStatus) {
+			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
+
+		}
+	}
+
 
 	private void handleUpdateUser(JSONObject jsondata) {
 		String uname = jsondata.get("username").toString();// userid

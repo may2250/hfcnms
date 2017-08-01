@@ -82,18 +82,19 @@
 		$(function() {
 			$('#user').val(localStorage.userName);
 			$('#btn-login').click(function(){				
+				sessionStorage.userName = $('#user').val();
 				localStorage.userName = $('#user').val();
 				sessionStorage.passWord = encryptByDES($('#password').val(),enc_key);
-				var encstr = localStorage.userName+'/'+ sessionStorage.passWord;
+				var encstr = sessionStorage.userName+'/'+ sessionStorage.passWord;
 				initWebSocket(encstr);				
 			});
 			
 			$('#password').bind('keypress',function(event){		          
 		         if(event.keyCode == 13) 
 		         {  
-		        	 localStorage.userName = $('#user').val();
+		        	 sessionStorage.userName = $('#user').val();
 					 sessionStorage.passWord = encryptByDES($('#password').val(),enc_key);
-					 var encstr = localStorage.userName+'/'+ sessionStorage.passWord;
+					 var encstr = sessionStorage.userName+'/'+ sessionStorage.passWord;
 					 initWebSocket(encstr);
 		         } 
 		     });
