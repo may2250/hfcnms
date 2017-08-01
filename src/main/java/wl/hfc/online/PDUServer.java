@@ -40,6 +40,7 @@ public class PDUServer extends Thread {
 	public int MinInterval; // 设备数量所决定的最低轮询一遍的时间；
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	private static Logger log = Logger.getLogger(PDUServer.class);
+	private static Logger log2 = Logger.getLogger("myTest1");
 	// private EnumLogoVersion logoVersion;//当前网管定制版本
 	private Snmp session;
 	private boolean isOnlineThreadRun = true;
@@ -55,7 +56,9 @@ public class PDUServer extends Thread {
 	
 	
 	public PDUServer() {
-
+/*		
+		String[] excepStrings=new String[6];
+		excepStrings[8]="sdfsdf";*/
 		try {
 			initSnmpAPI();
 			PDUServer_status = true;
@@ -64,7 +67,7 @@ public class PDUServer extends Thread {
 		} catch (Exception ex1) {
 			PDUServer_status = false;
 			ex1.printStackTrace();
-			log.info(ex1.getMessage());
+			log.error(ex1.getMessage());
 		}
 		
 		this.setName("PDUServer");
@@ -130,6 +133,7 @@ public class PDUServer extends Thread {
 						readResponse(event);
 					} catch (Exception e) {
 						e.printStackTrace();
+						log2.info(e.getMessage());
 					}
 					session.cancel(outpdu, this);
 
@@ -242,8 +246,9 @@ public class PDUServer extends Thread {
 					json.put("val", serStr);
 					sendToQueue(json.toJSONString(), HFCALARM_MESSAGE);
 
-				} catch (Exception e) {
-					// TODO: handle exception
+				} catch (Exception e) {	
+					// TODO: handle exception					
+					log2.info(e.getMessage());
 				}
 
 			}
@@ -274,7 +279,7 @@ public class PDUServer extends Thread {
 		while (true) {		
 			
 
-	
+
 			
 			try {
 				if (this.listDevHash==null) {			
@@ -383,7 +388,7 @@ public class PDUServer extends Thread {
 				// +
 				// ex1.Message);
 				ex1.printStackTrace();
-				log.info(ex1.getMessage());
+			//	log.info(ex1.getMessage());
 			}
 
 		}

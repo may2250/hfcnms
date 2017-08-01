@@ -583,9 +583,7 @@ public class CDatabaseEngine {
 
 			if (ip.equalsIgnoreCase("")) {
 				sqlInsert = "SELECT traplogtable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString + "';";
-			} else {
-				
-				
+			} else {				
 				 InetAddress addr;
 				try {
 					 addr = InetAddress.getByName(ip);
@@ -620,6 +618,83 @@ public class CDatabaseEngine {
 
 	}
 
+    public static  boolean passType(int type,nojuTrapLogTableRow pRow)//return true，就是这条告警想通过过滤的强烈愿望
+    {
+        if (type == 0)
+        {
+            return true;
+        }
+
+        if (type == 2)
+        {
+            if (pRow.TrapLogType == TrapLogTypes.Offline)
+            {
+                return true;
+            }
+        }
+
+        if (type == 1)
+        {
+            if (pRow.TrapLogType != TrapLogTypes.Offline)
+            {
+                return true;
+            }
+        }
+   
+
+        return false;
+       
+
+    }
+    public static  boolean passStatus(int status, nojuTrapLogTableRow pRow)//return true，就是这条告警想通过过滤的强烈愿望
+    {
+        if (status == 0)
+        {
+            return true;
+        }
+
+        if (status == 1)//已处理
+        {
+            if (!pRow.isTreated.equalsIgnoreCase(""))
+            {
+                return true;
+            }
+        }
+
+        if (status == 2)
+        {
+            if (pRow.isTreated.equalsIgnoreCase(""))
+            {
+                return true;
+            }
+        }
+
+
+        return false;
+
+
+    }
+    
+
+    public static  boolean passNename(String neName,nojuTrapLogTableRow pRow)//return true，就是这条告警想通过过滤的强烈愿望
+    {
+        if (neName.equalsIgnoreCase(""))
+        {
+            return true;
+        }
+
+        if (pRow.neName.contains(neName))//已处理
+        {     
+            return true;                
+        }  
+
+
+        return false;
+
+
+    }
+
+	
 	public int operLogInsertRow(nojuOperLogTableRow row) {
 
 		ResultSet rs = null;
@@ -675,9 +750,17 @@ public class CDatabaseEngine {
 		ResultSet rs = null;
 		try {
 			String sqlInsert;
+			
+			if (userNme.equalsIgnoreCase("")) {
+				sqlInsert = "SELECT operlogtable.*FROM operlogtable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString + "';";
+			} else {
+				
+				
+				sqlInsert = "SELECT operlogtable.*FROM operlogtable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString
+						+"' AND OperLogUser='" + userNme + "';";
+			}	
+			
 
-			sqlInsert = "SELECT operlogtable.*FROM operlogtable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString
-					+"' AND OperLogUser='" + userNme + "';";
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 			rs = pstmt.executeQuery(sqlInsert);
