@@ -93,7 +93,8 @@ public class StaticMemory {
 
 			CDevForCMD devmmd = new CDevForCMD(jsondata.get("rcommunity").toString(), jsondata.get("wcommunity").toString(), netaddr);
 			devmmd.HFCType1 =hfctyp1;
-			 
+			devmmd.MD=jsondata.get("md").toString();
+			devmmd.DEVICEID=jsondata.get("deviceid").toString();
 			PDUServerForOneDev PDUServerForOneDev1 = new PDUServerForOneDev(0);
 			osp.snmpPreail.thisDev = devmmd;
 			osp.snmpPreail.sver = PDUServerForOneDev1;

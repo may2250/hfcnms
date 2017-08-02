@@ -138,8 +138,6 @@ public class MainKernel {
 			staticmemory.broadCast(handleOnlineInfo(jsondata));
 		} else if (cmd.equalsIgnoreCase("alarm_message")) {
 			staticmemory.broadCast(message);
-		} else if (cmd.equalsIgnoreCase("log_message")) {
-			staticmemory.broadCast(message);
 		} else if (cmd.equalsIgnoreCase("dbclosed")) {
 			staticmemory.broadCast(message);
 		} else if (cmd.equalsIgnoreCase("severstatus")) {

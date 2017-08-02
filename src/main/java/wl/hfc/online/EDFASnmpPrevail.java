@@ -47,9 +47,12 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 	// single model
 	public static EDFASnmpPrevail me;
 
+	
+	private String pdeviceIDString="";
 
 	public EDFASnmpPrevail(String phsicIndex,String PDeviceID) {
 		super(phsicIndex);
+		pdeviceIDString=PDeviceID;
 		mjVariables = new VariableSnmpVar[3];
 		// tables
 		cInputVariables = new VariableSnmpVar[2];
@@ -228,9 +231,13 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 			}
 
 		}
+		
+		
+
 		return pJson;
 
 	}
+	
 
 	public SnmpTableInfo getPmWithModelNumberTf() throws Exception {
 		PDU outPDU;

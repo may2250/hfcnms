@@ -58,7 +58,7 @@ public class TrapPduServer extends Thread {
 	//	System.out.println("----------------path--->>>" + filePath);
 		
 	
-	    this.trpcss  = new TrapProCenter(true, "");
+	    this.trpcss  = new TrapProCenter(true, filePath);
 
 	
 

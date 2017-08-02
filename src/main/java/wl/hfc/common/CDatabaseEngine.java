@@ -542,8 +542,9 @@ public class CDatabaseEngine {
 		return lastId;
 	}
 
-	public int trapLogEditRow(int TrapLogID, String treatment) {
-		String IsTreatMent = new Date().toString();// 消失时间
+	public int trapLogEditRow(int TrapLogID, String treatment,String IsTreatMent) {
+		
+
 		Connection con = offNewCoon();
 		if (con == null) {
 			return -1;

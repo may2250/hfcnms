@@ -69,7 +69,7 @@ public class Realtime_param_call extends Thread {
 				}
 			}	
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1000);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
