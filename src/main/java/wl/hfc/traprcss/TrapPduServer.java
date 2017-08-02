@@ -58,7 +58,7 @@ public class TrapPduServer extends Thread {
 	//	System.out.println("----------------path--->>>" + filePath);
 		
 	
-	   this.trpcss  = new TrapProCenter(true, filePath);
+	    this.trpcss  = new TrapProCenter(true, "");
 
 	
 
@@ -79,6 +79,12 @@ public class TrapPduServer extends Thread {
 	private Address targetAddress = null;
 
 	public void run() {
+		
+		if (!MibProcess.MibProcess_status) {
+			TrapPduServer_status=false;
+			logger.info(this.getName()+ "....no need starting.......");
+			return;
+		}
 
 		logger.info(this.getName()+ "....starting.......");
 		try {
@@ -105,7 +111,7 @@ public class TrapPduServer extends Thread {
 		} catch (Exception e) {
 			TrapPduServer_status=false;
 			e.printStackTrace();
-			//logger.error(e.getMessage());
+			logger.error(e.getMessage());
 			return;
 			
 		}

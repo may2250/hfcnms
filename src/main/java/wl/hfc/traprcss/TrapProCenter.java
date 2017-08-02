@@ -34,6 +34,8 @@ public class TrapProCenter {
 
 	public TrapProCenter(Boolean enableMibProcess, String pPath) {
 		super();
+		
+	
 		new MibProcess(pPath);
 
 	}

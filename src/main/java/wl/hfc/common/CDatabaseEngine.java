@@ -60,7 +60,7 @@ public class CDatabaseEngine {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			log.info(e.getMessage());
+			log.error(e.getMessage());
 
 			flag = false;
 
@@ -563,7 +563,7 @@ public class CDatabaseEngine {
 
 	}
 
-	public ArrayList<nojuTrapLogTableRow> getTrapRowsWithTime(Date beginTime, Date endTime, String ip) {
+	public ArrayList<nojuTrapLogTableRow> getTrapRowsWithTime(Date beginTime, Date endTime, String ip,int level,int status) {
 		ArrayList<nojuTrapLogTableRow> results = new ArrayList<nojuTrapLogTableRow>();
 
 		Connection con = offNewCoon();
@@ -606,7 +606,12 @@ public class CDatabaseEngine {
 						rs.getString(i++), rs.getTimestamp(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++));
 				newURow.TrapLogID = rs.getInt(1);
 
-				results.add(newURow);
+				
+		          if (passStatus(status, newURow) && passLevel(level, newURow))//未处理
+		          {
+		              results.add(newURow);
+		          }
+
 			}
 
 		} catch (Exception ex) {
@@ -669,6 +674,22 @@ public class CDatabaseEngine {
             }
         }
 
+
+        return false;
+
+
+    }
+    public static  boolean passLevel(int level, nojuTrapLogTableRow pRow)//return true，就是这条告警想通过过滤的强烈愿望
+    {
+        if (level == -1)
+        {
+            return true;
+        }
+
+         if (level==pRow.level) {
+        	 return true;
+			
+		}
 
         return false;
 
