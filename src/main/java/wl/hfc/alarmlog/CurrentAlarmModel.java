@@ -42,7 +42,7 @@ public class CurrentAlarmModel extends Thread {
 	public static CurrentAlarmModel me;
 	private static Logger log = Logger.getLogger(CurrentAlarmModel.class);
 	
-	private static Logger log2 = Logger.getLogger("myTest1");
+	//private static Logger log2 = Logger.getLogger("myTest1");
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	
 	private int MAX_TRAPNUMBER = 500;
@@ -167,8 +167,7 @@ public class CurrentAlarmModel extends Thread {
 				} 
 				 else if (cmd.equalsIgnoreCase("insertuserlog")) {
 
-						InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Create user: " : "创建用户：") + "： " + jsondata.get("title").toString() + " @ "
-								+ jsondata.get("key").toString(), jsondata.get("operater").toString());
+						InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Create user: " : "创建用户：") + "： " + jsondata.get("title").toString(), jsondata.get("title").toString());
 					} 
 				 else if (cmd.equalsIgnoreCase("deluserlog")) {
 

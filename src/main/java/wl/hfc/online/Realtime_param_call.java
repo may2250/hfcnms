@@ -33,7 +33,7 @@ public class Realtime_param_call extends Thread {
 		
 		log.info(this.getName()+ "....starting.......");
 		
-		while (true) {			
+		while (true) {		
 			if(!staticmemory.getAllRealTimeDev().isEmpty()){
 				System.out.println("RealTimeDev length is:  "+ staticmemory.getAllRealTimeDev().size());
 				Enumeration<String> e1 = staticmemory.getAllRealTimeDev().keys();
@@ -63,7 +63,7 @@ public class Realtime_param_call extends Thread {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
+						//log.info("......[x1]Realtime_param_call Done!" + e.getMessage());			
 
 					}
 				}

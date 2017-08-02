@@ -57,12 +57,10 @@ public class TrapPduServer extends Thread {
 		filePath = filePath + "mibs";
 	//	System.out.println("----------------path--->>>" + filePath);
 		
-		try {
-			this.trpcss  = new TrapProCenter(true, filePath);
+	
+	   this.trpcss  = new TrapProCenter(true, filePath);
 
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
+	
 
 		this.setName("TrapPduServer");
 		me=this;
@@ -107,7 +105,7 @@ public class TrapPduServer extends Thread {
 		} catch (Exception e) {
 			TrapPduServer_status=false;
 			e.printStackTrace();
-			logger.error(e.getMessage());
+			//logger.error(e.getMessage());
 			return;
 			
 		}
