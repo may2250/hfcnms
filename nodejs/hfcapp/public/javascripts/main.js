@@ -412,8 +412,8 @@
     		$('#alarmfilter-source').removeClass("ui-state-error-custom"); 
     		 var datastring = '{"cmd":"alarmsearch","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
     		 + '","customdate":"'+ $("#alarmfilter-date").prop('selectedIndex') + '","source":"'+ $('#alarmfilter-source').val() 
-    		 + '","level":"'+ $("#alarmfilter-level").prop('selectedIndex') + '","type":"'+ $('#alarmfilter-type').val()
-    		 + '","treatment":"'+ $("#alarmfilter-istreatment").prop('selectedIndex') + '","nename":"'+ $('#alarmfilter-nename').val() +'"}';
+    		 + '","level":"'+ $("#alarmfilter-level").val() + '","type":"'+ $('#alarmfilter-type').val()
+    		 + '","treatment":"'+ $("#alarmfilter-istreatment").val() + '","nename":"'+ $('#alarmfilter-nename').val() +'"}';
     		 webSocket.send(datastring);
     		 $("#alarmlist-title")[0].textContent = $.i18n.prop('message_navhistoryalarm');
     		 $("#modal_alarm").modal('hide');
@@ -1540,6 +1540,17 @@
                 $('#mymodal_adduser')[0].textContent = $.i18n.prop('message_adduser');
                 $('.i18n-ladmin')[0].textContent = $.i18n.prop('message_admin');
                 $('.i18n-lobserver')[0].textContent = $.i18n.prop('message_observer');
+                
+                $('#alarmfilter-level-lb')[0].textContent = $.i18n.prop('message_tbllevel');
+                $('#alarmfilter-level')[0].options[0].textContent = $.i18n.prop('message_all');
+                $('#alarmfilter-level')[0].options[1].textContent = $.i18n.prop('message_urgentalarm');
+                $('#alarmfilter-level')[0].options[2].textContent = $.i18n.prop('message_secalarm');
+                $('#alarmfilter-level')[0].options[3].textContent = $.i18n.prop('message_generalalarm');
+                
+                $('#alarmfilter-istreatment-lb')[0].textContent = $.i18n.prop('message_statusinfo');
+                $('#alarmfilter-istreatment')[0].options[0].textContent = $.i18n.prop('message_all');
+                $('#alarmfilter-istreatment')[0].options[1].textContent = $.i18n.prop('message_acknowledged');
+                $('#alarmfilter-istreatment')[0].options[2].textContent = $.i18n.prop('message_unacknowledged');
                 
                 $(".context-menu-list li").each(function(i){
         			switch(i){

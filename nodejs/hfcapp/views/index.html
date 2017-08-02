@@ -495,31 +495,32 @@
 		 					<td id="dilg-source">来源</td>
 		 					<td><input type="text" class="form-control" id="alarmfilter-source" value="" ></td>
 		 				</tr>
-		 				<!-- <tr>
-		 					<td>级别</td>
+		 				<tr>
+		 					<td id="alarmfilter-level-lb">级别</td>
 		 					<td><select name="alarmfilter-level" id="alarmfilter-level">
-							      <option selected>所有告警</option>
-							      <option>紧急告警</option>
-							      <option>重要告警</option>
-							      <option>普通信息</option>
+							      <option value="-1" selected>所有告警</option>
+							      <option value="2">紧急告警</option>
+							      <option value="1">重要告警</option>
+							      <option value="0">普通信息</option>
 							    </select>
 							</td>
-							<td>原因/类型</td>
-		 					<td><select name="alarmfilter-type" id="alarmfilter-type">
-							      <option selected>所有</option>
-							      <option>参数</option>
-							      <option>掉线</option>
+							<td id="alarmfilter-istreatment-lb">状态/是否处理</td>
+		 					<td><select name="alarmfilter-istreatment" id="alarmfilter-istreatment">
+							      <option value="0" selected>所有</option>
+							      <option value="1">已处理</option>
+							      <option value="2">未处理</option>
 							    </select>
 							</td>
 		 				</tr>
-		 				<tr>
-		 					<td>状态/是否处理</td>
-		 					<td><select name="alarmfilter-istreatment" id="alarmfilter-istreatment">
-							      <option selected>所有</option>
-							      <option>已处理</option>
-							      <option>未处理</option>
+		 				<!-- <tr>
+		 					<td>原因/类型</td>
+		 					<td><select name="alarmfilter-type" id="alarmfilter-type">
+							      <option value="0" selected>所有</option>
+							      <option value="1">参数</option>
+							      <option value="2">掉线</option>
 							    </select>
 							</td>
+		 					
 							<td>设备名/机房名</td>
 		 					<td><input type="text" class="form-control" id="alarmfilter-nename" value="" ></td>
 		 				</tr> -->
