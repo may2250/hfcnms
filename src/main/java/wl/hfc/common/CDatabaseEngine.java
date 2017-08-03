@@ -834,7 +834,7 @@ public class CDatabaseEngine {
 			
 			if (rowCount>0) {
 				
-				//name exsit，return
+				log.info(row.UserName+"is exsit");
 				return -1;
 			}
 			

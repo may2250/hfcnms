@@ -698,7 +698,15 @@ public class MainKernel {
 		} catch (Exception e) {// invalid ip
 			return null;
 		}
-
+		 if(listDevHash.containsKey(addr.getHostAddress()))
+		{
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "devaddfalse");
+			rootjson.put("netip",addr.getHostAddress());		
+			rootjson.put("desc", "Device already exist");		
+			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
+			return null;
+		}
 		nojuDeviceTableRow mDeviceTableRow = new nojuDeviceTableRow(addr.getHostAddress(), DProcess.netTypeFromStringNetTypes(devtypestr));
 		mDeviceTableRow.UserGroupID = usergroupID;
 		mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
@@ -762,6 +770,7 @@ public class MainKernel {
 			return dev;
 
 		}
+	
 
 		return null;
 	}
@@ -984,7 +993,7 @@ public class MainKernel {
 
 		boolean mStatus = false;
 		Byte AuthTotal = Byte.parseByte(jsondata.get("AuthTotal").toString());
-
+		//AuthTotal++;
 		nojuUserAuthorizeTableRow newRow = new nojuUserAuthorizeTableRow(-1, jsondata.get("username").toString(), AuthTotal, jsondata.get("password")
 				.toString());
 
@@ -1046,8 +1055,8 @@ public class MainKernel {
 		try {
 			uatr = ICDatabaseEngine1.UserAuthorizeTableFindUser(uname);
 			Byte AuthTotal = Byte.parseByte(jsondata.get("AuthTotal").toString());			
-			
-			mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID, jsondata.get("password").toString(), uatr.AuthTotal);
+			//AuthTotal++;
+			mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID, jsondata.get("password").toString(), AuthTotal);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
