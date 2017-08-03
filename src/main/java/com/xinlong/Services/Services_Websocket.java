@@ -207,12 +207,12 @@ public class Services_Websocket {
 			    	sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
 			    	
 			    	
-					// for syslog
+	/*				// for syslog
 					rootjson = new JSONObject();
 					rootjson.put("cmd", "userlogin");
 					rootjson.put("title",username);
 					rootjson.put("operater",username);			
-					sendToQueue(rootjson.toJSONString(), "currentalarm.message");
+					sendToQueue(rootjson.toJSONString(), "currentalarm.message");*/
 				}
 								
 		    	

@@ -56,9 +56,7 @@ public class PDUServer extends Thread {
 	
 	
 	public PDUServer() {
-/*		
-		String[] excepStrings=new String[6];
-		excepStrings[8]="sdfsdf";*/
+
 		try {
 			initSnmpAPI();
 			PDUServer_status = true;

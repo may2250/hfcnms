@@ -304,10 +304,10 @@ public class CurrentAlarmModel extends Thread {
 			
 			
 			
-
+              int level= Integer.parseInt(jsondata.get("level").toString());
 			
-			
-			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend,jsondata.get("source").toString());
+              int statusss= Integer.parseInt(jsondata.get("treatment").toString());
+			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend,jsondata.get("source").toString(),level,statusss);
 			// System.out.println("-------------traprow-size =" +
 			// traprow.size());
 			for (nojuTrapLogTableRow prow : traprow) {
@@ -548,8 +548,13 @@ public class CurrentAlarmModel extends Thread {
 
 	public void editTreatMent(int TrapLogID, String content) {
 
+		
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		String IsTreatMent = sdf.format(new Date());
+
 		try {
-			int rst = logEngine.trapLogEditRow(TrapLogID, content);
+			int rst = logEngine.trapLogEditRow(TrapLogID, content,IsTreatMent);
 		} catch (Exception e) {
 			return;
 
@@ -573,8 +578,8 @@ public class CurrentAlarmModel extends Thread {
 					invalidRowsTable.remove(removeRow.TrapLogID);
 				}
 
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
-				item.isTreated = df.format(new Date());// new
+	
+				item.isTreated = IsTreatMent;// new
 
 				item.TrapTreatMent = content;
 
@@ -584,11 +589,11 @@ public class CurrentAlarmModel extends Thread {
 				logjson.put("id", item.TrapLogID);
 				logjson.put("level", NlogType.getAlarmString(item.TrapLogType));
 				logjson.put("addr", item.TrapDevAddress);
-				logjson.put("path", "grp1/xxxx");
+				logjson.put("path", item.neName);
 				logjson.put("type", item.TrapLogType.toString());
 				logjson.put("paramname", item.parmName);
 				logjson.put("paramvalue", item.paramValue);
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD hh:mm:ss");
+				 sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 				logjson.put("eventtime", sdf.format(item.TrapLogTime));
 				logjson.put("solved", item.TrapTreatMent);
 				logjson.put("solvetime", item.isTreated);
@@ -656,7 +661,7 @@ public class CurrentAlarmModel extends Thread {
 		logjson.put("content", row.OperLogContent);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		logjson.put("time", sdf.format(row.OperLogTime));
-		sendToQueue(logjson.toJSONString(), MAINKERNEL_MESSAGE);
+		staticmemory.broadCast(logjson.toJSONString());
 
 	}
 
