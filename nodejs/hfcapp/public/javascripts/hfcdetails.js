@@ -568,6 +568,12 @@ function checkFloat(str){
 	return true;
 }
 
+function CheckStr(str){
+    var myReg = /^[^@\/\'\\\"#$%&\^\*]+$/;
+    if(myReg.test(str)) return true; 
+    return false; 
+}
+
 function getDays(strDateStart,strDateEnd){
 	   var strSeparator = "-"; //日期分隔符
 	   var oDate1;

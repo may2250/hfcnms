@@ -84,7 +84,7 @@
 			$('#btn-login').click(function(){				
 				sessionStorage.userName = $('#user').val();
 				localStorage.userName = $('#user').val();
-				sessionStorage.passWord = encryptByDES($('#password').val(),enc_key);
+				sessionStorage.passWord = $('#password').val();//encryptByDES($('#password').val(),enc_key);
 				var encstr = sessionStorage.userName+'/'+ sessionStorage.passWord;
 				initWebSocket(encstr);				
 			});
@@ -93,7 +93,8 @@
 		         if(event.keyCode == 13) 
 		         {  
 		        	 sessionStorage.userName = $('#user').val();
-					 sessionStorage.passWord = encryptByDES($('#password').val(),enc_key);
+		        	 localStorage.userName = $('#user').val();
+					 sessionStorage.passWord = $('#password').val();//encryptByDES($('#password').val(),enc_key);
 					 var encstr = sessionStorage.userName+'/'+ sessionStorage.passWord;
 					 initWebSocket(encstr);
 		         } 

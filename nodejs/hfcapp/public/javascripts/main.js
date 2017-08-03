@@ -7,8 +7,9 @@
 	var tbl_loglists = null;
 	var tbl_alarmlists = null;
 	var lazyLoadData = null;
+	var encstr;
 	$(function() {
-		var encstr = sessionStorage.userName+'/'+ sessionStorage.passWord;
+		encstr = sessionStorage.userName+'/'+ sessionStorage.passWord;
 		if(localStorage.void == undefined){
 			localStorage.void = 'on';
 		}
@@ -144,11 +145,11 @@
         } );
     	
     	$('.tbl_authman tbody').on( 'click', 'tr', function () {
-    		var datastring = '{"cmd":"handleuser","target":"getuserinfo","username":"' + $(this)[0].cells[0].textContent  + '"}';
-	    	webSocket.send(datastring);            
+    		var datastring = '{"cmd":"handleuser","target":"getuserinfo","username":"' + $(this)[0].cells[1].textContent  + '"}';
+	    	send(datastring);            
         	$('.tbl_authman tr.selected').removeClass('selected');
             $(this).addClass('selected');
-            if($(this)[0].cells[0].textContent == 'admin'){
+            if($(this)[0].cells[1].textContent == 'admin'){
             	$('#btn-authdel').attr("disabled", true);
             }else{
             	$('#btn-authdel').attr("disabled", false);
@@ -184,7 +185,7 @@
 			        	              };  
 			        	              
 			        	              var datastring = '{"cmd":"devsearch","community":"'+$("#search-community").val() +'","devtype":"'+ $("#search-stype").prop('selectedIndex') +'","startip":"'+ $("#search-sip").val()+'","endip":"'+ $("#search-eip").val() +'","target":"start"}';
-		      	        	    	  webSocket.send(datastring);
+		      	        	    	  send(datastring);
 	        	    		  	  };		        	    		  
 	        	            }
 	        	      },
@@ -220,7 +221,7 @@
     	
     	$('.nav_server').click(function(){    		
     		var datastring = '{"cmd":"severstatus"}';
-	    	webSocket.send(datastring);
+	    	send(datastring);
     		
     	});
     	
@@ -228,7 +229,7 @@
     		var datastring = '';
     		if(sessionStorage.userName == 'admin'){
     			datastring = '{"cmd":"getuserlist"}';
-    			webSocket.send(datastring);
+    			send(datastring);
     		}else{
     			$('#auth-oripassword').val("");
     			$('#auth-password').val("");
@@ -283,7 +284,7 @@
     		if((confirm( $.i18n.prop('message_sure'))==true))
         	{
     			var datastring = '{"cmd":"handleuser","target":"deluser","username":"'+ $('#auth-usernamev').val() + '"}';
-       		 	webSocket.send(datastring);
+       		 	send(datastring);
         	}
     		 
     	});
@@ -297,12 +298,32 @@
     	
     	
     	$('#btn-authsub').click(function(){
+    		if($('#auth-password').val().length > 12){
+	   			 $('#auth-password').addClass("ui-state-error-custom");
+	   			 alert($.i18n.prop('message_passstrerror'));
+	   			 return;
+	   		 }
+	   		 if(!CheckStr($('#auth-password').val())){
+	   			 $('#auth-password').addClass("ui-state-error-custom");
+	   			 alert($.i18n.prop('message_passstrerror'));
+	   			 return;
+	   		 }
+	   		 if(!CheckStr($('#auth-rpassword').val())){
+	   			 $('#auth-rpassword').addClass("ui-state-error-custom");
+	   			 alert($.i18n.prop('message_passstrerror'));
+	   			 return;
+	   		 }
+	   		 if($('#auth-rpassword').val().length > 12){
+	   			 $('#auth-rpassword').addClass("ui-state-error-custom");
+	   			 alert($.i18n.prop('message_passstrerror'));
+	   			 return;
+	   		 }
 	   		 if($('#auth-password').val() != $('#auth-rpassword').val()){
 	   			 alert($.i18n.prop('message_passworderr'));
 	   			 return;
 	   		 }
 	   		 var datastring = '{"cmd":"handleuser","target":"modifypassword_admin","username":"'+ $('#auth-usernamev').val() + '","password":"'+ $('#auth-password').val() + '","AuthTotal":'+ $('#userauth-level').val() + '}';
-	   		 webSocket.send(datastring);
+	   		 send(datastring);
 	   	});
     	
     	$('#btn-authsub1').click(function(){
@@ -311,7 +332,7 @@
 	   			 return;
 	   		 }
 	   		 var datastring = '{"cmd":"handleuser","target":"modifypassword","username":"'+ sessionStorage.userName + '","oldpassword":"'+ $('#auth-oripassword1').val() + '","password":"'+ $('#auth-password1').val() + '","AuthTotal":0}';
-	   		 webSocket.send(datastring);
+	   		 send(datastring);
 	   	});
     	
     	$('#btn-authadd').click(function(){
@@ -319,6 +340,8 @@
     		$('#auth-password2').val('');
     		$('#auth-rpassword2').val('');
     		$('#auth-username2').removeClass("ui-state-error-custom");
+    		$('#auth-password2').removeClass("ui-state-error-custom");
+    		$('#auth-rpassword2').removeClass("ui-state-error-custom");
     		$("#modal_adduser").modal();
 	   	});
     	
@@ -328,12 +351,32 @@
     			 $('#auth-username2').addClass("ui-state-error-custom");
     			 return;
     		 }
+    		 if($('#auth-password2').val().length > 12){
+    			 $('#auth-password2').addClass("ui-state-error-custom");
+    			 alert($.i18n.prop('message_passstrerror'));
+    			 return;
+    		 }
+    		 if(!CheckStr($('#auth-password2').val())){
+    			 $('#auth-password2').addClass("ui-state-error-custom");
+    			 alert($.i18n.prop('message_passstrerror'));
+    			 return;
+    		 }
+    		 if(!CheckStr($('#auth-rpassword2').val())){
+    			 $('#auth-rpassword2').addClass("ui-state-error-custom");
+    			 alert($.i18n.prop('message_passstrerror'));
+    			 return;
+    		 }
+    		 if($('#auth-rpassword2').val().length > 12){
+    			 $('#auth-rpassword2').addClass("ui-state-error-custom");
+    			 alert($.i18n.prop('message_passstrerror'));
+    			 return;
+    		 }
 	   		 if($('#auth-password2').val() != $('#auth-rpassword2').val()){
 	   			 alert($.i18n.prop('message_passworderr'));
 	   			 return;
 	   		 }
 	   		 var datastring = '{"cmd":"handleuser","target":"adduser","username":"'+ $('#auth-username2').val() + '","password":"'+ $('#auth-password2').val() + '","AuthTotal":"'+ $('#adduser-level').val() + '"}';
-	   		 webSocket.send(datastring);
+	   		 send(datastring);
 	   	});
     	
     	$('#modal_searchresult').on('hidden.bs.modal', function (e) {
@@ -356,7 +399,7 @@
     			 strs = $(this).val().split("/"); //字符分割 
     			 //发送到服务端注册设备
     			 var datastring = '{"cmd":"deviceadd","key":"'+ node.key + '","devtype":"'+ strs[1] + '","rcommunity":"public","wcommunity":"public","devname":"'+ strs[0] + '","netip":"'+ strs[0] +'"}';
- 	    		 webSocket.send(datastring);
+ 	    		 send(datastring);
     			 
     		     //删除该行
     			 $(this).parent().parent().remove();
@@ -414,7 +457,7 @@
     		 + '","customdate":"'+ $("#alarmfilter-date").prop('selectedIndex') + '","source":"'+ $('#alarmfilter-source').val() 
     		 + '","level":"'+ $("#alarmfilter-level").val() + '","type":"'+ $('#alarmfilter-type').val()
     		 + '","treatment":"'+ $("#alarmfilter-istreatment").val() + '","nename":"'+ $('#alarmfilter-nename').val() +'"}';
-    		 webSocket.send(datastring);
+    		 send(datastring);
     		 $("#alarmlist-title")[0].textContent = $.i18n.prop('message_navhistoryalarm');
     		 $("#modal_alarm").modal('hide');
     		 $("#modal_alarmlists").modal();
@@ -504,7 +547,7 @@
     	$('#btn-optlogok').click(function(){
 	   		 var datastring = '{"cmd":"optlogsearch","start":"'+ $('#datepicker_optstart').val() + '","end":"'+ $('#datepicker_optend').val() 
 	   		 + '","optname":"'+ $('#optfilter-name').val() +'"}';
-	   		 webSocket.send(datastring);
+	   		 send(datastring);
 	   		 $("#optlist-title")[0].textContent = $.i18n.prop('message_navoptlog');
 	   		 $("#modal_optlog").modal('hide');
 	   		 $("#modal_optlists").modal();
@@ -616,7 +659,7 @@
 	       		 //关闭正打开的设备信息界面
 	       		$('.candile').empty();
 	       		var datastring = '{"cmd":"deviceclose","ip":"' + node.key + '"}';
-	       		webSocket.send(datastring);
+	       		send(datastring);
 	       	 }
 	         
         }else if(jsonobj.cmd == "deviceadd"){
@@ -659,7 +702,7 @@
         }else if(jsonobj.cmd == "devsearchprocess"){
         	if(jsonobj.process == 100){        		
         		var datastring = '{"cmd":"getgrouptree"}';
-    	    	webSocket.send(datastring);    	    	
+    	    	send(datastring);    	    	
         	}else{
         		$(".progress-bar").width(jsonobj.process+ "%");
         	}
@@ -742,10 +785,11 @@
 				//$('#auth-oripassword').val(jsonobj.password);
 				if(sessionStorage.userName == 'admin'){
 					$(".tbl_authman").find("tr").each(function(){
-				       if($(this)[0].cells[0].textContent == jsonobj.username){
+				       if($(this)[0].cells[1].textContent == jsonobj.username){
 				    	   $(this)[0].cells[2].textContent = jsonobj.AuthTotal;
 				       }
 				    });
+					alert('Success!');
 				}
 			}else{
 				$("#modal_authmanbase").modal('hide');
@@ -762,10 +806,10 @@
 			$("#modal_adduser").modal('hide');
 			var tr = '<tr>'+
             '<td>'+
-                jsonobj.username +                       
+                jsonobj.key +                       
             '</td>'+
             '<td>'+
-            	jsonobj.key + 
+            	jsonobj.username + 
             '</td>'+
             '<td>'+
         		jsonobj.AuthTotal +  
@@ -794,15 +838,21 @@
 	}
 	
 	function parseUserlist(jsonobj){
-		$('.tbl_authman tbody').empty();
+		$('.tbl_authman tbody').empty();	
+		$('#auth-usernamev').val("");
+		$('#auth-oripassword').val("");
+		$('#auth-password').val("");
+		$('#auth-rpassword').val("");
+		$('#btn-authdel').attr("disabled", true);		
+		$('#btn-authsub').attr("disabled", true);
 		$("#modal_authman").modal();
 		$.each(jsonobj.userlist, function (n, value) {
 			var tr = '<tr>'+
                 '<td>'+
-                    value.username +                       
+                    value.userid +                       
                 '</td>'+
                 '<td>'+
-                	value.userid + 
+                	value.username + 
                 '</td>'+
                 '<td>'+
             		value.level +
@@ -812,7 +862,7 @@
 	        	'</td>'+
             '</tr>';
 			$('.tbl_authman tbody').append(tr);
-        });
+        });		
 	}
 	
 	function parseServer(jsonobj){
@@ -942,7 +992,7 @@
         			if(jsonobj.ip == __globalobj__._realDevice.key){
         				//设备下线，关闭详细信息界面
         				var datastring = '{"cmd":"deviceclose","ip":"' + jsonobj.ip + '"}';
-        				webSocket.send(datastring);
+        				send(datastring);
         	  		  	$('.candile').empty();
         	  		  	__globalobj__._realDevice = undefined;
         			}
@@ -1028,7 +1078,7 @@
 	      	        	    	  Ok: function() {	    
 	      	        	    		  if($("#set_value").val() != ""){
 	      	        	    			  var datastring = '{"cmd":"nodeadd","key":"'+node.key +'","type":"'+ node.data.type +'","value":"'+ $("#set_value").val()+'"}';
-		      	        	    		  webSocket.send(datastring);
+		      	        	    		  send(datastring);
 		      	        	    		  $( this ).dialog( "close" );
 	      	        	    		  }else{
 	      	        	    			  $("#set_value").addClass( "ui-state-error-custom" )
@@ -1071,7 +1121,7 @@
     	      	        	    	  Ok: function() {	   
 	    	      	        	    		if($("#newdev_ip").val() != "" && ipvalidate($("#newdev_ip").val())){
 	    	      	        	    			var datastring = '{"cmd":"deviceadd","key":"'+ node.key + '","devtype":"'+ $("#salutation").children('option:selected').val()+ '","rcommunity":"'+ $("#newdev_rcommunity").val()+ '","wcommunity":"'+ $("#newdev_wcommunity").val() + '","devname":"'+ $("#newdev_devname").val()+ '","netip":"'+ $("#newdev_ip").val()+'"}';
-	      	      	        	    		  	webSocket.send(datastring);
+	      	      	        	    		  	send(datastring);
 	      	      	        	    		  	$( this ).dialog( "close" );
 	    	      	        	    		}else{
 	    	      	        	    			$("#newdev_ip").addClass( "ui-state-error-custom" );
@@ -1112,7 +1162,7 @@
 		      	        	    	  Ok: function() {	 
 		      	        	    		if($("#set_value").val() != ""){
 		      	        	    			var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","title":"'+ $("#set_value").val() +'","type":"'+ node.data.type +'","rcommunity":"'+ node.data.rcommunity +'","wcommunity":"'+ node.data.wcommunity+'"}';
-			      	        	    		webSocket.send(datastring);
+			      	        	    		send(datastring);
 			      	        	            $( this ).dialog( "close" );
 		      	        	    		}else{
 		      	        	    			$("#set_value").addClass( "ui-state-error-custom" );
@@ -1155,7 +1205,7 @@
   	      	        	    	  Ok: function() {	    
   	      	        	    		  if($("#set_value").val() != ""){
   	      	        	    			  var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","title":"'+ node.title+'","type":"'+ node.data.type +'","wcommunity":"'+ node.data.wcommunity +'","rcommunity":"'+ $("#set_value").val()+'"}';
-  		      	        	    		  webSocket.send(datastring);
+  		      	        	    		  send(datastring);
   		      	        	    		  $( this ).dialog( "close" );
   	      	        	    		  }else{
   	      	        	    			  $("#set_value").addClass( "ui-state-error-custom" )
@@ -1197,7 +1247,7 @@
 	  	      	        	    	  Ok: function() {	    
 	  	      	        	    		  if($("#set_value").val() != ""){
 	  	      	        	    			  var datastring = '{"cmd":"nodeedit","key":"'+node.key +'","title":"'+ node.title+'","type":"'+ node.data.type +'","rcommunity":"'+ node.data.rcommunity +'","wcommunity":"'+ $("#set_value").val()+'"}';
-	  		      	        	    		  webSocket.send(datastring);
+	  		      	        	    		  send(datastring);
 	  		      	        	    		  $( this ).dialog( "close" );
 	  	      	        	    		  }else{
 	  	      	        	    			  $("#set_value").addClass( "ui-state-error-custom" )
@@ -1244,7 +1294,7 @@
       	              	{
       	              		//删除节点
       	              		var datastring = '{"cmd":"nodedel","key":"'+node.key +'","type":"'+ node.data.type +'","pkey":"'+ node.data.pkey +'"}';
-      	              		webSocket.send(datastring);
+      	              		send(datastring);
       	              	}	      	            
       	            }
     	          }
@@ -1353,7 +1403,7 @@
     
     function lazyLoad(event, data) {
     	var datastring = '{"cmd":"lazyLoad","key":"'+ data.node.key + '"}';
-    	webSocket.send(datastring);
+    	send(datastring);
     	data.result = $.Deferred(function (dfd) {
             setTimeout(function () {
               dfd.resolve(lazyLoadData);
@@ -1375,7 +1425,7 @@
     
     function send(datastring) {  
     	if (webSocket.readyState !== 1) {
-    		initWebSocket();
+    		initWebSocket(encstr);
             setTimeout(function() {
             	webSocket.send(datastring);
             }, 250);

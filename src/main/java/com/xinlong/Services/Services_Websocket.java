@@ -190,7 +190,7 @@ public class Services_Websocket {
     	}else{    		
     		try {
     			//解密
-				String passWord = decrypt(password, deskey);
+				String passWord = password;//decrypt(password, deskey);
 				System.out.println("username::des::" + username + ":::password:des::"+ passWord);
 				//用户认证
 				if(staticmemory.getSessionByuser(username)){
