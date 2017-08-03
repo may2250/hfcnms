@@ -139,7 +139,7 @@ public class Onlinetest {
 		rightNow.setTime(dt);
 		rightNow.add(Calendar.DATE, -1);
 		Date dt2 = rightNow.getTime();
-		ICDatabaseEngine1.getTrapRowsWithTime(dt2, dt, "");
+		ICDatabaseEngine1.getTrapRowsWithTime(dt2, dt, "",-1,0);
 		CurrentAlarmModel CurrentAlarmModel1 = new CurrentAlarmModel();
 		CurrentAlarmModel1.setRedisUtil(redisUtil);
 		CurrentAlarmModel1.logEngine = ICDatabaseEngine1;
