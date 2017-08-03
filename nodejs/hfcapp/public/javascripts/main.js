@@ -784,11 +784,18 @@
         	parseUserlist(jsonobj);
         }else if(jsonobj.cmd == "handleuser"){
         	parseUserinfo(jsonobj);
+        }else if(jsonobj.cmd == "devaddfalse"){
+        	parseAddevfalse(jsonobj);
         }else{
         	document.getElementById('messages').innerHTML
             += '<br />' + event.data;
         }
     }
+	
+	function parseAddevfalse(jsonobj){
+		alert(jsonobj.desc);
+		searchtreenode(jsonobj.netip);
+	}
 	
 	function parseUserinfo(jsonobj){		
 		$("#userauth-level").empty();
@@ -798,7 +805,13 @@
 				if(sessionStorage.userName == 'admin'){
 					$(".tbl_authman").find("tr").each(function(){
 				       if($(this)[0].cells[1].textContent == jsonobj.username){
-				    	   $(this)[0].cells[2].textContent = jsonobj.AuthTotal;
+				    	   if(jsonobj.AuthTotal == 1){
+				    		   $(this)[0].cells[2].textContent = $.i18n.prop('message_superadmin');
+							}else if(jsonobj.AuthTotal == 2){
+								$(this)[0].cells[2].textContent = $.i18n.prop('message_admin');
+							}else{
+								$(this)[0].cells[2].textContent = $.i18n.prop('message_observer');
+							}	
 				       }
 				    });
 					$('#auth-password').removeClass("ui-state-error-custom");
@@ -818,6 +831,14 @@
 			$('#btn-authsub').attr("disabled", true);
 		}else if(jsonobj.target == 'adduser'){
 			$("#modal_adduser").modal('hide');
+			var levelstr = "";
+			if(jsonobj.AuthTotal == 1){
+				levelstr = $.i18n.prop('message_superadmin');
+			}else if(jsonobj.AuthTotal == 2){
+				levelstr = $.i18n.prop('message_admin');
+			}else{
+				levelstr = $.i18n.prop('message_observer');
+			}	
 			var tr = '<tr>'+
             '<td>'+
                 jsonobj.key +                       
@@ -825,8 +846,8 @@
             '<td>'+
             	jsonobj.username + 
             '</td>'+
-            '<td>'+
-        		jsonobj.AuthTotal +  
+            '<td data-level=' + value.level + '>'+
+            	levelstr +  
         	'</td>'+
         	'<td>'+
         		'No'+  
@@ -860,7 +881,15 @@
 		$('#btn-authdel').attr("disabled", true);		
 		$('#btn-authsub').attr("disabled", true);
 		$("#modal_authman").modal();
+		var levelstr = "";
 		$.each(jsonobj.userlist, function (n, value) {
+			if(value.level == 1){
+				levelstr = $.i18n.prop('message_superadmin');
+			}else if(value.level == 2){
+				levelstr = $.i18n.prop('message_admin');
+			}else{
+				levelstr = $.i18n.prop('message_observer');
+			}			
 			var tr = '<tr>'+
                 '<td>'+
                     value.userid +                       
@@ -868,8 +897,8 @@
                 '<td>'+
                 	value.username + 
                 '</td>'+
-                '<td>'+
-            		value.level +
+                '<td data-level=' + value.level +'>'+
+                	levelstr +
             	'</td>'+
             	'<td>'+
 	        		(value.istrap==true?"Yes":"No") + 
@@ -1021,7 +1050,7 @@
     
     function initTree(treedata) {
     	devtree = $("#dev-fancytree").fancytree({
-    		extensions: ["dnd"],
+    		extensions: ["persist"],
             source: treedata,
             clickFolderMode: 1,
             minExpandLevel: 2,
@@ -1037,6 +1066,12 @@
             	}
             	
             },
+            persist: {
+                expandLazy: true,
+                // fireActivate: false,    // false: suppress `activate` event after active node was restored
+                // overrideSource: false,  // true: cookie takes precedence over `source` data attributes.
+                store: "auto" // 'cookie', 'local': use localStore, 'session': sessionStore
+              },
             /*dnd: {
                 autoExpandMS: 400,
                 focusOnClick: true,
