@@ -290,14 +290,18 @@
     	});
     	
     	$('#md-password').click(function(){
-    		$('#auth-oripassword').val("");
-			$('#auth-password').val("");
-			$('#auth-rpassword').val("");	
+    		$('#auth-oripassword1').val("");
+			$('#auth-password1').val("");
+			$('#auth-rpassword1').val("");	
 			$("#modal_authmanbase").modal();
 	   	});
     	
     	
     	$('#btn-authsub').click(function(){
+    		if($('#auth-password').val() == ""){
+	   			 $('#auth-password').addClass("ui-state-error-custom");
+	   			 return;
+	   		 }
     		if($('#auth-password').val().length > 12){
 	   			 $('#auth-password').addClass("ui-state-error-custom");
 	   			 alert($.i18n.prop('message_passstrerror'));
@@ -307,17 +311,7 @@
 	   			 $('#auth-password').addClass("ui-state-error-custom");
 	   			 alert($.i18n.prop('message_passstrerror'));
 	   			 return;
-	   		 }
-	   		 if(!CheckStr($('#auth-rpassword').val())){
-	   			 $('#auth-rpassword').addClass("ui-state-error-custom");
-	   			 alert($.i18n.prop('message_passstrerror'));
-	   			 return;
-	   		 }
-	   		 if($('#auth-rpassword').val().length > 12){
-	   			 $('#auth-rpassword').addClass("ui-state-error-custom");
-	   			 alert($.i18n.prop('message_passstrerror'));
-	   			 return;
-	   		 }
+	   		 }	   		 
 	   		 if($('#auth-password').val() != $('#auth-rpassword').val()){
 	   			 alert($.i18n.prop('message_passworderr'));
 	   			 return;
@@ -327,6 +321,20 @@
 	   	});
     	
     	$('#btn-authsub1').click(function(){
+    		if($('#auth-password1').val() == ""){
+   			 	$('#auth-password1').addClass("ui-state-error-custom");
+   			 	return;
+	   		 }
+	   		 if($('#auth-password1').val().length > 12){
+	   			 $('#auth-password1').addClass("ui-state-error-custom");
+	   			 alert($.i18n.prop('message_passstrerror'));
+	   			 return;
+	   		 }
+	   		 if(!CheckStr($('#auth-password1').val())){
+	   			 $('#auth-password1').addClass("ui-state-error-custom");
+	   			 alert($.i18n.prop('message_passstrerror'));
+	   			 return;
+	   		 }
 	   		 if($('#auth-password1').val() != $('#auth-rpassword1').val()){
 	   			 alert($.i18n.prop('message_passworderr'));
 	   			 return;
@@ -349,6 +357,10 @@
     	$('#btn-adduser').click(function(){
     		 if($('#auth-username2').val() == ""){
     			 $('#auth-username2').addClass("ui-state-error-custom");
+    			 return;
+    		 }
+    		 if($('#auth-password2').val() == ""){
+    			 $('#auth-password2').addClass("ui-state-error-custom");
     			 return;
     		 }
     		 if($('#auth-password2').val().length > 12){
@@ -789,6 +801,8 @@
 				    	   $(this)[0].cells[2].textContent = jsonobj.AuthTotal;
 				       }
 				    });
+					$('#auth-password').removeClass("ui-state-error-custom");
+		    		$('#auth-rpassword').removeClass("ui-state-error-custom");
 					alert('Success!');
 				}
 			}else{
