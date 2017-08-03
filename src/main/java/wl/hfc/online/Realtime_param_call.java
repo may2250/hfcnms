@@ -48,6 +48,7 @@ public class Realtime_param_call extends Thread {
 							json.put("cmd", "realtime-device");
 							//String nettypes = osp.snmpPreail.thisDev.mNetType.toString();
 						   json.put("devtype", osp.snmpPreail.thisDev.HFCType1.toString());
+						   json.put("icon", "images/"+osp.snmpPreail.thisDev.imagePath+".png");
 							//if(osp.snmpPreail.thisDev.HFCType1==HFCTypes.HfcMinWorkstation){
 								json = osp.snmpPreail.getPmWithModelNumber(json);
 								commonjson=((CommonSnmpPrevail)osp.commonSnmpPreail).getPmWithModelNumber(commonjson);

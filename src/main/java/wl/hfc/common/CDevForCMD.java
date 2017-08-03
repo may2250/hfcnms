@@ -39,27 +39,27 @@ public class CDevForCMD {
 
 	}
 
-	public void bornImagePath() {
+	public String bornImagePath() {
 
-/*		switch (HFCType1) 
+	switch (HFCType1) 
 		{
-	  	case HfcFlyEdfa:
+	    	case HfcFlyEdfa:
 			if (MD.equalsIgnoreCase("WE-1550B"))
 				return "WE_1550B";// 野外型图片
-			else if (dev.MD.Contains("YW") || dev.DEVICEID.Contains("YW"))
-				pictureBox1.Image = VDevs.Model.ResourceProdt.EDFA_YW;// 野外
-			else if (dev.MD.Contains("YZ") || dev.DEVICEID.Contains("YZ"))
-				pictureBox1.Image = VDevs.Model.ResourceProdt.EDFA_YZ;// 多路
-			else if (dev.MD.Contains("HD") || dev.DEVICEID.Contains("HD"))
-				pictureBox1.Image = VDevs.Model.ResourceProdt.EDFA_HD;
-			else if (dev.DEVICEID.Contains("HE"))
-				pictureBox1.Image = Properties.Resources.EDFA_HE;// 野外型图片
+			else if (MD.contains("YW") || DEVICEID.contains("YW"))
+				return "EDFA_YW";// 野外
+			else if (MD.contains("YZ") || DEVICEID.contains("YZ"))
+				return "EDFA_YZ";// EDFA_YZ;// 多路
+			else if (MD.contains("MD") || DEVICEID.contains("MD"))
+				return "EDFA_HD";// 
+			else if (DEVICEID.contains("HE"))
+				return "EDFA_HE";// 
 			else
-				pictureBox1.Image = VDevs.Model.ResourceProdt.edfa; // 默认
-			break;
+				return "edfa";// 
+
 		default:
-			break;
-		}*/
+			return "edfa";// 	
+		}
 
 		// subjson.put("icon", "images/net_center.png");
 	}

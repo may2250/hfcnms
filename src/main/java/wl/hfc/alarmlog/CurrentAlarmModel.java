@@ -45,7 +45,7 @@ public class CurrentAlarmModel extends Thread {
 	//private static Logger log2 = Logger.getLogger("myTest1");
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	
-	private int MAX_TRAPNUMBER = 500;
+	private int MAX_TRAPNUMBER = 100;
 	public CDatabaseEngine logEngine;
 
 	private int commonLogIns = -1;
