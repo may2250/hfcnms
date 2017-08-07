@@ -388,8 +388,13 @@ public class PDUServer extends Thread {
 				ex1.printStackTrace();
 			//	log.info(ex1.getMessage());
 			}
+			
+			
+
 
 		}
+		//log.error("PDUSERVER STOP WORK");
+		
 
 	}
 

@@ -214,9 +214,9 @@ public class MainKernel {
 		} else {
 			jsondata.put("Authed", false);
 			if(rst == AuthResult.PASSWD_NOT_MATCH){
-				rootjson.put("desc", "Password Error!");
+				jsondata.put("desc", "Password Error!");
 			}else if(rst == AuthResult.USER_NOT_EXIST){
-				rootjson.put("desc", "User not Exist!");
+				jsondata.put("desc", "User not Exist!");
 			}			
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), sessionid);
 			staticmemory.RemoveSession(staticmemory.getSessionByID(sessionid));

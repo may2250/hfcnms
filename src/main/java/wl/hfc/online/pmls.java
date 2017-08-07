@@ -39,7 +39,10 @@ public class pmls {
 	// @"\phs.wspb";
 
 	public static Hashtable<String, nojuParmsTableRow> tab1;
+
+	public static Hashtable<String, nojuParmsTableRow> taben;
 	private static Document doc;
+	private static Document docen;
 	private static Logger log = Logger.getLogger(pmls.class);
 
 	private static SnmpUtil util;
@@ -49,6 +52,7 @@ public class pmls {
 	public PduSevr sver;
 	public pmls() {
 		tab1 = new Hashtable<String, nojuParmsTableRow>();
+		taben = new Hashtable<String, nojuParmsTableRow>();
 		loadDXml();
 		me = this;
 	}
@@ -58,12 +62,17 @@ public class pmls {
 		String filePath = pmls.class.getResource("/").toString();
 		filePath = filePath.substring(filePath.indexOf("file:") + 5);
 		//log.info("----------------path--->>>" + filePath+ "phs.xml");
-		File f = new File(filePath + "phs.xml");
+
 	    	
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
+			File f = new File(filePath + "phs.xml");
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			doc = builder.parse(f);
+			
+			f=new File(filePath + "phsen.xml");
+			builder = factory.newDocumentBuilder();
+			docen = builder.parse(f);
 
 		}catch (ParserConfigurationException e) { 
 	         e.printStackTrace();  
@@ -76,10 +85,8 @@ public class pmls {
 	         log.info(e.getMessage());
 	    } 
 		Element rootElement = doc.getDocumentElement();
-		NodeList rootNode = rootElement.getChildNodes();
+		NodeList rootNode = rootElement.getChildNodes();		
 		
-		//NodeList rootNodeChilds = rootNode.item(0).getChildNodes();
-
 		boolean IsFormatEnable;
 		for (int i = 0; i < rootNode.getLength(); i++) {
 			Node node = rootNode.item(i);
@@ -107,6 +114,39 @@ public class pmls {
 			}
 
 		}
+		
+		
+		 rootElement = docen.getDocumentElement();
+		 rootNode = rootElement.getChildNodes();		
+		
+		for (int i = 0; i < rootNode.getLength(); i++) {
+			Node node = rootNode.item(i);
+			if (node instanceof Element) {
+				Element elt = (Element) node;
+				String TagName1 = elt.getTagName();
+
+				Float fmtcoff = new Float(elt.getAttribute("FormatCoff"));
+				String IsFormatEnableS = elt.getAttribute("IsFormatEnable");
+
+				if (IsFormatEnableS.equals("True")) {
+					IsFormatEnable = true;
+				} else {
+					IsFormatEnable = false;
+				}
+
+				nojuParmsTableRow resRow = new nojuParmsTableRow(TagName1,
+						elt.getAttribute("ParamOrignalOID"),
+						elt.getAttribute("ParamDispText"), IsFormatEnable,
+						fmtcoff, elt.getAttribute("FormatText"),
+						elt.getAttribute("FormatUnit"));
+				taben.put(TagName1, resRow);
+
+
+			}
+
+		}
+
+		System.out.println("----------");	
 
 	}
 

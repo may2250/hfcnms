@@ -240,7 +240,7 @@
                     <charset>utf8</charset>
                     <update>true</update>
                 </configuration>
-            </plugin>
+                		</plugin>
         </plugins>
   </build>
 </project>

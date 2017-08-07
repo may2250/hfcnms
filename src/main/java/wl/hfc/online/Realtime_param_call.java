@@ -69,12 +69,23 @@ public class Realtime_param_call extends Thread {
 					}
 				}
 			}	
+			else
+			{
+				try {
+					Thread.sleep(1000);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				
+			}
+			
 			try {
 				Thread.sleep(1000);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
 	
-		}
+		}		
+	//	log.error("Realtime_param_call STOP WORK");
 	}
 }

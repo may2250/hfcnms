@@ -165,6 +165,13 @@ public class TrapProCenter {
 		return (nojuParmsTableRow) pmls.tab1.get(miblabel);
 
 	}
+	
+	public nojuParmsTableRow GetParamInfoEN(String miblabel) {
+
+		return (nojuParmsTableRow) pmls.taben.get(miblabel);
+
+	}
+
 
 	public nojuTrapLogTableRow ParseTrapHfcAlarmEvent(String pAddress, PDU pdu) throws IOException {
 
@@ -194,7 +201,17 @@ public class TrapProCenter {
 		if ((oid = ParseAlarmInform(alarmvb)) != null) {
 			String plabel = MibProcess.getLabel(oid);
 			if (!plabel.equalsIgnoreCase("")) {
-				nojuParmsTableRow pararmrow = GetParamInfo(plabel);
+				nojuParmsTableRow pararmrow;
+			    if (ClsLanguageExmp.istrapEn)
+                {
+					 pararmrow = GetParamInfoEN (plabel);
+                }else
+                {
+                	
+    				pararmrow = GetParamInfo(plabel);
+                }
+                	
+				
 				int[] nodeoid = MibProcess.getOID(oid);
 				int[] oidarray = oid.toIntArray();
 				String exstr = "";
