@@ -138,9 +138,9 @@ public class Services_Websocket {
 				*/
 				
 				//已连接客户端数量
-				jsondata.put("clientNum", StaticMemory.webSocketClients.size());//	pduserver init			
+				//jsondata.put("clientNum", StaticMemory.webSocketClients.size());//	pduserver init			
 				
-
+				jsondata.put("clientNum", "1.02");
 				//redis连接状态
 				jsondata.put("redisStatus",Sstatus.redisStartus);//	pduserver init			
 				

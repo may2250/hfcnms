@@ -234,13 +234,24 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <url>http://127.0.0.1:8080/manager/text</url>
+                    <url>http://192.168.1.137:8080/manager/text</url>
                     <server>tomcat7</server>
+					  <username>admin</username>
+        <password>121212</password>
                     <path>/hfcnms</path>
                     <charset>utf8</charset>
                     <update>true</update>
                 </configuration>
                 		</plugin>
+						 <plugin>
+ <groupId>org.apache.maven.plugins</groupId>
+ <artifactId>maven-war-plugin</artifactId>
+ <version>2.1.1</version>
+ <configuration>
+ <!-- http://maven.apache.org/plugins/maven-war-plugin/ -->
+ <packagingExcludes>WEB-INF/web.xml</packagingExcludes>
+ </configuration>
+ </plugin>
         </plugins>
   </build>
 </project>

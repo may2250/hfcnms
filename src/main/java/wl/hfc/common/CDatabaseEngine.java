@@ -193,8 +193,7 @@ public class CDatabaseEngine {
 			row.UserGroupID = lastId;
 			return row.UserGroupID;
 		} catch (Exception EX) {
-			System.out.println(EX);
-			// isDBConnected(false);
+			EX.printStackTrace();
 			return lastId;
 
 		}
@@ -216,8 +215,7 @@ public class CDatabaseEngine {
 				return true;
 
 		} catch (Exception EX) {
-			sqlInsert = "DELETE FROM usergrouptable WHERE UserGroupID=" + thisID;
-
+			EX.printStackTrace();
 			return false;
 
 		}
@@ -236,7 +234,8 @@ public class CDatabaseEngine {
 		Hashtable groupLists;
 		try {
 			groupLists = UserGroupTableGetAllRows();
-		} catch (Exception e) {
+		} catch (Exception EX) {
+			EX.printStackTrace();
 			return false;
 			// TODO: handle exception
 		}	
@@ -287,7 +286,7 @@ public class CDatabaseEngine {
 				return true;
 
 		} catch (Exception EX) {
-
+			EX.printStackTrace();
 		}
 
 		return false;
@@ -424,7 +423,7 @@ public class CDatabaseEngine {
 			if (pstmt.executeUpdate() > 0)
 				return true;
 		} catch (Exception EX) {
-			System.out.println(EX);
+			EX.printStackTrace();
 			return false;
 
 		}
@@ -446,7 +445,7 @@ public class CDatabaseEngine {
 				return true;
 
 		} catch (Exception EX) {
-
+			EX.printStackTrace();
 		}
 
 		return false;
@@ -463,7 +462,8 @@ public class CDatabaseEngine {
 		Hashtable groupLists;
 		try {
 			groupLists = DeviceTableGetAllRows();
-		} catch (Exception e) {
+		} catch (Exception EX) {
+			EX.printStackTrace();
 			return false;
 			// TODO: handle exception
 		}		
@@ -488,7 +488,7 @@ public class CDatabaseEngine {
 				return true;
 
 		} catch (Exception EX) {
-
+			EX.printStackTrace();
 		}
 
 		return false;
@@ -528,7 +528,7 @@ public class CDatabaseEngine {
 		} catch (Exception EX) {
 			lastTrapInsertIsSucced = false;
 			flag = false;
-			System.out.println(EX);
+			EX.printStackTrace();
 
 		}
 
@@ -558,7 +558,7 @@ public class CDatabaseEngine {
 			return pstmt.executeUpdate();
 
 		} catch (Exception EX) {
-			System.out.println(EX);
+			EX.printStackTrace();
 			return -1;
 		}
 
@@ -615,8 +615,8 @@ public class CDatabaseEngine {
 
 			}
 
-		} catch (Exception ex) {
-			String xxxString = ex.toString();
+		} catch (Exception EX) {
+			EX.printStackTrace();
 
 		}
 
@@ -745,7 +745,7 @@ public class CDatabaseEngine {
 			row.OperLogID = lastId;
 			return row.OperLogID;
 		} catch (Exception EX) {
-			System.out.println(EX);
+			EX.printStackTrace();
 
 			return lastId;
 
@@ -800,8 +800,8 @@ public class CDatabaseEngine {
 				results.add(newURow);
 			}
 
-		} catch (Exception ex) {
-			String xxxString = ex.toString();
+		} catch (Exception EX) {
+			EX.printStackTrace();
 		}
 
 		return results;
@@ -832,22 +832,17 @@ public class CDatabaseEngine {
 			rs.last(); 
 			int rowCount = rs.getRow(); 
 			
-			if (rowCount>0) {
-				
+			if (rowCount>0) {				
+			     System.out.println("UserAuthorizeTableInsertRow-->"+row.UserName+"is already exsit");
 				log.info(row.UserName+"is exsit");
 				return -1;
 			}
 			
 			
-		} catch (Exception e) {
+		} catch (Exception EX) {
+			EX.printStackTrace();
 			return -1;
-		}
-	
-		
-		
-		
-		
-		
+		}		
 
 
 		
@@ -866,7 +861,7 @@ public class CDatabaseEngine {
 			row.UserID = lastId;
 			return row.UserID;
 		} catch (Exception EX) {
-			System.out.println(EX);
+			EX.printStackTrace();
 			// isDBConnected(false);
 			return lastId;
 
@@ -890,6 +885,7 @@ public class CDatabaseEngine {
 
 		} catch (Exception EX) {
 
+			EX.printStackTrace();
 			return false;
 
 		}
@@ -911,7 +907,7 @@ public class CDatabaseEngine {
 		PreparedStatement pstmt;
 	//	ResultSet rs = null;
 		
-	     String sqlInsert = "UPDATE userauthorizeTable SET AuthTotal =" + AuthTotal
+	     String sqlInsert = "UPDATE userauthorizetable SET AuthTotal =" + AuthTotal
                  + ",PassWord1='" + pwd + "' WHERE UserID=" + UserID;
 
 		try {
@@ -921,6 +917,7 @@ public class CDatabaseEngine {
 
 		} catch (Exception EX) {
 
+			EX.printStackTrace();
 		}
 
 		return false;
@@ -953,7 +950,7 @@ public class CDatabaseEngine {
 
 		Connection con = offNewCoon();
 		String sqlInsert = "SELECT * FROM userauthorizetable WHERE UserName='" + username + "'";
-		System.out.println("------>>>"+sqlInsert);
+		//System.out.println("------>>>"+sqlInsert);
 		pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 		rs = pstmt.executeQuery();
 		nojuUserAuthorizeTableRow newURow = null;

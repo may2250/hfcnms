@@ -1065,7 +1065,10 @@ public class MainKernel {
 		}		
 
 		if (mStatus) {
+			
+		     System.out.println("update user password ok ");
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
+			
 			// for syslog
 			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "updateuserlog");
