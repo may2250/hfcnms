@@ -43,14 +43,14 @@ public class CDevForCMD {
 
 	switch (HFCType1) 
 		{
-	    	case HfcFlyEdfa:
+	    	case EDFA:
 			if (MD.equalsIgnoreCase("WE-1550B"))
 				return "WE_1550B";// 野外型图片
 			else if (MD.contains("YW") || DEVICEID.contains("YW"))
 				return "EDFA_YW";// 野外
 			else if (MD.contains("YZ") || DEVICEID.contains("YZ"))
 				return "EDFA_YZ";// EDFA_YZ;// 多路
-			else if (MD.contains("MD") || DEVICEID.contains("MD"))
+			else if (MD.contains("HD") || DEVICEID.contains("HD"))
 				return "EDFA_HD";// 
 			else if (DEVICEID.contains("HE"))
 				return "EDFA_HE";// 

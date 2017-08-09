@@ -624,7 +624,8 @@
     	var jsonobj =  eval('(' + event.data + ')');
         if(jsonobj.cmd == "getInitTree"){
         	$('#username')[0].textContent = sessionStorage.userName;
-        	initTree(jsonobj.treenodes);        
+        	initTree(jsonobj.treenodes);    
+    	    $("#sfversion")[0].textContent = jsonobj.sfversion;
         }else if(jsonobj.cmd == "loginAuth"){
         	sessionStorage.authlevel = jsonobj.level;
         	if(jsonobj.level == 3){
@@ -939,6 +940,7 @@
     		$('.redisstatus-lb').addClass("ui-state-error-custom");         
         }           
 	    $("#server-clients")[0].textContent = jsonobj.clientNum;
+
  
 	}
 	
@@ -1225,7 +1227,9 @@
 	      	        	    });
 		      	            $("#set_value").val(node.title);
 		      	            updateTips($.i18n.prop('message_modifyname'));
+		    
 		      	            $("#dialog-form").dialog("open");
+		      	            
 	      	              }
       	            }
     	          },
@@ -1267,7 +1271,7 @@
   	      	        	      }
         	        	    });
 	  	      	            $("#set_value").val(node.data.rcommunity);
-	  	      	            updateTips("请输入新的团体名:");
+	  	      	            updateTips($.i18n.prop('message_newcommunity'));
 	  	      	            $("#dialog-form").dialog("open");
         	              }
         	            }

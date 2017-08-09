@@ -32,18 +32,21 @@ import wl.hfc.traprcss.TrapPduServer;
 
 public class MainKernel {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
-	private static final String PARAMKERNEL_MESSAGE = "paramkernel.message";
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	private static Logger log = Logger.getLogger(MainKernel.class);
+	public static MainKernel me;
+	
 
-	private CDatabaseEngine ICDatabaseEngine1;
-	private LNode rootListNode;
 
+	@SuppressWarnings("rawtypes")
 	public Hashtable listDevHash = new Hashtable();
+	
+	@SuppressWarnings("rawtypes")
 	public Hashtable listGrpHash = new Hashtable();
 
 	private boolean isTopodInit;
-	public static MainKernel me;
+	private CDatabaseEngine ICDatabaseEngine1;
+	private LNode rootListNode;
 
 	public MainKernel() {
 
@@ -88,7 +91,6 @@ public class MainKernel {
 
 		public void onPMessage(String arg0, String arg1, String msg) {
 			try {
-
 				phraseMSG(msg);
 
 			} catch (Exception e) {
@@ -102,6 +104,8 @@ public class MainKernel {
 
 	private void phraseMSG(String message) throws InterruptedException, ParseException, IOException {
 		System.out.println(" [x] MainKernel Received: '" + message + "'");
+		
+		
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
 		JSONObject rootjson = new JSONObject();
@@ -111,7 +115,6 @@ public class MainKernel {
 			return;
 
 		}
-
 		if (cmd.equalsIgnoreCase("loginAuth")) {
 			userAuth(jsondata);
 		} else if (cmd.equalsIgnoreCase("getgrouptree")) {
@@ -160,7 +163,7 @@ public class MainKernel {
 
 		// CurrentAlarmModel.me.logEngine=ICDatabaseEngine1;
 		CurrentAlarmModel cam = new CurrentAlarmModel();
-		cam.logEngine = ICDatabaseEngine1;
+		cam.logEngine=ICDatabaseEngine1;
 		cam.setRedisUtil(redisUtil);
 		cam.setStaticMemory(staticmemory);
 
@@ -230,6 +233,7 @@ public class MainKernel {
 
 		jsonarray = getSubTree(rootListNode);
 		rootjson.put("treenodes", jsonarray);
+		rootjson.put("sfversion", "Server:"+Sstatus.versionString);
 		String jsonString = rootjson.toJSONString();
 		// System.out.println("jsonString==" + jsonString);
 		return jsonString;
@@ -502,6 +506,7 @@ public class MainKernel {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean handleInsertGrp(JSONObject jsondata) {
 
 		boolean mStatus = false;

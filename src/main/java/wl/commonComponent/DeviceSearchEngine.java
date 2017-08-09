@@ -40,7 +40,6 @@ import wl.hfc.topd.MainKernel;
 public class DeviceSearchEngine extends Thread{
 	private SearchIpInfo ipinfo;
 	private Snmp session;
-	public static PDUServerSearch pdusearcher;
 	private static StaticMemory staticmemory;
     private int processint = 1;
     public static  ArrayList<CDevForCMD> searchRst = new ArrayList<CDevForCMD>();
@@ -139,20 +138,19 @@ public class DeviceSearchEngine extends Thread{
 		String ipaddr=respEvnt.getPeerAddress().toString();
 		ipaddr = ipaddr.substring(0,ipaddr.indexOf("/"));
 		Vector<VariableBinding> recVBs= (Vector<VariableBinding>)respEvnt.getResponse().getVariableBindings();
-		//System.out.println("------------>瑙ｆ瀽Response<----------" + recVBs.toString());
+		System.out.println("------------>get a online ask Response<----------" + recVBs.toString());
+		
 		HFCTypes hfctyp1 = OidToHFCType.getType(recVBs);
-		if (hfctyp1 == HFCTypes.Unknown) // 澶勭悊鏈煡璁惧
+		if (hfctyp1 == HFCTypes.Unknown) 
 		{
 			return;
 		}
 		try
-        {
-			System.out.println("------------>a serrch response of device.....<----------" + ipaddr);
+        {		
 		
 			if(MainKernel.me.listDevHash.containsKey(ipaddr)){
 				return;
-			}
-			
+			}			
 			CDevForCMD result = new CDevForCMD();
 			result.mNetAddress = ipaddr;
 			result.HFCType1 = hfctyp1;
@@ -170,20 +168,13 @@ public class DeviceSearchEngine extends Thread{
 				result.MD = recVBs.elementAt(2).getVariable().toString();					
 				result.SN = recVBs.elementAt(3).getVariable().toString();					
 				result.DEVICEID = recVBs.elementAt(6).getVariable().toString();				
-			}
-			
+			}			
 			
 			searchRst.add(result);
-/*			JSONObject rootjson = new JSONObject();
-			rootjson.put("cmd", "devsearch-result");
-			rootjson.put("ipaddr", result.mNetAddress);
-			rootjson.put("devtype", "  ");
-			rootjson.put("hfctype",OidToHFCType.GetHFCTypeString(result.HFCType1 ));
-			rootjson.put("rcommunity", ipinfo.community);
-			staticmemory.sendRemoteStr(rootjson.toJSONString(), ipinfo.sessionid);*/
         }
         catch (Exception e)
         {
+        	e.printStackTrace();
             return;
         }
 	}
@@ -207,17 +198,7 @@ public class DeviceSearchEngine extends Thread{
         cyt.setCommunity(new OctetString(commu));
         cyt.setAddress(new UdpAddress(ipaddr.toString()+"/161"));        
         outpdu.setType(PDU.GET);
-        if (destiType == 1)    //WOS4000
-        {
-        	cyt.setVersion(SnmpConstants.version2c);
-            //   outpdu.BroadCastEnable = true;
-            //    outpdu.ClientID = this.AsyncClientID;
-            outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0")));
-            outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
-            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.5591.1.3.1.3.0")));
-
-        }
-        else if (destiType == 0)
+        if (destiType == 0)    //WOS4000
         {
             //    outpdu.BroadCastEnable = true;
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0"))); //璁惧鐨勭郴缁烵ID銆�
@@ -227,6 +208,17 @@ public class DeviceSearchEngine extends Thread{
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.18.0")));    //闇�瑕佸疄楠岀‘瀹�
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));    //.2.0
             outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
+        }
+        else if (destiType == 1)
+        {            
+            
+         	cyt.setVersion(SnmpConstants.version2c);
+            //   outpdu.BroadCastEnable = true;
+            //    outpdu.ClientID = this.AsyncClientID;
+            outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.2.0")));
+            outpdu.add(new VariableBinding(new OID(".1.3.6.1.2.1.1.5.0")));
+            outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.5591.1.3.1.3.0")));
+
         }
 
         AyncSendSnmpPdu(outpdu,cyt);

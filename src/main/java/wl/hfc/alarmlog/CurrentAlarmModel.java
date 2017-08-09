@@ -39,23 +39,21 @@ import wl.hfc.traprcss.TrapProCenter;
 //CurrentAlarmModel
 public class CurrentAlarmModel extends Thread {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
-	public static CurrentAlarmModel me;
-	private static Logger log = Logger.getLogger(CurrentAlarmModel.class);
-	
-	//private static Logger log2 = Logger.getLogger("myTest1");
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
-	
+	private static Logger log = Logger.getLogger(CurrentAlarmModel.class);
+
+	public static CurrentAlarmModel me;
+	// private static Logger log2 = Logger.getLogger("myTest1");
+
 	private int MAX_TRAPNUMBER = 100;
 	public CDatabaseEngine logEngine;
 
-	private int commonLogIns = -1;
-	
 	// the real model,current trap rows
 	public CopyOnWriteArrayList<nojuTrapLogTableRow> allRows;
-	public Hashtable allRowsTable;
+	// public Hashtable allRowsTable;
 
 	public ArrayList<nojuTrapLogTableRow> invalidRows;
-	public Hashtable invalidRowsTable;
+	// public Hashtable invalidRowsTable;
 
 	private static RedisUtil redisUtil;
 	private static StaticMemory staticmemory;
@@ -71,35 +69,33 @@ public class CurrentAlarmModel extends Thread {
 	public CurrentAlarmModel() {
 
 		allRows = new CopyOnWriteArrayList<nojuTrapLogTableRow>();
-		allRowsTable = new Hashtable();
+		// allRowsTable = new Hashtable();
 
 		invalidRows = new ArrayList<nojuTrapLogTableRow>();
-		invalidRowsTable = new Hashtable();
-		
+		// invalidRowsTable = new Hashtable();
+
 		this.setName("CurrentAlarmModel");
 		me = this;
 
 	}
 
-	public void run() {			
-		
+	public void run() {
 
-		log.info(this.getName()+ "....starting.......");
-		
-		Jedis jedis=null;
-		try {		
-		
-			jedis = redisUtil.getConnection();		 
+		log.info(this.getName() + "....starting.......");
+
+		Jedis jedis = null;
+		try {
+
+			jedis = redisUtil.getConnection();
 			jedis.psubscribe(jedissubSub, HFCALARM_MESSAGE);
-			redisUtil.getJedisPool().returnResource(jedis); 
-			  
-		}catch(Exception e){
+			redisUtil.getJedisPool().returnResource(jedis);
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			redisUtil.getJedisPool().returnBrokenResource(jedis);
-			
+
 		}
-		
-		
+
 	}
 
 	private JedisPubSub jedissubSub = new JedisPubSub() {
@@ -125,66 +121,79 @@ public class CurrentAlarmModel extends Thread {
 
 		public void onPMessage(String arg0, String arg1, String msg) {
 			try {
-				//System.out.println(" [x] CurrentAlarmModel Received: '" + msg + "'");
+				 System.out.println(" [x] CurrentAlarmModel Received: '" + msg + "'");
+				 
 				JSONObject jsondata = (JSONObject) new JSONParser().parse(msg);
 				String cmd = jsondata.get("cmd").toString();
 				JSONObject rootjson = new JSONObject();
 				if (cmd.equalsIgnoreCase("getLoginInit")) {
-					staticmemory.sendRemoteStr(getInitLog(rootjson), jsondata.get("sessionid").toString());			
-				}else if (cmd.equalsIgnoreCase("newalarm")) {
+					staticmemory.sendRemoteStr(getInitLog(rootjson), jsondata.get("sessionid").toString());
+				} else if (cmd.equalsIgnoreCase("newalarm")) {
 
 					parseAlarm(msg);
-					
+
 				} else if (cmd.equalsIgnoreCase("alarmsearch")) {
 
 					staticmemory.sendRemoteStr(getHistoryTraplogs(jsondata), jsondata.get("sessionid").toString());
 
 				} else if (cmd.equalsIgnoreCase("grpaddlog")) {
 
-					InsertOperLog(OperLogTypes.UserGroupOpration, ClsLanguageExmp.formGet("创建分组") + "： " + jsondata.get("title").toString(), jsondata.get("operater").toString());
+					InsertOperLog(OperLogTypes.UserGroupOpration,
+							ClsLanguageExmp.formGet("创建分组") + "： " + jsondata.get("title").toString(),
+							jsondata.get("operater").toString());
 
 				} else if (cmd.equalsIgnoreCase("devaddLog")) {
 
-					InsertOperLog(OperLogTypes.DeviceOpration, ClsLanguageExmp.formGet("创建IP设备") + "： " + jsondata.get("title").toString() + " @ "
-							+ jsondata.get("key").toString(), jsondata.get("operater").toString());
+					InsertOperLog(
+							OperLogTypes.DeviceOpration, ClsLanguageExmp.formGet("创建IP设备") + "： "
+									+ jsondata.get("title").toString() + " @ " + jsondata.get("key").toString(),
+							jsondata.get("operater").toString());
 
 				} else if (cmd.equalsIgnoreCase("grpdellog")) {
 
-					InsertOperLog(OperLogTypes.UserGroupOpration, ClsLanguageExmp.formGet("删除") + "： " + jsondata.get("title").toString(), jsondata.get("operater").toString());
+					InsertOperLog(OperLogTypes.UserGroupOpration,
+							ClsLanguageExmp.formGet("删除") + "： " + jsondata.get("title").toString(),
+							jsondata.get("operater").toString());
 
 				} else if (cmd.equalsIgnoreCase("devdellog")) {
 
-					InsertOperLog(OperLogTypes.DeviceOpration,
-							ClsLanguageExmp.formGet("删除") + "： " + jsondata.get("title").toString() + " @ " + jsondata.get("key").toString(), jsondata.get("operater").toString());
+					InsertOperLog(
+							OperLogTypes.DeviceOpration, ClsLanguageExmp.formGet("删除") + "： "
+									+ jsondata.get("title").toString() + " @ " + jsondata.get("key").toString(),
+							jsondata.get("operater").toString());
 				} else if (cmd.equalsIgnoreCase("grpeditlog")) {
 
-					InsertOperLog(OperLogTypes.UserGroupOpration, (ClsLanguageExmp.isEn ? "Update: " : "更新：") + jsondata.get("title").toString(), jsondata.get("operater").toString());
+					InsertOperLog(OperLogTypes.UserGroupOpration,
+							(ClsLanguageExmp.isEn ? "Update: " : "更新：") + jsondata.get("title").toString(),
+							jsondata.get("operater").toString());
 
 				} else if (cmd.equalsIgnoreCase("deveditlog")) {
 
-					InsertOperLog(OperLogTypes.DeviceOpration, (ClsLanguageExmp.isEn ? "Update: " : "更新：") + "： " + jsondata.get("title").toString() + " @ "
-							+ jsondata.get("key").toString(), jsondata.get("operater").toString());
-				} 
-				 else if (cmd.equalsIgnoreCase("insertuserlog")) {
+					InsertOperLog(
+							OperLogTypes.DeviceOpration, (ClsLanguageExmp.isEn ? "Update: " : "更新：") + "： "
+									+ jsondata.get("title").toString() + " @ " + jsondata.get("key").toString(),
+							jsondata.get("operater").toString());
+				} else if (cmd.equalsIgnoreCase("insertuserlog")) {
 
-						InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Create user: " : "创建用户：") + "： " + jsondata.get("title").toString(), jsondata.get("title").toString());
-					} 
-				 else if (cmd.equalsIgnoreCase("deluserlog")) {
+					InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Create user: " : "创建用户：") + "： "
+							+ jsondata.get("title").toString(), jsondata.get("title").toString());
+				} else if (cmd.equalsIgnoreCase("deluserlog")) {
 
-						InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Delete user: " : "删除用户：") + "： " + jsondata.get("title").toString(), jsondata.get("operater").toString());
-					} 
-				 else if (cmd.equalsIgnoreCase("updateuserlog")) {
+					InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Delete user: " : "删除用户：") + "： "
+							+ jsondata.get("title").toString(), jsondata.get("operater").toString());
+				} else if (cmd.equalsIgnoreCase("updateuserlog")) {
 
-						InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Update user: " : "更新用户：") + "： " + jsondata.get("title").toString(), jsondata.get("operater").toString());
-					} 
-				 else if (cmd.equalsIgnoreCase("userlogin")) {
+					InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "Update user: " : "更新用户：") + "： "
+							+ jsondata.get("title").toString(), jsondata.get("operater").toString());
+				} else if (cmd.equalsIgnoreCase("userlogin")) {
 
-						InsertOperLog(OperLogTypes.UserOpration, (ClsLanguageExmp.isEn ? "User login: " : "用户登陆：") + "： " + jsondata.get("title").toString() , jsondata.get("title").toString());
-					} 
-				else if (cmd.equalsIgnoreCase("optlogsearch")) {				
-					
+					InsertOperLog(OperLogTypes.UserOpration,
+							(ClsLanguageExmp.isEn ? "User login: " : "用户登陆：") + "： " + jsondata.get("title").toString(),
+							jsondata.get("title").toString());
+				} else if (cmd.equalsIgnoreCase("optlogsearch")) {
+
 					staticmemory.sendRemoteStr(getHistoryoperlogs(jsondata), jsondata.get("sessionid").toString());
-					
+
 				}
 
 			} catch (Exception e) {
@@ -245,69 +254,60 @@ public class CurrentAlarmModel extends Thread {
 		JSONObject logjson;
 		rootjson.put("cmd", jsondata.get("cmd").toString());
 		JSONArray jsonarray = new JSONArray();
-		Date datestart ;
-		Date dateend ;
+		Date datestart;
+		Date dateend;
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			String custSlectindexString=jsondata.get("customdate").toString();
-			
-			if (custSlectindexString.equalsIgnoreCase("0")) {
-				 datestart = sdf.parse(jsondata.get("start").toString());//已经是零点
-				 dateend = sdf.parse(jsondata.get("end").toString());
-					
-					
-				 //结束日的24点
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(dateend);
-                calendar.add(calendar.DATE,1);
-                calendar.set(Calendar.HOUR_OF_DAY, 0);
-                calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 0);
-                dateend = calendar.getTime();
-			}
-			else {
-				
-				int daysNeedToSHUT=0;
-				if (custSlectindexString.equalsIgnoreCase("1")) {
-					daysNeedToSHUT=-1;
-				}else if (custSlectindexString.equalsIgnoreCase("2")) 
-				{
-					daysNeedToSHUT=-7;
-				}else if (custSlectindexString.equalsIgnoreCase("3")) 
-				{
-			    	daysNeedToSHUT=-30;
-				}	
-				
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(new Date());
-                calendar.add(calendar.DATE,daysNeedToSHUT);
-                calendar.set(Calendar.HOUR_OF_DAY, 0);
-                calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 0);
-                datestart = calendar.getTime();     
-                
-                
-                calendar = Calendar.getInstance();
-                calendar.setTime(new Date());
-                calendar.add(calendar.DATE,daysNeedToSHUT);
-                calendar.set(Calendar.HOUR_OF_DAY, 0);
-                calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 0);
-                datestart = calendar.getTime();            
-                
-                
+			String custSlectindexString = jsondata.get("customdate").toString();
 
-                dateend = new Date();
-				
-				
+			if (custSlectindexString.equalsIgnoreCase("0")) {
+				datestart = sdf.parse(jsondata.get("start").toString());// 已经是零点
+				dateend = sdf.parse(jsondata.get("end").toString());
+
+				// 结束日的24点
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(dateend);
+				calendar.add(calendar.DATE, 1);
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				dateend = calendar.getTime();
+			} else {
+
+				int daysNeedToSHUT = 0;
+				if (custSlectindexString.equalsIgnoreCase("1")) {
+					daysNeedToSHUT = -1;
+				} else if (custSlectindexString.equalsIgnoreCase("2")) {
+					daysNeedToSHUT = -7;
+				} else if (custSlectindexString.equalsIgnoreCase("3")) {
+					daysNeedToSHUT = -30;
+				}
+
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.add(calendar.DATE, daysNeedToSHUT);
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				datestart = calendar.getTime();
+
+				calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.add(calendar.DATE, daysNeedToSHUT);
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				datestart = calendar.getTime();
+
+				dateend = new Date();
+
 			}
-			
-			
-			
-              int level= Integer.parseInt(jsondata.get("level").toString());
-			
-              int statusss= Integer.parseInt(jsondata.get("treatment").toString());
-			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend,jsondata.get("source").toString(),level,statusss);
+
+			int level = Integer.parseInt(jsondata.get("level").toString());
+
+			int statusss = Integer.parseInt(jsondata.get("treatment").toString());
+			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend,
+					jsondata.get("source").toString(), level, statusss);
 			// System.out.println("-------------traprow-size =" +
 			// traprow.size());
 			for (nojuTrapLogTableRow prow : traprow) {
@@ -331,33 +331,31 @@ public class CurrentAlarmModel extends Thread {
 		rootjson.put("alarms", jsonarray);
 		return rootjson.toJSONString();
 	}
+
 	private String getHistoryoperlogs(JSONObject jsondata) {
 		JSONObject rootjson = new JSONObject();
 		JSONObject logjson;
 		rootjson.put("cmd", jsondata.get("cmd").toString());
 		JSONArray jsonarray = new JSONArray();
-		Date datestart ;
-		Date dateend ;
+		Date datestart;
+		Date dateend;
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+			datestart = sdf.parse(jsondata.get("start").toString());// 已经是零点
+			dateend = sdf.parse(jsondata.get("end").toString());
 
-			 datestart = sdf.parse(jsondata.get("start").toString());//已经是零点
-			 dateend = sdf.parse(jsondata.get("end").toString());
-				
-				
-			 //结束日的24点
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(dateend);
-            calendar.add(calendar.DATE,1);
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            dateend = calendar.getTime();
+			// 结束日的24点
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(dateend);
+			calendar.add(calendar.DATE, 1);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			dateend = calendar.getTime();
 
-
-	
-			ArrayList<nojuOperLogTableRow> traprow = this.logEngine.getOperRowsWithTime(datestart, dateend,jsondata.get("optname").toString());
+			ArrayList<nojuOperLogTableRow> traprow = this.logEngine.getOperRowsWithTime(datestart, dateend,
+					jsondata.get("optname").toString());
 			System.out.println("-------------traprow-size =" + traprow.size());
 			for (nojuOperLogTableRow prow : traprow) {
 				logjson = new JSONObject();
@@ -366,7 +364,7 @@ public class CurrentAlarmModel extends Thread {
 				logjson.put("type", prow.OperLogType.toString());
 				logjson.put("content", prow.OperLogContent);
 				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				logjson.put("time", sdf.format(prow.OperLogTime));	
+				logjson.put("time", sdf.format(prow.OperLogTime));
 				jsonarray.add(logjson);
 			}
 		} catch (Exception ex) {
@@ -403,11 +401,10 @@ public class CurrentAlarmModel extends Thread {
 		insertTrapLog(newObj);
 	}
 
-	
-
-	public nojuTrapLogTableRow insertTrapLog(TrapLogTypes type, String addr, String neName, String content, Date time, String paramName, String pValue,
-			int pSlotIndex) {
-		nojuTrapLogTableRow aCurrentrow = new nojuTrapLogTableRow(NlogType.getAlarmLevel(type), type, addr, neName, content, time, "", "", paramName, pValue);
+	public nojuTrapLogTableRow insertTrapLog(TrapLogTypes type, String addr, String neName, String content, Date time,
+			String paramName, String pValue, int pSlotIndex) {
+		nojuTrapLogTableRow aCurrentrow = new nojuTrapLogTableRow(NlogType.getAlarmLevel(type), type, addr, neName,
+				content, time, "", "", paramName, pValue);
 		aCurrentrow.slotIndex = pSlotIndex;
 		if (NlogType.getAlarmLevel(type) == 0) {
 			aCurrentrow.TrapTreatMent = ClsLanguageExmp.commonGet("无需处理");
@@ -433,7 +430,7 @@ public class CurrentAlarmModel extends Thread {
 			}
 
 			allRows.add(aCurrentrow);
-			allRowsTable.put(aCurrentrow.TrapLogID, aCurrentrow);
+			// allRowsTable.put(aCurrentrow.TrapLogID, aCurrentrow);
 			if (allRows.size() > MAX_TRAPNUMBER) {
 				editTreatMent(allRows.get(0).TrapLogID, ClsLanguageExmp.commonGet("超时默认失效"));
 			}
@@ -462,9 +459,9 @@ public class CurrentAlarmModel extends Thread {
 
 	}
 
-	
 	public nojuTrapLogTableRow insertTrapLog(nojuTrapLogTableRow pRow) {
-		return insertTrapLog(pRow.TrapLogType, pRow.TrapDevAddress, pRow.neName, pRow.TrapLogContent, pRow.TrapLogTime, pRow.parmName, pRow.paramValue, 0);
+		return insertTrapLog(pRow.TrapLogType, pRow.TrapDevAddress, pRow.neName, pRow.TrapLogContent, pRow.TrapLogTime,
+				pRow.parmName, pRow.paramValue, 0);
 
 	}
 
@@ -474,7 +471,8 @@ public class CurrentAlarmModel extends Thread {
 		Iterator it1 = allRows.iterator();
 		while (it1.hasNext()) {
 			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
-			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.TrapLogType == TrapLogTypes.Offline) {
+			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress)
+					&& item.TrapLogType == TrapLogTypes.Offline) {
 				treatTid = item.TrapLogID;
 				break;
 
@@ -493,7 +491,8 @@ public class CurrentAlarmModel extends Thread {
 		Iterator it1 = allRows.iterator();
 		while (it1.hasNext()) {
 			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
-			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.parmName.equalsIgnoreCase(aCurrentrow.parmName)) {
+			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress)
+					&& item.parmName.equalsIgnoreCase(aCurrentrow.parmName)) {
 				treatTid = item.TrapLogID;
 				break;
 
@@ -512,7 +511,8 @@ public class CurrentAlarmModel extends Thread {
 		Iterator it1 = allRows.iterator();
 		while (it1.hasNext()) {
 			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
-			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.TrapLogType == TrapLogTypes.Offline) {
+			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress)
+					&& item.TrapLogType == TrapLogTypes.Offline) {
 				treatTid = item.TrapLogID;
 				break;
 
@@ -531,7 +531,8 @@ public class CurrentAlarmModel extends Thread {
 		Iterator it1 = allRows.iterator();
 		while (it1.hasNext()) {
 			nojuTrapLogTableRow item = (nojuTrapLogTableRow) it1.next();
-			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress) && item.parmName.equalsIgnoreCase(aCurrentrow.parmName)) {
+			if (item.TrapDevAddress.equalsIgnoreCase(aCurrentrow.TrapDevAddress)
+					&& item.parmName.equalsIgnoreCase(aCurrentrow.parmName)) {
 				treatTid = item.TrapLogID;
 				break;
 
@@ -544,17 +545,14 @@ public class CurrentAlarmModel extends Thread {
 
 	}
 
-
-
 	public void editTreatMent(int TrapLogID, String content) {
 
-		
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String IsTreatMent = sdf.format(new Date());
 
 		try {
-			int rst = logEngine.trapLogEditRow(TrapLogID, content,IsTreatMent);
+			int rst = this.logEngine.trapLogEditRow(TrapLogID, content, IsTreatMent);
 		} catch (Exception e) {
 			return;
 
@@ -566,19 +564,18 @@ public class CurrentAlarmModel extends Thread {
 			if (item.TrapLogID == TrapLogID) {
 
 				allRows.remove(item);
-				allRowsTable.remove(item.TrapLogID);
+				// allRowsTable.remove(item.TrapLogID);
 
 				invalidRows.add(item);
-				invalidRowsTable.put(item.TrapLogID, item);
-				if (invalidRowsTable.size() > MAX_TRAPNUMBER)// //超出最大值
+				// invalidRowsTable.put(item.TrapLogID, item);
+				if (invalidRows.size() > MAX_TRAPNUMBER)// //超出最大值
 				{
 					// 丢入历史告警
 					nojuTrapLogTableRow removeRow = invalidRows.get(0);
 					invalidRows.remove(removeRow);
-					invalidRowsTable.remove(removeRow.TrapLogID);
+					// invalidRowsTable.remove(removeRow.TrapLogID);
 				}
 
-	
 				item.isTreated = IsTreatMent;// new
 
 				item.TrapTreatMent = content;
@@ -593,7 +590,7 @@ public class CurrentAlarmModel extends Thread {
 				logjson.put("type", item.TrapLogType.toString());
 				logjson.put("paramname", item.parmName);
 				logjson.put("paramvalue", item.paramValue);
-				 sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 				logjson.put("eventtime", sdf.format(item.TrapLogTime));
 				logjson.put("solved", item.TrapTreatMent);
 				logjson.put("solvetime", item.isTreated);
@@ -605,8 +602,6 @@ public class CurrentAlarmModel extends Thread {
 			}
 
 		}
-
-		// int xss = int.MaxValue;
 
 	}
 
@@ -634,23 +629,13 @@ public class CurrentAlarmModel extends Thread {
 
 	}
 
-	
-
-	public void clearAllTrapLogRows() {
-		this.allRows.clear();
-		allRowsTable.clear();
-
-	}
-
-	
-	public void  InsertOperLog(OperLogTypes type, String content, String usrName) {
+	public void InsertOperLog(OperLogTypes type, String content, String usrName) {
 		nojuOperLogTableRow row = new nojuOperLogTableRow(type, content, new Date(), usrName);
 
-		row.OperLogID = logEngine.operLogInsertRow(row);
+		row.OperLogID = this.logEngine.operLogInsertRow(row);
 
-		
-		if (row.OperLogID==-1) {
-			return 	;	
+		if (row.OperLogID == -1) {
+			return;
 		}
 		// send row to clinet
 		JSONObject logjson = new JSONObject();
@@ -664,23 +649,6 @@ public class CurrentAlarmModel extends Thread {
 		staticmemory.broadCast(logjson.toJSONString());
 
 	}
-
-	public void addLogTest() {
-		TrapLogTypes type = TrapLogTypes.Lo; // TODO: Initialize to an
-												// appropriate value
-		String addr = "192.168.1.13"; // TODO: Initialize to an appropriate
-										// value
-		String content = "a test trap"; // TODO: Initialize to an appropriate
-										// value
-		Date time = new Date(); // TODO: Initialize to an appropriate value
-		// this.insertTrapLog(type, addr, "myNeName", content, time);
-	}
-
-	/*
-	 * public List<nojuTrapLogTableRow> getallrows() { return this.allRows;
-	 * 
-	 * }
-	 */
 
 	private void sendToQueue(String msg, String queue) {
 		Jedis jedis = null;

@@ -216,7 +216,6 @@ public class PDUServer extends Thread {
 				}
 
 				lNode.isOline = true;
-				log.info("[#3] .....have device online.......");
 
 				JSONObject rootjson = new JSONObject();
 				rootjson.put("cmd", "devstatus");
@@ -227,9 +226,8 @@ public class PDUServer extends Thread {
 				nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.TestOnline), TrapLogTypes.TestOnline, ipaddr,
 						lNode.fullpath, (ClsLanguageExmp.isEn ? "Device online" : "设备上线"), new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线",
 						"");
-
 				try {
-					// hi ,xinglong ,讲该trap推送到CurrentAlarmModel
+					// send to CurrentAlarmModel
 					String serStr = null;
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 					ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);

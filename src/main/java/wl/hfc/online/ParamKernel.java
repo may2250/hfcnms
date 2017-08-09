@@ -83,7 +83,9 @@ public class ParamKernel extends Thread{
 	};
 	
 	private void phraseMSG(String message) throws InterruptedException, ParseException, IOException{
-		System.out.println(" [x] ParamKernel Received: '" + message + "'");			
+		
+		System.out.println(" [x] ParamKernel Received: '" + message + "'");		
+		
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
 		

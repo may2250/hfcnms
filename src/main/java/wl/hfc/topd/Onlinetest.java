@@ -142,7 +142,7 @@ public class Onlinetest {
 		ICDatabaseEngine1.getTrapRowsWithTime(dt2, dt, "",-1,0);
 		CurrentAlarmModel CurrentAlarmModel1 = new CurrentAlarmModel();
 		CurrentAlarmModel1.setRedisUtil(redisUtil);
-		CurrentAlarmModel1.logEngine = ICDatabaseEngine1;
+		CurrentAlarmModel1.logEngine=ICDatabaseEngine1;
 		String nowpath; // ��ǰtomcat��binĿ¼��·��
 		nowpath = System.getProperty("user.dir");
 		nowpath = nowpath + "\\" + "mibs";
