@@ -205,6 +205,8 @@ public class SnmpEngine {
 			al.add(itemjson);
 		}
 		pJson.put("powertbl", al);
+		
+		
 		i = 0;
 		al = new JSONArray();
 		for (enumi = 0; enumi < pOutVariables.RowNum; enumi++) {
@@ -217,6 +219,28 @@ public class SnmpEngine {
 			al.add(itemjson);
 		}
 		pJson.put("pumptbl", al);
+		return pJson;
+
+	}
+	
+	
+	
+	public  static JSONObject tabVarToJason( VariableSnmpVar[] cVariables,SnmpTableInfo tableInfo, JSONObject pJson,String tbName) {
+		int enumi, enumj;
+		int i = 0;
+		JSONArray al = new JSONArray();
+		JSONObject itemjson;
+		for (enumi = 0; enumi < tableInfo.RowNum; enumi++) {
+			itemjson = new JSONObject();
+			for (enumj = 0; enumj < tableInfo.ColNum; enumj++) {
+				String vale = cVariables[enumj].ToDispString(tableInfo.TableCells.get(i));				
+				itemjson.put(cVariables[enumj].VarInfo.ParamMibLabel + "_row", vale);
+				i++;
+			}
+			al.add(itemjson);
+		}
+		pJson.put(tbName, al);		
+
 		return pJson;
 
 	}

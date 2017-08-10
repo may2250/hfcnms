@@ -17,6 +17,7 @@ import wl.hfc.common.NetTypes;
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
 import wl.hfc.online.CommonSnmpPrevail;
 import wl.hfc.online.EDFASnmpPrevail;
+import wl.hfc.online.EMSnmpPrevail;
 import wl.hfc.online.PDUServerForOneDev;
 import wl.hfc.online.ReceiverSnmpPrevail;
 import wl.hfc.topd.MainKernel;
@@ -85,7 +86,13 @@ public class StaticMemory {
 			else if (hfctyp1==HFCTypes.EDFA) {
 				osp.snmpPreail = new EDFASnmpPrevail(".1",jsondata.get("deviceid").toString());
 				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
-			}else {
+			}
+			else if (hfctyp1==HFCTypes.TransEM) {
+				osp.snmpPreail = new EMSnmpPrevail (".1",jsondata.get("deviceid").toString());
+				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
+			}
+			
+			else {
 
 				return;
 			}

@@ -45,20 +45,21 @@ public class CDevForCMD {
 		{
 	    	case EDFA:
 			if (MD.equalsIgnoreCase("WE-1550B"))
-				return "WE_1550B";// 野外型图片
+				return "EDFA/WE_1550B";// 野外型图片
 			else if (MD.contains("YW") || DEVICEID.contains("YW"))
-				return "EDFA_YW";// 野外
+				return "EDFA/EDFA_YW";// 野外
 			else if (MD.contains("YZ") || DEVICEID.contains("YZ"))
-				return "EDFA_YZ";// EDFA_YZ;// 多路
+				return "EDFA/EDFA_YZ";// EDFA_YZ;// 多路
 			else if (MD.contains("HD") || DEVICEID.contains("HD"))
-				return "EDFA_HD";// 
+				return "EDFA/EDFA_HD";// 
 			else if (DEVICEID.contains("HE"))
-				return "EDFA_HE";// 
+				return "EDFA/EDFA_HE";// 
 			else
-				return "edfa";// 
-
+				return "EDFA/edfa";// 
+	    	case TransEM:
+				return "transEM";// 
 		default:
-			return "edfa";// 	
+			return "unknown";// 	
 		}
 
 		// subjson.put("icon", "images/net_center.png");

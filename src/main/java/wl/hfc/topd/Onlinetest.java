@@ -100,6 +100,43 @@ public class Onlinetest {
 		}
 
 	}
+	
+	
+	public static void TransTest() {
+		// loadDXml();
+		new pmls();
+
+		JSONObject json = new JSONObject();
+		EMSnmpPrevail snmpInstance7 = new EMSnmpPrevail(".1","");
+		snmpInstance7.thisDev = new CDevForCMD("public", "public", "192.168.1.21");
+		snmpInstance7.sver = new PDUServerForOneDev(0);
+		try {
+			System.out.println(json.toString());
+			json = snmpInstance7.getPmWithModelNumber(json);
+
+			JSONObject rootjson = new JSONObject();
+			// ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnOpticalReceiverPower",rootjson);
+			// ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnDCPowerVoltage",rootjson,0);
+			ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnRFPortOutputRFLevel", rootjson, 0);
+
+			System.out.println(json.toString());
+			System.out.println(rootjson.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+
+		}
+
+		while (true) {
+			try {
+				Thread.sleep(1000);
+				System.out.println("123123123");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
 
 	public static void CommonVariablesGetTest() {
 
@@ -189,7 +226,8 @@ public class Onlinetest {
 			// trapTest();
 			//RECEIVERTEST();
 			//CommonVariablesGetTest();
-			EDFATEST();
+			//EDFATEST();\
+			TransTest();
 
 		} catch (Exception e) {
 

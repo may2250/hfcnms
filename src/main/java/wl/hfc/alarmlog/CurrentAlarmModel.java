@@ -252,6 +252,7 @@ public class CurrentAlarmModel extends Thread {
 	private String getHistoryTraplogs(JSONObject jsondata) {
 		JSONObject rootjson = new JSONObject();
 		JSONObject logjson;
+		String descr="";
 		rootjson.put("cmd", jsondata.get("cmd").toString());
 		JSONArray jsonarray = new JSONArray();
 		Date datestart;
@@ -324,17 +325,27 @@ public class CurrentAlarmModel extends Thread {
 				logjson.put("solved", prow.TrapTreatMent);
 				logjson.put("solvetime", prow.isTreated);
 				jsonarray.add(logjson);
-			}
+			}			
+
+			descr=sdf.format(datestart)+" --- "+	sdf.format(datestart)+"  "+jsondata.get("source").toString();
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		}
-		rootjson.put("alarms", jsonarray);
+	
+		}		
+		
+		rootjson.put("alarms", jsonarray);	
+		rootjson.put("descr", 	descr);
+	
+		
 		return rootjson.toJSONString();
+
 	}
 
 	private String getHistoryoperlogs(JSONObject jsondata) {
 		JSONObject rootjson = new JSONObject();
 		JSONObject logjson;
+		String descr="";
 		rootjson.put("cmd", jsondata.get("cmd").toString());
 		JSONArray jsonarray = new JSONArray();
 		Date datestart;
@@ -367,10 +378,13 @@ public class CurrentAlarmModel extends Thread {
 				logjson.put("time", sdf.format(prow.OperLogTime));
 				jsonarray.add(logjson);
 			}
+			
+			descr=sdf.format(datestart)+" --- "+	sdf.format(datestart)+"  "+jsondata.get("optname").toString();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		rootjson.put("oplogs", jsonarray);
+		rootjson.put("descr", 	descr);
 		return rootjson.toJSONString();
 	}
 
