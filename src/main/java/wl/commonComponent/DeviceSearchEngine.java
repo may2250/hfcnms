@@ -3,7 +3,6 @@ package wl.commonComponent;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
@@ -25,15 +24,10 @@ import org.snmp4j.transport.DefaultUdpTransportMapping;
 import com.xinlong.util.SearchIpInfo;
 import com.xinlong.util.StaticMemory;
 
-import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.CDevForCMD;
-import wl.hfc.common.ClsLanguageExmp.EnumLogoVersion;
 import wl.hfc.common.DProcess;
 import wl.hfc.common.NetDataProcess;
-import wl.hfc.common.NlogType;
 import wl.hfc.common.OidToHFCType;
-import wl.hfc.common.PduSevr;
-import wl.hfc.common.nojuTrapLogTableRow;
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
 import wl.hfc.topd.MainKernel;
 

@@ -61,14 +61,14 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			majorVarPdu.setType(PDU.GET);
 			// major
 			int vIns = 0;			
-			nojuParmsTableRow row1 = pmls.me.tab1.get("fnRFChannelNum");			
+			nojuParmsTableRow row1 = pmls.me.tabch.get("fnRFChannelNum");			
 			mjVariables[vIns] = new VariableSnmpVar(row1);			
 			mjVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
 			paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 			this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));
 			
 			
-			row1 = pmls.me.tab1.get("fnOpticalReceiverPower");
+			row1 = pmls.me.tabch.get("fnOpticalReceiverPower");
 			mjVariables[vIns] = new VariableSnmpVar(row1, ".1", VariableSnmpVar.ToValueMode.FmtInteger, true);
 			paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 			this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));
@@ -76,11 +76,11 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			tableInputPdu = new PDU();
 			tableInputPdu.setType(PDU.GETNEXT);
 
-			row1 = pmls.me.tab1.get("fnDCPowerName");
+			row1 = pmls.me.tabch.get("fnDCPowerName");
 			cInputVariables[0] = new VariableSnmpVar(row1);
 			cInputVariables[0].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtString;
 
-			row1 = pmls.me.tab1.get("fnDCPowerVoltage");
+			row1 = pmls.me.tabch.get("fnDCPowerVoltage");
 			cInputVariables[1] = new VariableSnmpVar(row1, ".1", VariableSnmpVar.ToValueMode.FmtInteger, true);
 			paramHashTable.put(row1.ParamMibLabel, cInputVariables[1]);
 
@@ -97,19 +97,19 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			this.tableOutpdu = new PDU();
 			tableOutpdu.setType(PDU.GETNEXT);
 
-			row1 = pmls.me.tab1.get("fnRFPortName");
+			row1 = pmls.me.tabch.get("fnRFPortName");
 			cOutputVariables[0] = new VariableSnmpVar(row1);
 			cOutputVariables[0].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtString;
 
-			row1 = pmls.me.tab1.get("fnOutputRFlevelatt");
+			row1 = pmls.me.tabch.get("fnOutputRFlevelatt");
 			cOutputVariables[1] = new VariableSnmpVar(row1);
 			cOutputVariables[1].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
 			paramHashTable.put(row1.ParamMibLabel, cOutputVariables[1]);
-			row1 = pmls.me.tab1.get("fnOutputRFleveleq");
+			row1 = pmls.me.tabch.get("fnOutputRFleveleq");
 			cOutputVariables[2] = new VariableSnmpVar(row1);
 			cOutputVariables[2].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
 			paramHashTable.put(row1.ParamMibLabel, cOutputVariables[2]);
-			row1 = pmls.me.tab1.get("fnRFPortOutputRFLevel");
+			row1 = pmls.me.tabch.get("fnRFPortOutputRFLevel");
 			cOutputVariables[3] = new VariableSnmpVar(row1, ".1",ToValueMode.FmtInteger, true);
 			cOutputVariables[3].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
 			paramHashTable.put(row1.ParamMibLabel, cOutputVariables[3]);

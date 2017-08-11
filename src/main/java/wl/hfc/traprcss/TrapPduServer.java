@@ -9,61 +9,52 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.snmp4j.*;
 import org.snmp4j.mp.*;
 import org.snmp4j.smi.*;
 import org.snmp4j.transport.*;
 
 import redis.clients.jedis.Jedis;
+
+
 import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.DevTopd;
-import wl.hfc.common.PduSevr;
 import wl.hfc.common.nojuTrapLogTableRow;
 import wl.hfc.online.pmls;
-import wl.hfc.server.Sstatus;
-import wl.hfc.topd.MainKernel;
 
 
-
-
-
-
-import com.xinlong.Services.TrapReceiverBean;
 import com.xinlong.util.RedisUtil;
-
 
 //TrapPduServer 只负责告警监听，不响应发布订阅消息机制。
 public class TrapPduServer extends Thread {
-	private static final String  HFCALARM_MESSAGE =  "currentalarm.message" ;
+	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	public static TrapProCenter trpcss;
 	public static String TRAP_ADDRESS = "udp:0.0.0.0/";
-	//private static final String TRAP_SERVER_PORT_KEY = "global:trapserver:port";
-	//true:is valid; false:is invalid
-	public static boolean TrapPduServer_status=false;
+	// private static final String TRAP_SERVER_PORT_KEY = "global:trapserver:port";
+	// true:is valid; false:is invalid
+	public static boolean TrapPduServer_status = false;
 	private static Snmp snmp = null;
-	private Address listenAddress;
-	public Hashtable listDevHash;
+
 	public static CurrentAlarmModel realTrapResponder;
 	private static Logger logger = Logger.getLogger(TrapPduServer.class);
 	public static TrapPduServer me;
 	private static RedisUtil redisUtil;
 	
 	
+	private Address listenAddress;
+	public Hashtable listDevHash;
+
 	public TrapPduServer() {
 
 		String filePath = pmls.class.getResource("/").toString();
 		filePath = filePath.substring(filePath.indexOf("file:") + 5);
 		filePath = filePath + "mibs";
-	//	System.out.println("----------------path--->>>" + filePath);
-		
-	
-	    this.trpcss  = new TrapProCenter(true, filePath);
+		// System.out.println("----------------path--->>>" + filePath);
 
-	
+		this.trpcss = new TrapProCenter(true, filePath);
 
 		this.setName("TrapPduServer");
-		me=this;
+		me = this;
 
 	}
 
@@ -75,23 +66,23 @@ public class TrapPduServer extends Thread {
 		TrapPduServer.redisUtil = redisUtil;
 	}
 
-	//hfc_client_udp  	    
+	// hfc_client_udp
 	private Address targetAddress = null;
 
 	public void run() {
-		
+
 		if (!MibProcess.MibProcess_status) {
-			TrapPduServer_status=false;
-			logger.info(this.getName()+ "....no need starting.......");
+			TrapPduServer_status = false;
+			logger.info(this.getName() + "....no need starting.......");
 			return;
 		}
 
-		logger.info(this.getName()+ "....starting.......");
+		logger.info(this.getName() + "....starting.......");
 		try {
 
 			String trapport = "162";
 			TRAP_ADDRESS = TRAP_ADDRESS + trapport;
-			//System.out.println("+++++++++TRAP_ADDRESS=" + TRAP_ADDRESS);
+			// System.out.println("+++++++++TRAP_ADDRESS=" + TRAP_ADDRESS);
 
 			listenAddress = GenericAddress.parse(System.getProperty("snmp4j.listenAddress", TRAP_ADDRESS));
 			TransportMapping transport;
@@ -104,16 +95,15 @@ public class TrapPduServer extends Thread {
 			snmp.getMessageDispatcher().addMessageProcessingModel(new MPv2c());
 			snmp.getMessageDispatcher().addMessageProcessingModel(new MPv3());
 			snmp.listen();
-			
-			
-			TrapPduServer_status=true;
+
+			TrapPduServer_status = true;
 
 		} catch (Exception e) {
-			TrapPduServer_status=false;
+			TrapPduServer_status = false;
 			e.printStackTrace();
 			logger.error(e.getMessage());
 			return;
-			
+
 		}
 
 		CommandResponder pduHandler = new CommandResponder() {
@@ -137,9 +127,8 @@ public class TrapPduServer extends Thread {
 		// e.printStackTrace();
 		// }
 		// }
-		
-	}
 
+	}
 
 	@SuppressWarnings("unchecked")
 	public void doReceive(CommandResponderEvent event) {
@@ -160,47 +149,43 @@ public class TrapPduServer extends Thread {
 				hfcalarmhash.put("status", String.valueOf(status));
 				hfcalarmhash.put("traptype", String.valueOf(traptype));
 				hfcalarmhash.put("enterprise", enterprise.toString());
-				
-				
+
 				String ipaddr = event.getPeerAddress().toString();
 				ipaddr = ipaddr.substring(0, ipaddr.indexOf("/"));
-				
-				if(listDevHash==null)
-				{				
-					
+
+				if (listDevHash == null) {
+
 					return;
 				}
-				
+
 				DevTopd lNode = (DevTopd) listDevHash.get(ipaddr);
-			    if (lNode == null)
-                    return ;
+				if (lNode == null)
+					return;
 
 				hfcalarmhash.put("ip", ipaddr);
 				try {
 					nojuTrapLogTableRow traprst = trpcss.ProcessTrapRequestPduHandler(hfcalarmhash, 0, inPdu);
-					traprst.neName=lNode.fullpath;
+					traprst.neName = lNode.fullpath;
 					if (traprst.isValid) {
-					
+
 						String serStr = null;
-						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
-			            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);  
-			            objectOutputStream.writeObject(traprst);    
-			            serStr = byteArrayOutputStream.toString("ISO-8859-1");  
-			            serStr = java.net.URLEncoder.encode(serStr, "UTF-8");  
-			              
-			            objectOutputStream.close();  
-			            byteArrayOutputStream.close();
+						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+						ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+						objectOutputStream.writeObject(traprst);
+						serStr = byteArrayOutputStream.toString("ISO-8859-1");
+						serStr = java.net.URLEncoder.encode(serStr, "UTF-8");
+
+						objectOutputStream.close();
+						byteArrayOutputStream.close();
 						JSONObject json = new JSONObject();
 						json.put("cmd", "newalarm");
 						json.put("val", serStr);
 
 						sendToQueue(json.toJSONString(), HFCALARM_MESSAGE);
 					}
-	           
-					//realTrapResponder.insertTrapLog(traprst);
-					   
-  
-		
+
+					// realTrapResponder.insertTrapLog(traprst);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -216,7 +201,7 @@ public class TrapPduServer extends Thread {
 		}
 
 	}
-	
+
 	private void sendToQueue(String msg, String queue) {
 		Jedis jedis = null;
 		try {
@@ -226,8 +211,8 @@ public class TrapPduServer extends Thread {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			if(jedis != null)
+			// e.printStackTrace();
+			if (jedis != null)
 				redisUtil.getJedisPool().returnBrokenResource(jedis);
 
 		}

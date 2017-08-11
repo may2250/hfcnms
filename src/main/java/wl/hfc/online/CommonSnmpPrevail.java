@@ -46,34 +46,34 @@ public class CommonSnmpPrevail extends WosBaseSnmp {
 
 		// major
 		int vIns = 0;
-		nojuParmsTableRow row1 = pmls.tab1.get("sysName");
+		nojuParmsTableRow row1 = pmls.tabch.get("sysName");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtString, false);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 
-		row1 = pmls.tab1.get("sysObjectID");
+		row1 = pmls.tabch.get("sysObjectID");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtString, false);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 
 
-		row1 = pmls.tab1.get("sysDescr");
+		row1 = pmls.tabch.get("sysDescr");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtString, false);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 		
 		
-		row1 = pmls.tab1.get("sysContact");
+		row1 = pmls.tabch.get("sysContact");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtString, false);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 		
 		
-		row1 = pmls.tab1.get("sysLocation");
+		row1 = pmls.tabch.get("sysLocation");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtString, false);
 		this.majorVarPdu.add(new VariableBinding(
@@ -81,7 +81,7 @@ public class CommonSnmpPrevail extends WosBaseSnmp {
 		
 		
 		
-		row1 = pmls.tab1.get("sysUpTime");
+		row1 = pmls.tabch.get("sysUpTime");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtString, false);
 		this.majorVarPdu.add(new VariableBinding(
@@ -92,28 +92,20 @@ public class CommonSnmpPrevail extends WosBaseSnmp {
 		
 		
 		//hfc ����		
-		row1 = pmls.tab1.get("commonInternalTemperature");
+		row1 = pmls.tabch.get("commonInternalTemperature");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtInteger, false);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 
-		row1 = pmls.tab1.get("commonNELogicalID");
+		row1 = pmls.tabch.get("commonNELogicalID");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtString, false);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 		
 		
-		row1 = pmls.tab1.get("commonNEModelNumber");
-		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
-				ToValueMode.FmtString, false);
-		this.majorVarPdu.add(new VariableBinding(
-				mjVariables[vIns++].FullSnmpOid));
-		
-		
-		
-		row1 = pmls.tab1.get("commonNESerialNumber");
+		row1 = pmls.tabch.get("commonNEModelNumber");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtString, false);
 		this.majorVarPdu.add(new VariableBinding(
@@ -121,7 +113,15 @@ public class CommonSnmpPrevail extends WosBaseSnmp {
 		
 		
 		
-		row1 = pmls.tab1.get("commonDeviceMACAddress");
+		row1 = pmls.tabch.get("commonNESerialNumber");
+		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
+				ToValueMode.FmtString, false);
+		this.majorVarPdu.add(new VariableBinding(
+				mjVariables[vIns++].FullSnmpOid));
+		
+		
+		
+		row1 = pmls.tabch.get("commonDeviceMACAddress");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtString, false);
 		this.majorVarPdu.add(new VariableBinding(
@@ -133,11 +133,11 @@ public class CommonSnmpPrevail extends WosBaseSnmp {
 		trapAddrPdu = new PDU();
 		trapAddrPdu.setType(PDU.GETNEXT);
 
-		row1 = pmls.tab1.get("commonAgentTrapIndex");
+		row1 = pmls.tabch.get("commonAgentTrapIndex");
 		trapAddrsVariables[0] = new VariableSnmpVar(row1);
 		trapAddrsVariables[0].ToValueMode1 = ToValueMode.FmtString;
 
-		row1 = pmls.tab1.get("commonAgentTrapIP");
+		row1 = pmls.tabch.get("commonAgentTrapIP");
 		trapAddrsVariables[1] = new VariableSnmpVar(row1);
 		trapAddrsVariables[1].ToValueMode1 = ToValueMode.FmtString;
 		paramHashTable.put(row1.ParamMibLabel, trapAddrsVariables[1]);		

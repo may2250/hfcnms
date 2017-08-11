@@ -53,14 +53,14 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 	private String pdeviceIDString="";
 	
 	private int tableOutPlength=6;
-	private int tableBasicPlength=6;
+	private int tableInputPlength=6;
 	public EMSnmpPrevail(String phsicIndex,String PDeviceID) {
 		super(phsicIndex);
 		pdeviceIDString=PDeviceID;
 		mjVariables = new VariableSnmpVar[3];
 		// tables
 		cDCVariables = new VariableSnmpVar[2];
-		cInputVariables = new VariableSnmpVar[tableBasicPlength];
+		cInputVariables = new VariableSnmpVar[tableInputPlength];
 		cOutputVariables = new VariableSnmpVar[tableOutPlength];
 
 		majorVarPdu = new PDU();
@@ -69,7 +69,7 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 
 		// major
 		int vIns = 0;
-		nojuParmsTableRow row1 = pmls.tab1.get("otdConfigurationRFChannels");	
+		nojuParmsTableRow row1 = pmls.tabch.get("otdConfigurationRFChannels");	
 		
 		mjVariables[vIns] = new VariableSnmpVar(row1);			
 		mjVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
@@ -84,11 +84,11 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		tableDCPdu = new PDU();
 		tableDCPdu.setType(PDU.GETNEXT);
 
-		row1 = pmls.tab1.get("otxDCPowerName");
+		row1 = pmls.tabch.get("otxDCPowerName");
 		cDCVariables[0] = new VariableSnmpVar(row1);
 		cDCVariables[0].ToValueMode1 = ToValueMode.FmtString;
 
-		row1 = pmls.tab1.get("otxDCPowerVoltage");
+		row1 = pmls.tabch.get("otxDCPowerVoltage");
 		cDCVariables[1] = new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		paramHashTable.put(row1.ParamMibLabel, cDCVariables[1]);
@@ -114,40 +114,21 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		tableInputPdu.setType(PDU.GETNEXT);
 
 
-		row1 = pmls.tab1.get("otxInputRFLevel");
+		row1 = pmls.tabch.get("otxInputRFLevel");
 		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
 		
 		
-		row1 = pmls.tab1.get("otxConfigurationAGCMode");//AGCmode
+		row1 = pmls.tabch.get("otxConfigurationAGCMode");//AGCmode
 		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
 		
 		
-		row1 = pmls.tab1.get("otxConfigurationOmi");//AGC偏移量
-		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
-				ToValueMode.FmtInteger, false);
-		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
-		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
-		
-		
-		
-		
-		
-		
-		
-		row1 = pmls.tab1.get("otxConfigurationSbsSuppression");//sbs
-		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
-				ToValueMode.FmtInteger, false);
-		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
-		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
-		
-		
-		row1 = pmls.tab1.get("otxConfigurationChannelDistance");//channel 偏移
+		row1 = pmls.tabch.get("otxConfigurationOmi");//AGC偏移量
 		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
@@ -155,7 +136,26 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		
 		
 		
-		row1 = pmls.tab1.get("otxConfigurationRfGain");//MGC value
+		
+		
+		
+		
+		row1 = pmls.tabch.get("otxConfigurationSbsSuppression");//sbs
+		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
+				ToValueMode.FmtInteger, false);
+		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
+		
+		
+		row1 = pmls.tabch.get("otxConfigurationChannelDistance");//channel 偏移
+		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
+				ToValueMode.FmtInteger, false);
+		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
+		
+		
+		
+		row1 = pmls.tabch.get("otxConfigurationRfGain");//MGC value
 		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
@@ -164,7 +164,7 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		
 
 		begincol = 0;
-		endcol = this.tableBasicPlength-1;
+		endcol = this.tableInputPlength-1;
 
 		headerinfos = new VariableSnmpVar[endcol - begincol + 1];
 
@@ -182,33 +182,33 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		this.tableOutpdu = new PDU();
 		tableOutpdu.setType(PDU.GETNEXT);
 
-		row1 = pmls.tab1.get("otxModuleIndex");
+		row1 = pmls.tabch.get("otxModuleIndex");
 		cOutputVariables[i] = new VariableSnmpVar(row1);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtString;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
 
-		row1 = pmls.tab1.get("otxLaserCurrent");//bias
+		row1 = pmls.tabch.get("otxLaserCurrent");//bias
 		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
 
-		row1 = pmls.tab1.get("otxLaserOutputPower");
-		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
-				ToValueMode.FmtInteger, true);
-		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
-		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
-
-		
-		
-		row1 = pmls.tab1.get("otxLaserTecCurrent");
+		row1 = pmls.tabch.get("otxLaserOutputPower");
 		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
 
 		
-		row1 = pmls.tab1.get("otxConfigurationItuFrequency");
+		
+		row1 = pmls.tabch.get("otxLaserTecCurrent");
+		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
+				ToValueMode.FmtInteger, true);
+		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
+
+		
+		row1 = pmls.tabch.get("otxConfigurationItuFrequency");
 		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
@@ -216,7 +216,7 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 
 		
 		
-		row1 = pmls.tab1.get("otxLaserControl");
+		row1 = pmls.tabch.get("otxLaserControl");
 		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
@@ -285,8 +285,7 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 				this.thisDev.ROCommunity, SnmpConstants.version1);
 		SnmpTableInfo inreTable = SnmpEngine.GetMibTableVariables(
 				(PDU) this.tableInputPdu.clone(), cTgt, sver);
-		pJson.put("intablerownum", inreTable.RowNum);
-		
+		pJson.put("intablerownum", inreTable.RowNum);		
 		
 		
 		
@@ -348,35 +347,5 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 	}
 	
 
-	public SnmpTableInfo getPmWithModelNumberTf() throws Exception {
-		PDU outPDU;
-		PDU inPDU;
-		CommunityTarget cTgt;
 
-		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress,
-				this.thisDev.ROCommunity, SnmpConstants.version1);
-		SnmpTableInfo result = SnmpEngine.GetMibTableVariables(
-				(PDU) this.tableDCPdu.clone(), cTgt, sver);
-		
-
-	
-		return result;
-
-	}
-
-	public SnmpTableInfo getPmWithModelNumberTs() throws Exception {
-		PDU outPDU;
-		PDU inPDU;
-		CommunityTarget cTgt;
-
-		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress,
-				this.thisDev.ROCommunity, SnmpConstants.version1);
-		SnmpTableInfo result = SnmpEngine.GetMibTableVariables(
-				(PDU) this.tableOutpdu.clone(), cTgt, sver);
-
-		return result;
-
-	}
-
-	
 }

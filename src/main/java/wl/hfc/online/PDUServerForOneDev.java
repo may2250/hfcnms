@@ -9,9 +9,9 @@ import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 
 
-import wl.hfc.common.PduSevr;
+import wl.hfc.common.IPduSevr;
 
-public class PDUServerForOneDev implements PduSevr {
+public class PDUServerForOneDev implements IPduSevr {
 	//public static PDUServerForOneDev me;
 	private Snmp _session;
 	// private TrapProCenter tpPrcss;

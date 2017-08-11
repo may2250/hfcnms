@@ -7,7 +7,7 @@ import org.snmp4j.PDU;
 import org.snmp4j.smi.*;
 
 import wl.hfc.common.NetDataProcess;
-import wl.hfc.common.PduSevr;
+import wl.hfc.common.IPduSevr;
 
 
 public class IPSetEngne {
@@ -15,7 +15,7 @@ public class IPSetEngne {
     public static String GetwayStrOid = ".1.3.6.1.4.1.17409.1.100.2.0";
     public static String SubnetStrOid = ".1.3.6.1.4.1.17409.1.100.3.0";
 
-    public PduSevr pduSevr;
+    public IPduSevr pduSevr;
 
 
 

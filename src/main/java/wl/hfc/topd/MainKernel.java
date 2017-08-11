@@ -209,11 +209,13 @@ public class MainKernel {
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), sessionid);
 			// 初始化
 			staticmemory.sendRemoteStr(getInitTree(rootjson), sessionid);
-			staticmemory.sendRemoteStr(getDBstatus(), sessionid);
+			//staticmemory.sendRemoteStr(getDBstatus(), sessionid);
 			rootjson = new JSONObject();
 			rootjson.put("cmd", "getLoginInit");
 			rootjson.put("sessionid", sessionid);
 			sendToQueue(rootjson.toJSONString(), HFCALARM_MESSAGE);
+			
+			
 		} else {
 			jsondata.put("Authed", false);
 			if(rst == AuthResult.PASSWD_NOT_MATCH){

@@ -200,7 +200,9 @@ public class Services_Websocket {
 					session.getBasicRemote().sendText(rootjson.toJSONString());
 				}else{
 					UserSession usession = new UserSession(username, session);
-					staticmemory.AddSession(usession);
+					staticmemory.AddSession(usession);//增加客户端名称
+					
+					//send to mainkernel to auth this user
 					rootjson.put("sessionid", session.getId());
 					rootjson.put("username", username);
 					rootjson.put("password", passWord);

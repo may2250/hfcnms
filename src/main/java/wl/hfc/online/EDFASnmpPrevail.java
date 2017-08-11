@@ -6,20 +6,6 @@ package wl.hfc.online;
 import org.json.simple.JSONObject;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.VariableBinding;
-
-
-
-
-
-
-
-
-
-
-
-
-import java.util.ArrayList;
-
 import org.snmp4j.PDU;
 import org.snmp4j.CommunityTarget;
 
@@ -64,21 +50,21 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 
 		// major
 		int vIns = 0;
-		nojuParmsTableRow row1 = pmls.tab1.get("oaInputOpticalPower");
+		nojuParmsTableRow row1 = pmls.tabch.get("oaInputOpticalPower");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtInteger, true);
 		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 		
-		row1 = pmls.tab1.get("oaOutputOpticalPower");
+		row1 = pmls.tabch.get("oaOutputOpticalPower");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".0",
 				ToValueMode.FmtInteger, true);
 		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
 
-		row1 = pmls.tab1.get("oaOptAtt");
+		row1 = pmls.tabch.get("oaOptAtt");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
@@ -91,11 +77,11 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		tableDCPdu = new PDU();
 		tableDCPdu.setType(PDU.GETNEXT);
 
-		row1 = pmls.tab1.get("oaDCPowerName");
+		row1 = pmls.tabch.get("oaDCPowerName");
 		cInputVariables[0] = new VariableSnmpVar(row1);
 		cInputVariables[0].ToValueMode1 = ToValueMode.FmtString;
 
-		row1 = pmls.tab1.get("oaDCPowerVoltage");
+		row1 = pmls.tabch.get("oaDCPowerVoltage");
 		cInputVariables[1] = new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[1]);
@@ -117,24 +103,24 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		this.tableOutpdu = new PDU();
 		tableOutpdu.setType(PDU.GETNEXT);
 
-		row1 = pmls.tab1.get("oaPumpIndex");
+		row1 = pmls.tabch.get("oaPumpIndex");
 		cOutputVariables[0] = new VariableSnmpVar(row1);
 		cOutputVariables[0].ToValueMode1 = ToValueMode.FmtString;
 
-		row1 = pmls.tab1.get("oaPumpBIAS");
+		row1 = pmls.tabch.get("oaPumpBIAS");
 		cOutputVariables[1] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[1].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[1]);
 
 
-		row1 = pmls.tab1.get("oaPumpTEC");
+		row1 = pmls.tabch.get("oaPumpTEC");
 		cOutputVariables[2] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[2].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[2]);
 
-		row1 = pmls.tab1.get("oaPumpTemp");
+		row1 = pmls.tabch.get("oaPumpTemp");
 		cOutputVariables[3] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[3].ToValueMode1 = ToValueMode.FmtInteger;

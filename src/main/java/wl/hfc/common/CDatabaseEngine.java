@@ -33,10 +33,10 @@ public class CDatabaseEngine {
 	private static RedisUtil redisUtil;
 	public static boolean flag = false; // 数据库连接状态
 	public static CDatabaseEngine me;
-	//private boolean isFirstTimeSucedCnt = true;
+	// private boolean isFirstTimeSucedCnt = true;
 	private boolean lastTrapInsertIsSucced = false;
 	public Connection trapcon;
-	
+
 	public CDatabaseEngine(RedisUtil predisUtil) {
 		redisUtil = predisUtil;
 		me = this;
@@ -105,11 +105,11 @@ public class CDatabaseEngine {
 	 * 
 	 * }else{ //发送数据库失去连接信息到前端 JSONObject rootjson = new JSONObject();
 	 * rootjson.put("cmd", "dbOpend"); rootjson.put("flag", true);
-	 * sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE); flag=true; } }
-	 * } catch (SQLException e) { e.printStackTrace(); JSONObject rootjson = new
-	 * JSONObject(); rootjson.put("cmd", "dbclosed"); rootjson.put("flag",
-	 * true); sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
-	 * this.flag = false; }
+	 * sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE); flag=true; } } }
+	 * catch (SQLException e) { e.printStackTrace(); JSONObject rootjson = new
+	 * JSONObject(); rootjson.put("cmd", "dbclosed"); rootjson.put("flag", true);
+	 * sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE); this.flag = false;
+	 * }
 	 * 
 	 * return this.flag; }
 	 */
@@ -128,10 +128,10 @@ public class CDatabaseEngine {
 		}
 	}
 
-	public int grpWithPname(String gpName,Hashtable groupLists) {
+	public int grpWithPname(String gpName, Hashtable groupLists) {
 
 		try {
-		
+
 			Enumeration e = groupLists.elements();
 
 			while (e.hasMoreElements()) {
@@ -170,8 +170,8 @@ public class CDatabaseEngine {
 			return -1;
 			// TODO: handle exception
 		}
-		
-		while (grpWithPname(newName,groupLists) != -1) {
+
+		while (grpWithPname(newName, groupLists) != -1) {
 			newName = row.UserGroupName + "(" + copyIndex + ")";
 			copyIndex++;
 
@@ -179,7 +179,8 @@ public class CDatabaseEngine {
 
 		row.UserGroupName = newName;
 
-		String sqlInsert = "INSERT INTO usergrouptable(UserGroupName,ParentGroupID) VALUES('" + row.UserGroupName + "'," + row.ParentGroupID + ')';
+		String sqlInsert = "INSERT INTO usergrouptable(UserGroupName,ParentGroupID) VALUES('" + row.UserGroupName + "',"
+				+ row.ParentGroupID + ')';
 
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
@@ -230,7 +231,7 @@ public class CDatabaseEngine {
 			return false;
 
 		}
-		
+
 		Hashtable groupLists;
 		try {
 			groupLists = UserGroupTableGetAllRows();
@@ -238,47 +239,36 @@ public class CDatabaseEngine {
 			EX.printStackTrace();
 			return false;
 			// TODO: handle exception
-		}	
-		
-		
-		if (grpWithPname(row.UserGroupName,groupLists) != -1) {
-			if (grpWithPname(row.UserGroupName,groupLists) != row.UserGroupID) {
+		}
+
+		if (grpWithPname(row.UserGroupName, groupLists) != -1) {
+			if (grpWithPname(row.UserGroupName, groupLists) != row.UserGroupID) {
 				return false;// 直接不允许修改
 			}
 		}
-		
-		
-		
-		
+
 		PreparedStatement pstmt;
-	//	ResultSet rs = null;
-		
+		// ResultSet rs = null;
+
 		String sqlInsert;
-/*		//is name exsit ?
-		String sqlInsert = "SELECT * FROM usergrouptable where UserGroupName='"+row.UserGroupName+"'";		
+		/*
+		 * //is name exsit ? String sqlInsert =
+		 * "SELECT * FROM usergrouptable where UserGroupName='"+row.UserGroupName+"'";
+		 * 
+		 * try { pstmt = (PreparedStatement) con.prepareStatement(sqlInsert); rs =
+		 * pstmt.executeQuery(sqlInsert); rs.last(); int rowCount = rs.getRow();
+		 * 
+		 * if (rowCount>0) {
+		 * 
+		 * //name exsit，return return false; }
+		 * 
+		 * 
+		 * } catch (Exception e) { return false; }
+		 */
 
-		try {
-			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
-			rs = pstmt.executeQuery(sqlInsert);
-			rs.last(); 
-			int rowCount = rs.getRow(); 
-			
-			if (rowCount>0) {
-				
-				//name exsit，return
-				return false;
-			}
-			
-			
-		} catch (Exception e) {
-			return false;
-		}
-	*/
-		
-		
-		 sqlInsert = "UPDATE usergrouptable SET UserGroupName='" + row.UserGroupName + "',ParentGroupID=" + row.ParentGroupID + ",Txa=" + row.x1
-				+ ",Txb=" + row.x2 + ",Txc=" + row.y1 + ",Txd=" + row.y2 + ",isTx=" + (row.isTx ? "1" : "0") + " WHERE UserGroupID=" + row.UserGroupID;
-
+		sqlInsert = "UPDATE usergrouptable SET UserGroupName='" + row.UserGroupName + "',ParentGroupID="
+				+ row.ParentGroupID + ",Txa=" + row.x1 + ",Txb=" + row.x2 + ",Txc=" + row.y1 + ",Txd=" + row.y2
+				+ ",isTx=" + (row.isTx ? "1" : "0") + " WHERE UserGroupID=" + row.UserGroupID;
 
 		try {
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
@@ -371,7 +361,7 @@ public class CDatabaseEngine {
 		return retList;
 	}
 
-	public String devWithPname(String Name,Hashtable groupLists) {
+	public String devWithPname(String Name, Hashtable groupLists) {
 		try {
 			Enumeration e = groupLists.elements();
 			while (e.hasMoreElements()) {
@@ -404,18 +394,18 @@ public class CDatabaseEngine {
 		} catch (Exception e) {
 			return false;
 			// TODO: handle exception
-		}		
+		}
 
-		
-		while (!devWithPname(newName,devLists).equals("")) {
+		while (!devWithPname(newName, devLists).equals("")) {
 			newName = row.Name + "(" + copyIndex + ")";
 			copyIndex++;
 		}
 
 		row.Name = newName;
-		String sqlInsert = "INSERT INTO devicetable(NetAddress,NetType," + "UserGroupID,HeadAddress,Name,ROCommunity,RWCommunity,RemarkText) VALUES('"
-				+ row.get_NetAddress() + "'," + row.get_NetType().ordinal() + ',' + row.UserGroupID + ",'" + row.HeadAddress + "','" + row.Name + "','"
-				+ row._ROCommunity + "','" + row._RWCommunity + "','" + " " + "')";
+		String sqlInsert = "INSERT INTO devicetable(NetAddress,NetType,"
+				+ "UserGroupID,HeadAddress,Name,ROCommunity,RWCommunity,RemarkText) VALUES('" + row.get_NetAddress()
+				+ "'," + row.get_NetType().ordinal() + ',' + row.UserGroupID + ",'" + row.HeadAddress + "','" + row.Name
+				+ "','" + row._ROCommunity + "','" + row._RWCommunity + "','" + " " + "')";
 		// sqlInsert += ";select @@IDENTITY";
 		PreparedStatement pstmt;
 		try {
@@ -458,7 +448,7 @@ public class CDatabaseEngine {
 			return false;
 
 		}
-		
+
 		Hashtable groupLists;
 		try {
 			groupLists = DeviceTableGetAllRows();
@@ -466,9 +456,9 @@ public class CDatabaseEngine {
 			EX.printStackTrace();
 			return false;
 			// TODO: handle exception
-		}		
+		}
 
-		String rstNm = devWithPname(row.Name,groupLists);
+		String rstNm = devWithPname(row.Name, groupLists);
 
 		if (!rstNm.equals("")) {
 			if (!rstNm.equals(row.get_NetAddress())) {
@@ -476,9 +466,10 @@ public class CDatabaseEngine {
 			}
 		}
 
-		String sqlInsert = "UPDATE devicetable SET NetType=" + row.get_NetType().ordinal() + ",UserGroupID=" + row.UserGroupID + ",HeadAddress='"
-				+ row.HeadAddress + "',Name='" + row.Name + "',ROCommunity='" + row._ROCommunity + "',RWCommunity='" + row._RWCommunity + "',RemarkText='"
-				+ row.remark + "',Txa=" + row.x1 + ",Txb=" + row.x2 + ",Txc=" + row.y1 + ",Txd=" + row.y2 + ",isTx=" + (row.isTx ? "1" : "0")
+		String sqlInsert = "UPDATE devicetable SET NetType=" + row.get_NetType().ordinal() + ",UserGroupID="
+				+ row.UserGroupID + ",HeadAddress='" + row.HeadAddress + "',Name='" + row.Name + "',ROCommunity='"
+				+ row._ROCommunity + "',RWCommunity='" + row._RWCommunity + "',RemarkText='" + row.remark + "',Txa="
+				+ row.x1 + ",Txb=" + row.x2 + ",Txc=" + row.y1 + ",Txd=" + row.y2 + ",isTx=" + (row.isTx ? "1" : "0")
 				+ " WHERE NetAddress='" + row.get_NetAddress() + '\'';
 
 		PreparedStatement pstmt;
@@ -509,9 +500,10 @@ public class CDatabaseEngine {
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String currentTime = sdf.format(row.TrapLogTime);
-		String sqlInsert = "insert into traplogtable values (" + null + "," + row.TrapLogType.ordinal() + ",'" + row.TrapLogType.toString() + "','"
-				+ row.TrapDevAddress + "','" + row.neName + "','" + row.TrapLogContent + "','" + currentTime + "','" + row.TrapTreatMent + "','"
-				+ row.isTreated + "','" + row.parmName + "','" + row.paramValue + "')";
+		String sqlInsert = "insert into traplogtable values (" + null + "," + row.TrapLogType.ordinal() + ",'"
+				+ row.TrapLogType.toString() + "','" + row.TrapDevAddress + "','" + row.neName + "','"
+				+ row.TrapLogContent + "','" + currentTime + "','" + row.TrapTreatMent + "','" + row.isTreated + "','"
+				+ row.parmName + "','" + row.paramValue + "')";
 
 		PreparedStatement pstmt;
 		try {
@@ -542,15 +534,15 @@ public class CDatabaseEngine {
 		return lastId;
 	}
 
-	public int trapLogEditRow(int TrapLogID, String treatment,String IsTreatMent) {
-		
+	public int trapLogEditRow(int TrapLogID, String treatment, String IsTreatMent) {
 
 		Connection con = offNewCoon();
 		if (con == null) {
 			return -1;
 
 		}
-		String sqlInsert = "UPDATE traplogtable SET TrapTreatMent='" + treatment + "', IsTreatMent='" + IsTreatMent + "' WHERE TrapLogID='" + TrapLogID + "'";
+		String sqlInsert = "UPDATE traplogtable SET TrapTreatMent='" + treatment + "', IsTreatMent='" + IsTreatMent
+				+ "' WHERE TrapLogID='" + TrapLogID + "'";
 
 		PreparedStatement pstmt;
 		try {
@@ -564,7 +556,8 @@ public class CDatabaseEngine {
 
 	}
 
-	public ArrayList<nojuTrapLogTableRow> getTrapRowsWithTime(Date beginTime, Date endTime, String ip,int level,int status) {
+	public ArrayList<nojuTrapLogTableRow> getTrapRowsWithTime(Date beginTime, Date endTime, String ip, int level,
+			int status) {
 		ArrayList<nojuTrapLogTableRow> results = new ArrayList<nojuTrapLogTableRow>();
 
 		Connection con = offNewCoon();
@@ -583,16 +576,17 @@ public class CDatabaseEngine {
 			String sqlInsert;
 
 			if (ip.equalsIgnoreCase("")) {
-				sqlInsert = "SELECT traplogtable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString + "';";
-			} else {				
-				 InetAddress addr;
+				sqlInsert = "SELECT traplogtable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString
+						+ "' AND TrapLogTime<'" + endString + "';";
+			} else {
+				InetAddress addr;
 				try {
-					 addr = InetAddress.getByName(ip);
-				} catch (Exception e) {//invalid ip
+					addr = InetAddress.getByName(ip);
+				} catch (Exception e) {// invalid ip
 					return results;
 				}
-				sqlInsert = "SELECT traplogtable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString + "' AND TrapLogTime<'" + endString
-						+ "' AND TrapDevAddress='" + addr.getHostAddress() + "';";
+				sqlInsert = "SELECT traplogtable.*FROM traplogtable WHERE TrapLogTime>'" + bENGString
+						+ "' AND TrapLogTime<'" + endString + "' AND TrapDevAddress='" + addr.getHostAddress() + "';";
 			}
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
@@ -603,15 +597,15 @@ public class CDatabaseEngine {
 				// 通过reader["列名"]来取得值
 				TrapLogTypes type1 = TrapLogTypes.values()[rs.getInt(2)];
 				int i = 4;
-				nojuTrapLogTableRow newURow = new nojuTrapLogTableRow(NlogType.getAlarmLevel(type1), type1, rs.getString(i++), rs.getString(i++),
-						rs.getString(i++), rs.getTimestamp(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++));
+				nojuTrapLogTableRow newURow = new nojuTrapLogTableRow(NlogType.getAlarmLevel(type1), type1,
+						rs.getString(i++), rs.getString(i++), rs.getString(i++), rs.getTimestamp(i++),
+						rs.getString(i++), rs.getString(i++), rs.getString(i++), rs.getString(i++));
 				newURow.TrapLogID = rs.getInt(1);
 
-				
-		          if (passStatus(status, newURow) && passLevel(level, newURow))//未处理
-		          {
-		              results.add(newURow);
-		          }
+				if (passStatus(status, newURow) && passLevel(level, newURow))// 未处理
+				{
+					results.add(newURow);
+				}
 
 			}
 
@@ -624,99 +618,81 @@ public class CDatabaseEngine {
 
 	}
 
-    public static  boolean passType(int type,nojuTrapLogTableRow pRow)//return true，就是这条告警想通过过滤的强烈愿望
-    {
-        if (type == 0)
-        {
-            return true;
-        }
-
-        if (type == 2)
-        {
-            if (pRow.TrapLogType == TrapLogTypes.Offline)
-            {
-                return true;
-            }
-        }
-
-        if (type == 1)
-        {
-            if (pRow.TrapLogType != TrapLogTypes.Offline)
-            {
-                return true;
-            }
-        }
-   
-
-        return false;
-       
-
-    }
-    public static  boolean passStatus(int status, nojuTrapLogTableRow pRow)//return true，就是这条告警想通过过滤的强烈愿望
-    {
-        if (status == 0)
-        {
-            return true;
-        }
-
-        if (status == 1)//已处理
-        {
-            if (!pRow.isTreated.equalsIgnoreCase(""))
-            {
-                return true;
-            }
-        }
-
-        if (status == 2)
-        {
-            if (pRow.isTreated.equalsIgnoreCase(""))
-            {
-                return true;
-            }
-        }
-
-
-        return false;
-
-
-    }
-    public static  boolean passLevel(int level, nojuTrapLogTableRow pRow)//return true，就是这条告警想通过过滤的强烈愿望
-    {
-        if (level == -1)
-        {
-            return true;
-        }
-
-         if (level==pRow.level) {
-        	 return true;
-			
+	public static boolean passType(int type, nojuTrapLogTableRow pRow)// return true，就是这条告警想通过过滤的强烈愿望
+	{
+		if (type == 0) {
+			return true;
 		}
 
-        return false;
+		if (type == 2) {
+			if (pRow.TrapLogType == TrapLogTypes.Offline) {
+				return true;
+			}
+		}
 
+		if (type == 1) {
+			if (pRow.TrapLogType != TrapLogTypes.Offline) {
+				return true;
+			}
+		}
 
-    }
-    
+		return false;
 
-    public static  boolean passNename(String neName,nojuTrapLogTableRow pRow)//return true，就是这条告警想通过过滤的强烈愿望
-    {
-        if (neName.equalsIgnoreCase(""))
-        {
-            return true;
-        }
+	}
 
-        if (pRow.neName.contains(neName))//已处理
-        {     
-            return true;                
-        }  
+	public static boolean passStatus(int status, nojuTrapLogTableRow pRow)// return true，就是这条告警想通过过滤的强烈愿望
+	{
+		if (status == 0) {
+			return true;
+		}
 
+		if (status == 1)// 已处理
+		{
+			if (!pRow.isTreated.equalsIgnoreCase("")) {
+				return true;
+			}
+		}
 
-        return false;
+		if (status == 2) {
+			if (pRow.isTreated.equalsIgnoreCase("")) {
+				return true;
+			}
+		}
 
+		return false;
 
-    }
+	}
 
-	
+	public static boolean passLevel(int level, nojuTrapLogTableRow pRow)// return true，就是这条告警想通过过滤的强烈愿望
+	{
+		if (level == -1) {
+			return true;
+		}
+
+		if (level == pRow.level) {
+			return true;
+
+		}
+
+		return false;
+
+	}
+
+	public static boolean passNename(String neName, nojuTrapLogTableRow pRow)// return true，就是这条告警想通过过滤的强烈愿望
+	{
+		if (neName.equalsIgnoreCase("")) {
+			return true;
+		}
+
+		if (pRow.neName.contains(neName))// 已处理
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
 	public int operLogInsertRow(nojuOperLogTableRow row) {
 
 		ResultSet rs = null;
@@ -731,8 +707,9 @@ public class CDatabaseEngine {
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String currentTime = sdf.format(row.OperLogTime);
-		String sqlInsert = "insert into operlogtable values (" + null + "," + row.OperLogType.ordinal() + ",'" + row.OperLogType.toString() + "','"
-				+ row.OperLogContent + "','" + currentTime + "','" + row.OperLogUser + "')";
+		String sqlInsert = "insert into operlogtable values (" + null + "," + row.OperLogType.ordinal() + ",'"
+				+ row.OperLogType.toString() + "','" + row.OperLogContent + "','" + currentTime + "','"
+				+ row.OperLogUser + "')";
 
 		PreparedStatement pstmt;
 		try {
@@ -753,7 +730,7 @@ public class CDatabaseEngine {
 
 	}
 
-	public ArrayList<nojuOperLogTableRow> getOperRowsWithTime(Date beginTime, Date endTime,String userNme) {
+	public ArrayList<nojuOperLogTableRow> getOperRowsWithTime(Date beginTime, Date endTime, String userNme) {
 
 		ArrayList<nojuOperLogTableRow> results = new ArrayList<nojuOperLogTableRow>();
 
@@ -772,17 +749,15 @@ public class CDatabaseEngine {
 		ResultSet rs = null;
 		try {
 			String sqlInsert;
-			
-			if (userNme.equalsIgnoreCase("")) {
-				sqlInsert = "SELECT operlogtable.*FROM operlogtable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString + "';";
-			} else {
-				
-				
-				sqlInsert = "SELECT operlogtable.*FROM operlogtable WHERE operLogTime>'" + bENGString + "' AND operLogTime<'" + endString
-						+"' AND OperLogUser='" + userNme + "';";
-			}	
-			
 
+			if (userNme.equalsIgnoreCase("")) {
+				sqlInsert = "SELECT operlogtable.*FROM operlogtable WHERE operLogTime>'" + bENGString
+						+ "' AND operLogTime<'" + endString + "';";
+			} else {
+
+				sqlInsert = "SELECT operlogtable.*FROM operlogtable WHERE operLogTime>'" + bENGString
+						+ "' AND operLogTime<'" + endString + "' AND OperLogUser='" + userNme + "';";
+			}
 
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 			rs = pstmt.executeQuery(sqlInsert);
@@ -793,7 +768,8 @@ public class CDatabaseEngine {
 				OperLogTypes type1 = OperLogTypes.values()[rs.getInt(2)];
 				int i = 4;
 
-				nojuOperLogTableRow newURow = new nojuOperLogTableRow(type1, rs.getString(i++), rs.getTimestamp(i++), rs.getString(i++));
+				nojuOperLogTableRow newURow = new nojuOperLogTableRow(type1, rs.getString(i++), rs.getTimestamp(i++),
+						rs.getString(i++));
 
 				newURow.OperLogID = rs.getInt(1);
 
@@ -818,37 +794,34 @@ public class CDatabaseEngine {
 
 		}
 
-		
 		PreparedStatement pstmt;
-     	ResultSet rs = null;
-		
+		ResultSet rs = null;
+
 		String sqlInsert;
-		//is name exsit ?
-		sqlInsert = "SELECT * FROM userauthorizetable where UserName='"+row.UserName+"'";	//username exsit	
+		// is name exsit ?
+		sqlInsert = "SELECT * FROM userauthorizetable where UserName='" + row.UserName + "'"; // username exsit
 
 		try {
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 			rs = pstmt.executeQuery(sqlInsert);
-			rs.last(); 
-			int rowCount = rs.getRow(); 
-			
-			if (rowCount>0) {				
-			     System.out.println("UserAuthorizeTableInsertRow-->"+row.UserName+"is already exsit");
-				log.info(row.UserName+"is exsit");
+			rs.last();
+			int rowCount = rs.getRow();
+
+			if (rowCount > 0) {
+				System.out.println("UserAuthorizeTableInsertRow-->" + row.UserName + "is already exsit");
+				log.info(row.UserName + "is exsit");
 				return -1;
 			}
-			
-			
+
 		} catch (Exception EX) {
 			EX.printStackTrace();
 			return -1;
-		}		
+		}
 
-
-		
-		Byte ismsgByte=1;
-		sqlInsert = "INSERT INTO userauthorizetable(UserName,password1,phoneNmber,smtpAddress,AuthTotal,IsMsgDefi) VALUES(" + "'" + row.UserName + "','"
-				+ row.PassWord + "','" + row.PhoneNmbr + "','" + row.smtpAddress + "'," + row.AuthTotal + "," + ismsgByte+ ")";
+		Byte ismsgByte = 1;
+		sqlInsert = "INSERT INTO userauthorizetable(UserName,password1,phoneNmber,smtpAddress,AuthTotal,IsMsgDefi) VALUES("
+				+ "'" + row.UserName + "','" + row.PassWord + "','" + row.PhoneNmbr + "','" + row.smtpAddress + "',"
+				+ row.AuthTotal + "," + ismsgByte + ")";
 		// sqlInsert += ";select @@IDENTITY";
 
 		try {
@@ -869,7 +842,7 @@ public class CDatabaseEngine {
 
 	}
 
-	public boolean UserAuthorizeTableDeleteRow(int  UserID) {
+	public boolean UserAuthorizeTableDeleteRow(int UserID) {
 		Connection con = offNewCoon();
 		if (con == null) {
 			return false;
@@ -886,29 +859,25 @@ public class CDatabaseEngine {
 		} catch (Exception EX) {
 
 			EX.printStackTrace();
-			return false;
-
 		}
 
 		return false;
 
 	}
-    
-	public boolean UserAuthorizeTableUpdateRow(int UserID,String pwd,Byte AuthTotal)
-    {  
 
+	public boolean UserAuthorizeTableUpdateRow(int UserID, String pwd, Byte AuthTotal) {
 
-        Connection con = offNewCoon();
+		Connection con = offNewCoon();
 		if (con == null) {
 			return false;
 
-		}	
-		
+		}
+
 		PreparedStatement pstmt;
-	//	ResultSet rs = null;
-		
-	     String sqlInsert = "UPDATE userauthorizetable SET AuthTotal =" + AuthTotal
-                 + ",PassWord1='" + pwd + "' WHERE UserID=" + UserID;
+		// ResultSet rs = null;
+
+		String sqlInsert = "UPDATE userauthorizetable SET AuthTotal =" + AuthTotal + ",PassWord1='" + pwd
+				+ "' WHERE UserID=" + UserID;
 
 		try {
 			pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
@@ -922,7 +891,8 @@ public class CDatabaseEngine {
 
 		return false;
 
-    }
+	}
+
 	public ArrayList<nojuUserAuthorizeTableRow> UserAuthorizeTableGetAllRows() throws SQLException {
 		PreparedStatement pstmt;
 		ArrayList<nojuUserAuthorizeTableRow> retList = new ArrayList<nojuUserAuthorizeTableRow>();
@@ -935,14 +905,15 @@ public class CDatabaseEngine {
 		rs = pstmt.executeQuery();
 
 		while (rs.next()) {
-			nojuUserAuthorizeTableRow newURow = new nojuUserAuthorizeTableRow(rs.getInt(1), rs.getString(2), rs.getByte(3), rs.getString(4));
+			nojuUserAuthorizeTableRow newURow = new nojuUserAuthorizeTableRow(rs.getInt(1), rs.getString(2),
+					rs.getByte(3), rs.getString(4));
 
 			retList.add(newURow);
 		}
 
 		return retList;
 	}
-	
+
 	public nojuUserAuthorizeTableRow UserAuthorizeTableFindUser(String username) throws SQLException {
 		PreparedStatement pstmt;
 
@@ -950,16 +921,16 @@ public class CDatabaseEngine {
 
 		Connection con = offNewCoon();
 		String sqlInsert = "SELECT * FROM userauthorizetable WHERE UserName='" + username + "'";
-		//System.out.println("------>>>"+sqlInsert);
+		// System.out.println("------>>>"+sqlInsert);
 		pstmt = (PreparedStatement) con.prepareStatement(sqlInsert);
 		rs = pstmt.executeQuery();
 		nojuUserAuthorizeTableRow newURow = null;
 		while (rs.next()) {
 			newURow = new nojuUserAuthorizeTableRow(rs.getInt(1), rs.getString(2), rs.getByte(3), rs.getString(4));
-			
+
 		}
 		return newURow;
-		
+
 	}
 
 }

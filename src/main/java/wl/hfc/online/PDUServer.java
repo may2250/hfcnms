@@ -25,13 +25,11 @@ import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 import com.xinlong.util.RedisUtil;
-import com.xinlong.util.StaticMemory;
-
 import redis.clients.jedis.Jedis;
 import wl.hfc.common.*;
 import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
-import wl.hfc.topd.MainKernel;
+
 
 public class PDUServer extends Thread {
 	// config

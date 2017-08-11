@@ -162,7 +162,7 @@ public class TrapProCenter {
 
 	public nojuParmsTableRow GetParamInfo(String miblabel) {
 
-		return (nojuParmsTableRow) pmls.tab1.get(miblabel);
+		return (nojuParmsTableRow) pmls.tabch.get(miblabel);
 
 	}
 	

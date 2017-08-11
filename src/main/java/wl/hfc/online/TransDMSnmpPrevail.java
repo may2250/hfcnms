@@ -6,20 +6,6 @@ package wl.hfc.online;
 import org.json.simple.JSONObject;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.VariableBinding;
-
-
-
-
-
-
-
-
-
-
-
-
-import java.util.ArrayList;
-
 import org.snmp4j.PDU;
 import org.snmp4j.CommunityTarget;
 
@@ -59,7 +45,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		// tables
 		cDCVariables = new VariableSnmpVar[2];
 		cInputVariables = new VariableSnmpVar[5];
-		cOutputVariables = new VariableSnmpVar[5];
+		cOutputVariables = new VariableSnmpVar[6];
 
 		majorVarPdu = new PDU();
 		majorVarPdu.setType(PDU.GET);
@@ -67,7 +53,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 
 		// major
 		int vIns = 0;
-		nojuParmsTableRow row1 = pmls.tab1.get("otdConfigurationRFChannels");	
+		nojuParmsTableRow row1 = pmls.tabch.get("otdConfigurationRFChannels");	
 		
 		mjVariables[vIns] = new VariableSnmpVar(row1);			
 		mjVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
@@ -82,11 +68,11 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		tableDCPdu = new PDU();
 		tableDCPdu.setType(PDU.GETNEXT);
 
-		row1 = pmls.tab1.get("otdDCPowerName");
+		row1 = pmls.tabch.get("otdDCPowerName");
 		cDCVariables[0] = new VariableSnmpVar(row1);
 		cDCVariables[0].ToValueMode1 = ToValueMode.FmtString;
 
-		row1 = pmls.tab1.get("otdDCPowerVoltage");
+		row1 = pmls.tabch.get("otdDCPowerVoltage");
 		cDCVariables[1] = new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		paramHashTable.put(row1.ParamMibLabel, cDCVariables[1]);
@@ -110,11 +96,25 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		tableInputPdu = new PDU();
 		tableInputPdu.setType(PDU.GETNEXT);
 
-		row1 = pmls.me.tab1.get("otdAGCControl");
-		cInputVariables[0] = new VariableSnmpVar(row1);
-		cInputVariables[0].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
+		int i=0;
 
-		row1 = pmls.me.tab1.get("fnDCPowerVoltage");
+
+		row1 = pmls.tabch.get("otdInputRFLevel");//激励电平
+		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
+				ToValueMode.FmtInteger, true);
+		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
+		
+		
+		row1 = pmls.me.tabch.get("otdAGCControl");
+		cInputVariables[0] = new VariableSnmpVar(row1);
+		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
+		
+		
+		
+
+		row1 = pmls.me.tabch.get("fnDCPowerVoltage");
 		cInputVariables[1] = new VariableSnmpVar(row1, ".1", VariableSnmpVar.ToValueMode.FmtInteger, true);
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[1]);
 		
@@ -127,35 +127,49 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		this.tableOutpdu = new PDU();
 		tableOutpdu.setType(PDU.GETNEXT);
 
-		row1 = pmls.tab1.get("otdIndex");
+		row1 = pmls.tabch.get("otdIndex");
 		cOutputVariables[0] = new VariableSnmpVar(row1);
 		cOutputVariables[0].ToValueMode1 = ToValueMode.FmtString;
 
-		row1 = pmls.tab1.get("otdLaserTemp");
+		row1 = pmls.tabch.get("otdLaserTemp");
 		cOutputVariables[1] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[1].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[1]);
 
 
-		row1 = pmls.tab1.get("otdLaserCurrent");//bias
+		row1 = pmls.tabch.get("otdLaserCurrent");//bias
 		cOutputVariables[2] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[2].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[2]);
 
-		row1 = pmls.tab1.get("otdOpicalOutputPower");
+		row1 = pmls.tabch.get("otdOpicalOutputPower");
 		cOutputVariables[3] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[3].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[3]);
 		
 		
-		row1 = pmls.tab1.get("otdTecCurrent");
+		row1 = pmls.tabch.get("otdTecCurrent");
 		cOutputVariables[3] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[3].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[4]);
+		
+		row1 = pmls.tabch.get("otdLaserWavelength");
+		cOutputVariables[4] =new VariableSnmpVar(row1, ".1",
+				ToValueMode.FmtInteger, false);
+		cOutputVariables[4].ToValueMode1 = ToValueMode.Default;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[5]);
+		
+		
+		row1 = pmls.tabch.get("otdLaserContrlMode");
+		cOutputVariables[5] =new VariableSnmpVar(row1, ".1",
+				ToValueMode.FmtInteger, false);
+		cOutputVariables[5].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[6]);
+
 
 		begincol = 0;
 		endcol = 3;

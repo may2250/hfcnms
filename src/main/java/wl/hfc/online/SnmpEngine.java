@@ -19,7 +19,7 @@ import org.snmp4j.smi.VariableBinding;
 
 
 
-import wl.hfc.common.PduSevr;
+import wl.hfc.common.IPduSevr;
 
 
 import wl.hfc.common.SnmpTableInfo;
@@ -92,7 +92,7 @@ public class SnmpEngine {
 		return specificVar;
 	}
 
-	public static SnmpTableInfo GetMibTableVariables(PDU outpdu, CommunityTarget cgt, PduSevr server) {
+	public static SnmpTableInfo GetMibTableVariables(PDU outpdu, CommunityTarget cgt, IPduSevr server) {
 		SnmpTableInfo retval = new SnmpTableInfo();
 		int[] entryoid1 = null;
 		if (outpdu.getVariableBindings().size() <= 0)

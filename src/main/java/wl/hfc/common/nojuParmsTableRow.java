@@ -16,8 +16,12 @@ public class nojuParmsTableRow {
 	public nojuParmsTableRow(String miblabel, String miboid, String disptxt,
 			boolean fmten, float fmtcoff, String fmttxt, String fmtunit) {
 		ParamMibLabel = miblabel;
-		ParamMibOID = miboid;
 		ParamDispText = disptxt;
+
+		
+		ParamMibOID = miboid;
+		
+		
 		IsFormatEnable = fmten;
 		FormatCoff = fmtcoff;
 		FormatText = fmttxt;
@@ -28,6 +32,7 @@ public class nojuParmsTableRow {
     public nojuParmsTableRow(String miboid, paramInfor paramInfor1)
     {
         ParamMibOID = miboid;
+        
         IsFormatEnable = paramInfor1.fmten;
         FormatCoff = paramInfor1.fmtcoff;
         FormatText = paramInfor1.fmttxt;

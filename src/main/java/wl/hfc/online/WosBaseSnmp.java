@@ -7,7 +7,7 @@ import org.snmp4j.smi.OID;
 import org.snmp4j.smi.VariableBinding;
 
 import wl.hfc.common.CDevForCMD;
-import wl.hfc.common.PduSevr;
+import wl.hfc.common.IPduSevr;
 
 
 import wl.hfc.common.VariableSnmpVar;
@@ -34,7 +34,7 @@ public class WosBaseSnmp {
 
 	public HashMap<String, VariableSnmpVar> paramHashTable;
 
-	public PduSevr sver;
+	public IPduSevr sver;
 	public CDevForCMD thisDev;
 	public Object getMJPmLocker = new Object();
 	public Object getTBLocker = new Object();
