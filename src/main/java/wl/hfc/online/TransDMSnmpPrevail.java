@@ -36,6 +36,8 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 	public static TransDMSnmpPrevail me;
 
 	
+	private int tableOutPlength=7;
+	private int tableInputPlength=2;
 	private String pdeviceIDString="";
 
 	public TransDMSnmpPrevail(String phsicIndex,String PDeviceID) {
@@ -107,17 +109,26 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		
 		
 		row1 = pmls.me.tabch.get("otdAGCControl");
-		cInputVariables[0] = new VariableSnmpVar(row1);
+		cInputVariables[i] = new VariableSnmpVar(row1);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
 		
 		
-		
 
-		row1 = pmls.me.tabch.get("fnDCPowerVoltage");
-		cInputVariables[1] = new VariableSnmpVar(row1, ".1", VariableSnmpVar.ToValueMode.FmtInteger, true);
-		paramHashTable.put(row1.ParamMibLabel, cInputVariables[1]);
-		
+
+
+		begincol = 0;
+		endcol = this.tableInputPlength-1;
+
+		headerinfos = new VariableSnmpVar[endcol - begincol + 1];
+
+		for (enumi = 0; enumi < headerinfos.length; enumi++) {
+			headerinfos[enumi] = (VariableSnmpVar) cInputVariables[enumi
+					+ begincol];
+			this.tableInputPdu.add(new VariableBinding(
+					headerinfos[enumi].MibDefinedOid));
+		}
+
 		
 		
 		
@@ -128,51 +139,55 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		tableOutpdu.setType(PDU.GETNEXT);
 
 		row1 = pmls.tabch.get("otdIndex");
-		cOutputVariables[0] = new VariableSnmpVar(row1);
-		cOutputVariables[0].ToValueMode1 = ToValueMode.FmtString;
+		cOutputVariables[i] = new VariableSnmpVar(row1);
+		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtString;
 
 		row1 = pmls.tabch.get("otdLaserTemp");
-		cOutputVariables[1] =new VariableSnmpVar(row1, ".1",
+		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
-		cOutputVariables[1].ToValueMode1 = ToValueMode.FmtInteger;
-		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[1]);
-
+		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
 
 		row1 = pmls.tabch.get("otdLaserCurrent");//bias
-		cOutputVariables[2] =new VariableSnmpVar(row1, ".1",
+		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
-		cOutputVariables[2].ToValueMode1 = ToValueMode.FmtInteger;
-		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[2]);
+		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
+		
+		
+		
+		
+		
 
 		row1 = pmls.tabch.get("otdOpicalOutputPower");
-		cOutputVariables[3] =new VariableSnmpVar(row1, ".1",
+		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
-		cOutputVariables[3].ToValueMode1 = ToValueMode.FmtInteger;
-		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[3]);
-		
+		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
 		
 		row1 = pmls.tabch.get("otdTecCurrent");
-		cOutputVariables[3] =new VariableSnmpVar(row1, ".1",
+		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
-		cOutputVariables[3].ToValueMode1 = ToValueMode.FmtInteger;
-		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[4]);
+		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
 		
 		row1 = pmls.tabch.get("otdLaserWavelength");
-		cOutputVariables[4] =new VariableSnmpVar(row1, ".1",
+		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
-		cOutputVariables[4].ToValueMode1 = ToValueMode.Default;
-		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[5]);
+		cOutputVariables[i].ToValueMode1 = ToValueMode.Default;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);			
+		
 		
 		
 		row1 = pmls.tabch.get("otdLaserContrlMode");
-		cOutputVariables[5] =new VariableSnmpVar(row1, ".1",
+		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
-		cOutputVariables[5].ToValueMode1 = ToValueMode.FmtInteger;
-		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[6]);
-
+		cOutputVariables[i].ToValueMode1 = ToValueMode.Default;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);	
+		
 
 		begincol = 0;
-		endcol = 3;
+		endcol = this.tableOutPlength-1;
 
 		headerinfos = new VariableSnmpVar[endcol - begincol + 1];
 

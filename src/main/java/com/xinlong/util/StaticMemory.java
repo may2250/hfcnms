@@ -87,6 +87,10 @@ public class StaticMemory {
 				osp.snmpPreail = new EDFASnmpPrevail(".1",jsondata.get("deviceid").toString());
 				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
 			}
+			else if (hfctyp1==HFCTypes.HfcEdfaWE_HD_SWITCH) {
+				osp.snmpPreail = new EDFASnmpPrevail(".1",jsondata.get("deviceid").toString());
+				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
+			}
 			else if (hfctyp1==HFCTypes.TransEM) {
 				osp.snmpPreail = new EMSnmpPrevail (".1",jsondata.get("deviceid").toString());
 				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");

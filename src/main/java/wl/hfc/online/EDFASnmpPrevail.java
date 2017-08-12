@@ -15,21 +15,25 @@ import wl.hfc.common.nojuParmsTableRow;
 import wl.hfc.common.VariableSnmpVar.ToValueMode;
 import wl.hfc.online.pmls;
 
-public class EDFASnmpPrevail extends WosBaseSnmp {
-
+public class EDFASnmpPrevail extends WosBaseSnmp {	
+	  private static String heOpRxUnitSwitchMode = ".1.3.6.1.4.1.17409.1.11.9";
+      private static String heOpRxUnitCurChan = ".1.3.6.1.4.1.17409.1.11.8";
+      private static String heOpRxUnitoOpticalThreshold = ".1.3.6.1.4.1.17409.1.11.10";
+      private static String heOpRxUnitoOpticalInputPower = ".1.3.6.1.4.1.17409.1.11.11";
+      private static String heOpRxUnitoOpticalInputPowerAlarmBchanel = ".1.3.6.1.4.1.17409.1.11.4.1.5.1";
 
 	// VariableSnmpVars
 	public VariableSnmpVar[] mjVariables;
 	public VariableSnmpVar[] cInputVariables;
 	public VariableSnmpVar[] cOutputVariables;
 
-
+	public VariableSnmpVar[] swichVariables;
 
 	// pdus
 	private PDU majorVarPdu;
 	private PDU tableDCPdu;
 	private PDU tableOutpdu;
-
+	private PDU switchVarPdu;
 	// single model
 	public static EDFASnmpPrevail me;
 
@@ -44,10 +48,12 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		cInputVariables = new VariableSnmpVar[2];
 		cOutputVariables = new VariableSnmpVar[4];
 
+		swichVariables=new VariableSnmpVar[4];
+		
 		majorVarPdu = new PDU();
 		majorVarPdu.setType(PDU.GET);
-
-
+		switchVarPdu=new PDU();
+		switchVarPdu.setType(PDU.GET);
 		// major
 		int vIns = 0;
 		nojuParmsTableRow row1 = pmls.tabch.get("oaInputOpticalPower");
@@ -70,10 +76,58 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 		this.majorVarPdu.add(new VariableBinding(
 				mjVariables[vIns++].FullSnmpOid));
+		
+		
+		
+		
+		//switch params		
+	    if (PDeviceID.equalsIgnoreCase("WE-YZ-SWITCH"))
+        {
+            heOpRxUnitoOpticalInputPower = ".1.3.6.1.4.1.17409.1.11.7";
+            heOpRxUnitoOpticalInputPowerAlarmBchanel = ".1.3.6.1.4.1.17409.1.11.7";
+        }
 
+
+	    vIns = 0;
+		row1 =new nojuParmsTableRow("heOpRxUnitSwitchMode",heOpRxUnitSwitchMode,"heOpRxUnitSwitchMode", true, (float)1, "F0", "");
+		swichVariables[vIns] = new VariableSnmpVar(row1, ".0",
+				ToValueMode.FmtInteger, false);
+		paramHashTable.put(row1.ParamMibLabel, swichVariables[vIns]);
+		this.switchVarPdu.add(new VariableBinding(
+				swichVariables[vIns++].FullSnmpOid));
+		
+		
+		row1 =new nojuParmsTableRow("heOpRxUnitCurChan",heOpRxUnitCurChan,"heOpRxUnitCurChan", true, (float)1, "F0", "");
+		swichVariables[vIns] = new VariableSnmpVar(row1, ".0",
+				ToValueMode.FmtInteger, false);
+		paramHashTable.put(row1.ParamMibLabel, swichVariables[vIns]);
+		this.switchVarPdu.add(new VariableBinding(
+				swichVariables[vIns++].FullSnmpOid));
+		
+		
+		row1 =new nojuParmsTableRow("heOpRxUnitoOpticalThreshold",heOpRxUnitoOpticalThreshold,"heOpRxUnitoOpticalThreshold",  true, (float)0.1, "F1", "dBm");
+		swichVariables[vIns] = new VariableSnmpVar(row1, ".0",
+				ToValueMode.FmtInteger, false);
+		paramHashTable.put(row1.ParamMibLabel, swichVariables[vIns]);
+		this.switchVarPdu.add(new VariableBinding(
+				swichVariables[vIns++].FullSnmpOid));
+		
+
+
+		
+		row1 =new nojuParmsTableRow("heOpRxUnitoOpticalInputPower",heOpRxUnitoOpticalInputPower,"heOpRxUnitoOpticalInputPower",  true, (float)0.1, "F", "dBm");
+		swichVariables[vIns] = new VariableSnmpVar(row1, ".0",
+				ToValueMode.FmtInteger, false);
+		paramHashTable.put(row1.ParamMibLabel, swichVariables[vIns]);
+		this.switchVarPdu.add(new VariableBinding(
+				swichVariables[vIns++].FullSnmpOid));
+		
+		
 		
 		
 
+		
+		//dc table
 		tableDCPdu = new PDU();
 		tableDCPdu.setType(PDU.GETNEXT);
 
@@ -219,6 +273,31 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		}
 		
 		
+		
+		//append view
+        if (this.thisDev.MD.contains("HB") || thisDev.MD.contains("HS") || thisDev.MD.contains("YZ") || thisDev.MD.contains("HD") || thisDev.DEVICEID.contains("YZ") || thisDev.DEVICEID.contains("HD"))
+        {
+        	pJson.put("ViewATT", 1);
+
+        }
+        else
+        {
+          	pJson.put("ViewATT", 0);
+        }
+        
+        
+        if (this.thisDev.DEVICEID.equalsIgnoreCase("WE-HD-SWITCH") || thisDev.DEVICEID.equalsIgnoreCase("WE-YZ-SWITCH"))
+        {
+         	pJson.put("ViewSwtich", 1);//append switch params
+
+        }
+        else
+        {
+        	pJson.put("ViewSwtich", 0);
+
+
+        }
+
 
 		return pJson;
 

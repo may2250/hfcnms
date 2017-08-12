@@ -39,5 +39,8 @@ public class nojuParmsTableRow {
         FormatUnit = paramInfor1.fmtunit;
 
     }
+    
+
+    
 
 }
