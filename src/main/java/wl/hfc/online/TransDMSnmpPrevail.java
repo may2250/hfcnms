@@ -47,7 +47,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		// tables
 		cDCVariables = new VariableSnmpVar[2];
 		cInputVariables = new VariableSnmpVar[5];
-		cOutputVariables = new VariableSnmpVar[6];
+		cOutputVariables = new VariableSnmpVar[7];
 
 		majorVarPdu = new PDU();
 		majorVarPdu.setType(PDU.GET);
@@ -135,12 +135,14 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		
 		
 		//output table
+		i=0;
 		this.tableOutpdu = new PDU();
 		tableOutpdu.setType(PDU.GETNEXT);
 
-		row1 = pmls.tabch.get("otdIndex");
+		row1 = pmls.tabch.get("otdIndex");//序列
 		cOutputVariables[i] = new VariableSnmpVar(row1);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtString;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
 
 		row1 = pmls.tabch.get("otdLaserTemp");
 		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
@@ -153,7 +155,6 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
-		
 		
 		
 		
@@ -174,8 +175,8 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		row1 = pmls.tabch.get("otdLaserWavelength");
 		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
-		cOutputVariables[i].ToValueMode1 = ToValueMode.Default;
-		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);			
+		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtString;
+		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);		
 		
 		
 		
@@ -212,7 +213,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress,
 				this.thisDev.ROCommunity, SnmpConstants.version1);
 
-		inPDU = sver.SyncSendSnmpPdu(this.majorVarPdu, cTgt);
+	/*	inPDU = sver.SyncSendSnmpPdu(this.majorVarPdu, cTgt);
 		if (inPDU == null) {
 			throw new Exception("paramGetException,Failed!");
 		}
@@ -232,7 +233,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 			}
 
 		}
-		
+		*/
 		
 		//table params
 		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress,
@@ -251,9 +252,10 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		pJson.put("outtablerownum", reTable1.RowNum);
 		
 		
+		
 
-		SnmpEngine.tabVarToJason(this.cDCVariables,this.cOutputVariables,reTable, reTable1, pJson);
-
+		//SnmpEngine.tabVarToJason(this.cDCVariables,reTable, pJson,"dctable");
+		SnmpEngine.tabVarToJason(this.cOutputVariables,reTable1, pJson,"outtable");
 		
 		//table thread
 		for (int j = 0; j < this.cDCVariables.length; j++) {
@@ -265,7 +267,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 				}
 			}
 		}		
-		
+/*		
 		for (int j = 0; j < this.cOutputVariables.length; j++) {
 
 			if (this.cOutputVariables[j].withNoThreashold) {
@@ -277,7 +279,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 			}
 
 		}
-		
+		*/
 		
 
 		return pJson;

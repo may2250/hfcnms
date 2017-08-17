@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import com.xinlong.util.RedisUtil;
 
@@ -40,9 +41,9 @@ public class Onlinetest {
 		snmpInstance7.sver = new PDUServerForOneDev(0);
 		try {
 			System.out.println(json.toString());
-			json = snmpInstance7.getPmWithModelNumber(json);
-
+			json = snmpInstance7.getPmWithModelNumber(json);			
 			JSONObject rootjson = new JSONObject();
+			
 			// ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnOpticalReceiverPower",rootjson);
 			// ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnDCPowerVoltage",rootjson,0);
 			ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnRFPortOutputRFLevel", rootjson, 0);
@@ -109,18 +110,17 @@ public class Onlinetest {
 		JSONObject json = new JSONObject();
 		EMSnmpPrevail snmpInstance7 = new EMSnmpPrevail(".1","");
 		snmpInstance7.thisDev = new CDevForCMD("public", "public", "192.168.1.21");
+		
+		//TransDMSnmpPrevail snmpInstance7 = new TransDMSnmpPrevail(".1","");
+		//snmpInstance7.thisDev = new CDevForCMD("public", "public", "192.168.1.190");
+		
 		snmpInstance7.sver = new PDUServerForOneDev(0);
 		try {
 			System.out.println(json.toString());
 			json = snmpInstance7.getPmWithModelNumber(json);
 
-			JSONObject rootjson = new JSONObject();
-			// ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnOpticalReceiverPower",rootjson);
-			// ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnDCPowerVoltage",rootjson,0);
-			ReceiverSnmpPrevail.me.getSubVarsBYparamname("fnRFPortOutputRFLevel", rootjson, 0);
-
 			System.out.println(json.toString());
-			System.out.println(rootjson.toString());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -221,12 +221,20 @@ public class Onlinetest {
 		Float rst = xxx / yy;
 */
 	//	int bbb = rst.intValue();
+		
+		
+	/*	
+		String ss="{\"dctable\":[{\"otxDCPowerVoltage_row\":\"23.5V\",\"otxDCPowerName_row\":\"+24V DC Power\"},{\"otxDCPowerVoltage_row\":\"11.9V\",\"otxDCPowerName_row\":\"+12V DC Power\"},{\"otxDCPowerVoltage_row\":\"-11.4V\",\"otxDCPowerName_row\":\"-12V DC Power\"},{\"otxDCPowerVoltage_row\":\"5.0V\",\"otxDCPowerName_row\":\"2b:35:56:20:44:43:20:50:6f:77:65:72:00\"},{\"otxDCPowerVoltage_row\":\"-4.9V\",\"otxDCPowerName_row\":\"2d:35:56:20:44:43:20:50:6f:77:65:72:00\"}],\"dctablerownum\":5,\"otxLaserOutputPower06\":\"1\",\"icon\":\"images\\/transEM.png\",\"otxLaserTecCurrent06\":\"1\",\"otxDCPowerVoltage36\":\"1\",\"otxDCPowerVoltage26\":\"1\",\"outtablerownum\":1,\"otxDCPowerVoltage46\":\"1\",\"otxLaserCurrent06\":\"1\",\"devtype\":\"TransEM\",\"otxDCPowerVoltage16\":\"1\",\"otxDCPowerVoltage06\":\"1\",\"otxInputRFLevel06\":\"5\",\"intable\":[{\"otxConfigurationAGCMode_row\":\"2\",\"otxConfigurationOmi_row\":\"0.0dB\",\"otxConfigurationChannelDistance_row\":\"8.0MHz\",\"otxInputRFLevel_row\":\"58.2dBuV\",\"otxConfigurationSbsSuppression_row\":\"14.0dBm\",\"otxConfigurationRfGain_row\":\"5.5dB\"}],\"cmd\":\"realtime-device\",\"outtable\":[{\"otxModuleIndex_row\":\"1\",\"otxLaserCurrent_row\":\"217.0mA\",\"otxConfigurationItuFrequency_row\":\"193500.0GHz\",\"otxLaserTecCurrent_row\":\"-260.0mA\",\"otxLaserControl_row\":\"1\",\"otxLaserOutputPower_row\":\"8.0mW\"}],\"intablerownum\":1,\"devtype\":\"emtrans\"}";
+		Object obj=JSONValue.parse(ss);
+		JSONObject array=(JSONObject)obj;
+	    System.out.println(array.toString());*/
+		
 		try {
 
 			// trapTest();
 			//RECEIVERTEST();
 			//CommonVariablesGetTest();
-			//EDFATEST();\
+			EDFATEST();
 			TransTest();
 
 		} catch (Exception e) {

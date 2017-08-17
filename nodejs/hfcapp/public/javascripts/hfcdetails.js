@@ -12,8 +12,9 @@ function __getDeviceDetail(devnode, jsonobj){
 		$(".candile").load("/rece_workstation");
 		break;
 	case 1:
-		$(".candile").load("/edfa", function(){
-			parse_edfa(jsonobj);
+		$(".candile").load("/emtrans", function(){
+			parse_emtrans(jsonobj);
+			//parse_edfa(jsonobj);		
 		});
 		break;
 	case "HfcMinWorkstation":
@@ -43,15 +44,16 @@ function __getDeviceDetail(devnode, jsonobj){
 function parseHfcDevice(jsonobj){
 	$(".dev-status").css("color", "lightgreen");
 	switch(jsonobj.devtype){
-	case "Trans":
-		
+	case "emtrans":
+	    parse_emtrans(jsonobj);
 		break;
 	case "other":
 		
 		break;
 	case "EDFA":
 		parse_edfa(jsonobj);
-		break;
+
+		break;d
 	case "HfcMinWorkstation":
 		parse_rece_workstation(jsonobj);
 		break;
@@ -218,6 +220,9 @@ function parse_rece_workstation(jsonobj){
 }
 
 function parse_edfa(jsonobj){	
+	
+	jQuery("#edfaimg").attr("src",jsonobj.icon);
+	
 	$('#panel-devip')[0].textContent = __globalobj__._realDevice.key;
 	$('#panel-onlinetimeticks')[0].textContent = jsonobj.common.sysUpTime;
 	$('#panel-devinfo')[0].textContent = jsonobj.common.sysDescr;
@@ -230,6 +235,17 @@ function parse_edfa(jsonobj){
 	$('#oaInputOpticalPower').val(jsonobj.oaInputOpticalPower); 
 	$('#oaOutputOpticalPower').val(jsonobj.oaOutputOpticalPower); 
 	$('#oaOptAtt').val(jsonobj.oaOptAtt); 
+	 if(jsonobj.ViewATT == '1'){
+		 $('#oaOptAtt').show();		
+		 $('#i18n-att').show();	
+	 }
+	 else		 
+	 {
+	 
+		 $('#oaOptAtt').hide();	
+		 $('#i18n-att').hide();	
+	 
+	 }
 	switch(jsonobj.oaInputOpticalPower6){
 	case "1":
         //normal
@@ -381,6 +397,27 @@ function parse_edfa(jsonobj){
     	$('.oaPumpTemp_row0').css("background-color", "yellow");
         break;
 	}
+	
+}
+
+function parse_emtrans(jsonobj){	
+	
+	var i = 0;
+	$.each(jsonobj.dctable, function(key, itemv) {
+		$('.otxDCPowerName_row' + i)[0].textContent = itemv.otxDCPowerName_row;
+		$('.otxDCPowerVoltage_row' + i)[0].textContent = itemv.otxDCPowerVoltage_row;
+		i++;
+	});
+	i=0;
+	$.each(jsonobj.outtable, function(key, itemv) {
+	$('.otxModuleIndex_row' + i)[0].textContent = itemv.otxModuleIndex_row;
+	$('.otxLaserCurrent_row' + i)[0].textContent = itemv.otxLaserCurrent_row;
+		$('.otxLaserOutputPower_row' + i)[0].textContent = itemv.otxLaserOutputPower_row;
+			$('.otxLaserTecCurrent_row' + i)[0].textContent = itemv.otxLaserTecCurrent_row;
+				$('.otxConfigurationItuFrequency_row' + i)[0].textContent = itemv.otxConfigurationItuFrequency_row;
+				$('.otxLaserControl_row' + i)[0].textContent = itemv.otxLaserControl_row;
+	i++;
+	});	
 	
 }
 

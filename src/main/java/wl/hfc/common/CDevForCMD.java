@@ -51,7 +51,8 @@ public class CDevForCMD {
 			else if (MD.contains("YZ") || DEVICEID.contains("YZ"))
 				return "EDFA/EDFA_YZ";// EDFA_YZ;// 多路
 			else if (MD.contains("HD") || DEVICEID.contains("HD"))
-				return "EDFA/EDFA_HD";// 
+			return "EDFA/EDFA_HD";// 
+				//return "EDFA/edfa";//
 			else if (DEVICEID.contains("HE"))
 				return "EDFA/EDFA_HE";// 
 			else

@@ -657,7 +657,7 @@ li#menu-academico{
 }
 
 .dev-img {
-	width: 30%;
+/* 	width: 30%; */
 	min-width:200px;
 }
 
@@ -667,13 +667,13 @@ li#menu-academico{
 }
 
 .dev-status {
-	width: 20%;
-	min-width:100px;
-    height: 100px;
+	width: 12%;
+	min-width:50px;
+    height: 40px;
     background-color: black;
     color: lightgreen;
-    text-align: center;
-    line-height: 100px;
+    text-align: left ;
+    line-height: 40px;
 }
 
 /*--down--*/

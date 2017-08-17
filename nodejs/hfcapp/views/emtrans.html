@@ -132,9 +132,8 @@
 		$('#i18n-uptime')[0].textContent = $.i18n.prop('message_devuptime');
 		$('#i18n-devparam')[0].textContent = $.i18n.prop('message_devparam');
 		$('#i18n-publicparam')[0].textContent = $.i18n.prop('message_devpublicparam');		
-		$('#i18n-inputpower')[0].textContent = $.i18n.prop('message_devinpower');
+		//$('#i18n-inputpower')[0].textContent = $.i18n.prop('message_devinpower');
 		$('#i18n-outputpower')[0].textContent = $.i18n.prop('message_devoutpower');
-		$('#i18n-att')[0].textContent = $.i18n.prop('message_devatt');		
 		$('#i18n-powername')[0].textContent = $.i18n.prop('message_devpowername');
 		$('#i18n-powerval')[0].textContent = $.i18n.prop('message_devpowerval');		
 		$('#i18n-lasertbl')[0].textContent = $.i18n.prop('message_devlasertbl');
@@ -147,7 +146,8 @@
 		$('#i18n-publictemper')[0].textContent = $.i18n.prop('message_devtemper');
 		$('#i18n-publicID')[0].textContent = $.i18n.prop('message_devlogicid');		
 		$('#i18n-publictype')[0].textContent = $.i18n.prop('message_devtype');		
-		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');
+		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');d
+		
 	</script>
 </head>
 <body>
@@ -182,27 +182,7 @@
 				<div class="tab-content">
 				    <div class="tab-pane tab-devpane active" id="tab-dev1">
 					    <div class="devdetail-content">			
-					    	<table class="tbl_devdetail-content">
-					    		<tr>
-					    			<td>
-					    				<table class="table tbl_detail">
-										  <tbody>
-											    <tr>
-											      <td id="i18n-inputpower">输入光功率:</td>
-											      <td><input type="text" class="form-control isalarmThreshold" id="oaInputOpticalPower" readonly></td>
-											    </tr>
-											    <tr>
-											      <td id="i18n-outputpower">输出光功率:</td>
-											      <td><input type="text" class="form-control isalarmThreshold" id="oaOutputOpticalPower" readonly></td>
-											    </tr>
-											    <tr>
-											      <td id="i18n-att">光衰减值:</td>
-											      <td><input type="text" class="form-control hfcunit" id="oaOptAtt" readonly></td>
-											    </tr>
-										  </tbody>
-										</table>
-					    			</td>
-					    		</tr>
+					    	<table class="tbl_devdetail-content">					 
 					    		<tr>
 					    			<td>
 					    				<table class="table tbl_power" style="width:30%">
@@ -214,13 +194,26 @@
 										  </thead>
 										  <tbody>
 												<tr>
-													<td class="oaDCPowerName_row0"></td>
-													<td class="oaDCPowerVoltage_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="oaDCPowerVoltage" id="oaDCPowerVoltage_row0"></td>
+													<td class="otxDCPowerName_row0"></td>
+													<td class="otxDCPowerVoltage_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otxDCPowerVoltage" id="otxDCPowerVoltage_row0"></td>
 												</tr>
 												<tr>
-													<td class="oaDCPowerName_row1"></td>
-													<td class="oaDCPowerVoltage_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="oaDCPowerVoltage" id="oaDCPowerVoltage_row1"></td>
+													<td class="otxDCPowerName_row1"></td>
+													<td class="otxDCPowerVoltage_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="otxDCPowerVoltage" id="otxDCPowerVoltage_row1"></td>
 												</tr>
+													<tr>
+													<td class="otxDCPowerName_row2"></td>
+													<td class="otxDCPowerVoltage_row2 tbl_isalarmThreshold" data-rownum="2" data-paramname="otxDCPowerVoltage" id="otxDCPowerVoltage_row2"></td>
+												</tr>
+													<tr>
+													<td class="otxDCPowerName_row3"></td>
+													<td class="otxDCPowerVoltage_row3 tbl_isalarmThreshold" data-rownum="3" data-paramname="otxDCPowerVoltage" id="otxDCPowerVoltage_row3"></td>
+												</tr>
+													<tr>
+													<td class="otxDCPowerName_row4"></td>
+													<td class="otxDCPowerVoltage_row4 tbl_isalarmThreshold" data-rownum="4" data-paramname="otxDCPowerVoltage" id="otxDCPowerVoltage_row4"></td>
+												</tr>
+												
 										  </tbody>
 										</table>
 					    			</td>
@@ -232,23 +225,22 @@
 											    <tr>
 											      <th id="i18n-lasertbl">激光器表</th>
 											      <th id="i18n-bias">偏置电流</th>
+											      <th id="i18n-outputpower">输出光功率</th>
 											      <th id="i18n-current">制冷电流</th>
-											      <th id="i18n-temper">温度</th>
+											       <th id="i18n-wavelength">光波长</th>
+											      <th id="i18n-laseronoff">激光器开关</th>
 											    </tr>
 										  </thead>
 										  <tbody>
 												<tr>
-													<td class="oaPumpIndex_row0"></td>
-													<td class="oaPumpBIAS_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="oaPumpBIAS" id="oaPumpBIAS_row0"></td>
-													<td class="oaPumpTEC_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="oaPumpTEC" id="oaPumpTEC_row0"></td>
-													<td class="oaPumpTemp_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="oaPumpTemp" id="oaPumpTemp_row0"></td>
-												</tr>
-												<tr>
-													<td class="oaPumpIndex_row0"></td>
-													<td class="oaPumpBIAS_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="oaPumpBIAS" id="oaPumpBIAS_row1"></td>
-													<td class="oaPumpTEC_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="oaPumpTEC" id="oaPumpTEC_row1"></td>
-													<td class="oaPumpTemp_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="oaPumpTemp" id="oaPumpTemp_row1"></td>
-												</tr>
+													<td class="otxModuleIndex_row0"></td>
+													<td class="otxLaserCurrent_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otxLaserCurrent" id="otxLaserCurrent_row0"></td>
+													<td class="otxLaserOutputPower_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otxLaserOutputPower" id="otxLaserOutputPower_row0"></td>
+													<td class="otxLaserTecCurrent_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otxLaserTecCurrent" id="otxLaserTecCurrent_row0"></td>
+													<td class="otxConfigurationItuFrequency_row0" data-rownum="0" data-paramname="otxConfigurationItuFrequency" id="otxConfigurationItuFrequency_row0"></td>
+							
+													<td class="otxLaserControl_row0" data-rownum="0" data-paramname="otxLaserControl" id="otxLaserControl_row0"></td>
+												</tr>						
 										  </tbody>
 										</table>
 					    			</td>
