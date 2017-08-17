@@ -101,6 +101,47 @@
             $("#dialog-form").dialog("open");
 		}); 
 		
+			$(".tbl_hfcunitcombox").dblclick(function(){
+			if(sessionStorage.authlevel == 3){
+	  			return;
+	  		}
+			var domstr = $(this).data("paramname");			
+			var rownum = $(this).data("rownum");
+			var comvaluess= $(this).data("comvalues");	
+			alert(comvaluess);
+			var mArray =comvaluess.split(",");
+				$('#comvaluelist').empty();
+			for(var i = 0; i<mArray.length; i++){
+			$('#comvaluelist').append($("<option value='"+mArray[i]+"'>"+mArray[i]+"</option>"));
+			}
+			$('#comvaluelist').val($(this)[0].textContent);
+
+			$( "#dialog-comboxset" ).dialog({
+        	      autoOpen: false,
+        	      height: 240,
+        	      width: 300,
+        	      modal: true,
+        	      buttons: {
+        	    	  Ok: function() {        	    		  
+        	         	    			  var node = __globalobj__._realDevice.getFirstChild();
+							  var sleetindex=$("#comvaluelist").get(0).selectedIndex+1;
+							  	alert(sleetindex);
+            	    		  var datastring = '{"cmd":"hfcvalueset","target":"setVars","ip":"' + __globalobj__._realDevice.key + '","rowNum":"'+ rownum 
+            	    			  +'","isRow":"true","domstr":"'+ domstr +'","value":"'+sleetindex +'"}';
+            	    		  __globalobj__._send(datastring);
+            	              $( this ).dialog( "close" );
+        	    		
+        	            }
+        	      },
+        	      close: function() {
+	        	    	$("#set_value").removeClass("ui-state-error-custom");
+	        	  }
+    	    });
+            $("#set_value").val($(this)[0].textContent.replace(/[^\d.]/g,''));
+            updateTips($.i18n.prop('message_devnewval'));
+            $("#dialog-comboxset").dialog("open");
+		}); 
+		
 		$(".isalarmThreshold").dblclick(function(){
 			var node = __globalobj__._realDevice.getFirstChild();
 			var domstr = $(this)[0].id;
@@ -139,14 +180,14 @@
 		$('#i18n-lasertbl')[0].textContent = $.i18n.prop('message_devlasertbl');
 		$('#i18n-bias')[0].textContent = $.i18n.prop('message_devbias');		
 		$('#i18n-current')[0].textContent = $.i18n.prop('message_devcurrent');
-		$('#i18n-temper')[0].textContent = $.i18n.prop('message_devtemper');		
+
 		$('#i18n-traptbl')[0].textContent = $.i18n.prop('message_devtraptbl');		
 		$('#i18n-trapindex')[0].textContent = $.i18n.prop('message_devtrapindex');
 		$('#i18n-trapip')[0].textContent = $.i18n.prop('message_devtrapip');		
 		$('#i18n-publictemper')[0].textContent = $.i18n.prop('message_devtemper');
 		$('#i18n-publicID')[0].textContent = $.i18n.prop('message_devlogicid');		
 		$('#i18n-publictype')[0].textContent = $.i18n.prop('message_devtype');		
-		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');d
+		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');
 		
 	</script>
 </head>
@@ -154,7 +195,7 @@
 	<div class="devdetail">
 		<button type="button" class="close device-close" aria-hidden="true">&times;</button>
 		<ul class = "devdetail-header">
-			<li class="dev-img"><img  id ="edfaimg"  /></li>
+			<li class="dev-img"><img  id ="emtransimg"  /></li>
 			<li class="dev-status"><span id="dev-status-text"></span></li>
 			<li>
 				<table class="table tbl_noborder tbl_devtips">
@@ -185,7 +226,7 @@
 					    	<table class="tbl_devdetail-content">					 
 					    		<tr>
 					    			<td>
-					    				<table class="table tbl_power" style="width:30%">
+					    				<table class="table tbl_power" style="width:40%">
 										   <thead>
 											    <tr>
 											      <th id="i18n-powername">电源输出表</th>
@@ -220,7 +261,7 @@
 					    		</tr>
 					    		<tr>
 					    			<td>
-					    				<table class="table tbl_devmiddle tbl_devcontent" style="width:30%">
+					    				<table class="table tbl_devmiddle tbl_devcontent" style="width:40%">
 										   <thead>
 											    <tr>
 											      <th id="i18n-lasertbl">激光器表</th>
@@ -239,7 +280,33 @@
 													<td class="otxLaserTecCurrent_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otxLaserTecCurrent" id="otxLaserTecCurrent_row0"></td>
 													<td class="otxConfigurationItuFrequency_row0" data-rownum="0" data-paramname="otxConfigurationItuFrequency" id="otxConfigurationItuFrequency_row0"></td>
 							
-													<td class="otxLaserControl_row0" data-rownum="0" data-paramname="otxLaserControl" id="otxLaserControl_row0"></td>
+													<td class="otxLaserControl_row0 tbl_hfcunitcombox" data-comvalues="on,off" data-rownum="0" data-paramname="otxLaserControl" id="otxLaserControl_row0"></td>
+												</tr>						
+										  </tbody>
+										</table>
+					    			</td>
+					    		</tr>
+								    		<tr>
+					    			<td>
+					    				<table class="table tbl_input tbl_devmiddle" style="width:40%">
+										   <thead>
+											    <tr>										
+											      <th id="i18n-rflevel">输入电平</th>
+											      <th id="i18n-outputpower">RF控制模式</th>
+											      <th id="i18n-agcoffset">AGC偏移量</th>
+											       <th id="i18n-SBS ">SBS </th>
+											      <th id="i18n-channeliteval">频道间隔</th>
+												   <th id="i18n-MGC">MGC</th>
+											    </tr>
+										  </thead>
+										  <tbody>
+												<tr>
+													<td class="otxInputRFLevel_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otxInputRFLevel" id="otxInputRFLevel_row0"></td>
+													<td class="otxConfigurationAGCMode_row0 tbl_hfcunitcombox" data-comvalues="MGC,AGC" data-rownum="0" data-paramname="otxLaserOutputPower" id="otxLaserOutputPower_row0"></td>
+													<td class="otxConfigurationOmi_row0 tbl_hfcunit" data-rownum="0" data-paramname="otxConfigurationOmi" id="otxConfigurationOmi_row0"></td>
+													<td class="otxConfigurationSbsSuppression_row0" data-rownum="0" data-paramname="otxConfigurationSbsSuppression" id="otxConfigurationSbsSuppression_row0"></td>
+													<td class="otxConfigurationChannelDistance_row0" data-rownum="0" data-paramname="otxConfigurationChannelDistance" id="otxConfigurationChannelDistance_row0"></td>
+													<td class="otxConfigurationRfGain_row0" data-rownum="0" data-paramname="otxConfigurationRfGain" id="otxConfigurationRfGain_row0"></td>
 												</tr>						
 										  </tbody>
 										</table>

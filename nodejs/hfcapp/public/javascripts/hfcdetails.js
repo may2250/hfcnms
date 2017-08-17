@@ -401,6 +401,8 @@ function parse_edfa(jsonobj){
 }
 
 function parse_emtrans(jsonobj){	
+		jQuery("#emtransimg").attr("src",jsonobj.icon);
+	
 	
 	var i = 0;
 	$.each(jsonobj.dctable, function(key, itemv) {
@@ -415,7 +417,26 @@ function parse_emtrans(jsonobj){
 		$('.otxLaserOutputPower_row' + i)[0].textContent = itemv.otxLaserOutputPower_row;
 			$('.otxLaserTecCurrent_row' + i)[0].textContent = itemv.otxLaserTecCurrent_row;
 				$('.otxConfigurationItuFrequency_row' + i)[0].textContent = itemv.otxConfigurationItuFrequency_row;
-				$('.otxLaserControl_row' + i)[0].textContent = itemv.otxLaserControl_row;
+					switch( itemv.otxLaserControl_row){
+	case "1":
+		$('.otxLaserControl_row' + i)[0].textContent="on";
+        break;
+    case "2":
+		$('.otxLaserControl_row' + i)[0].textContent="off";
+        break;
+	}
+	
+	i++;
+	});	
+	
+		i=0;
+	$.each(jsonobj.intable, function(key, itemv) {
+	$('.otxInputRFLevel_row' + i)[0].textContent = itemv.otxInputRFLevel_row;
+	$('.otxConfigurationAGCMode_row' + i)[0].textContent = itemv.otxConfigurationAGCMode_row;
+		$('.otxConfigurationOmi_row' + i)[0].textContent = itemv.otxConfigurationOmi_row;
+			$('.otxConfigurationSbsSuppression_row' + i)[0].textContent = itemv.otxConfigurationSbsSuppression_row;
+				$('.otxConfigurationChannelDistance_row' + i)[0].textContent = itemv.otxConfigurationChannelDistance_row;
+				$('.otxConfigurationRfGain_row' + i)[0].textContent = itemv.otxConfigurationRfGain_row;
 	i++;
 	});	
 	
