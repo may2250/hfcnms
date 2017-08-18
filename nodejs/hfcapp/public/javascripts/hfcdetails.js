@@ -4,15 +4,16 @@ $(function() {
 });
 
 function __getDeviceDetail(devnode, jsonobj){
-	switch(devnode.getLastChild().data.hfctype){
-	case "Trans":
-		$(".candile").load("/opticalTran");
+	//switch(devnode.getLastChild().data.hfctype){
+		switch(jsonobj.devtype){
+	case "TransEM":
+		$(".candile").load("/emtrans");
 		break;
 	case "other":
 		$(".candile").load("/rece_workstation");
 		break;
-	case 1:
-		$(".candile").load("/emtrans", function(){
+	case "EDFA":
+		$(".candile").load("/edfa", function(){
 			parse_emtrans(jsonobj);
 			//parse_edfa(jsonobj);		
 		});
@@ -23,18 +24,6 @@ function __getDeviceDetail(devnode, jsonobj){
 			parseHfcDevice(jsonobj);
 		});
 		break;
-	case "OSW":
-		$(".candile").load("/opticalTran");
-		break;
-	case "RFSW":
-		$(".candile").load("/opticalTran");
-		break;
-	case "PreAMP":
-		$(".candile").load("/opticalTran");
-		break;
-	case "wos":
-		$(".candile").load("/opticalTran");
-		break;
 	default:
 		$(".candile").load("/rece_workstation");
 		break;
@@ -44,7 +33,7 @@ function __getDeviceDetail(devnode, jsonobj){
 function parseHfcDevice(jsonobj){
 	$(".dev-status").css("color", "lightgreen");
 	switch(jsonobj.devtype){
-	case "emtrans":
+	case "TransEM":
 	    parse_emtrans(jsonobj);
 		break;
 	case "other":
@@ -83,7 +72,24 @@ function showHfcDevice(jsonobj){
 		parseHfcDevice(jsonobj);
 	}	
 }
-
+function appendStatus(statuss,textboxp)
+{
+		switch(statuss){
+	case "1":
+		$(textboxp).css("background-color", "green");
+        break;
+    case "2":
+    case "5":
+		$(textboxp).css("background-color", "HotPink");
+        break;
+    case "3":
+    case "4":
+        //lo
+		$(textboxp).css("background-color", "Moccasin");
+        break;
+	}
+	
+}
 function parse_rece_workstation(jsonobj){
 	//if(__globalobj__._realDevice.getLastChild().data.hfctype == "HfcMinWorkstation"){
 	    if(jsonobj.devtype== "HfcMinWorkstation"){
@@ -125,6 +131,7 @@ function parse_rece_workstation(jsonobj){
 	$.each(jsonobj.powertbl, function(key, itemv) {
 		$('.fnDCPowerName_row' + i)[0].textContent = itemv.fnDCPowerName_row;
 		$('.fnDCPowerVoltage_row' + i)[0].textContent = itemv.fnDCPowerVoltage_row;
+		
 		i++;
 	});	
 	i = 0;
@@ -399,6 +406,25 @@ function parse_edfa(jsonobj){
 	}
 	
 }
+function parse_common(jsonobj){
+	$('#panel-devip')[0].textContent = __globalobj__._realDevice.key;
+	$('#panel-onlinetimeticks')[0].textContent = jsonobj.common.sysUpTime;
+	$('#panel-devinfo')[0].textContent = jsonobj.common.sysDescr;
+	$('#panel-devcontact')[0].textContent = jsonobj.common.sysContact;
+	$('#commonInternalTemperature').val(jsonobj.common.commonInternalTemperature);
+	$('#commonNELogicalID').val(jsonobj.common.commonNELogicalID);
+	$('#commonNEModelNumber').val(jsonobj.common.commonNEModelNumber);	
+	$('#commonNESerialNumber').val(jsonobj.common.commonNESerialNumber);
+	$('#commonDeviceMACAddress').val(jsonobj.common.commonDeviceMACAddress);
+	
+	var i = 0;
+	$.each(jsonobj.common.traptbl, function(key, itemv) {
+		$('.commonAgentTrapIndex_row' + i)[0].textContent = itemv.commonAgentTrapIndex_row;
+		$('#commonAgentTrapIP_row' + i)[0].textContent = itemv.commonAgentTrapIP_row;
+		i++;
+	});
+}
+
 
 function parse_emtrans(jsonobj){	
 		jQuery("#emtransimg").attr("src",jsonobj.icon);
@@ -408,6 +434,9 @@ function parse_emtrans(jsonobj){
 	$.each(jsonobj.dctable, function(key, itemv) {
 		$('.otxDCPowerName_row' + i)[0].textContent = itemv.otxDCPowerName_row;
 		$('.otxDCPowerVoltage_row' + i)[0].textContent = itemv.otxDCPowerVoltage_row;
+		//appendStatus(jsonobj["otxDCPowerVoltage"+i.toString()+"6"],"otxDCPowerVoltage_row0");
+		appendStatus(jsonobj["otxDCPowerVoltage"+i.toString()+"6"],".otxDCPowerVoltage_row"+i);
+		//$('.otxDCPowerVoltage_row0').css("background-color", "yellow");
 		i++;
 	});
 	i=0;
@@ -425,22 +454,40 @@ function parse_emtrans(jsonobj){
 		$('.otxLaserControl_row' + i)[0].textContent="off";
         break;
 	}
-	
+			appendStatus(jsonobj["otxLaserCurrent"+i.toString()+"6"],".otxLaserCurrent_row"+i);
+						appendStatus(jsonobj["otxLaserOutputPower"+i.toString()+"6"],".otxLaserOutputPower_row"+i);
+		appendStatus(jsonobj["otxLaserOutputPower"+i.toString()+"6"],".otxLaserOutputPower_row"+i);
+			appendStatus(jsonobj["otxLaserTecCurrent"+i.toString()+"6"],".otxLaserTecCurrent_row"+i);
+
 	i++;
 	});	
 	
 		i=0;
 	$.each(jsonobj.intable, function(key, itemv) {
+			$('.otxModuleIndexinput_row' + i)[0].textContent = i+1;
 	$('.otxInputRFLevel_row' + i)[0].textContent = itemv.otxInputRFLevel_row;
-	$('.otxConfigurationAGCMode_row' + i)[0].textContent = itemv.otxConfigurationAGCMode_row;
+//	$('.otxConfigurationAGCMode_row' + i)[0].textContent = itemv.otxConfigurationAGCMode_row;
 		$('.otxConfigurationOmi_row' + i)[0].textContent = itemv.otxConfigurationOmi_row;
 			$('.otxConfigurationSbsSuppression_row' + i)[0].textContent = itemv.otxConfigurationSbsSuppression_row;
 				$('.otxConfigurationChannelDistance_row' + i)[0].textContent = itemv.otxConfigurationChannelDistance_row;
 				$('.otxConfigurationRfGain_row' + i)[0].textContent = itemv.otxConfigurationRfGain_row;
+				
+								switch( itemv.otxConfigurationAGCMode_row){
+	case "1":
+		$('.otxConfigurationAGCMode_row' + i)[0].textContent="MGC";
+        break;
+    case "2":
+		$('.otxConfigurationAGCMode_row' + i)[0].textContent="AGC";
+        break;
+	}
+					appendStatus(jsonobj["otxInputRFLevel"+i.toString()+"6"],".otxInputRFLevel_row"+i);
 	i++;
 	});	
 	
-}
+
+	parse_common(jsonobj);
+	
+	}
 
 function parseHfcValueSet(jsonobj){
 	switch(jsonobj.target){

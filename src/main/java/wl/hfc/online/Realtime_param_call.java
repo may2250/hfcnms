@@ -44,8 +44,7 @@ public class Realtime_param_call extends Thread {
 						JSONObject json = new JSONObject();
 						JSONObject commonjson = new JSONObject();
 						ObjSnmpPreail osp = staticmemory.getRealTimeDev(key);
-						if (osp != null) {
-							
+						if (osp != null) {						
 								
 					
 							json.put("cmd", "realtime-device");
@@ -66,10 +65,10 @@ public class Realtime_param_call extends Thread {
 							String jsonstr = json.toJSONString();
 							
 							//emtrans param json string
-							String ss="{\"dctable\":[{\"otxDCPowerVoltage_row\":\"23.5V\",\"otxDCPowerName_row\":\"+24V DC Power\"},{\"otxDCPowerVoltage_row\":\"11.9V\",\"otxDCPowerName_row\":\"+12V DC Power\"},{\"otxDCPowerVoltage_row\":\"-11.4V\",\"otxDCPowerName_row\":\"-12V DC Power\"},{\"otxDCPowerVoltage_row\":\"5.0V\",\"otxDCPowerName_row\":\"2b:35:56:20:44:43:20:50:6f:77:65:72:00\"},{\"otxDCPowerVoltage_row\":\"-4.9V\",\"otxDCPowerName_row\":\"2d:35:56:20:44:43:20:50:6f:77:65:72:00\"}],\"dctablerownum\":5,\"otxLaserOutputPower06\":\"1\",\"icon\":\"images\\/transEM.png\",\"otxLaserTecCurrent06\":\"1\",\"otxDCPowerVoltage36\":\"1\",\"otxDCPowerVoltage26\":\"1\",\"outtablerownum\":1,\"otxDCPowerVoltage46\":\"1\",\"otxLaserCurrent06\":\"1\",\"devtype\":\"TransEM\",\"otxDCPowerVoltage16\":\"1\",\"otxDCPowerVoltage06\":\"1\",\"otxInputRFLevel06\":\"5\",\"intable\":[{\"otxConfigurationAGCMode_row\":\"2\",\"otxConfigurationOmi_row\":\"0.0dB\",\"otxConfigurationChannelDistance_row\":\"8.0MHz\",\"otxInputRFLevel_row\":\"58.2dBuV\",\"otxConfigurationSbsSuppression_row\":\"14.0dBm\",\"otxConfigurationRfGain_row\":\"5.5dB\"}],\"cmd\":\"realtime-device\",\"outtable\":[{\"otxModuleIndex_row\":\"1\",\"otxLaserCurrent_row\":\"217.0mA\",\"otxConfigurationItuFrequency_row\":\"193500.0GHz\",\"otxLaserTecCurrent_row\":\"-260.0mA\",\"otxLaserControl_row\":\"1\",\"otxLaserOutputPower_row\":\"8.0mW\"}],\"intablerownum\":1,\"devtype\":\"emtrans\"}";
+						/*	String ss="{\"dctable\":[{\"otxDCPowerVoltage_row\":\"23.5V\",\"otxDCPowerName_row\":\"+24V DC Power\"},{\"otxDCPowerVoltage_row\":\"11.9V\",\"otxDCPowerName_row\":\"+12V DC Power\"},{\"otxDCPowerVoltage_row\":\"-11.4V\",\"otxDCPowerName_row\":\"-12V DC Power\"},{\"otxDCPowerVoltage_row\":\"5.0V\",\"otxDCPowerName_row\":\"2b:35:56:20:44:43:20:50:6f:77:65:72:00\"},{\"otxDCPowerVoltage_row\":\"-4.9V\",\"otxDCPowerName_row\":\"2d:35:56:20:44:43:20:50:6f:77:65:72:00\"}],\"dctablerownum\":5,\"otxLaserOutputPower06\":\"1\",\"icon\":\"images\\/transEM.png\",\"otxLaserTecCurrent06\":\"1\",\"otxDCPowerVoltage36\":\"1\",\"otxDCPowerVoltage26\":\"1\",\"outtablerownum\":1,\"otxDCPowerVoltage46\":\"1\",\"otxLaserCurrent06\":\"1\",\"devtype\":\"TransEM\",\"otxDCPowerVoltage16\":\"1\",\"otxDCPowerVoltage06\":\"1\",\"otxInputRFLevel06\":\"5\",\"intable\":[{\"otxConfigurationAGCMode_row\":\"2\",\"otxConfigurationOmi_row\":\"0.0dB\",\"otxConfigurationChannelDistance_row\":\"8.0MHz\",\"otxInputRFLevel_row\":\"58.2dBuV\",\"otxConfigurationSbsSuppression_row\":\"14.0dBm\",\"otxConfigurationRfGain_row\":\"5.5dB\"}],\"cmd\":\"realtime-device\",\"outtable\":[{\"otxModuleIndex_row\":\"1\",\"otxLaserCurrent_row\":\"217.0mA\",\"otxConfigurationItuFrequency_row\":\"193500.0GHz\",\"otxLaserTecCurrent_row\":\"-260.0mA\",\"otxLaserControl_row\":\"1\",\"otxLaserOutputPower_row\":\"8.0mW\"}],\"intablerownum\":1,\"devtype\":\"emtrans\"}";
 							Object obj=JSONValue.parse(ss);
 							JSONObject array=(JSONObject)obj;
-							jsonstr=array.toJSONString();
+							jsonstr=array.toJSONString();*/
 							System.out.println("参数发送"+jsonstr);
 							for (Iterator it2 = osp.sessionList.iterator(); it2.hasNext();) {
 								staticmemory.sendRemoteStr(jsonstr, it2.next().toString());

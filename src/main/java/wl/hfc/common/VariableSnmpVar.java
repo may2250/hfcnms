@@ -33,6 +33,9 @@ public class VariableSnmpVar {
 
 	public int maxValue = 0;
 	public int minValue = 0;
+	public int setpvalue = 0;
+
+	public boolean isformatter = false;
 
 	private String ExtraOidString = ".1";
 

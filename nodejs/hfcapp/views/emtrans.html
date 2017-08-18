@@ -63,7 +63,8 @@
 	        	  }
     	    });
             $("#set_value").val($(this).val().replace(/[^\d.]/g,''));
-            updateTips($.i18n.prop('message_devnewval'));
+           updateTips($.i18n.prop('message_devnewval'));
+
             $("#dialog-form").dialog("open");
 		}); 
 		
@@ -97,7 +98,9 @@
 	        	  }
     	    });
             $("#set_value").val($(this)[0].textContent.replace(/[^\d.]/g,''));
-            updateTips($.i18n.prop('message_devnewval'));
+           // updateTips($.i18n.prop('message_devnewval'));
+		   		   var comvaluess= $(this).data("comvalues");
+		   updateTips(comvaluess);
             $("#dialog-form").dialog("open");
 		}); 
 		
@@ -142,6 +145,7 @@
             $("#dialog-comboxset").dialog("open");
 		}); 
 		
+		
 		$(".isalarmThreshold").dblclick(function(){
 			var node = __globalobj__._realDevice.getFirstChild();
 			var domstr = $(this)[0].id;
@@ -165,7 +169,7 @@
   		  	__globalobj__._send(datastring);
   		  	$('.candile').empty();
 		});
-		
+			
 		$('#dev-status-text')[0].textContent = $.i18n.prop('message_devconnected');
 		$('#i18n-devip')[0].textContent = $.i18n.prop('message_devip');
 		$('#i18n-sysdesc')[0].textContent = $.i18n.prop('message_devsysdesc');
@@ -180,6 +184,14 @@
 		$('#i18n-lasertbl')[0].textContent = $.i18n.prop('message_devlasertbl');
 		$('#i18n-bias')[0].textContent = $.i18n.prop('message_devbias');		
 		$('#i18n-current')[0].textContent = $.i18n.prop('message_devcurrent');
+		
+	$('#i18n-RFcontrolmode')[0].textContent = $.i18n.prop('message_RFcontrolmode');
+		$('#i18n-AGCOffset')[0].textContent = $.i18n.prop('message_AGCOffset');
+		$('#i18n-LaserONOFF')[0].textContent = $.i18n.prop('message_LaserONOFF');
+		$('#i18n-Channelspacingfrequency')[0].textContent = $.i18n.prop('message_Channelspacingfrequency');
+		$('#i18n-InputRFpower')[0].textContent = $.i18n.prop('message_InputRFpower');
+		$('#i18n-wavefrequency')[0].textContent = $.i18n.prop('message_wavefrequency');
+		
 
 		$('#i18n-traptbl')[0].textContent = $.i18n.prop('message_devtraptbl');		
 		$('#i18n-trapindex')[0].textContent = $.i18n.prop('message_devtrapindex');
@@ -268,8 +280,8 @@
 											      <th id="i18n-bias">偏置电流</th>
 											      <th id="i18n-outputpower">输出光功率</th>
 											      <th id="i18n-current">制冷电流</th>
-											       <th id="i18n-wavelength">光波长</th>
-											      <th id="i18n-laseronoff">激光器开关</th>
+											       <th id="i18n-wavefrequency">光波长频率</th>
+											      <th id="i18n-LaserONOFF">激光器开关</th>
 											    </tr>
 										  </thead>
 										  <tbody>
@@ -290,23 +302,25 @@
 					    			<td>
 					    				<table class="table tbl_input tbl_devmiddle" style="width:40%">
 										   <thead>
-											    <tr>										
-											      <th id="i18n-rflevel">输入电平</th>
-											      <th id="i18n-outputpower">RF控制模式</th>
-											      <th id="i18n-agcoffset">AGC偏移量</th>
+											    <tr>	
+												<th id="i18n-lasertbl">Input table</th>												
+											      <th id="i18n-InputRFpower">输入电平</th>
+											      <th id="i18n-RFcontrolmode">RF控制模式</th>
+											      <th id="i18n-AGCOffset">AGC偏移量</th>
 											       <th id="i18n-SBS ">SBS </th>
-											      <th id="i18n-channeliteval">频道间隔</th>
+											      <th id="i18n-Channelspacingfrequency">频道间隔频率</th>
 												   <th id="i18n-MGC">MGC</th>
 											    </tr>
 										  </thead>
 										  <tbody>
 												<tr>
+													<td class="otxModuleIndexinput_row0"></td>
 													<td class="otxInputRFLevel_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otxInputRFLevel" id="otxInputRFLevel_row0"></td>
-													<td class="otxConfigurationAGCMode_row0 tbl_hfcunitcombox" data-comvalues="MGC,AGC" data-rownum="0" data-paramname="otxLaserOutputPower" id="otxLaserOutputPower_row0"></td>
-													<td class="otxConfigurationOmi_row0 tbl_hfcunit" data-rownum="0" data-paramname="otxConfigurationOmi" id="otxConfigurationOmi_row0"></td>
-													<td class="otxConfigurationSbsSuppression_row0" data-rownum="0" data-paramname="otxConfigurationSbsSuppression" id="otxConfigurationSbsSuppression_row0"></td>
-													<td class="otxConfigurationChannelDistance_row0" data-rownum="0" data-paramname="otxConfigurationChannelDistance" id="otxConfigurationChannelDistance_row0"></td>
-													<td class="otxConfigurationRfGain_row0" data-rownum="0" data-paramname="otxConfigurationRfGain" id="otxConfigurationRfGain_row0"></td>
+													<td class="otxConfigurationAGCMode_row0 tbl_hfcunitcombox" data-comvalues="MGC,AGC" data-rownum="0" data-paramname="otxConfigurationAGCMode" id="otxConfigurationAGCMode_row0"></td>
+													<td class="otxConfigurationOmi_row0 tbl_hfcunit" data-comvalues="[-3,+3],+/-0.5"  data-rownum="0" data-paramname="otxConfigurationOmi" id="otxConfigurationOmi_row0"></td>
+													<td class="otxConfigurationSbsSuppression_row0 tbl_hfcunit" data-comvalues="13-19.5; 0.5/step"   data-rownum="0" data-paramname="otxConfigurationSbsSuppression" id="otxConfigurationSbsSuppression_row0"></td>
+													<td class="otxConfigurationChannelDistance_row0 tbl_hfcunit"  data-comvalues="Only following values:6,7,8" data-rownum="0" data-paramname="otxConfigurationChannelDistance" id="otxConfigurationChannelDistance_row0"></td>
+													<td class="otxConfigurationRfGain_row0 tbl_hfcunit" data-comvalues="[0,15],+/-0.5" data-rownum="0" data-paramname="otxConfigurationRfGain" id="otxConfigurationRfGain_row0"></td>
 												</tr>						
 										  </tbody>
 										</table>

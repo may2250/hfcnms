@@ -3,6 +3,7 @@ package wl.hfc.online;
 
 
 
+//外调光发的输入电平，输出光功率，偏置电流的门限值无法设置，设备内部自动调节赋值；
 import org.json.simple.JSONObject;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.VariableBinding;
@@ -132,6 +133,12 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		
+		cInputVariables[i].isformatter=true;
+		cInputVariables[i].maxValue=30;
+		cInputVariables[i].minValue=-30;		
+		cInputVariables[i].setpvalue=5;
+		
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
 		
 		
@@ -144,6 +151,10 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		cInputVariables[i].isformatter=true;
+		cInputVariables[i].maxValue=195;
+		cInputVariables[i].minValue=130;		
+		cInputVariables[i].setpvalue=5;		
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
 		
 		
@@ -151,6 +162,11 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		cInputVariables[i].isformatter=true;
+		cInputVariables[i].maxValue=8;
+		cInputVariables[i].minValue=7;		
+		cInputVariables[i].setpvalue=0;
+		
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
 		
 		
@@ -159,6 +175,13 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		
+		
+		cInputVariables[i].isformatter=true;
+		cInputVariables[i].maxValue=150;
+		cInputVariables[i].minValue=0;		
+		cInputVariables[i].setpvalue=5;
+		
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
 		
 		
@@ -345,7 +368,8 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		return pJson;
 
 	}
-	
 
+
+	
 
 }
