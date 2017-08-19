@@ -1,5 +1,7 @@
 package wl.hfc.online;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 
@@ -30,7 +32,7 @@ public class Realtime_param_call extends Thread {
 	public void run() {
 
 		log.info(this.getName() + "....starting.......");
-
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		while (true) {
 			if (!staticmemory.getAllRealTimeDev().isEmpty()) {
 				// System.out.println("RealTimeDev length is: "+
@@ -48,7 +50,9 @@ public class Realtime_param_call extends Thread {
 								
 					
 							json.put("cmd", "realtime-device");
-
+							json.put("mytime", sdf.format(new Date()));
+							
+							
 							json.put("devtype", osp.snmpPreail.thisDev.HFCType1.toString());
 							json.put("icon", "../images/" + osp.snmpPreail.thisDev.imagePath + ".png");
 

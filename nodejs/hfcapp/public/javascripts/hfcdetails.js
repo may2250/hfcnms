@@ -227,6 +227,8 @@ function parse_rece_workstation(jsonobj){
 }
 
 function parse_edfa(jsonobj){	
+		
+	$('#dev-status-text')[0].textContent = jsonobj.mytime;
 	
 	jQuery("#edfaimg").attr("src",jsonobj.icon);
 	
@@ -253,6 +255,8 @@ function parse_edfa(jsonobj){
 		 $('#i18n-att').hide();	
 	 
 	 }
+	 
+	 
 	switch(jsonobj.oaInputOpticalPower6){
 	case "1":
         //normal
@@ -293,6 +297,9 @@ function parse_edfa(jsonobj){
 	$.each(jsonobj.powertbl, function(key, itemv) {
 		$('.oaDCPowerName_row' + i)[0].textContent = itemv.oaDCPowerName_row;
 		$('.oaDCPowerVoltage_row' + i)[0].textContent = itemv.oaDCPowerVoltage_row;
+		
+				appendStatus(jsonobj["oaDCPowerVoltage"+i.toString()+"6"],".oaDCPowerVoltage_row"+i);
+	
 		i++;
 	});	
 	i = 0;
@@ -301,6 +308,12 @@ function parse_edfa(jsonobj){
 		$('.oaPumpBIAS_row' + i)[0].textContent = itemv.oaPumpBIAS_row;
 		$('.oaPumpTEC_row' + i)[0].textContent = itemv.oaPumpTEC_row;
 		$('.oaPumpTemp_row' + i)[0].textContent = itemv.oaPumpTemp_row;
+		
+		
+				appendStatus(jsonobj["oaPumpBIAS"+i.toString()+"6"],".oaPumpBIAS_row"+i);
+	appendStatus(jsonobj["oaPumpTEC"+i.toString()+"6"],".oaPumpTEC_row"+i);
+	appendStatus(jsonobj["oaPumpTemp"+i.toString()+"6"],".oaPumpTemp_row"+i);
+	
 		i++;
 	});
 	i = 0;
@@ -308,102 +321,9 @@ function parse_edfa(jsonobj){
 		$('.commonAgentTrapIndex_row' + i)[0].textContent = itemv.commonAgentTrapIndex_row;
 		$('#commonAgentTrapIP_row' + i)[0].textContent = itemv.commonAgentTrapIP_row;
 		i++;
-	});
-	switch(jsonobj.oaDCPowerVoltage06){
-	case "1":
-        //normal
-		//$('.oaDCPowerVoltage_row0').css("background-color", "green");
-        //textBoxVariable.BackColor = Color.LightGreen;
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('.oaDCPowerVoltage_row0').css("background-color", "HotPink");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('.oaDCPowerVoltage_row0').css("background-color", "Moccasin");
-        break;
-	}
-	switch(jsonobj.oaDCPowerVoltage16){
-	case "1":
-        //normal
-		//('.oaDCPowerVoltage_row1').css("background-color", "green");
-        //textBoxVariable.BackColor = Color.LightGreen;
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('.oaDCPowerVoltage_row1').css("background-color", "HotPink");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('.oaDCPowerVoltage_row1').css("background-color", "Moccasin");
-        break;
-	}
-	switch(jsonobj.oaPumpBIAS06){
-	case "1":
-        //normal
-	//	$('.oaPumpBIAS_row0').css("background-color", "green");
-        //textBoxVariable.BackColor = Color.LightGreen;
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('.oaPumpBIAS_row0').css("background-color", "HotPink");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('.oaPumpBIAS_row0').css("background-color", "Moccasin");
-        break;
-	}
-	switch(jsonobj.oaPumpTEC06){
-	case "1":
-        //normal
-		//$('.oaPumpTEC_row0').css("background-color", "green");
-        //textBoxVariable.BackColor = Color.LightGreen;
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('.oaPumpTEC_row0').css("background-color", "red");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('.oaPumpTEC_row0').css("background-color", "yellow");
-        break;
-	}
-	switch(jsonobj.oaPumpTemp06){
-	case "1":
-        //normal
-		//$('.oaPumpTemp_row0').css("background-color", "green");
-        //textBoxVariable.BackColor = Color.LightGreen;
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('.oaPumpTemp_row0').css("background-color", "red");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('.oaPumpTemp_row0').css("background-color", "yellow");
-        break;
-	}
+	});	
+
+
 	
 }
 function parse_common(jsonobj){
