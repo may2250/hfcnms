@@ -1,26 +1,10 @@
 package wl.hfc.online;
 
-
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.snmp4j.smi.Integer32;
-import org.snmp4j.smi.OID;
-import org.snmp4j.smi.OctetString;
-import org.snmp4j.smi.UdpAddress;
-import org.snmp4j.smi.VariableBinding;
-
-
-
-
-
-
-
-
-
+import org.snmp4j.smi.*;
 
 import wl.hfc.common.IPduSevr;
-
 
 import wl.hfc.common.SnmpTableInfo;
 import wl.hfc.common.VariableSnmpVar;
@@ -105,9 +89,7 @@ public class SnmpEngine {
 		PDU inpdu;
 
 		while (true) {
-			// ���÷��͵�PDU�����͵����硣
 
-			// ����PDU
 			inpdu = server.SyncSendSnmpPdu(outpdu, cgt);
 			if (inpdu == null) {
 				// if return a null pdu ,tell the above level
@@ -143,42 +125,44 @@ public class SnmpEngine {
 
 	}
 
-	public static ArrayList<VariableBinding> cutMajorVaribaleWithThold(WosParamForSetInfo paramSetList, VariableSnmpVar tmpTagInfo) {
+	public static ArrayList<VariableBinding> cutMajorVaribaleWithThold(WosParamForSetInfo paramSetList,
+			VariableSnmpVar tmpTagInfo) {
 		ArrayList<VariableBinding> result = new ArrayList<VariableBinding>();
 
 		for (int k = 0; k < 5; k++) {
 			if (tmpTagInfo.subVariableSnmpVarS[k].CurrentVarBind != null) {
-				result.add(new VariableBinding(tmpTagInfo.subVariableSnmpVarS[k].FullSnmpOid, new Integer32(paramSetList.pmSetList[k])));
+				result.add(new VariableBinding(tmpTagInfo.subVariableSnmpVarS[k].FullSnmpOid,
+						new Integer32(paramSetList.pmSetList[k])));
 			}
 		}
 
-		result.add(new VariableBinding(tmpTagInfo.subVariableSnmpVarS[5].FullSnmpOid, new OctetString(new byte[] { paramSetList.sByte })));
+		result.add(new VariableBinding(tmpTagInfo.subVariableSnmpVarS[5].FullSnmpOid,
+				new OctetString(new byte[] { paramSetList.sByte })));
 		return result;
 	}
 
-	public static ArrayList<VariableBinding> cutTableVaribaleWithThold(WosParamForSetInfo paramSetList, VariableSnmpVar tmpTagInfo, int rowNumber) {
+	public static ArrayList<VariableBinding> cutTableVaribaleWithThold(WosParamForSetInfo paramSetList,
+			VariableSnmpVar tmpTagInfo, int rowNumber) {
 		ArrayList<VariableBinding> result = new ArrayList<VariableBinding>();
 		String oidrs;
 		for (int k = 0; k < 5; k++) {
 
-			oidrs = tmpTagInfo.subVariableSnmpVarS[k].VarInfo.ParamMibOID.toString() + "." + (rowNumber+1);
+			oidrs = tmpTagInfo.subVariableSnmpVarS[k].VarInfo.ParamMibOID.toString() + "." + (rowNumber + 1);
 			result.add(new VariableBinding(new OID(oidrs), new Integer32(paramSetList.pmSetList[k])));
 
 		}
 
-		oidrs = tmpTagInfo.subVariableSnmpVarS[5].VarInfo.ParamMibOID.toString() + "." + (rowNumber+1);
+		oidrs = tmpTagInfo.subVariableSnmpVarS[5].VarInfo.ParamMibOID.toString() + "." + (rowNumber + 1);
 		result.add(new VariableBinding(new OID(oidrs), new OctetString(new byte[] { paramSetList.sByte })));
 		return result;
 
 	}
 
-	
-	
-	//基本参数
+	// 基本参数
 	public static JSONObject snmpVarToJason(VariableSnmpVar[] pMjVariables, JSONObject pJson) {
 
 		for (int i = 0; i < pMjVariables.length; i++) {
-			// System.out.print(arr[i] + "  ");
+			// System.out.print(arr[i] + " ");
 			String vale = pMjVariables[i].ToDispString();
 			pJson.put(pMjVariables[i].VarInfo.ParamMibLabel, vale);
 
@@ -188,9 +172,9 @@ public class SnmpEngine {
 
 	}
 
-	
-	//表参数值
-	public  static JSONObject tabVarToJason( VariableSnmpVar[] cInputVariables,VariableSnmpVar[] cOutputVariables,SnmpTableInfo tabVariables, SnmpTableInfo pOutVariables, JSONObject pJson) {
+	// 表参数值
+	public static JSONObject tabVarToJason(VariableSnmpVar[] cInputVariables, VariableSnmpVar[] cOutputVariables,
+			SnmpTableInfo tabVariables, SnmpTableInfo pOutVariables, JSONObject pJson) {
 		int enumi, enumj;
 		int i = 0;
 		JSONArray al = new JSONArray();
@@ -198,15 +182,14 @@ public class SnmpEngine {
 		for (enumi = 0; enumi < tabVariables.RowNum; enumi++) {
 			itemjson = new JSONObject();
 			for (enumj = 0; enumj < tabVariables.ColNum; enumj++) {
-				String vale = cInputVariables[enumj].ToDispString(tabVariables.TableCells.get(i));				
+				String vale = cInputVariables[enumj].ToDispString(tabVariables.TableCells.get(i));
 				itemjson.put(cInputVariables[enumj].VarInfo.ParamMibLabel + "_row", vale);
 				i++;
 			}
 			al.add(itemjson);
 		}
 		pJson.put("powertbl", al);
-		
-		
+
 		i = 0;
 		al = new JSONArray();
 		for (enumi = 0; enumi < pOutVariables.RowNum; enumi++) {
@@ -222,10 +205,9 @@ public class SnmpEngine {
 		return pJson;
 
 	}
-	
-	
-	
-	public  static JSONObject tabVarToJason( VariableSnmpVar[] cVariables,SnmpTableInfo tableInfo, JSONObject pJson,String tbName) {
+
+	public static JSONObject tabVarToJason(VariableSnmpVar[] cVariables, SnmpTableInfo tableInfo, JSONObject pJson,
+			String tbName) {
 		int enumi, enumj;
 		int i = 0;
 		JSONArray al = new JSONArray();
@@ -233,56 +215,46 @@ public class SnmpEngine {
 		for (enumi = 0; enumi < tableInfo.RowNum; enumi++) {
 			itemjson = new JSONObject();
 			for (enumj = 0; enumj < tableInfo.ColNum; enumj++) {
-				String vale = cVariables[enumj].ToDispString(tableInfo.TableCells.get(i));				
+				String vale = cVariables[enumj].ToDispString(tableInfo.TableCells.get(i));
 				itemjson.put(cVariables[enumj].VarInfo.ParamMibLabel + "_row", vale);
 				i++;
 			}
 			al.add(itemjson);
 		}
-		pJson.put(tbName, al);		
+		pJson.put(tbName, al);
 
 		return pJson;
 
 	}
-	
-	//基本参数门限
+
+	// 基本参数门限
 	public static JSONObject ThreadPramVarToJason(VariableSnmpVar pMjVariable, JSONObject pJson, boolean isWithName) {
 
-		// System.out.print(arr[i] + "  ");
+		// System.out.print(arr[i] + " ");
 		String vale;
 		if (pMjVariable.withNoThreashold) {
 			for (int j = 0; j < pMjVariable.subVariableSnmpVarS.length; j++) {
-	/*			if (j == 5) {
-					vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
-					byte brst = (byte) Integer.parseInt(vale, 16);
-					if ((brst & 0x08) != 0)
-						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "HIHI", "1");
-					else
-						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "HIHI", "0");
-					if ((brst & 0x04) != 0)
-						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "HI", "1");
-					else
-						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "HI", "0");
-					if ((brst & 0x02) != 0)
-						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "LO", "1");
-					else
-						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "LO", "0");
-					if ((brst & 0x01) != 0)
-						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "LOLO", "1");
-					else
-						pJson.put(pMjVariable.VarInfo.ParamMibLabel + "LOLO", "0");
-				} 
-				else{
-					vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
-					pJson.put(pMjVariable.VarInfo.ParamMibLabel + j, vale);
-				}*/
-				
-				//只组建参数状态指示值
-				if (j==6) {
+				/*
+				 * if (j == 5) { vale = pMjVariable.subVariableSnmpVarS[j].ToDispString(); byte
+				 * brst = (byte) Integer.parseInt(vale, 16); if ((brst & 0x08) != 0)
+				 * pJson.put(pMjVariable.VarInfo.ParamMibLabel + "HIHI", "1"); else
+				 * pJson.put(pMjVariable.VarInfo.ParamMibLabel + "HIHI", "0"); if ((brst & 0x04)
+				 * != 0) pJson.put(pMjVariable.VarInfo.ParamMibLabel + "HI", "1"); else
+				 * pJson.put(pMjVariable.VarInfo.ParamMibLabel + "HI", "0"); if ((brst & 0x02)
+				 * != 0) pJson.put(pMjVariable.VarInfo.ParamMibLabel + "LO", "1"); else
+				 * pJson.put(pMjVariable.VarInfo.ParamMibLabel + "LO", "0"); if ((brst & 0x01)
+				 * != 0) pJson.put(pMjVariable.VarInfo.ParamMibLabel + "LOLO", "1"); else
+				 * pJson.put(pMjVariable.VarInfo.ParamMibLabel + "LOLO", "0"); } else{ vale =
+				 * pMjVariable.subVariableSnmpVarS[j].ToDispString();
+				 * pJson.put(pMjVariable.VarInfo.ParamMibLabel + j, vale); }
+				 */
+
+				// 只组建参数状态指示值
+				if (j == 6) {
 					vale = pMjVariable.subVariableSnmpVarS[j].ToDispString();
 					pJson.put(pMjVariable.VarInfo.ParamMibLabel + j, vale);
 				}
-				
+
 			}
 
 		}
@@ -291,48 +263,39 @@ public class SnmpEngine {
 
 	}
 
-		
-	//表参数门限
-	public static JSONObject ThreadPramVarToJason(VariableSnmpVar tableVariable, JSONObject pJson, int row, boolean isWithName) {
+	// 表参数门限
+	public static JSONObject ThreadPramVarToJason(VariableSnmpVar tableVariable, JSONObject pJson, int row,
+			boolean isWithName) {
 
-		// System.out.print(arr[i] + "  ");
+		// System.out.print(arr[i] + " ");
 		String vale;
 		if (tableVariable.withNoThreashold) {
 			VariableSnmpVar[] subVariableSnmpVarS = tableVariable.subTableVariableSnmpVarSS.get(row);
 			for (int j = 0; j < subVariableSnmpVarS.length; j++) {
-/*				if (j == 5) {
-					vale = subVariableSnmpVarS[j].ToDispString();
-					byte brst = (byte) Integer.parseInt(vale, 16);
-					if ((brst & 0x08) != 0)
-						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "HIHI", "1");
-					else
-						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "HIHI", "0");
-					if ((brst & 0x04) != 0)
-						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "HI", "1");
-					else
-						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "HI", "0");
-					if ((brst & 0x02) != 0)
-						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "LO", "1");
-					else
-						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "LO", "0");
-					if ((brst & 0x01) != 0)
-						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "LOLO", "1");
-					else
-						pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "LOLO", "0");
-					
-				} 
-				else
-				{
-					vale = subVariableSnmpVarS[j].ToDispString();
-					pJson.put(tableVariable.VarInfo.ParamMibLabel + row + j, vale);
-
-				}*/
-				//只组建参数状态指示值
-				if (j==6) {
+				/*
+				 * if (j == 5) { vale = subVariableSnmpVarS[j].ToDispString(); byte brst =
+				 * (byte) Integer.parseInt(vale, 16); if ((brst & 0x08) != 0)
+				 * pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "HIHI", "1"); else
+				 * pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "HIHI", "0"); if ((brst
+				 * & 0x04) != 0) pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "HI",
+				 * "1"); else pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "HI", "0");
+				 * if ((brst & 0x02) != 0) pJson.put(tableVariable.VarInfo.ParamMibLabel + row +
+				 * "LO", "1"); else pJson.put(tableVariable.VarInfo.ParamMibLabel + row + "LO",
+				 * "0"); if ((brst & 0x01) != 0) pJson.put(tableVariable.VarInfo.ParamMibLabel +
+				 * row + "LOLO", "1"); else pJson.put(tableVariable.VarInfo.ParamMibLabel + row
+				 * + "LOLO", "0");
+				 * 
+				 * } else { vale = subVariableSnmpVarS[j].ToDispString();
+				 * pJson.put(tableVariable.VarInfo.ParamMibLabel + row + j, vale);
+				 * 
+				 * }
+				 */
+				// 只组建参数状态指示值
+				if (j == 6) {
 					vale = subVariableSnmpVarS[j].ToDispString();
 					pJson.put(tableVariable.VarInfo.ParamMibLabel + row + j, vale);
 				}
-				
+
 			}
 
 		}
@@ -340,10 +303,10 @@ public class SnmpEngine {
 		return pJson;
 
 	}
-	
+
 	public static JSONObject ThreadPramVarToJason(VariableSnmpVar pMjVariable, JSONObject pJson) {
 
-		// System.out.print(arr[i] + "  ");
+		// System.out.print(arr[i] + " ");
 		String vale;
 		if (pMjVariable.withNoThreashold) {
 			for (int j = 0; j < pMjVariable.subVariableSnmpVarS.length; j++) {
@@ -366,7 +329,7 @@ public class SnmpEngine {
 						pJson.put("LOLOen", "1");
 					else
 						pJson.put("LOLOen", "0");
-					
+
 				} else
 
 				{
@@ -374,7 +337,7 @@ public class SnmpEngine {
 					pJson.put("value" + j, vale);
 
 				}
-				
+
 			}
 
 		}
@@ -382,10 +345,10 @@ public class SnmpEngine {
 		return pJson;
 
 	}
-	
+
 	public static JSONObject ThreadPramVarToJason(VariableSnmpVar tableVariable, JSONObject pJson, int row) {
 
-		// System.out.print(arr[i] + "  ");
+		// System.out.print(arr[i] + " ");
 		String vale;
 		if (tableVariable.withNoThreashold) {
 			VariableSnmpVar[] subVariableSnmpVarS = tableVariable.subTableVariableSnmpVarSS.get(row);
@@ -409,7 +372,7 @@ public class SnmpEngine {
 						pJson.put("LOLOen", "1");
 					else
 						pJson.put("LOLOen", "0");
-					
+
 				} else
 
 				{
@@ -417,7 +380,7 @@ public class SnmpEngine {
 					pJson.put("value" + j, vale);
 
 				}
-				
+
 			}
 
 		}
@@ -425,25 +388,21 @@ public class SnmpEngine {
 		return pJson;
 
 	}
-	
 
-
-	
-
-	
-	
-	public static ArrayList<VariableBinding> cutMajorVaribaleSingle(WosParamForSetInfo paramSetList, VariableSnmpVar tmpTagInfo) {
+	public static ArrayList<VariableBinding> cutMajorVaribaleSingle(WosParamForSetInfo paramSetList,
+			VariableSnmpVar tmpTagInfo) {
 		ArrayList<VariableBinding> result = new ArrayList<VariableBinding>();
 		if (tmpTagInfo.CurrentVarBind != null)
 			result.add(new VariableBinding(tmpTagInfo.FullSnmpOid, new Integer32(paramSetList.pmSetList[0])));
 		return result;
 	}
 
-	public static ArrayList<VariableBinding> cutTableVaribaleSingle(WosParamForSetInfo paramSetList, VariableSnmpVar tmpTagInfo, int rowNumber) {
+	public static ArrayList<VariableBinding> cutTableVaribaleSingle(WosParamForSetInfo paramSetList,
+			VariableSnmpVar tmpTagInfo, int rowNumber) {
 		String oidrs;
 		ArrayList<VariableBinding> result = new ArrayList<VariableBinding>();
 
-		oidrs = tmpTagInfo.VarInfo.ParamMibOID.toString() + "." + (rowNumber+1);
+		oidrs = tmpTagInfo.VarInfo.ParamMibOID.toString() + "." + (rowNumber + 1);
 		result.add(new VariableBinding(new OID(oidrs), new Integer32(paramSetList.pmSetList[0])));
 
 		return result;

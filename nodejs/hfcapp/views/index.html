@@ -239,7 +239,7 @@
 	<!-- hide div -->
 	<div id="dialog-form" title="Setting" style="display:none">
 		<p class="validateTips">在文本框中输入.</p>
-	 	<input type="text" id="set_value" value="" >
+	 	<input type="text" id="set_value" value=""  maxlength="32" >
 	  
 	</div>
 	<div class="modal fade bs-example-modal-lg" id="dialog-server" tabindex="-1" role="dialog" aria-labelledby="server-status" aria-hidden="true">
@@ -309,7 +309,7 @@
 				</td>
 				<td id="dilg-rcommunity">只读团体名:</td>
   				<td>
-					<input type="text" class="form-control" id="newdev_rcommunity" value="public" >
+					<input type="text" class="form-control" id="newdev_rcommunity" value="public" maxlength=24>
   				</td>
 			</tr>
 			<tr>
@@ -317,13 +317,13 @@
 				</td>
 				<td id="dilg-wcommunity">读写团体名:</td>
   				<td>
-					<input type="text" class="form-control" id="newdev_wcommunity" value="public" >
+					<input type="text" class="form-control" id="newdev_wcommunity" value="public" maxlength=24>
   				</td>
 			</tr>
 		</table>
 	  	<div>
    			<div >
-		        <label id="dilg-devname">设备名称:</label><input type="text" class="form-control" id="newdev_devname" value="新设备" >
+		        <label id="dilg-devname">设备名称:</label><input type="text" class="form-control" id="newdev_devname" value="新设备" maxlength=32>
 		        	<label id="dilg-invalidchar">设备组名请勿包含以下字符:/ \ #</label>
 		    </div>
 		</div>
@@ -406,13 +406,13 @@
 					团体名: 
   				</td>
   				<td>
-					<input type="text" class="form-control" id="search-community" value="public" >
+					<input type="text" class="form-control" id="search-community" value="public" maxlength=24>
   				</td>
   				<td id="dilg-startIP">
 					起始IP: 
   				</td>
   				<td>
-					<input type="text" class="form-control" id="search-sip" value="192.168.1.2" >
+					<input type="text" class="form-control" id="search-sip" value="192.168.1.2" maxlength=24>
   				</td>
 			</tr>
 			<tr>
@@ -429,7 +429,7 @@
 					结束IP: 
   				</td>
   				<td>
-					<input type="text" class="form-control" id="search-eip" value="192.168.1.253" >
+					<input type="text" class="form-control" id="search-eip" value="192.168.1.253" maxlength=24>
   				</td>
 			</tr>			
 		</table>
@@ -717,11 +717,11 @@
 					     	 	</tr> -->
 					     	 	<tr class="tbl_authdis_tr">
 					     	 		<td class="i18n-password">密码:</td>
-					     	 		<td><input type="password" class="form-control" id="auth-password"></td>
+					     	 		<td><input type="password" class="form-control" id="auth-password" maxlength=12></td>
 					     	 	</tr>
 					     	 	<tr class="tbl_authdis_tr">
 					     	 		<td class="i18n-repeat">重复:</td>
-					     	 		<td><input type="password" class="form-control" id="auth-rpassword"></td>
+					     	 		<td><input type="password" class="form-control" id="auth-rpassword" maxlength=12></td>
 					     	 	</tr>
 					     	 	<tr class="tbl_authdis_tr" style="text-align: end">
 					     	 		<td colspan="2"><button type="button" class="btn btn-default" id="btn-authsub" disabled=true>提交
@@ -756,15 +756,15 @@
 		 			<table class="table tbl_authmanbase">
 						<tr class="tbl_authdis_tr">
 			     	 		<td class="i18n-oripassword1">原密码:</td>
-			     	 		<td><input type="password" class="form-control" id="auth-oripassword1"></td>
+			     	 		<td><input type="password" class="form-control" id="auth-oripassword1" maxlength=12></td>
 			     	 	</tr>
 			     	 	<tr class="tbl_authdis_tr">
 			     	 		<td class="i18n-password1">密码:</td>
-			     	 		<td><input type="password" class="form-control" id="auth-password1"></td>
+			     	 		<td><input type="password" class="form-control" id="auth-password1" maxlength=12></td>
 			     	 	</tr>
 			     	 	<tr class="tbl_authdis_tr">
 			     	 		<td class="i18n-repeat1">重复:</td>
-			     	 		<td><input type="password" class="form-control" id="auth-rpassword1"></td>
+			     	 		<td><input type="password" class="form-control" id="auth-rpassword1" maxlength=12></td>
 			     	 	</tr>
 			     	 	<tr class="tbl_authdis_tr" style="text-align: end">
 			     	 		<td colspan="2"><button type="button" class="btn btn-default" id="btn-authsub1">提交
@@ -797,15 +797,15 @@
 			     	 	</tr>		 			
 						<tr class="tbl_authdis_tr">
 			     	 		<td class="i18n-username2">用户名:</td>
-			     	 		<td><input type="text" class="form-control" id="auth-username2"></td>
+			     	 		<td><input type="text" class="form-control" id="auth-username2" maxlength=32></td>
 			     	 	</tr>
 			     	 	<tr class="tbl_authdis_tr">
 			     	 		<td class="i18n-password2">密码:</td>
-			     	 		<td><input type="password" class="form-control" id="auth-password2"></td>
+			     	 		<td><input type="password" class="form-control" id="auth-password2" maxlength=12></td>
 			     	 	</tr>
 			     	 	<tr class="tbl_authdis_tr">
 			     	 		<td class="i18n-repeat2">重复:</td>
-			     	 		<td><input type="password" class="form-control" id="auth-rpassword2"></td>
+			     	 		<td><input type="password" class="form-control" id="auth-rpassword2" maxlength=12></td>
 			     	 	</tr>
 			     	 	<tr class="tbl_authdis_tr" style="text-align: end">
 			     	 		<td colspan="2"><button type="button" class="btn btn-default" id="btn-adduser">添加

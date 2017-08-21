@@ -1,17 +1,12 @@
 package wl.hfc.common;
 
 import java.net.InetAddress;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
@@ -22,7 +17,6 @@ import com.xinlong.util.RedisUtil;
 
 import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
-import wl.hfc.topd.MainKernel;
 
 /*import com.mysql.jdbc.Connection;
  import com.mysql.jdbc.PreparedStatement;*/

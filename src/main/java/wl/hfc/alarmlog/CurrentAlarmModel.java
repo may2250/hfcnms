@@ -1,26 +1,17 @@
 package wl.hfc.alarmlog;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.log4j.Logger;
-import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
@@ -31,10 +22,7 @@ import com.xinlong.util.StaticMemory;
 import wl.hfc.common.*;
 import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
-import wl.hfc.online.pmls;
-import wl.hfc.topd.MainKernel;
-import wl.hfc.traprcss.TrapPduServer;
-import wl.hfc.traprcss.TrapProCenter;
+
 
 //CurrentAlarmModel
 public class CurrentAlarmModel extends Thread {

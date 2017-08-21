@@ -1,6 +1,5 @@
 package wl.hfc.traprcss;
 
-import java.io.FileNotFoundException;
 
 import org.apache.log4j.Logger;
 

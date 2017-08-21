@@ -7,8 +7,6 @@ import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
 
 import com.xinlong.util.ObjSnmpPreail;
 import com.xinlong.util.StaticMemory;
@@ -73,7 +71,7 @@ public class Realtime_param_call extends Thread {
 							Object obj=JSONValue.parse(ss);
 							JSONObject array=(JSONObject)obj;
 							jsonstr=array.toJSONString();*/
-							System.out.println("参数发送"+jsonstr);
+							//System.out.println("参数发送"+jsonstr);
 							for (Iterator it2 = osp.sessionList.iterator(); it2.hasNext();) {
 								staticmemory.sendRemoteStr(jsonstr, it2.next().toString());
 							}

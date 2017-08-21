@@ -2,23 +2,17 @@ package wl.hfc.online;
 
 import org.json.simple.JSONObject;
 import org.snmp4j.mp.SnmpConstants;
-import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.VariableBinding;
+import org.snmp4j.*;
 
-import wl.hfc.common.CDevForCMD;
-import wl.hfc.common.IPduSevr;
-
-
-import wl.hfc.common.VariableSnmpVar;
+import wl.hfc.common.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.snmp4j.CommunityTarget;
-import org.snmp4j.PDU;
 
-import com.adventnet.snmp.snmp2.SnmpIpAddress;
+
 
 import java.util.Iterator;
 
@@ -105,7 +99,6 @@ public class WosBaseSnmp {
 			SnmpEngine.ParseBasicVars(tmpTagInfo.subVariableSnmpVarS, inPDU);
 
 		} catch (Exception ex) {
-			// ץȡ�Զ���Ĳ�����ȡ�쳣��
 
 			ex.printStackTrace();
 
@@ -134,7 +127,6 @@ public class WosBaseSnmp {
 			SnmpEngine.ParseBasicVars(tmpTagInfo.subTableVariableSnmpVarSS.get(rowNumber), inPDU);
 
 		} catch (Exception ex) {
-			// ץȡ�Զ���Ĳ�����ȡ�쳣��
 
 			ex.printStackTrace();
 
@@ -242,7 +234,6 @@ public class WosBaseSnmp {
 		
 		VariableSnmpVar tmpTagInfo = paramHashTable.get(paramname);
 
-		System.out.println(paramname+"   dfdfdfdfdfd");
 		String oidrs;
 		ArrayList<VariableBinding> result = new ArrayList<VariableBinding>();
 

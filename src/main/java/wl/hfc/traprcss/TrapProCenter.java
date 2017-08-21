@@ -9,13 +9,9 @@ import java.util.Map;
 
 import org.snmp4j.PDU;
 import org.snmp4j.smi.*;
-import org.springframework.context.support.StaticApplicationContext;
 
-import wl.hfc.common.ClsLanguageExmp;
-import wl.hfc.common.NlogType;
+import wl.hfc.common.*;
 import wl.hfc.common.NlogType.TrapLogTypes;
-import wl.hfc.common.nojuParmsTableRow;
-import wl.hfc.common.nojuTrapLogTableRow;
 import wl.hfc.online.pmls;
 
 import java.util.Date;
