@@ -142,6 +142,16 @@
 			<artifactId>json-simple</artifactId>
 			<version>1.1</version>
 		</dependency>
+            <dependency>
+            <groupId>AdventNetSnmp</groupId>
+            <artifactId>AdventNetSnmp</artifactId>
+            <version>2.3</version>
+        </dependency>
+		<dependency>
+            <groupId>AdventNetLogging</groupId>
+            <artifactId>AdventNetLogging</artifactId>
+            <version>2.3</version>
+        </dependency>
   </dependencies>
   <build>
       <plugins>

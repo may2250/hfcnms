@@ -348,12 +348,25 @@ function parse_common(jsonobj){
 
 function parse_emtrans(jsonobj){	
 		jQuery("#emtransimg").attr("src",jsonobj.icon);
-	
+		$('#dev-status-text')[0].textContent = jsonobj.mytime;
 	
 	var i = 0;
 	$.each(jsonobj.dctable, function(key, itemv) {
-		$('.otxDCPowerName_row' + i)[0].textContent = itemv.otxDCPowerName_row;
-		$('.otxDCPowerVoltage_row' + i)[0].textContent = itemv.otxDCPowerVoltage_row;
+		if(i==3)
+		{
+				$('.otxDCPowerName_row' + i)[0].textContent = "5V DC Power";
+		}
+		else if(i==4)
+		{
+							$('.otxDCPowerName_row' + i)[0].textContent = "-5V DC Power";
+		}
+		else
+		{
+			
+			$('.otxDCPowerName_row' + i)[0].textContent = itemv.otxDCPowerName_row;	
+		}
+				
+			$('.otxDCPowerVoltage_row' + i)[0].textContent = itemv.otxDCPowerVoltage_row;	
 		//appendStatus(jsonobj["otxDCPowerVoltage"+i.toString()+"6"],"otxDCPowerVoltage_row0");
 		appendStatus(jsonobj["otxDCPowerVoltage"+i.toString()+"6"],".otxDCPowerVoltage_row"+i);
 		//$('.otxDCPowerVoltage_row0').css("background-color", "yellow");

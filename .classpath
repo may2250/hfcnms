@@ -22,8 +22,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="F:/project/hfcnms/src/main/webapp/WEB-INF/lib/AdventNetLogging.jar"/>
-	<classpathentry kind="lib" path="F:/project/hfcnms/src/main/webapp/WEB-INF/lib/AdventNetSnmp.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

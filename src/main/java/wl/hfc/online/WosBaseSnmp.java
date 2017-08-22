@@ -55,7 +55,7 @@ public class WosBaseSnmp {
 		SetVarPdu.setType(PDU.SET);
 		CommunityTarget cTgt;
 
-		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress, this.thisDev.ROCommunity, SnmpConstants.version1);
+		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress, this.thisDev.RWCommunity, SnmpConstants.version1);
 
 		Iterator<VariableBinding> it = vblist.iterator();
 		while (it.hasNext()) {

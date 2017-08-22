@@ -111,7 +111,7 @@
 			var domstr = $(this).data("paramname");			
 			var rownum = $(this).data("rownum");
 			var comvaluess= $(this).data("comvalues");	
-			alert(comvaluess);
+			//alert(comvaluess);
 			var mArray =comvaluess.split(",");
 				$('#comvaluelist').empty();
 			for(var i = 0; i<mArray.length; i++){
@@ -128,7 +128,7 @@
         	    	  Ok: function() {        	    		  
         	         	    			  var node = __globalobj__._realDevice.getFirstChild();
 							  var sleetindex=$("#comvaluelist").get(0).selectedIndex+1;
-							  	alert(sleetindex);
+							//  	alert(sleetindex);
             	    		  var datastring = '{"cmd":"hfcvalueset","target":"setVars","ip":"' + __globalobj__._realDevice.key + '","rowNum":"'+ rownum 
             	    			  +'","isRow":"true","domstr":"'+ domstr +'","value":"'+sleetindex +'"}';
             	    		  __globalobj__._send(datastring);

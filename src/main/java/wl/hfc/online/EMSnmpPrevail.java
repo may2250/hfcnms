@@ -164,7 +164,7 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
 		cInputVariables[i].isformatter=true;
 		cInputVariables[i].maxValue=8;
-		cInputVariables[i].minValue=7;		
+		cInputVariables[i].minValue=6;		
 		cInputVariables[i].setpvalue=0;
 		
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
@@ -265,6 +265,7 @@ public class EMSnmpPrevail extends WosBaseSnmp {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override 
 	public JSONObject getPmWithModelNumber(JSONObject pJson) throws Exception {
 		PDU outPDU;

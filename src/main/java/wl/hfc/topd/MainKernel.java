@@ -494,7 +494,7 @@ public class MainKernel {
 
 				dev.Level = pgroup.Level + 1;
 				pgroup.Nodes.add(dev);
-				dev.parent = dev;
+				dev.parent = pgroup;
 				dev.fullpath = pgroup.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;
 				dev.Tag = dev;
 				listDevHash.put(dev._NetAddress, dev);
@@ -636,6 +636,36 @@ public class MainKernel {
 
 	}
 
+	
+    private void reflashPath(devGroup grp, Hashtable effectPathList)
+    {   	
+    	
+
+		// select the all root nodes
+		for (LNode lNode : grp.Nodes) {
+
+            InodeInterface InodeInterface1 = (InodeInterface)lNode.Tag;
+            if (InodeInterface1.isGroup())
+            {
+                devGroup devGroup1 = (devGroup)InodeInterface1;
+                lNode.fullpath = lNode.parent.fullpath + "/" + devGroup1.BindUserGroupTableRow.UserGroupName;
+               // effectPathList.Add(devGroup1.BindUserGroupTableRow.UserGroupID.ToString(), lNode.fullpath);
+                reflashPath(devGroup1, effectPathList);
+            }
+            else
+            {
+                DevTopd DevTopd1 = (DevTopd)InodeInterface1;
+                lNode.fullpath = lNode.parent.fullpath + "/" + DevTopd1.BindnojuDeviceTableRow.Name;
+             //   effectPathList.Add(DevTopd1.BindnojuDeviceTableRow.NetAddress.ToString(), lNode.fullpath);             
+
+            }
+
+		}
+    	
+
+
+    }
+	
 	public boolean handleUpdGrp(JSONObject jsondata) {
 		boolean mStatus = false;
 
@@ -655,10 +685,11 @@ public class MainKernel {
 			rootGroup.BindUserGroupTableRow = mDevGrpTableRow;
 			// rootGroup.name = rootGroup.BindUserGroupTableRow.UserGroupName;
 			rootGroup.fullpath = rootGroup.parent.fullpath + "/" + rootGroup.BindUserGroupTableRow.UserGroupName;
-			// Hashtable effectPathList = new Hashtable();
-			// effectPathList.Add(rootGroup.BindUserGroupTableRow.UserGroupID.ToString(),
-			// grp.fullpath);
-			// reflashPath(grp, effectPathList);
+			
+			 Hashtable effectPathList = new Hashtable();
+			// effectPathList.put(rootGroup.BindUserGroupTableRow.UserGroupID,rootGroup.fullpath);
+			 reflashPath(rootGroup, effectPathList);
+			
 			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "nodeedit");
 			rootjson.put("key", jsondata.get("key").toString());
