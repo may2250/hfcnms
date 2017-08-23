@@ -86,7 +86,7 @@ public class ParamKernel extends Thread {
 
 		if (cmd.equalsIgnoreCase("hfcvalueset")) {
 			hfcValueSet(jsondata);
-		} else if (cmd.equalsIgnoreCase("getdevicedetail")) {
+		} else if (cmd.equalsIgnoreCase("getdevicedetail")) {//clinet open device view
 			if (!jsondata.get("predev").toString().equalsIgnoreCase("")) {
 				staticmemory.removeRealTimeDev(jsondata.get("predev").toString(), jsondata.get("sessionid").toString());
 			}

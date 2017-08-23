@@ -5,22 +5,15 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import javax.enterprise.inject.spi.InterceptionType;
 import javax.websocket.Session;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import wl.hfc.common.CDevForCMD;
-import wl.hfc.common.DProcess;
-import wl.hfc.common.NetTypes;
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
-import wl.hfc.online.CommonSnmpPrevail;
-import wl.hfc.online.EDFASnmpPrevail;
-import wl.hfc.online.EMSnmpPrevail;
-import wl.hfc.online.PDUServerForOneDev;
-import wl.hfc.online.ReceiverSnmpPrevail;
-import wl.hfc.topd.MainKernel;
+import wl.hfc.online.*;
+
 
 public class StaticMemory {
 	// save web sessions
@@ -93,6 +86,10 @@ public class StaticMemory {
 			}
 			else if (hfctyp1==HFCTypes.TransEM) {
 				osp.snmpPreail = new EMSnmpPrevail (".1",jsondata.get("deviceid").toString());
+				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
+			}
+			else if (hfctyp1==HFCTypes.OSW) {
+				osp.snmpPreail = new OSWSnmp(".1",jsondata.get("deviceid").toString());
 				osp.commonSnmpPreail = new CommonSnmpPrevail(".0");
 			}
 			

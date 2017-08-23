@@ -59,6 +59,8 @@ public class CDevForCMD {
 				return "EDFA/edfa";// 
 	    	case TransEM:
 				return "transEM";// 
+	    	case OSW:
+				return "OSW";//
 		default:
 			return "unknown";// 	
 		}

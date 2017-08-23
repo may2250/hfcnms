@@ -5,7 +5,7 @@ $(function() {
 
 function __getDeviceDetail(devnode, jsonobj){
 	//switch(devnode.getLastChild().data.hfctype){
-		switch(jsonobj.devtype){
+switch(jsonobj.devtype){
 	case "TransEM":
 		$(".candile").load("/emtrans");
 		break;
@@ -13,10 +13,10 @@ function __getDeviceDetail(devnode, jsonobj){
 		$(".candile").load("/rece_workstation");
 		break;
 	case "EDFA":
-		$(".candile").load("/edfa", function(){
-			parse_emtrans(jsonobj);
-			//parse_edfa(jsonobj);		
-		});
+		$(".candile").load("/edfa");
+		break;
+	case "OSW":
+		$(".candile").load("/OSW");
 		break;
 	case "HfcMinWorkstation":
 	case 14:
@@ -47,7 +47,7 @@ function parseHfcDevice(jsonobj){
 		parse_rece_workstation(jsonobj);
 		break;
 	case "OSW":
-		
+		parse_OSW(jsonobj);
 		break;
 	case "RFSW":
 		
@@ -326,6 +326,73 @@ function parse_edfa(jsonobj){
 
 	
 }
+
+function parse_OSW(jsonobj){	
+		
+	$('#dev-status-text')[0].textContent = jsonobj.mytime;
+	
+	jQuery("#edfaimg").attr("src",jsonobj.icon);
+	
+	$('#panel-devip')[0].textContent = __globalobj__._realDevice.key;
+	$('#panel-onlinetimeticks')[0].textContent = jsonobj.common.sysUpTime;
+	$('#panel-devinfo')[0].textContent = jsonobj.common.sysDescr;
+	$('#panel-devcontact')[0].textContent = jsonobj.common.sysContact;
+	$('#commonInternalTemperature').val(jsonobj.common.commonInternalTemperature);
+	$('#commonNELogicalID').val(jsonobj.common.commonNELogicalID);
+	$('#commonNEModelNumber').val(jsonobj.common.commonNEModelNumber);	
+	$('#commonNESerialNumber').val(jsonobj.common.commonNESerialNumber);
+	$('#commonDeviceMACAddress').val(jsonobj.common.commonDeviceMACAddress);
+	
+	
+	$('#osInputOpticalPowerA').val(jsonobj.osInputOpticalPowerA); 
+	$('#osInputOpticalPowerB').val(jsonobj.osInputOpticalPowerB); 
+	$('#osSwitchReference').val(jsonobj.osSwitchReference); 
+	
+	
+	
+	switch(jsonobj.osWavelength){
+	case "1":
+			$('#osWavelength').val("1310nm"); 
+        break;
+    case "2":
+		$('#osWavelength').val("1490nm"); 
+        break;
+    case "3":
+		$('#osWavelength').val("1550nm"); 
+        break;
+	}
+	
+	
+		switch(jsonobj.osAutoControl){
+	case "1":
+	   $('#osAutoControl').val("manual"); 
+        break;
+    case "2":
+	   $('#osAutoControl').val("auto"); 
+        break;
+	}
+			switch(jsonobj.osCurrentWorkChannel){
+		case "1":
+	   $('#osCurrentWorkChannel').val("A"); 
+        break;
+    case "2":
+	   $('#osCurrentWorkChannel').val("B"); 
+        break;
+	} 
+
+	 
+	 
+	 	appendStatus(jsonobj.osInputOpticalPowerA6,"#osInputOpticalPowerA");
+	 appendStatus(jsonobj.osInputOpticalPowerB6,"#osInputOpticalPowerB");
+
+	
+
+	parse_common(jsonobj);
+
+	
+}
+
+
 function parse_common(jsonobj){
 	$('#panel-devip')[0].textContent = __globalobj__._realDevice.key;
 	$('#panel-onlinetimeticks')[0].textContent = jsonobj.common.sysUpTime;
@@ -592,7 +659,17 @@ function compareIP(ipBegin, ipEnd)
 
 function checkInt(str){
 	var re = /^[0-9]+\.?[0-9]*$/; 
+   //var  re = new RegExp("^(-?\d+)(\.\d+)?$");  
 　　 if (!re.test(str)) {
+		var cstr=str.substr(0,1);
+		if(cstr=="-")
+		{
+			cstr=str.replace("-", "");			
+			if (re.test(cstr)) 
+			{
+				return true;
+			}
+		}
 　　　　return false;
 　　}
 	return true;
