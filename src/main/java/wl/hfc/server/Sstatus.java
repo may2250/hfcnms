@@ -24,7 +24,7 @@ public class Sstatus extends Thread{
 		private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 		private static Logger log = Logger.getLogger(Sstatus.class);	
 		
-		public static String versionString="V1.03";
+		public static String versionString="V1.04";
 		private    RedisUtil redisUtil;
 		public  static boolean redisStartus=true;
 	    public Sstatus( RedisUtil predisUtil)
