@@ -29,8 +29,8 @@ router.get('/emtrans', function(req, res, next) {
   res.render('emtrans', { title: 'Express' });
 });
 
-router.get('/OSW', function(req, res, next) {
-  res.render('OSW', { title: 'Express' });
+router.get('/osw', function(req, res, next) {
+  res.render('osw', { title: 'Express' });
 });
 
 

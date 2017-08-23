@@ -16,7 +16,7 @@ switch(jsonobj.devtype){
 		$(".candile").load("/edfa");
 		break;
 	case "OSW":
-		$(".candile").load("/OSW");
+		$(".candile").load("/osw");
 		break;
 	case "HfcMinWorkstation":
 	case 14:

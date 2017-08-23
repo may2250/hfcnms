@@ -29,7 +29,9 @@ $(".hfcunit").dblclick(function () {
 		}
 	});
 	$("#set_value").val($(this).val().replace(/[^\d.-]/g, ''));
-	updateTips($.i18n.prop('message_devnewval'));
+	//updateTips($.i18n.prop('message_devnewval'));
+		var comvaluess = $(this).data("comvalues");
+	updateTips(comvaluess);
 	$("#dialog-form").dialog("open");
 });
 

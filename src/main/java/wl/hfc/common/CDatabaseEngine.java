@@ -43,8 +43,8 @@ public class CDatabaseEngine {
 		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8&useSSL=false";
 		// ����������
 		String driver = "com.mysql.jdbc.Driver";
-		String dbuser = "root";
-		String dbpass = "prevail";
+		String dbuser = "hfcnms";
+		String dbpass = "999999";
 		Connection con = null;
 		try {
 			Class.forName(driver);
