@@ -14,6 +14,8 @@ app.engine('.html', require('ejs').renderFile);
 app.set('view engine', 'html');
 //app.set('view engine', 'jade');
 
+
+//注册中间件 用use
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 //app.use(logger('dev'));
@@ -21,6 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//将静态文件目录设置为项目根目录+/public
 
 app.use('/', index);
 app.use('/users', users);

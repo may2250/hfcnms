@@ -15,13 +15,16 @@ import wl.hfc.common.nojuParmsTableRow;
 import wl.hfc.common.VariableSnmpVar.ToValueMode;
 import wl.hfc.topd.MainKernel;
 
+
+//fnAGCGOvalue [-9,-4] or [-9,-7]  +/-1dBm
+
 public class ReceiverSnmpPrevail extends WosBaseSnmp {
 	// 0����snmpv1��1����snmpv2
 	private static Logger log = Logger.getLogger(ReceiverSnmpPrevail.class);
 	// VariableSnmpVars
 	public VariableSnmpVar[] mjVariables;
 	public VariableSnmpVar[] commonVariables;
-	public VariableSnmpVar[] cInputVariables;
+	public VariableSnmpVar[] cDCVariables;
 	public VariableSnmpVar[] cOutputVariables;
 
 
@@ -34,29 +37,16 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 	// single model
 	public static ReceiverSnmpPrevail me;
 
-	// basic
-	private static String heCommonTemperature = ".1.3.6.1.4.1.5591.1.11.2.1.1.1.1.1.1.2";
-	// ChannelAlone(1) indicates that all channels of the OPRX is working,
-	// Backup(2) indicates that OPRX is working on backup status.
-	private static String heOpRxUnitWorkSetting = ".1.3.6.1.4.1.5591.1.11.1.2.1.1.33.1.1";
-
-	// 1 alc;2 mlc inter
-	private static String heOpRxUnitDriveSetting = ".1.3.6.1.4.1.5591.1.11.1.2.1.1.33.1.2";
-
-	// output
-	private static String heOpRxOutputIndex = ".1.3.6.1.4.1.5591.1.11.1.2.1.1.2.1.1";
-	private static String heOpRxOutputControl = ".1.3.6.1.4.1.5591.1.11.1.2.1.1.2.1.2";
-	private static String heOpRxOutputALCLevel = ".1.3.6.1.4.1.5591.1.11.1.2.1.1.2.1.34";
-	private static String heOpRxOutputMLCLevel = ".1.3.6.1.4.1.5591.1.11.1.2.1.1.2.1.35";
-
 	public ReceiverSnmpPrevail(String phsicIndex,String PDeviceID) {
 		super(phsicIndex);
 		try{
-			mjVariables = new VariableSnmpVar[2];
+			mjVariables = new VariableSnmpVar[5];
 			// tables
-			cInputVariables = new VariableSnmpVar[2];
+			cDCVariables = new VariableSnmpVar[2];
 			cOutputVariables = new VariableSnmpVar[4];
-			//commonVariables = new VariableSnmpVar[4];
+
+			
+	
 			majorVarPdu = new PDU();
 			majorVarPdu.setType(PDU.GET);
 			// major
@@ -64,25 +54,76 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			nojuParmsTableRow row1 = pmls.me.tabch.get("fnRFChannelNum");			
 			mjVariables[vIns] = new VariableSnmpVar(row1);			
 			mjVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
+			
+			mjVariables[vIns].isformatter=true;
+			mjVariables[vIns].setpvalue=0;
+			mjVariables[vIns].maxValue=200;
+			mjVariables[vIns].minValue=0;	
 			paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 			this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));
+			
+	
+			
 			
 			
 			row1 = pmls.me.tabch.get("fnOpticalReceiverPower");
 			mjVariables[vIns] = new VariableSnmpVar(row1, ".1", VariableSnmpVar.ToValueMode.FmtInteger, true);
 			paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 			this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));
+			
+			
+			
+			row1 = pmls.me.tabch.get("fnReverseOpticalPower");
+			mjVariables[vIns] = new VariableSnmpVar(row1, ".7.1", VariableSnmpVar.ToValueMode.FmtInteger, true);
+			paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
+			this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));
+			
+			
+			
+			row1 = pmls.me.tabch.get("fnReturnLaserCurrent");
+			mjVariables[vIns] = new VariableSnmpVar(row1, ".1", VariableSnmpVar.ToValueMode.FmtInteger, true);
+			paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
+			this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));
+			
+			
+			
+			row1 = pmls.me.tabch.get("fnAGCGOvalue");			
+			mjVariables[vIns] = new VariableSnmpVar(row1);			
+			mjVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
+			
+			mjVariables[vIns].isformatter=true;
+			mjVariables[vIns].setpvalue=0;
+			
+		    if (PDeviceID.equalsIgnoreCase("J-1G-2")||PDeviceID.equalsIgnoreCase("JL-1G-2"))
+		    {
+				mjVariables[vIns].maxValue=-40;
+				mjVariables[vIns].minValue=-90;	
+		    }
+		    else
+		    {
+				mjVariables[vIns].maxValue=-70;
+				mjVariables[vIns].minValue=-90;	
+		    
+		    }			
+			
+			
+			paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
+			this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));
+			
+			
+			
+	
 
 			tableInputPdu = new PDU();
 			tableInputPdu.setType(PDU.GETNEXT);
 
 			row1 = pmls.me.tabch.get("fnDCPowerName");
-			cInputVariables[0] = new VariableSnmpVar(row1);
-			cInputVariables[0].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtString;
+			cDCVariables[0] = new VariableSnmpVar(row1);
+			cDCVariables[0].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtString;
 
 			row1 = pmls.me.tabch.get("fnDCPowerVoltage");
-			cInputVariables[1] = new VariableSnmpVar(row1, ".1", VariableSnmpVar.ToValueMode.FmtInteger, true);
-			paramHashTable.put(row1.ParamMibLabel, cInputVariables[1]);
+			cDCVariables[1] = new VariableSnmpVar(row1, ".1", VariableSnmpVar.ToValueMode.FmtInteger, true);
+			paramHashTable.put(row1.ParamMibLabel, cDCVariables[1]);
 
 			int begincol = 0;
 			int endcol = 1;
@@ -90,7 +131,7 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			VariableSnmpVar[] headerinfos = new VariableSnmpVar[endcol - begincol + 1];
 			int enumi;
 			for (enumi = 0; enumi < headerinfos.length; enumi++) {
-				headerinfos[enumi] = (VariableSnmpVar) cInputVariables[enumi + begincol];
+				headerinfos[enumi] = (VariableSnmpVar) cDCVariables[enumi + begincol];
 				tableInputPdu.add(new VariableBinding(headerinfos[enumi].MibDefinedOid));
 			}
 
@@ -105,10 +146,37 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 			cOutputVariables[1] = new VariableSnmpVar(row1);
 			cOutputVariables[1].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
 			paramHashTable.put(row1.ParamMibLabel, cOutputVariables[1]);
+			
+			cOutputVariables[1].isformatter=true;
+			cOutputVariables[1].setpvalue=0;
+			cOutputVariables[1].maxValue=200;
+			cOutputVariables[1].minValue=0;	
+		
+			
+			
 			row1 = pmls.me.tabch.get("fnOutputRFleveleq");
 			cOutputVariables[2] = new VariableSnmpVar(row1);
 			cOutputVariables[2].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
 			paramHashTable.put(row1.ParamMibLabel, cOutputVariables[2]);
+			
+			
+			
+	/*		   if ((num < 0 || num > 10) && (dev.MD == "WR8602JL" || dev.MD == "WR8604JL" || dev.MD == "WR8604DJ" 
+                       || dev.MD == "WR8602RJ" || dev.MD == "WR8604RJL" || dev.MD == "WR8602RJL" || dev.MD == "WR8602JL-CM"
+                       || dev.DEVICEID == "JL-86-2" || dev.DEVICEID == "JL-86-4" || dev.DEVICEID == "DJ-86-4" || dev.DEVICEID == "RJL-86-2"
+                        || dev.DEVICEID == "RJL-86-4" || dev.DEVICEID == "RJ-86-2"))
+                       throw new Exception(ClsLanguageExmp.formGet("参数超出允许范围"));
+                   else if ((num < 0 || num > 15))
+                       throw new Exception(ClsLanguageExmp.formGet("参数超出允许范围"));
+			*/
+			
+			cOutputVariables[2].isformatter=true;
+			cOutputVariables[2].setpvalue=0;
+			cOutputVariables[2].maxValue=150;
+			cOutputVariables[2].minValue=0;	
+		
+			
+			
 			row1 = pmls.me.tabch.get("fnRFPortOutputRFLevel");
 			cOutputVariables[3] = new VariableSnmpVar(row1, ".1",ToValueMode.FmtInteger, true);
 			cOutputVariables[3].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
@@ -165,19 +233,23 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress, this.thisDev.ROCommunity, SnmpConstants.version1);
 		SnmpTableInfo reTable = SnmpEngine.GetMibTableVariables((PDU) this.tableInputPdu.clone(), cTgt, sver);
 		pJson.put("dctablerownum", reTable.RowNum);
+		
+		
+		SnmpEngine.tabVarToJason(this.cDCVariables,reTable, pJson,"powertbl");
 
 		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress, this.thisDev.ROCommunity, SnmpConstants.version1);
 		SnmpTableInfo reTable1 = SnmpEngine.GetMibTableVariables((PDU) this.tableOutpdu.clone(), cTgt, sver);
 		pJson.put("pumptablerownum", reTable1.RowNum);
 
-		SnmpEngine.tabVarToJason(this.cInputVariables,this.cOutputVariables,reTable, reTable1, pJson);
+		
+		SnmpEngine.tabVarToJason(this.cOutputVariables,reTable1, pJson,"pumptbl");
 
-		for (int j = 0; j < this.cInputVariables.length; j++) {
+		for (int j = 0; j < this.cDCVariables.length; j++) {
 
-			if (this.cInputVariables[j].withNoThreashold) {
+			if (this.cDCVariables[j].withNoThreashold) {
 				for (int i = 0; i < reTable.RowNum; i++) {
-					this.getSubVarsWithTagInfo(this.cInputVariables[j], i);
-					SnmpEngine.ThreadPramVarToJason(this.cInputVariables[j], pJson, i, true);
+					this.getSubVarsWithTagInfo(this.cDCVariables[j], i);
+					SnmpEngine.ThreadPramVarToJason(this.cDCVariables[j], pJson, i, true);
 				}
 			}
 		}
@@ -195,56 +267,8 @@ public class ReceiverSnmpPrevail extends WosBaseSnmp {
 		return pJson;
 	}
 
-	private JSONObject receivertabVarToJason(SnmpTableInfo tabVariables, SnmpTableInfo pOutVariables, JSONObject pJson) {
-		int enumi, enumj;
-		int i = 0;
+    
+    
 
-		for (enumi = 0; enumi < tabVariables.RowNum; enumi++) {
-			for (enumj = 0; enumj < tabVariables.ColNum; enumj++) {
-
-				String vale = cInputVariables[enumj].ToDispString(tabVariables.TableCells.get(i));
-				pJson.put(cInputVariables[enumj].VarInfo.ParamMibLabel + "_row" + enumi, vale);
-				i++;
-			}
-		}
-
-		i = 0;
-
-		for (enumi = 0; enumi < pOutVariables.RowNum; enumi++) {
-			for (enumj = 0; enumj < pOutVariables.ColNum; enumj++) {
-
-				String vale = cOutputVariables[enumj].ToDispString(pOutVariables.TableCells.get(i));
-				pJson.put(cOutputVariables[enumj].VarInfo.ParamMibLabel + "_row" + enumi, vale);
-				i++;
-			}
-		}
-
-		return pJson;
-
-	}
-
-	
-
-	private void setSubVarsWithTagInfoBYparamname(String paramname, WosParamForSetInfo wosParamForSetInfo1) {
-
-		if (paramname.equalsIgnoreCase("hfc_ingonglv")) {
-
-			ArrayList<VariableBinding> lists = SnmpEngine.cutMajorVaribaleWithThold(wosParamForSetInfo1, this.mjVariables[1]);
-
-			this.setParam(lists);
-
-		} else if (paramname.equalsIgnoreCase("hfc_powerv2") || paramname.equalsIgnoreCase("hfc_powerv1")) {
-
-			String rowString = paramname.substring(paramname.length() - 1, paramname.length());
-
-			int row = Integer.parseInt(rowString);
-
-			ArrayList<VariableBinding> lists = SnmpEngine.cutTableVaribaleWithThold(wosParamForSetInfo1, this.cInputVariables[1], row);
-
-			this.setParam(lists);
-
-		}
-
-	}
 
 }

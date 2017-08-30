@@ -38,6 +38,20 @@ public class VariableSnmpVar {
 	public boolean isformatter = false;
 
 	private String ExtraOidString = ".1";
+	
+	
+
+    public void setExtraOidString(String extraoid) { //id的可写属性
+        if (ExtraOidString.equalsIgnoreCase(extraoid))
+            return;
+        ExtraOidString = extraoid;
+        this.FullSnmpOid = new OID(this.VarInfo.ParamMibOID + ExtraOidString);
+       
+    }
+
+
+
+	
 
 	public OID FullSnmpOid;
 	public OID MibDefinedOid;
@@ -78,42 +92,42 @@ public class VariableSnmpVar {
           String extraoid = "." +OIDlgth+this.VarInfo.ParamMibOID;
           subVariableSnmpVarS[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmHIHI + extraoid, newParamInfor));
           subVariableSnmpVarS[vIns].ToValueMode1 = PmODE;
-          subVariableSnmpVarS[vIns].ExtraOidString = pExtraOidString;
+          subVariableSnmpVarS[vIns].setExtraOidString(pExtraOidString);
           vIns++;
 
           subVariableSnmpVarS[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmHI + extraoid, newParamInfor));
           subVariableSnmpVarS[vIns].ToValueMode1 = PmODE;
-          subVariableSnmpVarS[vIns].ExtraOidString = pExtraOidString;
+          subVariableSnmpVarS[vIns].setExtraOidString(pExtraOidString);
           vIns++;
 
           subVariableSnmpVarS[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmLo + extraoid, newParamInfor));
           subVariableSnmpVarS[vIns].ToValueMode1 = PmODE;
-          subVariableSnmpVarS[vIns].ExtraOidString = pExtraOidString;
+          subVariableSnmpVarS[vIns].setExtraOidString(pExtraOidString);
           vIns++;
 
 
           subVariableSnmpVarS[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmLoLo + extraoid, newParamInfor));
           subVariableSnmpVarS[vIns].ToValueMode1 = PmODE;
-          subVariableSnmpVarS[vIns].ExtraOidString = pExtraOidString;
+          subVariableSnmpVarS[vIns].setExtraOidString(pExtraOidString);
           vIns++;
 
 
           subVariableSnmpVarS[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmDeadband + extraoid, newParamInfor));
           subVariableSnmpVarS[vIns].ToValueMode1 = PmODE;
-          subVariableSnmpVarS[vIns].ExtraOidString = pExtraOidString;
+          subVariableSnmpVarS[vIns].setExtraOidString(pExtraOidString);
           vIns++;
 
 
 
           subVariableSnmpVarS[vIns] = new VariableSnmpVar(new nojuParmsTableRow(AlarmEnOidStr + extraoid, newParamInfor));
           subVariableSnmpVarS[vIns].ToValueMode1 = ToValueMode.FmtString;
-          subVariableSnmpVarS[vIns].ExtraOidString = pExtraOidString;
+          subVariableSnmpVarS[vIns].setExtraOidString(pExtraOidString);
           vIns++;
 
 
           subVariableSnmpVarS[vIns] = new VariableSnmpVar(new nojuParmsTableRow(AlarmSatOidStr + extraoid, newParamInfor));
           subVariableSnmpVarS[vIns].ToValueMode1 = ToValueMode.FmtString;
-          subVariableSnmpVarS[vIns].ExtraOidString = pExtraOidString;
+          subVariableSnmpVarS[vIns].setExtraOidString(pExtraOidString);
           vIns++;
           
           
@@ -127,43 +141,43 @@ public class VariableSnmpVar {
   	          
   			  itemSnmpVars[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmHIHI + extraoid, newParamInfor));
   	          itemSnmpVars[vIns].ToValueMode1 = PmODE;
-  	          itemSnmpVars[vIns].ExtraOidString = pExtraOidString;
+  	          itemSnmpVars[vIns].setExtraOidString(pExtraOidString);
   	          vIns++;
 
 
   	          itemSnmpVars[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmHI + extraoid, newParamInfor));
   	          itemSnmpVars[vIns].ToValueMode1 = PmODE;
-  	          itemSnmpVars[vIns].ExtraOidString = pExtraOidString;
+  	          itemSnmpVars[vIns].setExtraOidString(pExtraOidString);
   	          vIns++;
 
   	          itemSnmpVars[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmLo + extraoid, newParamInfor));
   	          itemSnmpVars[vIns].ToValueMode1 = PmODE;
-  	          itemSnmpVars[vIns].ExtraOidString = pExtraOidString;
+  	          itemSnmpVars[vIns].setExtraOidString(pExtraOidString);
   	          vIns++;
 
 
   	          itemSnmpVars[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmLoLo + extraoid, newParamInfor));
   	          itemSnmpVars[vIns].ToValueMode1 = PmODE;
-  	          itemSnmpVars[vIns].ExtraOidString = pExtraOidString;
+  	          itemSnmpVars[vIns].setExtraOidString(pExtraOidString);
   	          vIns++;
 
 
   	          itemSnmpVars[vIns] = new VariableSnmpVar(new nojuParmsTableRow(analogAlarmDeadband + extraoid, newParamInfor));
   	          itemSnmpVars[vIns].ToValueMode1 = PmODE;
-  	          itemSnmpVars[vIns].ExtraOidString = pExtraOidString;
+  	          itemSnmpVars[vIns].setExtraOidString(pExtraOidString);
   	          vIns++;
 
 
 
   	          itemSnmpVars[vIns] = new VariableSnmpVar(new nojuParmsTableRow(AlarmEnOidStr + extraoid, newParamInfor));
   	          itemSnmpVars[vIns].ToValueMode1 = ToValueMode.FmtString;
-  	          itemSnmpVars[vIns].ExtraOidString = pExtraOidString;
+  	          itemSnmpVars[vIns].setExtraOidString(pExtraOidString);
   	          vIns++;
 
 
   	          itemSnmpVars[vIns] = new VariableSnmpVar(new nojuParmsTableRow(AlarmSatOidStr + extraoid, newParamInfor));
   	          itemSnmpVars[vIns].ToValueMode1 = ToValueMode.FmtString;
-  	          itemSnmpVars[vIns].ExtraOidString = pExtraOidString;
+  	          itemSnmpVars[vIns].setExtraOidString(pExtraOidString);
   	          vIns++;
   	          
   	          subTableVariableSnmpVarSS.add(itemSnmpVars);

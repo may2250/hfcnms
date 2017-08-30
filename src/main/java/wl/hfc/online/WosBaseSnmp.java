@@ -195,6 +195,25 @@ public class WosBaseSnmp {
 		WosParamForSetInfo wosParamForSetInfo1 = new WosParamForSetInfo();
 		Float rest = Float.valueOf(pValue) / tmpTagInfo.VarInfo.FormatCoff;
 		wosParamForSetInfo1.pmSetList[0] = rest.intValue();
+		
+		
+		if(tmpTagInfo.isformatter)
+		{
+			  if (wosParamForSetInfo1.pmSetList[0] < tmpTagInfo.minValue || wosParamForSetInfo1.pmSetList[0] > tmpTagInfo.maxValue)
+                 return;
+			  
+              if (tmpTagInfo.setpvalue != 0)
+			  {
+                  if (wosParamForSetInfo1.pmSetList[0] % tmpTagInfo.setpvalue != 0)
+                      return;
+			  
+			  }
+      
+			
+		}
+		
+		
+		
 		ArrayList<VariableBinding> lists = SnmpEngine.cutMajorVaribaleSingle(wosParamForSetInfo1,tmpTagInfo);
 
 		this.setParam(lists);

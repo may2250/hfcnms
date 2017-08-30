@@ -60,7 +60,10 @@ public class CDevForCMD {
 	    	case TransEM:
 				return "transEM";// 
 	    	case OSW:
-				return "OSW";//
+				return "OSW";//				
+	    	case HfcMinWorkstation:
+	    		if (DEVICEID.equalsIgnoreCase("J-1G-2") ||DEVICEID.equalsIgnoreCase("JL-1G-2") || DEVICEID.equalsIgnoreCase("WR1001J"))
+	    		return "oprv1001j";//	    		
 		default:
 			return "unknown";// 	
 		}

@@ -1,131 +1,9 @@
 <!DOCTYPE HTML>
 <html>
+<script src="/javascripts/cmpjs.js"></script>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript">		
-		$(".trapaddr").dblclick(function(){
-			if(sessionStorage.authlevel == 3){
-	  			return;
-	  		}
-			var domstr = $(this).data("paramname");
-			var rownum = $(this).data("rownum");
-			$( "#dialog-form" ).dialog({
-        	      autoOpen: false,
-        	      height: 240,
-        	      width: 300,
-        	      modal: true,
-        	      buttons: {
-        	    	  Ok: function() {	   
-        	    		  if(ipvalidate($("#set_value").val())){
-        	    			  var node = __globalobj__._realDevice.getFirstChild();
-            	    		  var datastring = '{"cmd":"hfcvalueset","target":"setTrapHost","ip":"' + __globalobj__._realDevice.key +'","domstr":"'+ domstr +'","isRow":"true","rowNum":"'+ rownum+'","value":"'+ $("#set_value").val()+'"}';
-            	    		  __globalobj__._send(datastring);
-            	              $( this ).dialog( "close" );
-        	    		  }else{
-        	    			  $("#set_value").addClass( "ui-state-error-custom" )
-        	    		  }        	    		  
-        	            }
-        	      },
-        	      close: function() {
-	        	    	$("#set_value").removeClass("ui-state-error-custom");
-	        	  }
-    	    });
-            $("#set_value").val($(this)[0].textContent);
-            updateTips($.i18n.prop('message_devnewtrap'));
-            $("#dialog-form").dialog("open");
-		});
-		
-		$(".hfcunit").dblclick(function(){
-			if(sessionStorage.authlevel == 3){
-	  			return;
-	  		}
-			var domstr = $(this)[0].id;
-			$( "#dialog-form" ).dialog({
-        	      autoOpen: false,
-        	      height: 240,
-        	      width: 300,
-        	      modal: true,
-        	      buttons: {
-        	    	  Ok: function() {
-        	    		  if(checkInt($("#set_value").val())){
-        	    			  var node = __globalobj__._realDevice.getFirstChild();
-            	    		  var datastring = '{"cmd":"hfcvalueset","target":"setVars","ip":"' + __globalobj__._realDevice.key+'","isRow":"false","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
-            	    		  __globalobj__._send(datastring);
-            	              $( this ).dialog( "close" );
-        	    		  }else{
-        	    			  $("#set_value").addClass( "ui-state-error-custom" )
-        	    		  }
-        	    		  
-        	            }
-        	      },
-        	      close: function() {
-	        	    	$("#set_value").removeClass("ui-state-error-custom");
-	        	  }
-    	    });
-            $("#set_value").val($(this).val().replace(/[^\d.]/g,''));
-            updateTips($.i18n.prop('message_devnewval'));
-            $("#dialog-form").dialog("open");
-		}); 
-		
-		$(".tbl_hfcunit").dblclick(function(){
-			if(sessionStorage.authlevel == 3){
-	  			return;
-	  		}
-			var domstr = $(this).data("paramname");			
-			var rownum = $(this).data("rownum");
-			$( "#dialog-form" ).dialog({
-        	      autoOpen: false,
-        	      height: 240,
-        	      width: 300,
-        	      modal: true,
-        	      buttons: {
-        	    	  Ok: function() {
-        	    		  if(checkInt($("#set_value").val())){
-        	    			  var node = __globalobj__._realDevice.getFirstChild();
-            	    		  var datastring = '{"cmd":"hfcvalueset","target":"setVars","ip":"' + __globalobj__._realDevice.key + '","rowNum":"'+ rownum 
-            	    			  +'","isRow":"true","domstr":"'+ domstr +'","value":"'+ $("#set_value").val()+'"}';
-            	    		  __globalobj__._send(datastring);
-            	              $( this ).dialog( "close" );
-        	    		  }else{
-        	    			  $("#set_value").addClass( "ui-state-error-custom" )
-        	    		  }
-        	    		  
-        	            }
-        	      },
-        	      close: function() {
-	        	    	$("#set_value").removeClass("ui-state-error-custom");
-	        	  }
-    	    });
-            $("#set_value").val($(this)[0].textContent.replace(/[^\d.]/g,''));
-            updateTips($.i18n.prop('message_devnewval'));
-            $("#dialog-form").dialog("open");
-		}); 
-		
-		$(".isalarmThreshold").dblclick(function(){
-			var node = __globalobj__._realDevice.getFirstChild();
-			var domstr = $(this)[0].id;
-			var datastring = '{"cmd":"hfcvalueset","target":"getalarmThreshold","ip":"' + __globalobj__._realDevice.key +'","domstr":"'+ domstr 
-			+'","isRow":"false","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity + '","devtype":"'+ __globalobj__._realDevice.getLastChild().key + '"}';
-  		  	__globalobj__._send(datastring);			
-		}); 
-		
-		$(".tbl_isalarmThreshold").dblclick(function(){
-			var node = __globalobj__._realDevice.getFirstChild();
-			var domstr = $(this).data("paramname");			
-			var rownum = $(this).data("rownum");
-			var datastring = '{"cmd":"hfcvalueset","target":"getalarmThreshold","ip":"' + __globalobj__._realDevice.key +'","domstr":"'+ domstr +'","rowNum":"'+ rownum 
-				+'","isRow":"true","rcommunity":"'+ __globalobj__._realDevice.data.rcommunity + '","devtype":"'+ __globalobj__._realDevice.getLastChild().key + '"}';
-  		  	__globalobj__._send(datastring);			
-		}); 
-		
-		$('.device-close').click(function(){
-			var node = __globalobj__._realDevice.getFirstChild();
-			var datastring = '{"cmd":"deviceclose","ip":"' + __globalobj__._realDevice.key + '"}';
-  		  	__globalobj__._send(datastring);
-  		  	$('.candile').empty();
-		});
-		
-		
 		$('#dev-status-text')[0].textContent = $.i18n.prop('message_devconnected');
 		$('#i18n-devip')[0].textContent = $.i18n.prop('message_devip');
 		$('#i18n-sysdesc')[0].textContent = $.i18n.prop('message_devsysdesc');
@@ -149,14 +27,16 @@
 		$('#i18n-publictemper')[0].textContent = $.i18n.prop('message_devtemper');
 		$('#i18n-publicID')[0].textContent = $.i18n.prop('message_devlogicid');		
 		$('#i18n-publictype')[0].textContent = $.i18n.prop('message_devtype');		
-		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');
+		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');	
+		$('#i18n-agcvalidpower')[0].textContent = $.i18n.prop('agcvalidpower');
 	</script>
 </head>
 <body>
 	<div class="devdetail">
 		<button type="button" class="close device-close" aria-hidden="true">&times;</button>
 		<ul class = "devdetail-header">
-			<li class="dev-img"><img src = "../images/oprv8604jl.png" /></li>
+			<!-- <li class="dev-img"><img src = "../images/oprv8604jl.png" /></li> -->
+		 	 <li class="dev-img"><img id = "HfcMinWorkstationimg" /></li> 
 			<li class="dev-status"><span id="dev-status-text"></span></li>
 			<li>
 				<table class="table tbl_noborder tbl_devtips">
@@ -193,17 +73,17 @@
 											      <td id="i18n-inputpower">输入光功率:</td>
 											      <td><input type="text" class="form-control isalarmThreshold" id="fnOpticalReceiverPower" readonly></td>
 											      <td id="i18n-rtnoputpower">反向发射光功率:</td>
-											      <td><input type="text" class="form-control" id="detail_mineroptical" readonly></td>
+											      <td><input type="text" class="form-control isalarmThreshold" id="fnReverseOpticalPower" readonly></td>
 											    </tr>
 											    <tr>
 											      <td id="i18n-rtnbiascurrent">反向偏置电流:</td>
-											      <td><input type="text" class="form-control" id="detail_minerelectric" readonly></td>
-											      <td>反向衰减值:</td>
-											      <td><input type="text" class="form-control" id="detail_minieratt" readonly></td>
+											      <td><input type="text" class="form-control isalarmThreshold" id="fnReturnLaserCurrent" readonly></td>
+										  	      <td id="i18n-agcvalidpower">AGC起控光功率:</td>
+											      <td><input type="text" class="form-control hfcunit" data-comvalues="[-9,-7];[-9,-4]"  id="fnAGCGOvalue" readonly></td>
 											    </tr>
 											    <tr>
 											      <td id="i18n-channelnumber">频道数:</td>
-											      <td><input type="text" class="form-control hfcunit" id="fnRFChannelNum" readonly></td>
+											      <td><input type="text" class="form-control hfcunit" data-comvalues="[0,200]" id="fnRFChannelNum" readonly></td>
 											    </tr>
 										  </tbody>
 										</table>
@@ -245,14 +125,14 @@
 										  <tbody>
 												<tr>
 													<td class="fnRFPortName_row0"></td>
-													<td class="fnOutputRFlevelatt_row0 tbl_hfcunit" data-rownum="0" data-paramname="fnOutputRFlevelatt" id="fnOutputRFlevelatt_row0"></td>
-													<td class="fnOutputRFleveleq_row0 tbl_hfcunit" data-rownum="0" data-paramname="fnOutputRFleveleq" id="fnOutputRFleveleq_row0"></td>
+													<td class="fnOutputRFlevelatt_row0 tbl_hfcunit" data-comvalues="[0,20]" data-rownum="0" data-paramname="fnOutputRFlevelatt" id="fnOutputRFlevelatt_row0"></td>
+													<td class="fnOutputRFleveleq_row0 tbl_hfcunit"  data-comvalues="[0,10];[0,15]"  data-rownum="0" data-paramname="fnOutputRFleveleq" id="fnOutputRFleveleq_row0"></td>
 													<td class="fnRFPortOutputRFLevel_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="fnRFPortOutputRFLevel" id="fnRFPortOutputRFLevel_row0"></td>
 												</tr>
 												<tr>
 													<td class="fnRFPortName_row1"></td>
-													<td class="fnOutputRFlevelatt_row1 tbl_hfcunit" data-rownum="1" data-paramname="fnOutputRFlevelatt" id="fnOutputRFlevelatt_row1"></td>
-													<td class="fnOutputRFleveleq_row1 tbl_hfcunit" data-rownum="1" data-paramname="fnOutputRFleveleq" id="fnOutputRFleveleq_row1"></td>
+													<td class="fnOutputRFlevelatt_row1 tbl_hfcunit" data-comvalues="" data-rownum="1" data-paramname="fnOutputRFlevelatt" id="fnOutputRFlevelatt_row1"></td>
+													<td class="fnOutputRFleveleq_row1 tbl_hfcunit" data-comvalues="" data-rownum="1" data-paramname="fnOutputRFleveleq" id="fnOutputRFleveleq_row1"></td>
 													<td class="fnRFPortOutputRFLevel_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="fnRFPortOutputRFLevel" id="fnRFPortOutputRFLevel_row1"></td>
 												</tr>
 										  </tbody>
@@ -273,38 +153,38 @@
 									      <th id="i18n-trapip">目标IP地址</th>
 									    </tr>
 								  </thead>
-								  <tbody>
+								 <tbody>
 									    <tr>
-									      <td>1.</td>
-									      <td class="trapaddr" data-rownum="0" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row0">0.0.0.0</td>
+									      <td><label class="commonAgentTrapIndex_row0"></label></td>
+									      <td><label class="trapaddr" data-rownum="0" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row0"></label></td>
 									    </tr>
 									    <tr>
-									      <td>2.</td>
-									      <td class="trapaddr" data-rownum="1" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row1">0.0.0.0</td>
+									      <td><label class="commonAgentTrapIndex_row1"></label></td>
+									      <td><label class="trapaddr" data-rownum="1" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row1"></label></td>
 									    </tr>
 									    <tr>
-									      <td>3.</td>
-									      <td class="trapaddr" data-rownum="2" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row2">0.0.0.0</td>
+									      <td><label class="commonAgentTrapIndex_row2"></label></td>
+									      <td><label class="trapaddr" data-rownum="2" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row2"></label></td>
 									    </tr>
 									    <tr>
-									      <td>4.</td>
-									      <td class="trapaddr" data-rownum="3" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row3">0.0.0.0</td>
+									      <td><label class="commonAgentTrapIndex_row3"></label></td>
+									      <td><label class="trapaddr" data-rownum="3" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row3"></label></td>
 									    </tr>
 									    <tr>
-									      <td>5.</td>
-									      <td class="trapaddr" data-rownum="4" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row4">0.0.0.0</td>
+									      <td><label class="commonAgentTrapIndex_row4"></label></td>
+									      <td><label class="trapaddr" data-rownum="4" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row4"></label></td>
 									    </tr>
 									    <tr>
-									      <td>6.</td>
-									      <td class="trapaddr" data-rownum="5" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row5">0.0.0.0</td>
+									      <td><label class="commonAgentTrapIndex_row5"></label></td>
+									      <td><label class="trapaddr" data-rownum="5" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row5"></label></td>
 									    </tr>
 									    <tr>
-									      <td>7.</td>
-									      <td class="trapaddr" data-rownum="6" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row6">0.0.0.0</td>
+									      <td><label class="commonAgentTrapIndex_row6"></label></td>
+									      <td><label class="trapaddr" data-rownum="6" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row6"></label></td>
 									    </tr>
 									    <tr>
-									      <td>8.</td>
-									      <td class="trapaddr" data-rownum="7" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row7">0.0.0.0</td>
+									      <td><label class="commonAgentTrapIndex_row7"></label></td>
+									      <td><label class="trapaddr" data-rownum="7" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row7"></label></td>
 									    </tr>
 								  </tbody>
 								</table>

@@ -93,44 +93,34 @@ function appendStatus(statuss,textboxp)
 function parse_rece_workstation(jsonobj){
 	//if(__globalobj__._realDevice.getLastChild().data.hfctype == "HfcMinWorkstation"){
 	    if(jsonobj.devtype== "HfcMinWorkstation"){
-		$("#detail_mineroptical").parent().css("display", "none");
-		$("#detail_mineroptical").parent().prev().css("display", "none");
-		$("#detail_minerelectric").parent().parent().css("display", "none");
-		$("#detail_minieratt").parent().parent().css("display", "none");
+	//	$("#detail_mineroptical").parent().css("display", "none");
+	//	$("#detail_mineroptical").parent().prev().css("display", "none");
+	//	$("#detail_minerelectric").parent().parent().css("display", "none");
+	//	$("#detail_minieratt").parent().parent().css("display", "none");
 	}	
+	
+	
+		
+	jQuery("#HfcMinWorkstationimg").attr("src",jsonobj.icon);
 	$('#panel-devip')[0].textContent = __globalobj__._realDevice.key;
-	$('#panel-onlinetimeticks')[0].textContent = jsonobj.common.sysUpTime;
-	$('#panel-devinfo')[0].textContent = jsonobj.common.sysDescr;
-	$('#panel-devcontact')[0].textContent = jsonobj.common.sysContact;
+
+	$('#dev-status-text')[0].textContent = jsonobj.mytime;
 	$('#fnRFChannelNum').val(jsonobj.fnRFChannelNum);
 	$('#fnOpticalReceiverPower').val(jsonobj.fnOpticalReceiverPower); 
-	$('#commonInternalTemperature').val(jsonobj.common.commonInternalTemperature);
-	$('#commonNELogicalID').val(jsonobj.common.commonNELogicalID);
-	$('#commonNEModelNumber').val(jsonobj.common.commonNEModelNumber);	
-	$('#commonNESerialNumber').val(jsonobj.common.commonNESerialNumber);
-	$('#commonDeviceMACAddress').val(jsonobj.common.commonDeviceMACAddress);
-	switch(jsonobj.fnOpticalReceiverPower6){
-	case "1":
-        //normal
-		//$('#fnOpticalReceiverPower').css("background-color", "green");
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('#fnOpticalReceiverPower').css("background-color", "HotPink");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('#fnOpticalReceiverPower').css("background-color", "Moccasin");
-        break;
-	}
+
+	$('#fnReverseOpticalPower').val(jsonobj.fnReverseOpticalPower); 
+	$('#fnReturnLaserCurrent').val(jsonobj.fnReturnLaserCurrent); 
+	$('#fnAGCGOvalue').val(jsonobj.fnAGCGOvalue); 
+	
+	appendStatus(jsonobj.fnOpticalReceiverPower6,"#fnOpticalReceiverPower");
+		appendStatus(jsonobj.fnReverseOpticalPower6,"#fnReverseOpticalPower");
+				appendStatus(jsonobj.fnReturnLaserCurrent6,"#fnReturnLaserCurrent");
+
 	var i = 0;
 	$.each(jsonobj.powertbl, function(key, itemv) {
 		$('.fnDCPowerName_row' + i)[0].textContent = itemv.fnDCPowerName_row;
 		$('.fnDCPowerVoltage_row' + i)[0].textContent = itemv.fnDCPowerVoltage_row;
+			appendStatus(jsonobj["oaDCPowerVoltage"+i.toString()+"6"],".oaDCPowerVoltage_row"+i);
 		
 		i++;
 	});	
@@ -140,90 +130,11 @@ function parse_rece_workstation(jsonobj){
 		$('.fnOutputRFlevelatt_row' + i)[0].textContent = itemv.fnOutputRFlevelatt_row;
 		$('.fnOutputRFleveleq_row' + i)[0].textContent = itemv.fnOutputRFleveleq_row;
 		$('.fnRFPortOutputRFLevel_row' + i)[0].textContent = itemv.fnRFPortOutputRFLevel_row;
+			appendStatus(jsonobj["fnRFPortOutputRFLevel"+i.toString()+"6"],".fnRFPortOutputRFLevel_row"+i);
 		i++;
-	});
-	i = 0;
-	$.each(jsonobj.common.traptbl, function(key, itemv) {
-		$('#commonAgentTrapIP_row' + i)[0].textContent = itemv.commonAgentTrapIP_row;
-		i++;
-	});
-	switch(jsonobj.fnDCPowerVoltage06){
-	case "1":
-        //normal
-		//$('.fnDCPowerVoltage_row0').css("background-color", "green");
-        //textBoxVariable.BackColor = Color.LightGreen;
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('.fnDCPowerVoltage_row0').css("background-color", "HotPink");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('.fnDCPowerVoltage_row0').css("background-color", "Moccasin");
-        break;
-	}
-	switch(jsonobj.fnDCPowerVoltage16){
-	case "1":
-        //normal
-		//$('.fnDCPowerVoltage_row1').css("background-color", "green");
-        //textBoxVariable.BackColor = Color.LightGreen;
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('.fnDCPowerVoltage_row1').css("background-color", "HotPink");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('.fnDCPowerVoltage_row1').css("background-color", "Moccasin");
-        break;
-	}
-	switch(jsonobj.fnRFPortOutputRFLevel06){
-	case "1":
-        //normal
-		//$('.fnRFPortOutputRFLevel_row0').css("background-color", "green");
-        //textBoxVariable.BackColor = Color.LightGreen;
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('.fnRFPortOutputRFLevel_row0').css("background-color", "HotPink");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('.fnRFPortOutputRFLevel_row0').css("background-color", "Moccasin");
-        break;
-	}
-	switch(jsonobj.fnRFPortOutputRFLevel16){
-	case "1":
-        //normal
-		//$('.fnRFPortOutputRFLevel_row1').css("background-color", "green");
-        //textBoxVariable.BackColor = Color.LightGreen;
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('.fnRFPortOutputRFLevel_row1').css("background-color", "HotPink");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('.fnRFPortOutputRFLevel_row1').css("background-color", "Moccasin");
-        break;
-	}
-	
+	});	
+
+	parse_common(jsonobj);	
 }
 
 function parse_edfa(jsonobj){	
@@ -334,15 +245,7 @@ function parse_OSW(jsonobj){
 	jQuery("#edfaimg").attr("src",jsonobj.icon);
 	
 	$('#panel-devip')[0].textContent = __globalobj__._realDevice.key;
-	$('#panel-onlinetimeticks')[0].textContent = jsonobj.common.sysUpTime;
-	$('#panel-devinfo')[0].textContent = jsonobj.common.sysDescr;
-	$('#panel-devcontact')[0].textContent = jsonobj.common.sysContact;
-	$('#commonInternalTemperature').val(jsonobj.common.commonInternalTemperature);
-	$('#commonNELogicalID').val(jsonobj.common.commonNELogicalID);
-	$('#commonNEModelNumber').val(jsonobj.common.commonNEModelNumber);	
-	$('#commonNESerialNumber').val(jsonobj.common.commonNESerialNumber);
-	$('#commonDeviceMACAddress').val(jsonobj.common.commonDeviceMACAddress);
-	
+
 	
 	$('#osInputOpticalPowerA').val(jsonobj.osInputOpticalPowerA); 
 	$('#osInputOpticalPowerB').val(jsonobj.osInputOpticalPowerB); 
