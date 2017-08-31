@@ -15,9 +15,14 @@ import wl.hfc.common.nojuParmsTableRow;
 import wl.hfc.common.VariableSnmpVar.ToValueMode;
 import wl.hfc.topd.MainKernel;
 
-
+//***wr1001j:
 //fnAGCGOvalue [-9,-4] or [-9,-7]  +/-1dBm
-
+//channel [0,200]
+//att [0,20]
+//eq [0,15]
+	
+	
+	
 public class ReceiverSnmpPrevail extends WosBaseSnmp {
 	// 0����snmpv1��1����snmpv2
 	private static Logger log = Logger.getLogger(ReceiverSnmpPrevail.class);

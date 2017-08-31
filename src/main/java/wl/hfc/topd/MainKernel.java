@@ -236,6 +236,7 @@ public class MainKernel {
 		jsonarray = getSubTree(rootListNode);
 		rootjson.put("treenodes", jsonarray);
 		rootjson.put("sfversion", "Server:"+Sstatus.versionString);
+		rootjson.put("Supporteddevices", Sstatus.Supporteddevices);
 		String jsonString = rootjson.toJSONString();
 		// System.out.println("jsonString==" + jsonString);
 		return jsonString;
@@ -936,6 +937,7 @@ public class MainKernel {
 		jsondata.put("hfctype", lNode.HFCType1.ordinal());
 		jsondata.put("id", lNode.ID);
 		jsondata.put("md", lNode.MD);
+		jsondata.put("deviceid", lNode.DEVICEID);
 		jsondata.put("sn", lNode.SN);
 		log.info("------->>>" + jsondata.toJSONString());
 		return jsondata.toJSONString();

@@ -76,7 +76,7 @@ function appendStatus(statuss,textboxp)
 {
 		switch(statuss){
 	case "1":
-		$(textboxp).css("background-color", "green");
+		$(textboxp).css("background-color", "#ceffce");
         break;
     case "2":
     case "5":

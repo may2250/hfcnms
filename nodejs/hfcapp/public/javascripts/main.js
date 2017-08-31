@@ -626,6 +626,7 @@
         	$('#username')[0].textContent = sessionStorage.userName;
         	initTree(jsonobj.treenodes);    
     	    $("#sfversion")[0].textContent = jsonobj.sfversion;
+			   $("#Supporteddevices")[0].textContent = jsonobj.Supporteddevices;			
         }else if(jsonobj.cmd == "loginAuth"){
         	sessionStorage.authlevel = jsonobj.level;
         	if(jsonobj.level == 3){
@@ -1516,7 +1517,7 @@
             name : 'strings', //资源文件名称
             path : '../i18n/', //资源文件路径
             mode : 'both', //用Map的方式使用资源文件中的值
-            language : 'zh',
+            language : 'en',
             async: true,
             callback : function() {//加载成功后设置显示内容
                 $('.nav_search p')[0].textContent = $.i18n.prop('message_navsearch');
