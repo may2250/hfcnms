@@ -30,7 +30,9 @@ public class CDatabaseEngine {
 	// private boolean isFirstTimeSucedCnt = true;
 	private boolean lastTrapInsertIsSucced = false;
 	public Connection trapcon;
-
+	
+	private String dbuser="hfcnms";
+	private String dbpass="999999";
 	public CDatabaseEngine(RedisUtil predisUtil) {
 		redisUtil = predisUtil;
 		me = this;
@@ -43,8 +45,7 @@ public class CDatabaseEngine {
 		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8&useSSL=false";
 		// ����������
 		String driver = "com.mysql.jdbc.Driver";
-		String dbuser = "hfcnms";
-		String dbpass = "999999";
+
 		Connection con = null;
 		try {
 			Class.forName(driver);
@@ -59,14 +60,6 @@ public class CDatabaseEngine {
 			flag = false;
 
 		}
-
-		if (tmpFlag != flag) {
-
-			JSONObject rootjson = new JSONObject();
-			rootjson.put("cmd", "dbclosed");
-			rootjson.put("flag", !flag);
-			sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
-		}
 		return con;
 	}
 
@@ -75,8 +68,6 @@ public class CDatabaseEngine {
 		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8&useSSL=false";
 		// ����������
 		String driver = "com.mysql.jdbc.Driver";
-		String dbuser = "root";
-		String dbpass = "prevail";
 		try {
 			Class.forName(driver);
 			trapcon = DriverManager.getConnection(url, dbuser, dbpass);
@@ -518,13 +509,6 @@ public class CDatabaseEngine {
 
 		}
 
-		if (tmpFlag != flag) {
-
-			JSONObject rootjson = new JSONObject();
-			rootjson.put("cmd", "dbclosed");
-			rootjson.put("flag", !flag);
-			sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
-		}
 		return lastId;
 	}
 

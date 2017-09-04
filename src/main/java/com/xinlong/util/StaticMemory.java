@@ -17,43 +17,33 @@ import wl.hfc.online.*;
 
 public class StaticMemory {
 	// save web sessions
-	public static CopyOnWriteArraySet<UserSession> webSocketClients = new CopyOnWriteArraySet<UserSession>();
+	public static CopyOnWriteArraySet<Uhandle> webSocketClients = new CopyOnWriteArraySet<Uhandle>();
 	// 客户端需求实时数据的设备列表
 	private Hashtable<String, ObjSnmpPreail> realTimeDevHashtable = new Hashtable<String, ObjSnmpPreail>();
 	private static Logger log = Logger.getLogger(StaticMemory.class);
 
-	public void AddSession(UserSession session) {
+	public void AddSession(Uhandle pHandle) {
 		synchronized (this) {
-			webSocketClients.add(session);
-			System.out.println("Connection Size::::" + webSocketClients.size());
+			webSocketClients.add(pHandle);
+			System.out.println("now add the  "+pHandle.username+":::" + pHandle.getId());
+			System.out.println("Uhandless Size::::" + webSocketClients.size());
 		}
 	}
 
 	public void RemoveSession(Session session) {		
 		synchronized (this) {
-			for (UserSession usession : webSocketClients) {
-				if(session.getId() == usession.getId()){
-					webSocketClients.remove(usession);
+			for (Uhandle pHandle : webSocketClients) {
+				if(session.getId() == pHandle.getId()){
+					webSocketClients.remove(pHandle);
 					removeRealTimeDev(session.getId());
-					System.out.println("Connection Size::::" + webSocketClients.size());
+					System.out.println("now close the  "+pHandle.username+":::" + session.getId());
+					System.out.println("Uhandless Size::::" + webSocketClients.size());
 				}
 			}
 			
 		}
 	}
 	
-	public boolean getSessionByuser(String username) {		
-		synchronized (this) {
-			for (UserSession usession : webSocketClients) {
-				if(username.equalsIgnoreCase(usession.username)){
-					return true;
-				}
-			}
-			
-		}
-		return false;
-	}
-
 	public int getCount() {
 		return webSocketClients.size();
 	}
@@ -66,7 +56,7 @@ public class StaticMemory {
 			ObjSnmpPreail osp = realTimeDevHashtable.get(netaddr);
 			if (!osp.sessionList.contains(sessionID)) {
 				osp.sessionList.add(sessionID);
-				System.out.println("----add new SessionID");
+				//System.out.println("----add new SessionID");
 			}
 		} else {
 
@@ -148,7 +138,7 @@ public class StaticMemory {
 				osp.sessionList.remove(sessionID);
 				if (osp.sessionList.size() == 0) {
 					realTimeDevHashtable.remove(netaddr);
-					System.out.println("----del RealTimeDev==" + realTimeDevHashtable.size());
+				//	System.out.println("----del RealTimeDev==" + realTimeDevHashtable.size());
 				}
 			}
 		}
@@ -161,29 +151,29 @@ public class StaticMemory {
 				osp.sessionList.remove(sessionID);
 				if (osp.sessionList.size() == 0) {
 					realTimeDevHashtable.remove(entry.getKey());
-					System.out.println("----del RealTimeDev==" + realTimeDevHashtable.size());
+				//	System.out.println("----del RealTimeDev==" + realTimeDevHashtable.size());
 				}
 			}
 		}
 	}
 
-	public Session getSessionByID(String sessionid) {
+	public Session getSessionByID(String id) {
 		synchronized (this) {
-			for (UserSession session : webSocketClients) {
+			for (Uhandle clientItem : webSocketClients) {
 				try {
-					synchronized (session) {
-						if (session.getId().equalsIgnoreCase(sessionid)) {
+					synchronized (clientItem) {
+						if (clientItem.getId().equalsIgnoreCase(id)) {
 							// System.out.println("Session Got::" + sessionid);
-							return session.session;
+							return clientItem.session;
 						}
 					}
 				} catch (Exception ex) {
-					webSocketClients.remove(session);
-					removeRealTimeDev(sessionid);
-					System.out.println("Connection closed::::" + webSocketClients.size());
+					webSocketClients.remove(clientItem);
+					removeRealTimeDev(id);
+					System.out.println("getSessionByID  Connection closed::::" + webSocketClients.size());
 					ex.printStackTrace();
 					try {
-						session.session.close();
+						clientItem.session.close();
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -194,21 +184,31 @@ public class StaticMemory {
 		}
 	}
 	
-	
-	public UserSession getUserSessionByID(String sessionid) {
+	public boolean getSessionByuser(String username) {		
 		synchronized (this) {
-			for (UserSession session : webSocketClients) {
+			for (Uhandle usession : webSocketClients) {
+				if(username.equalsIgnoreCase(usession.username)){
+					return true;
+				}
+			}
+			
+		}
+		return false;
+	}
+	public Uhandle getUserSessionByID(String id) {
+		synchronized (this) {
+			for (Uhandle session : webSocketClients) {
 				try {
 					synchronized (session) {
-						if (session.getId().equalsIgnoreCase(sessionid)) {
+						if (session.getId().equalsIgnoreCase(id)) {
 							// System.out.println("Session Got::" + sessionid);
 							return session;
 						}
 					}
 				} catch (Exception ex) {
 					webSocketClients.remove(session);
-					removeRealTimeDev(sessionid);
-					System.out.println("Connection closed::::" + webSocketClients.size());
+					removeRealTimeDev(id);
+					System.out.println("getSessionByID Connection closed::::" + webSocketClients.size());
 					ex.printStackTrace();
 					try {
 						session.session.close();
@@ -240,7 +240,7 @@ public class StaticMemory {
 
 	public void broadCast(String message) {
 		synchronized (this) {
-			for (UserSession session : webSocketClients) {
+			for (Uhandle session : webSocketClients) {
 				try {
 					synchronized (session) {
 						session.session.getBasicRemote().sendText(message);

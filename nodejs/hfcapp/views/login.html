@@ -129,7 +129,7 @@
         function initWebSocket(encstr) {
     		var hostip = window.location.hostname;
             if (window.WebSocket) {
-            	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice/' + encstr);
+            	webSocket = new WebSocket('ws://' + hostip + ':8080/hfcnms/websocketservice/' + encstr);//encstr是发送给javawebsocket请求的用户信息字符串
             	webSocket.onmessage = function(event) {
             		onMessage(event);
                 };

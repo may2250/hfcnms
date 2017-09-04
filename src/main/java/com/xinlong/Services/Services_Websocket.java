@@ -31,7 +31,7 @@ import org.json.simple.parser.ParseException;
 
 import com.xinlong.util.RedisUtil;
 import com.xinlong.util.StaticMemory;
-import com.xinlong.util.UserSession;
+import com.xinlong.util.Uhandle;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
@@ -41,7 +41,7 @@ import wl.hfc.traprcss.TrapPduServer;
 
 
 
-
+// @ServerEndpoint 注解是一个类层次的注解，它的功能主要是将目前的类定义成一个websocket服务器端,
 @ServerEndpoint("/websocketservice/{username}/{password}")
 public class Services_Websocket {
 	private static Logger log = Logger.getLogger(Services_Websocket.class);
@@ -176,6 +176,8 @@ public class Services_Websocket {
     @OnOpen
     public void onOpen(@PathParam("username") String username,
 			@PathParam("password") String password,Session session) {
+		System.out.println("onOpen   "+session.getId());
+    	
     	JSONObject rootjson = new JSONObject();
 		rootjson.put("cmd", "loginAuth");
     	if(username.equalsIgnoreCase("undefined") || password.equalsIgnoreCase("undefined")){    		
@@ -197,7 +199,7 @@ public class Services_Websocket {
 					rootjson.put("desc", "User Already login!");
 					session.getBasicRemote().sendText(rootjson.toJSONString());
 				}else{
-					UserSession usession = new UserSession(username, session);
+					Uhandle usession = new Uhandle(username, session);
 					staticmemory.AddSession(usession);//增加客户端名称
 					
 					//send to mainkernel to auth this user
@@ -236,8 +238,9 @@ public class Services_Websocket {
 
     @OnClose
     public void onClose(Session session) {
+    	System.out.println("onClose   "+session.getId());
     	staticmemory.RemoveSession(session);
-        System.out.println("Connection closed::::" + staticmemory.getCount());        
+      //  System.out.println("Connection closed::::" + staticmemory.getCount());        
     }
 
 }

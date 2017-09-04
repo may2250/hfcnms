@@ -7,7 +7,7 @@
 	var tbl_loglists = null;
 	var tbl_alarmlists = null;
 	var lazyLoadData = null;
-	var encstr;
+	var encstrencstr;
 	$(function() {
 		encstr = sessionStorage.userName+'/'+ sessionStorage.passWord;
 		if(localStorage.void == undefined){

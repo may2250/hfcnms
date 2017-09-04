@@ -89,24 +89,9 @@ public class Sstatus extends Thread{
 			JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 			String cmd = jsondata.get("cmd").toString();
 
-			if(cmd.equalsIgnoreCase("severstatus")){
-				//trap监听模块
-				jsondata.put("TrapPduServerstatus", TrapPduServer.TrapPduServer_status);//trap listen status
-				
-				//数据库状态
-				jsondata.put("CDatabaseEngineflag", CDatabaseEngine.flag);//last time  database status		
-/*				
-				//参数轮询模块
-				jsondata.put("PDUServerstatus", PDUServer.PDUServer_status);//	pduserver init		
-				*/
-				
-				//已连接客户端数量
-				jsondata.put("clientNum", StaticMemory.webSocketClients.size());//	pduserver init			
-				
-				
-				//send to mainkernel
-				sendToQueue(jsondata.toJSONString(), MAINKERNEL_MESSAGE);
-				//staticmemory.sendRemoteStr(jsondata, jsondata.get("sessionid").toString());	
+			if(cmd.equalsIgnoreCase("severstatus")){		
+
+		
 		}
 
 		}

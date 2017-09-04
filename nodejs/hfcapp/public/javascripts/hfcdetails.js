@@ -143,15 +143,8 @@ function parse_edfa(jsonobj){
 	
 	jQuery("#edfaimg").attr("src",jsonobj.icon);
 	
-	$('#panel-devip')[0].textContent = __globalobj__._realDevice.key;
-	$('#panel-onlinetimeticks')[0].textContent = jsonobj.common.sysUpTime;
-	$('#panel-devinfo')[0].textContent = jsonobj.common.sysDescr;
-	$('#panel-devcontact')[0].textContent = jsonobj.common.sysContact;
-	$('#commonInternalTemperature').val(jsonobj.common.commonInternalTemperature);
-	$('#commonNELogicalID').val(jsonobj.common.commonNELogicalID);
-	$('#commonNEModelNumber').val(jsonobj.common.commonNEModelNumber);	
-	$('#commonNESerialNumber').val(jsonobj.common.commonNESerialNumber);
-	$('#commonDeviceMACAddress').val(jsonobj.common.commonDeviceMACAddress);
+	
+
 	$('#oaInputOpticalPower').val(jsonobj.oaInputOpticalPower); 
 	$('#oaOutputOpticalPower').val(jsonobj.oaOutputOpticalPower); 
 	$('#oaOptAtt').val(jsonobj.oaOptAtt); 
@@ -167,43 +160,10 @@ function parse_edfa(jsonobj){
 	 
 	 }
 	 
-	 
-	switch(jsonobj.oaInputOpticalPower6){
-	case "1":
-        //normal
-		//$('#oaInputOpticalPower').css("background-color", "green");
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('#oaInputOpticalPower').css("background-color", "HotPink");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('#oaInputOpticalPower').css("background-color", "Moccasin");
-        break;
-	}
-	switch(jsonobj.oaOutputOpticalPower6){
-	case "1":
-        //normal
-		//$('#oaOutputOpticalPower').css("background-color", "green");
-        break;
-    case "2":
-    //hihi
-    case "5":
-        //lolo
-    	$('#oaOutputOpticalPower').css("background-color", "HotPink");
-        break;
-    case "3":
-    //hi
-    case "4":
-        //lo
-    	$('#oaOutputOpticalPower').css("background-color", "Moccasin");
-        break;
-	}
+	  	appendStatus(jsonobj.oaInputOpticalPower6,"#oaInputOpticalPower");
+		 appendStatus(jsonobj.oaOutputOpticalPower6,"#oaOutputOpticalPower");
+
+
 	var i = 0;
 	$.each(jsonobj.powertbl, function(key, itemv) {
 		$('.oaDCPowerName_row' + i)[0].textContent = itemv.oaDCPowerName_row;
@@ -228,14 +188,9 @@ function parse_edfa(jsonobj){
 		i++;
 	});
 	i = 0;
-	$.each(jsonobj.common.traptbl, function(key, itemv) {
-		$('.commonAgentTrapIndex_row' + i)[0].textContent = itemv.commonAgentTrapIndex_row;
-		$('#commonAgentTrapIP_row' + i)[0].textContent = itemv.commonAgentTrapIP_row;
-		i++;
-	});	
-
-
 	
+	parse_common(jsonobj);
+
 }
 
 function parse_OSW(jsonobj){	

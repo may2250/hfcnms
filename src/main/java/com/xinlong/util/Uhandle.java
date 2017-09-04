@@ -2,11 +2,11 @@ package com.xinlong.util;
 
 import javax.websocket.Session;
 
-public class UserSession {
+public class Uhandle {
 	public String username;
 	Session session;
 	
-	public UserSession(String uname, Session session){
+	public Uhandle(String uname, Session session){
 		this.username = uname;
 		this.session = session;
 	}
