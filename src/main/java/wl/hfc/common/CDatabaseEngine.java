@@ -1,5 +1,7 @@
 package wl.hfc.common;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.*;
 
@@ -8,8 +10,17 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import redis.clients.jedis.Jedis;
 
@@ -17,6 +28,7 @@ import com.xinlong.util.RedisUtil;
 
 import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
+import wl.hfc.online.pmls;
 
 /*import com.mysql.jdbc.Connection;
  import com.mysql.jdbc.PreparedStatement;*/
@@ -30,13 +42,54 @@ public class CDatabaseEngine {
 	// private boolean isFirstTimeSucedCnt = true;
 	private boolean lastTrapInsertIsSucced = false;
 	public Connection trapcon;
-	
+	private static Document doc;
+	private static Document docen;
 	private String dbuser="hfcnms";
 	private String dbpass="999999";
 	public CDatabaseEngine(RedisUtil predisUtil) {
 		redisUtil = predisUtil;
+		//loadDXml();
 		me = this;
 	}
+	
+	public boolean loadDXml() {
+
+		String filePath = pmls.class.getResource("/").toString();
+		filePath = filePath.substring(filePath.indexOf("file:") + 5);
+		// log.info("----------------path--->>>" + filePath+ "phs.xml");
+
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		try {
+			File f = new File(filePath + "hconfig.xml");
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			doc = builder.parse(f);
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			log.info(e.getMessage());
+			return false;
+		} catch (SAXException e) {
+			e.printStackTrace();
+			log.info(e.getMessage());
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			log.info(e.getMessage());
+			return false;
+		}
+		Element rootElement = doc.getDocumentElement();
+		NodeList rootNode = rootElement.getChildNodes();
+		
+		
+		Node node = rootNode.item(0);
+		Element elt = (Element) node;
+		String uid = elt.getAttribute("mysqlUserID");
+
+		String pwd = elt.getAttribute("mysqlUserID");
+		
+		return true;
+	}
+
 
 	public Connection offNewCoon()// 因为增删查改不需要关注或者维护“数据库连接”这个层面，本来不需要offnewcon，因为存在连接长期不用可能失效的情况，直接暴力新建短连接。
 	{

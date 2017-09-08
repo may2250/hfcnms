@@ -3,11 +3,13 @@ package wl.hfc.common;
 import java.math.BigDecimal;
 
 import org.snmp4j.smi.OID;
+import org.snmp4j.smi.Variable;
 import org.snmp4j.smi.VariableBinding;
 
 import java.util.ArrayList;
 
 
+////SnmpVarBind不是空的是时候，里面的value也有可能是空，而且是自己定义的snmpapi.null，非c#的
 
 public class VariableSnmpVar {
 
@@ -250,10 +252,18 @@ public class VariableSnmpVar {
 		return "";
 
         String retval;
-        int intval = tmpvb.getVariable().toInt();
-    	int scale = 2;// ����λ��
-		int roundingMode = 4;// ��ʾ�������룬����ѡ��������ֵ��ʽ������ȥβ���ȵ�.
-
+        
+        
+        Variable bb=tmpvb.getVariable();
+        if (bb instanceof org.snmp4j.smi.Null)
+        	return "";
+        
+        int intval=tmpvb.getVariable().toInt();  
+        
+        
+        
+    	int scale = 2;//
+		int roundingMode = 4;// 
         if (VarInfo.IsFormatEnable)
         {
 			Float rest = Float.class.cast(VarInfo.FormatCoff * intval);

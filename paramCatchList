@@ -5,7 +5,8 @@ WR1002RJ-II hfcminworkstation
 
 {"dctablerownum":1,"fnDCPowerVoltage06":"1","pumptbl":[{"fnOutputRFlevelatt_row":"8.0dB","fnOutputRFleveleq_row":"13.0dB","fnRFPortOutputRFLevel_row":"0.0dBuV","fnRFPortName_row":"RFPORT1"}],"fnOpticalReceiverPower6":"4","fnAGCGOvalue":"-6.0dBm","mytime":"2017-08-30 14:37:24","pumptablerownum":1,"icon":"..\/images\/oprv1001j.png","fnReverseOpticalPower":"-99.9dBm","fnRFChannelNum":"55","fnReturnLaserCurrent":"0.0mA","fnReverseOpticalPower6":"1","devtype":"HfcMinWorkstation","fnRFPortOutputRFLevel06":"5","powertbl":[{"fnDCPowerVoltage_row":"8.1V","fnDCPowerName_row":"+8V"}],"fnOpticalReceiverPower":"-99.9dBm","cmd":"realtime-device","fnReturnLaserCurrent6":"1"}
 
-
+WR1002JE hfcminworkstation JE-1G-2  
+同WR1002RJ-II一致
 
 OSW:
 {"devtype":"8","predev":"192.168.1.190","ip":"192.168.1.190","md":"","wcommunity":"public","cmd":"getdevicedetail","sessionid":"4","deviceid":"J-1G-2","rcommunity":"public","nojuhfctype":8}

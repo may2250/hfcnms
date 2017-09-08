@@ -67,7 +67,30 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		row1 = pmls.tabch.get("oaOptAtt");
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".1", ToValueMode.FmtInteger, false);
 		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
+		
+		
+	    if (PDeviceID.contains("YZ"))
+	    {			
+			mjVariables[vIns].isformatter=true;
+			mjVariables[vIns].maxValue=30;
+			mjVariables[vIns].minValue=0;		
+			mjVariables[vIns].setpvalue=0;
+			
+	    }
+	    else
+	    {			
+			mjVariables[vIns].isformatter=true;
+			mjVariables[vIns].maxValue=40;
+			mjVariables[vIns].minValue=0;		
+			mjVariables[vIns].setpvalue=0;
+				    
+	    }	
+		
+
+		
 		this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));
+		
+
 
 		// switch params
 		if (PDeviceID.equalsIgnoreCase("WE-YZ-SWITCH")) {

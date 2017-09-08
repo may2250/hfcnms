@@ -37,21 +37,56 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 
 	
 	private int tableOutPlength=7;
-	private int tableInputPlength=2;
+	private int tableInputPlength=4;
 	private String pdeviceIDString="";
+
+	
+
+	private int mgcMax=0;
+	private int mgcMin =0;
+	private int agcMax =0;
+    private int agcMin =0;
 
 	public TransDMSnmpPrevail(String phsicIndex,String PDeviceID) {
 		super(phsicIndex);
 		pdeviceIDString=PDeviceID;
-		mjVariables = new VariableSnmpVar[3];
+		mjVariables = new VariableSnmpVar[2];
 		// tables
 		cDCVariables = new VariableSnmpVar[2];
-		cInputVariables = new VariableSnmpVar[5];
-		cOutputVariables = new VariableSnmpVar[7];
+		cInputVariables = new VariableSnmpVar[tableInputPlength];
+		cOutputVariables = new VariableSnmpVar[tableOutPlength];
 
 		majorVarPdu = new PDU();
 		majorVarPdu.setType(PDU.GET);
 
+
+		
+
+        if (PDeviceID.equalsIgnoreCase("1310_2.6G"))
+        {
+            mgcMax = 15;
+            mgcMin = 0;
+            agcMax = 3;
+            agcMin = -3;
+
+          //  this.labelChanelNumber.Visible = false;
+          //  this.textBoxChanleNum.Visible = false;
+        
+        }
+        else if (PDeviceID.contains("1550-DM"))
+        {
+            mgcMax = 20;
+            mgcMin = 0;
+            agcMax = 3;
+            agcMin = -3;
+        }
+        else
+        {
+            mgcMax = 10;
+            mgcMin = 0;
+            agcMax = 5;
+            agcMin = -5;
+        }
 
 		// major
 		int vIns = 0;
@@ -59,11 +94,23 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		
 		mjVariables[vIns] = new VariableSnmpVar(row1);			
 		mjVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
+		
+		mjVariables[vIns].isformatter=true;
+		mjVariables[vIns].maxValue=84;
+		mjVariables[vIns].minValue=0;		
+		mjVariables[vIns].setpvalue=0;
+		
 		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 		this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));		
 		
 
-
+		row1 = pmls.tabch.get("otdInputRFAttenuationRange");	
+		
+		mjVariables[vIns] = new VariableSnmpVar(row1);			
+		mjVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
+		this.majorVarPdu.add(new VariableBinding(mjVariables[vIns++].FullSnmpOid));		
+		
 		
 		
 
@@ -111,11 +158,34 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		row1 = pmls.me.tabch.get("otdAGCControl");
 		cInputVariables[i] = new VariableSnmpVar(row1);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
-		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
+		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);		
+
+		row1 = pmls.me.tabch.get("otdConfigurationDriveLevel");//AGC OFFSET
+		cInputVariables[i] = new VariableSnmpVar(row1);
+		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
 		
+		cInputVariables[i].isformatter=true;
+		cInputVariables[i].maxValue=agcMax*10;
+		cInputVariables[i].minValue=agcMin*10;		
+		cInputVariables[i].setpvalue=0;
+		
+		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);		
 		
 
 
+		row1 = pmls.me.tabch.get("otdConfigurationRFAttenuation");//MGC
+		cInputVariables[i] = new VariableSnmpVar(row1);
+		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+		cInputVariables[i].isformatter=true;
+		cInputVariables[i].maxValue=mgcMax*10;
+		cInputVariables[i].minValue=mgcMin*10;		
+		cInputVariables[i].setpvalue=0;
+		
+		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);		
+
+
+		
+		
 
 		begincol = 0;
 		endcol = this.tableInputPlength-1;
@@ -127,10 +197,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 					+ begincol];
 			this.tableInputPdu.add(new VariableBinding(
 					headerinfos[enumi].MibDefinedOid));
-		}
-
-		
-		
+		}			
 		
 		
 		
@@ -144,7 +211,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtString;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
 
-		row1 = pmls.tabch.get("otdLaserTemp");
+		row1 = pmls.tabch.get("otdLaserTemp");//温度
 		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
@@ -160,19 +227,19 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		
 		
 
-		row1 = pmls.tabch.get("otdOpicalOutputPower");
+		row1 = pmls.tabch.get("otdOpicalOutputPower");//输出光功率
 		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
 		
-		row1 = pmls.tabch.get("otdTecCurrent");
+		row1 = pmls.tabch.get("otdTecCurrent");//TEC
 		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
 		paramHashTable.put(row1.ParamMibLabel, cOutputVariables[i++]);
 		
-		row1 = pmls.tabch.get("otdLaserWavelength");
+		row1 = pmls.tabch.get("otdLaserWavelength");//波长
 		cOutputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, false);
 		cOutputVariables[i].ToValueMode1 = ToValueMode.FmtString;
@@ -199,7 +266,26 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 					headerinfos[enumi].MibDefinedOid));
 		}
 
+		
+		
+		exinfor.put("otdConfigurationRFChannels", "[0,84]");
+		
+		exinfor.put("otdConfigurationDriveLevel", "["+agcMin+","+agcMax+"]");
+		exinfor.put("otdConfigurationRFAttenuation", "["+mgcMin+","+mgcMax+"]");
+		
+	    if (PDeviceID.equalsIgnoreCase("WT-1550-DM"))
+        {
+	    	exinfor.put("otdAGCControl", "AGC,MGC");
 
+        
+        }
+        else 
+        {
+	     	exinfor.put("otdAGCControl", "MGC,AGC");
+        }
+  
+		
+		exinfor.put("otdConfigurationRFAttenuation", "["+mgcMin+","+mgcMax+"]");
 		me = this;
 
 	}
@@ -213,7 +299,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress,
 				this.thisDev.ROCommunity, SnmpConstants.version1);
 
-	/*	inPDU = sver.SyncSendSnmpPdu(this.majorVarPdu, cTgt);
+		inPDU = sver.SyncSendSnmpPdu(this.majorVarPdu, cTgt);
 		if (inPDU == null) {
 			throw new Exception("paramGetException,Failed!");
 		}
@@ -233,7 +319,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 			}
 
 		}
-		*/
+		
 		
 		//table params
 		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress,
@@ -241,6 +327,14 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		SnmpTableInfo reTable = SnmpEngine.GetMibTableVariables(
 				(PDU) this.tableDCPdu.clone(), cTgt, sver);
 		pJson.put("dctablerownum", reTable.RowNum);
+		
+		
+		
+		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress,
+				this.thisDev.ROCommunity, SnmpConstants.version1);
+		SnmpTableInfo inreTable = SnmpEngine.GetMibTableVariables(
+				(PDU) this.tableInputPdu.clone(), cTgt, sver);
+		pJson.put("intablerownum", inreTable.RowNum);		
 		
 		
 		
@@ -254,7 +348,9 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		
 		
 
-		//SnmpEngine.tabVarToJason(this.cDCVariables,reTable, pJson,"dctable");
+		SnmpEngine.tabVarToJason(this.cDCVariables,reTable, pJson,"dctable");
+
+		SnmpEngine.tabVarToJason(this.cInputVariables,inreTable, pJson,"intable");
 		SnmpEngine.tabVarToJason(this.cOutputVariables,reTable1, pJson,"outtable");
 		
 		//table thread
@@ -267,7 +363,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 				}
 			}
 		}		
-/*		
+	
 		for (int j = 0; j < this.cOutputVariables.length; j++) {
 
 			if (this.cOutputVariables[j].withNoThreashold) {
@@ -279,7 +375,17 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 			}
 
 		}
-		*/
+		
+		for (int j = 0; j < this.cInputVariables.length; j++) {
+			if (this.cInputVariables[j].withNoThreashold) {
+				for (int i = 0; i < inreTable.RowNum; i++) {
+					this.getSubVarsWithTagInfo(this.cInputVariables[j], i);
+					SnmpEngine.ThreadPramVarToJason(this.cInputVariables[j], pJson, i, true);
+				}
+
+			}
+
+		}
 		
 
 		return pJson;

@@ -33,6 +33,9 @@ public class WosBaseSnmp {
 	public Object getMJPmLocker = new Object();
 	public Object getTBLocker = new Object();
 
+	
+	
+	public JSONObject  exinfor=new JSONObject();
 	public WosBaseSnmp(String pPhysicalIndex) {
 		this.physicalIndex1 = pPhysicalIndex;
 

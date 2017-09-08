@@ -50,7 +50,7 @@ public class Realtime_param_call extends Thread {
 							json.put("cmd", "realtime-device");
 							json.put("mytime", sdf.format(new Date()));
 							
-							
+							json.put("did", osp.snmpPreail.thisDev.DEVICEID);
 							json.put("devtype", osp.snmpPreail.thisDev.HFCType1.toString());
 							json.put("icon", "../images/" + osp.snmpPreail.thisDev.imagePath + ".png");
 
@@ -62,7 +62,7 @@ public class Realtime_param_call extends Thread {
 								continue;
 							}
 							json.put("common", commonjson);
-							
+							json.put("exinfor", osp.snmpPreail.exinfor);
 							
 							String jsonstr = json.toJSONString();
 							

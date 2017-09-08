@@ -25,7 +25,7 @@ public class Sstatus extends Thread{
 		private static Logger log = Logger.getLogger(Sstatus.class);	
 		
 		public static String versionString="V1.05";
-		public static String Supporteddevices="Supported devices：WE-HD,WR1001J,WR1002RJ-II,EM30,Optical switch";
+		public static String Supporteddevices="Supported devices：WE-HD,WR1001J,WR1002RJ-II,WR1002JSE,EM30,Optical switch";
 
 		private    RedisUtil redisUtil;
 		public  static boolean redisStartus=true;

@@ -973,6 +973,18 @@
     		       	            jsonobj.solved,
     		       	            jsonobj.solvetime
     		       	        ] ).draw( false );
+							
+							
+							    if(localStorage.void == 'on'){
+							
+					if ( jsonobj.level == "重要告警" || jsonobj.level == "Secondary alarm")  {
+         		playVideo("/alarmwavs/BEEP hi.WAV");
+
+                  }else if(jsonobj.level == "紧急告警" || jsonobj.level== "Urgent alarm"){
+                			playVideo("/alarmwavs/BEEP hihi.WAV");
+             
+                  }
+								}
     	}        	
 	}
 

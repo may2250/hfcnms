@@ -56,12 +56,16 @@ public class CDevForCMD {
 				return "EDFA/EDFA_HE";//
 			else
 				return "EDFA/edfa";//
+		case Trans1310DM:
+			return "transdm1310";//
+		case Trans1550DM:
+			return "1550dm";//
 		case TransEM:
 			return "transEM";//
 		case OSW:
 			return "OSW";//
 		case HfcMinWorkstation:
-			if (DEVICEID.equalsIgnoreCase("RJ-1G-2-II")) {
+			if (DEVICEID.equalsIgnoreCase("RJ-1G-2-II")||DEVICEID.equalsIgnoreCase("JE-1G-2")) {
 				return "oprv0002jse";//
 			} else if (DEVICEID.equalsIgnoreCase("J-1G-2") || DEVICEID.equalsIgnoreCase("JL-1G-2")
 					|| DEVICEID.equalsIgnoreCase("WR1001J"))

@@ -4,56 +4,67 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript">		
-		$('#dev-status-text')[0].textContent = $.i18n.prop('message_devconnected');
+			
+		$('#i18n-devparam')[0].textContent = $.i18n.prop('message_devparam');
+		$('#i18n-publicparam')[0].textContent = $.i18n.prop('message_devpublicparam');	
+		
 		$('#i18n-devip')[0].textContent = $.i18n.prop('message_devip');
 		$('#i18n-sysdesc')[0].textContent = $.i18n.prop('message_devsysdesc');
 		$('#i18n-contact')[0].textContent = $.i18n.prop('message_devcontact');
 		$('#i18n-uptime')[0].textContent = $.i18n.prop('message_devuptime');
-		$('#i18n-devoptrvparam')[0].textContent = $.i18n.prop('message_devoptrvparam');
-		$('#i18n-publicparam')[0].textContent = $.i18n.prop('message_devpublicparam');
-		$('#i18n-inputpower')[0].textContent = $.i18n.prop('message_devinpower');
-		$('#i18n-publictype')[0].textContent = $.i18n.prop('message_devtype');		
-		$('#i18n-rtnoputpower')[0].textContent = $.i18n.prop('message_devrtnouputpower');
-		$('#i18n-channelnumber')[0].textContent = $.i18n.prop('message_devchannelnumber');
-		$('#i18n-rtnbiascurrent')[0].textContent = $.i18n.prop('message_devrtnbiascurrent');
-		$('#i18n-powername')[0].textContent = $.i18n.prop('message_devpowername');
-		$('#i18n-powerval')[0].textContent = $.i18n.prop('message_devpowerval');
-		$('#i18n-outputtbl')[0].textContent = $.i18n.prop('message_devoutputtbl');
-		$('#i18n-outputlevel')[0].textContent = $.i18n.prop('message_devoutputlevel');
+				
 		
-		$('#i18n-traptbl')[0].textContent = $.i18n.prop('message_devtraptbl');		
+	    $('#i18n-traptbl')[0].textContent = $.i18n.prop('message_devtraptbl');		
 		$('#i18n-trapindex')[0].textContent = $.i18n.prop('message_devtrapindex');
 		$('#i18n-trapip')[0].textContent = $.i18n.prop('message_devtrapip');		
 		$('#i18n-publictemper')[0].textContent = $.i18n.prop('message_devtemper');
 		$('#i18n-publicID')[0].textContent = $.i18n.prop('message_devlogicid');		
 		$('#i18n-publictype')[0].textContent = $.i18n.prop('message_devtype');		
-		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');	
-		$('#i18n-agcvalidpower')[0].textContent = $.i18n.prop('agcvalidpower');
+		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');
+		
+		
+		
+	
+		$('#i18n-outputpower')[0].textContent = $.i18n.prop('message_devoutpower');
+		$('#i18n-powername')[0].textContent = $.i18n.prop('message_devpowername');
+		$('#i18n-powerval')[0].textContent = $.i18n.prop('message_devpowerval');		
+		$('#i18n-lasertbl')[0].textContent = $.i18n.prop('message_devlasertbl');
+		$('#i18n-lasertemp')[0].textContent = $.i18n.prop('message_devtemper');
+		$('#i18n-bias')[0].textContent = $.i18n.prop('message_devbias');		
+		$('#i18n-current')[0].textContent = $.i18n.prop('message_devcurrent');
+		
+		$('#i18n-wavelength')[0].textContent = $.i18n.prop('message_wavelength');
+				
+		$('#dmtransrfattrange')[0].textContent = $.i18n.prop('dmtransrfattrange');	
+	    $('#i18n-AGCEnalbe')[0].textContent = $.i18n.prop('message_RFcontrolmode');
+		$('#i18n-AGCOffset')[0].textContent = $.i18n.prop('message_AGCOffset');
+	
+		$('#i18n-InputRFpower')[0].textContent = $.i18n.prop('message_InputRFpower');
+		
+		$('#i18n-channelnumber')[0].textContent = $.i18n.prop('message_devchannelnumber');
+
+
 	</script>
 </head>
 <body>
 	<div class="devdetail">
 		<button type="button" class="close device-close" aria-hidden="true">&times;</button>
 		<ul class = "devdetail-header">
-			<!-- <li class="dev-img"><img src = "../images/oprv8604jl.png" /></li> -->
-		 	 <li class="dev-img"><img id = "HfcMinWorkstationimg" /></li> 
+			<li class="dev-img"><img  id ="emtransimg"  /></li>
 			<li class="dev-status"><span id="dev-status-text"></span></li>
 			<li>
 				<table class="table tbl_noborder tbl_devtips">
 	        		<tr>
 	        			<td id="i18n-devip"></td>
 	        			<td id="panel-devip"></td>
-	        			<td id="i18n-sysdesc"></td>
+	        			<td id="i18n-sysdesc">系统描述:</td>
 	        			<td id="panel-devinfo"></td>	        			
 	        		</tr>
 	        		<tr>
-	        			<td id="i18n-contact"></td>
+	        			<td id="i18n-contact">联系信息:</td>
 	        			<td id="panel-devcontact"></td>
-	        			<td id="i18n-uptime"></td>
+	        			<td id="i18n-uptime">在线时间:</td>
 	        			<td id="panel-onlinetimeticks"></td>
-	        		</tr>
-					<tr>	
-	        			<td id="did"></td>
 	        		</tr>
 	        	</table>
 			</li>
@@ -61,40 +72,32 @@
 		<div class = "devdetail-content">
 			<div class="tabbable">
 				<ul class="nav nav-tabs" role="tablist">
-				    <li class="active"><a href="#tab-dev1" data-toggle="tab" id="i18n-devoptrvparam"></a></li>
-				    <li><a href="#tab-dev2" data-toggle="tab" id="i18n-publicparam"></a></li>				    
+				    <li class="active"><a href="#tab-dev1" data-toggle="tab" id="i18n-devparam">EDFA设备参数</a></li>
+				    <li><a href="#tab-dev2" data-toggle="tab" id="i18n-publicparam">HFC公共库参数</a></li>				    
 				</ul>
 				<div class="tab-content">
 				    <div class="tab-pane tab-devpane active" id="tab-dev1">
 					    <div class="devdetail-content">			
-					    	<table class="tbl_devdetail-content">
-					    		<tr>
+					    	<table class="tbl_devdetail-content">	
+		<tr>
 					    			<td>
 					    				<table class="table tbl_detail">
 										  <tbody>
 											    <tr>
-											      <td id="i18n-inputpower">输入光功率:</td>
-											      <td><input type="text" class="form-control isalarmThreshold" id="fnOpticalReceiverPower" readonly></td>
-											      <td id="i18n-rtnoputpower">反向发射光功率:</td>
-											      <td><input type="text" class="form-control isalarmThreshold" id="fnReverseOpticalPower" readonly></td>
-											    </tr>
-											    <tr>
-											      <td id="i18n-rtnbiascurrent">反向偏置电流:</td>
-											      <td><input type="text" class="form-control isalarmThreshold" id="fnReturnLaserCurrent" readonly></td>
-										  	      <td id="i18n-agcvalidpower">AGC起控光功率:</td>
-											      <td><input type="text" class="form-control hfcunit" data-comvalues="[-9,-7];[-9,-4]"  id="fnAGCGOvalue" readonly></td>
-											    </tr>
-											    <tr>
 											      <td id="i18n-channelnumber">频道数:</td>
-											      <td><input type="text" class="form-control hfcunit" data-comvalues="[0,200]" id="fnRFChannelNum" readonly></td>
+											      <td><input type="text" class="form-control hfcunit" data-comvalues="" id="otdConfigurationRFChannels" readonly></td>
 											    </tr>
+											    <tr>
+											      <td id="dmtransrfattrange">射频信号衰减量范围:</td>
+											      <td><input type="text" class="form-control" id="otdInputRFAttenuationRange" readonly></td>
+											    </tr>											
 										  </tbody>
 										</table>
 					    			</td>
-					    		</tr>
+					    		</tr>							
 					    		<tr>
 					    			<td>
-					    				<table class="table tbl_power" style="width:30%">
+					    				<table class="table tbl_power" style="width:40%">
 										   <thead>
 											    <tr>
 											      <th id="i18n-powername">电源输出表</th>
@@ -103,41 +106,80 @@
 										  </thead>
 										  <tbody>
 												<tr>
-													<td class="fnDCPowerName_row0"></td>
-													<td class="fnDCPowerVoltage_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="fnDCPowerVoltage" id="fnDCPowerVoltage_row0"></td>
+													<td class="otdDCPowerName_row0"></td>
+													<td class="otdDCPowerVoltage_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otdDCPowerVoltage" id="otdDCPowerVoltage_row0"></td>
 												</tr>
 												<tr>
-													<td class="fnDCPowerName_row1"></td>
-													<td class="fnDCPowerVoltage_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="fnDCPowerVoltage" id="fnDCPowerVoltage_row1"></td>
+													<td class="otdDCPowerName_row1"></td>
+													<td class="otdDCPowerVoltage_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="otdDCPowerVoltage" id="otdDCPowerVoltage_row1"></td>
 												</tr>
+													<tr>
+													<td class="otdDCPowerName_row2"></td>
+													<td class="otdDCPowerVoltage_row2 tbl_isalarmThreshold" data-rownum="2" data-paramname="otdDCPowerVoltage" id="otdDCPowerVoltage_row2"></td>
+												</tr>
+													<tr>
+													<td class="otdDCPowerName_row3"></td>
+													<td class="otdDCPowerVoltage_row3 tbl_isalarmThreshold" data-rownum="3" data-paramname="otdDCPowerVoltage" id="otdDCPowerVoltage_row3"></td>
+												</tr>
+													<tr>
+													<td class="otdDCPowerName_row4"></td>
+													<td class="otdDCPowerVoltage_row4 tbl_isalarmThreshold" data-rownum="4" data-paramname="otdDCPowerVoltage" id="otdDCPowerVoltage_row4"></td>
+												</tr>
+												
 										  </tbody>
 										</table>
 					    			</td>
 					    		</tr>
 					    		<tr>
 					    			<td>
-					    				<table class="table tbl_devmiddle tbl_devcontent" style="width:30%">
+					    				<table class="table tbl_devmiddle tbl_devcontent" style="width:40%">
 										   <thead>
 											    <tr>
-											      <th id="i18n-outputtbl">输出端口</th>
-											      <th>ATT</th>
-											      <th>EQ</th>
-											      <th id="i18n-outputlevel">输出电平</th>
+											      <th id="i18n-lasertbl">激光器表</th>
+												<th id="i18n-lasertemp">温度</th>
+											      <th id="i18n-bias">偏置电流</th>
+											      <th id="i18n-outputpower">输出光功率</th>
+											      <th id="i18n-current">制冷电流</th>
+											       <th id="i18n-wavelength">光波长</th>										
 											    </tr>
 										  </thead>
 										  <tbody>
 												<tr>
-													<td class="fnRFPortName_row0"></td>
-													<td class="fnOutputRFlevelatt_row0 tbl_hfcunit" data-comvalues="[0,20]" data-rownum="0" data-paramname="fnOutputRFlevelatt" id="fnOutputRFlevelatt_row0"></td>
-													<td class="fnOutputRFleveleq_row0 tbl_hfcunit"  data-comvalues="[0,10];[0,15]"  data-rownum="0" data-paramname="fnOutputRFleveleq" id="fnOutputRFleveleq_row0"></td>
-													<td class="fnRFPortOutputRFLevel_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="fnRFPortOutputRFLevel" id="fnRFPortOutputRFLevel_row0"></td>
+													<td class="otdIndex_row0"></td>
+													<td class="otdLaserTemp_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otdLaserTemp" id="otdLaserTemp_row0"></td>
+													<td class="otdLaserCurrent_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otdLaserCurrent" id="otdLaserCurrent_row0"></td>
+													<td class="otdOpicalOutputPower_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otdOpicalOutputPower" id="otdOpicalOutputPower_row0"></td>
+													<td class="otdTecCurrent_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otdTecCurrent" id="otdTecCurrent_row0"></td>
+													<td class="otdLaserWavelength_row0" data-rownum="0" data-paramname="otdLaserWavelength" id="otdLaserWavelength_row0"></td>
+							
+													
+												</tr>						
+										  </tbody>
+										</table>
+					    			</td>
+					    		</tr>
+								    		<tr>
+					    			<td>
+					    				<table class="table tbl_input tbl_devmiddle" style="width:40%">
+										   <thead>
+											    <tr>	
+												 <th id="dmtransinputindex">Table2</th>												
+											      <th id="i18n-InputRFpower">输入电平</th>
+											      <th id="i18n-AGCEnalbe">AGC使能</th>
+												   <th id="i18n-AGCOffset">AGC偏移量</th>
+												     <th id="i18n-MGC">MGC</th>
 												</tr>
+										  </thead>
+										  <tbody>
 												<tr>
-													<td class="fnRFPortName_row1"></td>
-													<td class="fnOutputRFlevelatt_row1 tbl_hfcunit" data-comvalues="" data-rownum="1" data-paramname="fnOutputRFlevelatt" id="fnOutputRFlevelatt_row1"></td>
-													<td class="fnOutputRFleveleq_row1 tbl_hfcunit" data-comvalues="" data-rownum="1" data-paramname="fnOutputRFleveleq" id="fnOutputRFleveleq_row1"></td>
-													<td class="fnRFPortOutputRFLevel_row1 tbl_isalarmThreshold" data-rownum="1" data-paramname="fnRFPortOutputRFLevel" id="fnRFPortOutputRFLevel_row1"></td>
-												</tr>
+													<td class="dmtransinputindex_row0"></td>
+													<td class="otdInputRFLevel_row0 tbl_isalarmThreshold" data-rownum="0" data-paramname="otdInputRFLevel" id="otdInputRFLevel_row0"></td>
+													<td class="otdAGCControl_row0 tbl_hfcunitcombox" data-comvalues="" data-rownum="0" data-paramname="otdAGCControl" id="otdAGCControl_row0"></td>
+										<td class="otdConfigurationDriveLevel_row0 tbl_hfcunit" data-comvalues="" data-rownum="0" data-paramname="otdConfigurationDriveLevel" id="otdConfigurationDriveLevel_row0"></td>
+											
+                                        <td class="otdConfigurationRFAttenuation_row0 tbl_hfcunit" data-comvalues="" data-rownum="0" data-paramname="otdConfigurationRFAttenuation" id="otdConfigurationRFAttenuation_row0"></td>
+											
+											</tr>						
 										  </tbody>
 										</table>
 					    			</td>
@@ -156,7 +198,7 @@
 									      <th id="i18n-trapip">目标IP地址</th>
 									    </tr>
 								  </thead>
-								 <tbody>
+								  <tbody>
 									    <tr>
 									      <td><label class="commonAgentTrapIndex_row0"></label></td>
 									      <td><label class="trapaddr" data-rownum="0" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row0"></label></td>
@@ -212,7 +254,7 @@
 									      <td><input type="text" class="form-control" id="commonNESerialNumber" readonly></td>
 									    </tr>
 									    <tr>
-									      <td>MAC:</td>
+									      <td>MAC</td>
 									      <td><input type="text" class="form-control" id="commonDeviceMACAddress" readonly></td>
 									    </tr>
 								  </tbody>

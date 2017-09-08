@@ -28,7 +28,9 @@ router.get('/edfa', function(req, res, next) {
 router.get('/emtrans', function(req, res, next) {
   res.render('emtrans', { title: 'Express' });
 });
-
+router.get('/dmtrans', function(req, res, next) {
+  res.render('dmtrans', { title: 'Express' });
+});
 router.get('/osw', function(req, res, next) {
   res.render('osw', { title: 'Express' });
 });

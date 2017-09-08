@@ -28,6 +28,7 @@ $(".hfcunit").dblclick(function () {
 			$("#set_value").removeClass("ui-state-error-custom");
 		}
 	});
+
 	$("#set_value").val($(this).val().replace(/[^\d.-]/g, ''));
 	//updateTips($.i18n.prop('message_devnewval'));
 		var comvaluess = $(this).data("comvalues");
