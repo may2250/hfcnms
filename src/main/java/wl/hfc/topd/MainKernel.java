@@ -157,6 +157,8 @@ public class MainKernel {
 
 		log.info("[#3] .....MainKernel starting.......");
 		ClsLanguageExmp.init(true, true);
+		
+		new wl.hfc.common.trapDataForWHF(true);
 		ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);
 
 		initTopodData();

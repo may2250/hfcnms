@@ -332,10 +332,34 @@ function parse_emtrans(jsonobj) {
 function parse_dmtrans(jsonobj) {
 	jQuery("#emtransimg").attr("src", jsonobj.icon);
 	$('#dev-status-text')[0].textContent = jsonobj.mytime;
+	
+		if (jsonobj.exinfor.channelview == '1') {
+				$("#otdConfigurationRFChannels").show();
+			}
+			else{
+					$("#otdConfigurationRFChannels").hide();
+			}
+	
      $("#otdConfigurationRFChannels").data("comvalues", jsonobj.exinfor.otdConfigurationRFChannels);  
 	
 	$('#otdConfigurationRFChannels').val(jsonobj.otdConfigurationRFChannels);
 	$('#otdInputRFAttenuationRange').val(jsonobj.otdInputRFAttenuationRange);
+	
+	
+	if(jsonobj.insertOutputPower.length==0)
+	{
+				$("#dmtransinsertpower").hide();
+						$("#dmtransmajorpower").hide();
+								$("#dmtransinsertatt").hide();
+										$("#dmtranpowerrate").hide();
+												$("#dmtransagcmode").hide();
+												
+																$("#insertOutputPower").hide();
+						$("#majorOutputPower").hide();
+								$("#insertAGCOid").hide();
+										$("#powerRateOid").hide();
+												$("#agcModeOid").hide();
+	}
 	
 	var i = 0;
 	$.each(jsonobj.dctable, function (key, itemv) {
@@ -365,30 +389,22 @@ function parse_dmtrans(jsonobj) {
 	$.each(jsonobj.intable, function (key, itemv) {
 		$('.dmtransinputindex_row' + i)[0].textContent = i + 1;
 		$('.otdInputRFLevel_row' + i)[0].textContent = itemv.otdInputRFLevel_row;
-		if (jsonobj.did == "WT-1550-DM") {
-			switch (itemv.otdAGCControl_row) {
-			case "1":
-				$('.otdAGCControl_row' + i)[0].textContent = "AGC";
-				break;
-			case "2":
-				$('.otdAGCControl_row' + i)[0].textContent = "MGC";
-				break;
-			}
-		} else {
-			switch (itemv.otdAGCControl_row) {
-			case "1":
-				$('.otdAGCControl_row' + i)[0].textContent = "MGC";
-				break;
-			case "2":
-				$('.otdAGCControl_row' + i)[0].textContent = "AGC";
-				break;
-			}
-		}
+
 		$('.otdConfigurationDriveLevel_row' + i)[0].textContent = itemv.otdConfigurationDriveLevel_row;//AGC
 				$('.otdConfigurationRFAttenuation_row' + i)[0].textContent = itemv.otdConfigurationRFAttenuation_row;//MGC
 				
 			$('.otdConfigurationDriveLevel_row' + i).data("comvalues", jsonobj.exinfor.otdConfigurationDriveLevel);  
 						$('.otdAGCControl_row' + i).data("comvalues", jsonobj.exinfor.otdAGCControl);  
+						var mArray = jsonobj.exinfor.otdAGCControl.split(",");
+								switch (itemv.otdAGCControl_row) {
+			case "1":
+				$('.otdAGCControl_row' + i)[0].textContent = mArray[0];
+				break;
+			case "2":
+				$('.otdAGCControl_row' + i)[0].textContent = mArray[1];
+				break;
+			}
+						
 				$('.otdConfigurationRFAttenuation_row' + i).data("comvalues", jsonobj.exinfor.otdConfigurationRFAttenuation);  
 	
 				
@@ -413,19 +429,32 @@ function parse_dmtrans(jsonobj) {
 			break;
 		case "getalarmThreshold":
 			if (jsonobj.detail.HIHIen == '1') {
-				$('#ishihi').attr('checked', 'checked');
+				$('#ishihi').prop('checked',true);
+// jquery 1.6以后attr对于checked不起作用，其替代方法为prop
+			}
+			else{
+				$('#ishihi').prop('checked',false);
 			}
 			$("#hihi").val(jsonobj.detail.value0);
 			if (jsonobj.detail.HIen == '1') {
-				$('#ishi').attr('checked', 'checked');
+					$('#ishi').prop('checked',true);
+			}
+				else{
+				$('#ishi').prop('checked',false);
 			}
 			$("#hi").val(jsonobj.detail.value1);
 			if (jsonobj.detail.LOen == '1') {
-				$('#islo').attr('checked', 'checked');
+					$('#islo').prop('checked',true);
+			}
+				else{
+				$('#islo').prop('checked',false);
 			}
 			$("#lo").val(jsonobj.detail.value2);
 			if (jsonobj.detail.LOLOen == '1') {
-				$('#islolo').attr('checked', 'checked');
+					$('#islolo').prop('checked',true);
+			}
+				else{
+				$('#islolo').prop('checked',false);
 			}
 			$("#lolo").val(jsonobj.detail.value3);
 			//if(jsonobj.detail.ISDEAD){
@@ -470,8 +499,8 @@ function parse_dmtrans(jsonobj) {
 							var node = __globalobj__._realDevice.getFirstChild();
 							var datastring = '{"cmd":"hfcvalueset","target":"setalarmThreshold","ip":"' + __globalobj__._realDevice.key + '","domstr":"' + jsonobj.domstr + '","devtype":"' + __globalobj__._realDevice.getLastChild().key
 								 + '","rcommunity":"' + __globalobj__._realDevice.data.rcommunity + '","wcommunity":"' + __globalobj__._realDevice.data.wcommunity + '","HIHI":"' + $("#hihi").val()
-								 + '","HI":"' + $("#hi").val() + '","LO":"' + $("#lo").val() + '","LOLO":"' + $("#lolo").val() + '","DEAD":"' + $("#dead").val() + '","ISHIHI":"' + ($('#ishihi').attr('checked') == 'checked' ? true : false)
-								 + '","ISHI":"' + ($('#ishi').attr('checked') == 'checked' ? true : false) + '","ISLO":"' + ($('#islo').attr('checked') == 'checked' ? true : false) + '","ISLOLO":"' + ($('#islolo').attr('checked') == 'checked' ? true : false)
+								 + '","HI":"' + $("#hi").val() + '","LO":"' + $("#lo").val() + '","LOLO":"' + $("#lolo").val() + '","DEAD":"' + $("#dead").val() + '","ISHIHI":"' + $('#ishihi').prop('checked')
+								 + '","ISHI":"' + $('#ishi').prop('checked')+ '","ISLO":"' + $('#islo').prop('checked') + '","ISLOLO":"' + $('#islolo').prop('checked')
 								 + '","isRow":"' + jsonobj.isRow + '","rowNum":"' + jsonobj.rowNum + '"}';
 							__globalobj__._send(datastring);
 							$(this).dialog("close");

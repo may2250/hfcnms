@@ -14,22 +14,21 @@ OSW:
 
 
 
+1550DM：Trans1550DM
+{"devtype":"5","predev":"192.168.14.151","ip":"192.168.14.151","md":"WT-1550-DM-I","wcommunity":"public","cmd":"getdevicedetail","sessionid":"0","deviceid":"WT-1550-DM","rcommunity":"public","nojuhfctype":5}
 
-
-
-
-1
-
-
-
-
-
-3
+{"dctable":[{"otdDCPowerName_row":"+5V DC Power","otdDCPowerVoltage_row":"4.8V"},{"otdDCPowerName_row":"-5V DC Power","otdDCPowerVoltage_row":"-5.0V"},{"otdDCPowerName_row":"+24V DC Power","otdDCPowerVoltage_row":"23.3V"}],"otdDCPowerVoltage06":"1","otdDCPowerVoltage26":"1","icon":"..\/images\/1550dm.png","otdConfigurationRFChannels":"84","insertAGCOid":"","otdInputRFLevel06":"5","outtablerownum":1,"otdOpicalOutputPower06":"5","outtable":[{"otdLaserCurrent_row":"0.6mA","otdIndex_row":"1","otdTecCurrent_row":"0.07A","otdLaserContrlMode_row":"","otdLaserTemp_row":"24.0℃","otdOpicalOutputPower_row":"0.1mW","otdLaserWavelength_row":"1554.4"}],"intablerownum":1,"agcModeOid":"","otdLaserCurrent06":"5","otdDCPowerVoltage16":"1","dctablerownum":3,"mytime":"2017-09-11 13:03:49","powerRateOid":"","exinfor":{"otdConfigurationDriveLevel":"[-3,3]","otdConfigurationRFChannels":"[0,84]","otdConfigurationRFAttenuation":"[0,20]","otdAGCControl":"AGC,MGC","channelview":"1"},"otdTecCurrent06":"1","devtype":"Trans1550DM","otdInputRFAttenuationRange":"10.0dB","insertOutputPower":"","intable":[{"otdConfigurationRFAttenuation_row":"10.0dB","otdInputRFLevel_row":"0.0dBuV\/ch","otdConfigurationDriveLevel_row":"0.0dB","otdAGCControl_row":"1"}],"cmd":"realtime-device","majorOutputPower":"","otdLaserTemp06":"1","did":"WT-1550-DM"}
 
 
 
 
 
 
-5
+
+
+
+
+
+
+
 

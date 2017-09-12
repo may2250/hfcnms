@@ -43,6 +43,17 @@
 		
 		$('#i18n-channelnumber')[0].textContent = $.i18n.prop('message_devchannelnumber');
 
+		
+		$('#dmtransinsertpower')[0].textContent = $.i18n.prop('dmtransinsertpower');	
+	    $('#dmtransmajorpower')[0].textContent = $.i18n.prop('dmtransmajorpower');
+		$('#dmtransinsertatt')[0].textContent = $.i18n.prop('dmtransinsertatt');
+	
+		$('#dmtranpowerrate')[0].textContent = $.i18n.prop('dmtranpowerrate');
+		
+		$('#dmtransagcmode')[0].textContent = $.i18n.prop('dmtransagcmode');		
+		
+		
+
 
 	</script>
 </head>
@@ -90,7 +101,27 @@
 											    <tr>
 											      <td id="dmtransrfattrange">射频信号衰减量范围:</td>
 											      <td><input type="text" class="form-control" id="otdInputRFAttenuationRange" readonly></td>
-											    </tr>											
+											    </tr>	
+    <tr>
+											      <td id="dmtransinsertpower">插播输入光功率</td>
+											      <td><input type="text" class="form-control" id="insertOutputPower" readonly></td>
+											    </tr>	
+   <tr>
+											      <td id="dmtransmajorpower">主路光功率</td>
+											      <td><input type="text" class="form-control" id="majorOutputPower" readonly></td>
+											    </tr>		
+   <tr>
+											      <td id="dmtransinsertatt">插播光衰减</td>
+											      <td><input type="text" class="form-control" id="insertAGCOid" readonly></td>
+											    </tr>		
+   <tr>
+											      <td id="dmtranpowerrate">插主副光功率比</td>
+											      <td><input type="text" class="form-control" id="powerRateOid" readonly></td>
+											    </tr>		
+   <tr>
+											      <td id="dmtransagcmode">衰减模式</td>
+											      <td><input type="text" class="form-control" id="agcModeOid" readonly></td>
+											    </tr>														
 										  </tbody>
 										</table>
 					    			</td>

@@ -60,10 +60,9 @@ public class Realtime_param_call extends Thread {
 
 							if (json == null) {				
 								continue;
-							}
-							json.put("common", commonjson);
+							}						
 							json.put("exinfor", osp.snmpPreail.exinfor);
-							
+							json.put("common", commonjson);
 							String jsonstr = json.toJSONString();
 							
 							//emtrans param json string

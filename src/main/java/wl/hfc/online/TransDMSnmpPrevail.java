@@ -12,14 +12,19 @@ import org.snmp4j.CommunityTarget;
 import wl.hfc.common.SnmpTableInfo;
 import wl.hfc.common.VariableSnmpVar;
 import wl.hfc.common.nojuParmsTableRow;
+import wl.hfc.common.trapDataForWHF;
 import wl.hfc.common.VariableSnmpVar.ToValueMode;
 import wl.hfc.online.pmls;
 
+
+//带色散补偿的意思：
+//
 public class TransDMSnmpPrevail extends WosBaseSnmp {
 
 
 	// VariableSnmpVars
 	public VariableSnmpVar[] mjVariables;
+	public VariableSnmpVar[] insertVariables;
 	public VariableSnmpVar[] cDCVariables;
 	public VariableSnmpVar[] cInputVariables;
 	public VariableSnmpVar[] cOutputVariables;
@@ -31,7 +36,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 	private PDU tableDCPdu;
 	private PDU tableInputPdu;
 	private PDU tableOutpdu;
-
+	private PDU insertVarPdu;
 	// single model
 	public static TransDMSnmpPrevail me;
 
@@ -46,11 +51,14 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 	private int mgcMin =0;
 	private int agcMax =0;
     private int agcMin =0;
+    
+   // private boolean isNeedGetInsertParam=false;
 
 	public TransDMSnmpPrevail(String phsicIndex,String PDeviceID) {
 		super(phsicIndex);
 		pdeviceIDString=PDeviceID;
 		mjVariables = new VariableSnmpVar[2];
+		insertVariables = new VariableSnmpVar[5];
 		// tables
 		cDCVariables = new VariableSnmpVar[2];
 		cInputVariables = new VariableSnmpVar[tableInputPlength];
@@ -60,7 +68,10 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		majorVarPdu.setType(PDU.GET);
 
 
-		
+
+		this.insertVarPdu = new PDU();
+		insertVarPdu.setType(PDU.GET);
+
 
         if (PDeviceID.equalsIgnoreCase("1310_2.6G"))
         {
@@ -79,6 +90,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
             mgcMin = 0;
             agcMax = 3;
             agcMin = -3;
+           // isNeedGetInsertParam=true;
         }
         else
         {
@@ -88,7 +100,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
             agcMin = -5;
         }
 
-		// major
+		// major**************************
 		int vIns = 0;
 		nojuParmsTableRow row1 = pmls.tabch.get("otdConfigurationRFChannels");	
 		
@@ -114,6 +126,50 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		
 		
 
+		//INSERT VARI*************************************
+		vIns=0;
+		row1 = (nojuParmsTableRow)trapDataForWHF.paramNamesHash.get("insertOutputPower");
+	//	row1.ParamMibOID = row1.ParamOrignalOID;
+		this.insertVariables[vIns]= new VariableSnmpVar(row1);
+		insertVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, insertVariables[vIns]);
+        this.insertVarPdu.add(new VariableBinding(insertVariables[vIns++].FullSnmpOid));	
+        
+        
+        
+    	row1 = (nojuParmsTableRow)trapDataForWHF.paramNamesHash.get("majorOutputPower");
+		//row1.ParamMibOID = row1.ParamOrignalOID;
+		this.insertVariables[vIns]= new VariableSnmpVar(row1);
+		insertVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, insertVariables[vIns]);
+        this.insertVarPdu.add(new VariableBinding(insertVariables[vIns++].FullSnmpOid));	
+        
+    	row1 = (nojuParmsTableRow)trapDataForWHF.paramNamesHash.get("insertAGCOid");
+		//row1.ParamMibOID = row1.ParamOrignalOID;
+		this.insertVariables[vIns]= new VariableSnmpVar(row1);
+		insertVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, insertVariables[vIns]);
+        this.insertVarPdu.add(new VariableBinding(insertVariables[vIns++].FullSnmpOid));	
+        
+    	row1 = (nojuParmsTableRow)trapDataForWHF.paramNamesHash.get("powerRateOid");
+	//	row1.ParamMibOID = row1.ParamOrignalOID;
+		this.insertVariables[vIns]= new VariableSnmpVar(row1);
+		insertVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, insertVariables[vIns]);
+        this.insertVarPdu.add(new VariableBinding(insertVariables[vIns++].FullSnmpOid));	
+        
+    	row1 = (nojuParmsTableRow)trapDataForWHF.paramNamesHash.get("agcModeOid");
+	//	row1.ParamMibOID = row1.ParamOrignalOID;
+		this.insertVariables[vIns]= new VariableSnmpVar(row1);
+		insertVariables[vIns].ToValueMode1 = VariableSnmpVar.ToValueMode.FmtInteger;
+		paramHashTable.put(row1.ParamMibLabel, insertVariables[vIns]);
+        this.insertVarPdu.add(new VariableBinding(insertVariables[vIns++].FullSnmpOid));	
+        
+        
+
+		
+		
+		//DC TABLE
 		tableDCPdu = new PDU();
 		tableDCPdu.setType(PDU.GETNEXT);
 
@@ -152,6 +208,14 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		cInputVariables[i] =new VariableSnmpVar(row1, ".1",
 				ToValueMode.FmtInteger, true);
 		cInputVariables[i].ToValueMode1 = ToValueMode.FmtInteger;
+        if (PDeviceID.equalsIgnoreCase("1310_2.6G"))
+        {
+        	cInputVariables[i].VarInfo.FormatUnit = "dBm";
+        }
+        else
+        {
+          	cInputVariables[i].VarInfo.FormatUnit = "dBuV/ch";        
+        }
 		paramHashTable.put(row1.ParamMibLabel, cInputVariables[i++]);
 		
 		
@@ -201,7 +265,7 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 		
 		
 		
-		//output table
+		//output table*********************************
 		i=0;
 		this.tableOutpdu = new PDU();
 		tableOutpdu.setType(PDU.GETNEXT);
@@ -268,6 +332,16 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 
 		
 		
+	    if (PDeviceID.equalsIgnoreCase("1310_2.6G"))
+        {
+	    	exinfor.put("channelview", "0");
+	    	
+        }
+        else 
+        {
+	    	exinfor.put("channelview", "1");
+        }
+  
 		exinfor.put("otdConfigurationRFChannels", "[0,84]");
 		
 		exinfor.put("otdConfigurationDriveLevel", "["+agcMin+","+agcMax+"]");
@@ -317,10 +391,24 @@ public class TransDMSnmpPrevail extends WosBaseSnmp {
 			if (this.mjVariables[i].withNoThreashold) {
 				SnmpEngine.ThreadPramVarToJason(mjVariables[i], pJson, true);
 			}
-
 		}
 		
 		
+		//insert pdu
+		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress,
+				this.thisDev.ROCommunity, SnmpConstants.version1);
+
+		inPDU = sver.SyncSendSnmpPdu(this.insertVarPdu, cTgt);
+		if (inPDU == null) {
+			throw new Exception("paramGetException,Failed!");
+		}
+		SnmpEngine.ParseBasicVars(this.insertVariables, inPDU);
+		SnmpEngine.snmpVarToJason(insertVariables, pJson);		
+		
+			
+			
+		
+
 		//table params
 		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress,
 				this.thisDev.ROCommunity, SnmpConstants.version1);
