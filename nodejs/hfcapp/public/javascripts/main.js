@@ -465,7 +465,7 @@
     			return;
     		}
     		$('#alarmfilter-source').removeClass("ui-state-error-custom"); 
-    		 var datastring = '{"cmd":"alarmsearch","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
+    		 var datastring = '{"cmd":"alarmsearch","ispage":"0","start":"'+ $('#datepicker_start').val() + '","end":"'+ $('#datepicker_end').val() 
     		 + '","customdate":"'+ $("#alarmfilter-date").prop('selectedIndex') + '","source":"'+ $('#alarmfilter-source').val() 
     		 + '","level":"'+ $("#alarmfilter-level").val() + '","type":"'+ $('#alarmfilter-type').val()
     		 + '","treatment":"'+ $("#alarmfilter-istreatment").val() + '","nename":"'+ $('#alarmfilter-nename').val() +'"}';
@@ -547,6 +547,22 @@
     	$('#modal_optlists').on('hide.bs.modal', function () {
     		tbl_loglists.clear().draw();
 		});
+		
+		 	$('#btn-nextpage').click(function(){
+
+			var vbum = $('#btn-nextpage').data("versionnum");
+			var pagnum = $('#btn-nextpage').data("pagenum");
+		     var datastring = '{"cmd":"alarmsearch","ispage":"1","isleft":"0","versionnum":"'+vbum+'","pagenum":"'+pagnum+'"}';
+    		 send(datastring);
+    	});
+			 	$('#btn-ppage').click(function(){
+	
+			var vbum = $('#btn-nextpage').data("versionnum");
+			var pagnum = $('#btn-nextpage').data("pagenum");;
+		     var datastring = '{"cmd":"alarmsearch","ispage":"1","isleft":"1",,"versionnum":"'+vbum+'","pagenum":"'+pagnum+'"}';
+    		 send(datastring);
+    	});
+    	
     	
     	$('#btn-alarmexports').click(function(){
     		tableToExcel('tbl_alarmlists');
@@ -746,6 +762,9 @@
        		       	            jsonobj.time
        		       	        ] ).draw( false );     	
         }else if(jsonobj.cmd == "alarmsearch"){
+			tbl_alarmlists.clear().draw();		
+		     $('#btn-nextpage').data("versionnum", jsonobj.versionnum);  
+			  $('#btn-nextpage').data("pagenum", jsonobj.pagenum);  
         	$.each(jsonobj.alarms, function (n, value) {
         		tbl_alarmlists.row.add( [
         		            value.id,

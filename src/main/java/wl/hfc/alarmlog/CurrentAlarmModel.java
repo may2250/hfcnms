@@ -45,6 +45,13 @@ public class CurrentAlarmModel extends Thread {
 
 	private static RedisUtil redisUtil;
 	private static StaticMemory staticmemory;
+	
+	private int pageNumMAX=50;
+
+	private   List<List<nojuTrapLogTableRow>> traprowss = new ArrayList<List<nojuTrapLogTableRow>>();  
+	private int versionNum=0;	
+	
+
 
 	public static void setRedisUtil(RedisUtil redisUtil) {
 		CurrentAlarmModel.redisUtil = redisUtil;
@@ -121,10 +128,20 @@ public class CurrentAlarmModel extends Thread {
 					parseAlarm(msg);
 
 				} else if (cmd.equalsIgnoreCase("alarmsearch")) {
+					String ispage = jsondata.get("ispage").toString();
+					if(ispage.equalsIgnoreCase("0"))//第一次
+						staticmemory.sendRemoteStr(getHistoryTraplogs(jsondata), jsondata.get("sessionid").toString());
+					else//页面next触发
+					{
+						
+						String sss=getPageHtytraplogs(jsondata);
+						if(sss!=null)
+						{
+						 staticmemory.sendRemoteStr(sss, jsondata.get("sessionid").toString());
+						}
+					}
 
-					staticmemory.sendRemoteStr(getHistoryTraplogs(jsondata), jsondata.get("sessionid").toString());
-
-				} else if (cmd.equalsIgnoreCase("grpaddlog")) {
+					} else if (cmd.equalsIgnoreCase("grpaddlog")) {
 
 					InsertOperLog(OperLogTypes.UserGroupOpration,
 							ClsLanguageExmp.formGet("创建分组") + "： " + jsondata.get("title").toString(),
@@ -236,6 +253,83 @@ public class CurrentAlarmModel extends Thread {
 		rootjson.put("invalidalarms", jsonarray);
 		return rootjson.toJSONString();
 	}
+	
+	
+	//.....1
+	private String getPageHtytraplogs(JSONObject jsondata)
+	{
+		
+		int logversion=Integer.parseInt(jsondata.get("versionnum").toString());		
+		int pagenum=Integer.parseInt(jsondata.get("pagenum").toString());	
+		int isleft=Integer.parseInt(jsondata.get("isleft").toString());	
+		if(isleft==1)
+		{
+			pagenum--;
+		}
+		else
+		{
+			pagenum++;		
+		}
+		if(pagenum<=0)
+		{
+			  return null;
+		}
+		JSONObject rootjson = new JSONObject();
+		String descr="";
+		rootjson.put("cmd", jsondata.get("cmd").toString());
+		JSONObject logjson;
+		JSONArray jsonarray = new JSONArray();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+      if(this.versionNum==logversion)    	  
+      {    	  
+    	
+			if(traprowss.size()>=pagenum)
+			{			
+				List<nojuTrapLogTableRow> currenPage= traprowss.get(pagenum-1);
+				
+				for (nojuTrapLogTableRow prow : currenPage) {
+					logjson = new JSONObject();
+					logjson.put("id", prow.TrapLogID);
+					logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+					logjson.put("addr", prow.TrapDevAddress);
+					logjson.put("path", prow.neName);
+					logjson.put("type", prow.TrapLogType.toString());
+					logjson.put("paramname", prow.parmName);
+					logjson.put("paramvalue", prow.paramValue);
+					sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					logjson.put("eventtime", sdf.format(prow.TrapLogTime));
+					logjson.put("solved", prow.TrapTreatMent);
+					logjson.put("solvetime", prow.isTreated);
+					jsonarray.add(logjson);		
+				}				
+				
+				
+			} 
+			else
+			{				
+			  return null;
+			}
+    	  
+
+			//descr=sdf.format(datestart)+" --- "+	sdf.format(datestart)+"  "+jsondata.get("source").toString();
+    	    
+    	  
+      }
+		else
+		{				
+		  return null;
+		}
+		
+		rootjson.put("alarms", jsonarray);	
+		rootjson.put("descr", 	descr);
+		rootjson.put("versionnum", 	versionNum);
+		rootjson.put("pagenum",pagenum);
+		
+		return rootjson.toJSONString();
+
+      
+	
+	}
 
 	private String getHistoryTraplogs(JSONObject jsondata) {
 		JSONObject rootjson = new JSONObject();
@@ -297,23 +391,36 @@ public class CurrentAlarmModel extends Thread {
 			int statusss = Integer.parseInt(jsondata.get("treatment").toString());
 			ArrayList<nojuTrapLogTableRow> traprow = this.logEngine.getTrapRowsWithTime(datestart, dateend,
 					jsondata.get("source").toString(), level, statusss);
+			
+		
 			// System.out.println("-------------traprow-size =" +
 			// traprow.size());
-			for (nojuTrapLogTableRow prow : traprow) {
-				logjson = new JSONObject();
-				logjson.put("id", prow.TrapLogID);
-				logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
-				logjson.put("addr", prow.TrapDevAddress);
-				logjson.put("path", prow.neName);
-				logjson.put("type", prow.TrapLogType.toString());
-				logjson.put("paramname", prow.parmName);
-				logjson.put("paramvalue", prow.paramValue);
-				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				logjson.put("eventtime", sdf.format(prow.TrapLogTime));
-				logjson.put("solved", prow.TrapTreatMent);
-				logjson.put("solvetime", prow.isTreated);
-				jsonarray.add(logjson);
-			}			
+			
+			
+			
+			traprowss = createList(traprow,pageNumMAX);  			
+			versionNum++;
+			
+			if(traprowss.size()>0)
+			{			
+				List<nojuTrapLogTableRow> firstPage= traprowss.get(0);
+				
+				for (nojuTrapLogTableRow prow : firstPage) {
+					logjson = new JSONObject();
+					logjson.put("id", prow.TrapLogID);
+					logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+					logjson.put("addr", prow.TrapDevAddress);
+					logjson.put("path", prow.neName);
+					logjson.put("type", prow.TrapLogType.toString());
+					logjson.put("paramname", prow.parmName);
+					logjson.put("paramvalue", prow.paramValue);
+					sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					logjson.put("eventtime", sdf.format(prow.TrapLogTime));
+					logjson.put("solved", prow.TrapTreatMent);
+					logjson.put("solvetime", prow.isTreated);
+					jsonarray.add(logjson);		
+				}	
+			}
 
 			descr=sdf.format(datestart)+" --- "+	sdf.format(datestart)+"  "+jsondata.get("source").toString();
 
@@ -324,12 +431,32 @@ public class CurrentAlarmModel extends Thread {
 		
 		rootjson.put("alarms", jsonarray);	
 		rootjson.put("descr", 	descr);
-	
+		
+		rootjson.put("pagenum", 1);		
+		rootjson.put("versionnum", versionNum);
 		
 		return rootjson.toJSONString();
 
 	}
 
+	
+	
+    public static List<List<nojuTrapLogTableRow>>  createList(List<nojuTrapLogTableRow> targe,int size) {  
+        List<List<nojuTrapLogTableRow>> listArr = new ArrayList<List<nojuTrapLogTableRow>>();  
+        //获取被拆分的数组个数  
+        int arrSize = targe.size()%size==0?targe.size()/size:targe.size()/size+1;  
+        for(int i=0;i<arrSize;i++) {  
+            List<nojuTrapLogTableRow>  sub = new ArrayList<nojuTrapLogTableRow>();  
+            //把指定索引数据放入到list中  
+            for(int j=i*size;j<=size*(i+1)-1;j++) {  
+                if(j<=targe.size()-1) {  
+                    sub.add(targe.get(j));  
+                }  
+            }  
+            listArr.add(sub);  
+        }  
+        return listArr;  
+    }  
 	private String getHistoryoperlogs(JSONObject jsondata) {
 		JSONObject rootjson = new JSONObject();
 		JSONObject logjson;
