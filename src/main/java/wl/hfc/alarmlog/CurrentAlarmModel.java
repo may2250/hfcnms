@@ -47,9 +47,9 @@ public class CurrentAlarmModel extends Thread {
 	private static StaticMemory staticmemory;
 	
 	private int pageNumMAX=50;
-
-	private   List<List<nojuTrapLogTableRow>> traprowss = new ArrayList<List<nojuTrapLogTableRow>>();  
 	private int versionNum=0;	
+	private   List<List<nojuTrapLogTableRow>> traprowss = new ArrayList<List<nojuTrapLogTableRow>>();  
+
 	
 
 
@@ -262,17 +262,17 @@ public class CurrentAlarmModel extends Thread {
 		int logversion=Integer.parseInt(jsondata.get("versionnum").toString());		
 		int pagenum=Integer.parseInt(jsondata.get("pagenum").toString());	
 		int isleft=Integer.parseInt(jsondata.get("isleft").toString());	
-		if(isleft==1)
+		if(isleft==1)//up page
 		{
 			pagenum--;
 		}
-		else
+		else//next page
 		{
 			pagenum++;		
 		}
 		if(pagenum<=0)
 		{
-			  return null;
+			return null;
 		}
 		JSONObject rootjson = new JSONObject();
 		String descr="";
@@ -291,6 +291,7 @@ public class CurrentAlarmModel extends Thread {
 					logjson = new JSONObject();
 					logjson.put("id", prow.TrapLogID);
 					logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+					//logjson.put("level", prow.level);
 					logjson.put("addr", prow.TrapDevAddress);
 					logjson.put("path", prow.neName);
 					logjson.put("type", prow.TrapLogType.toString());
@@ -305,7 +306,7 @@ public class CurrentAlarmModel extends Thread {
 				
 				
 			} 
-			else
+			else//page over range
 			{				
 			  return null;
 			}
@@ -335,10 +336,12 @@ public class CurrentAlarmModel extends Thread {
 		JSONObject rootjson = new JSONObject();
 		JSONObject logjson;
 		String descr="";
-		rootjson.put("cmd", jsondata.get("cmd").toString());
-		JSONArray jsonarray = new JSONArray();
 		Date datestart;
 		Date dateend;
+		
+		rootjson.put("cmd", jsondata.get("cmd").toString());
+		JSONArray jsonarray = new JSONArray();
+
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String custSlectindexString = jsondata.get("customdate").toString();
@@ -396,19 +399,18 @@ public class CurrentAlarmModel extends Thread {
 			// System.out.println("-------------traprow-size =" +
 			// traprow.size());
 			
-			
-			
+						
 			traprowss = createList(traprow,pageNumMAX);  			
-			versionNum++;
-			
+			versionNum++;			
 			if(traprowss.size()>0)
 			{			
-				List<nojuTrapLogTableRow> firstPage= traprowss.get(0);
+				List<nojuTrapLogTableRow> firstPage= traprowss.get(0);// 第一页
 				
 				for (nojuTrapLogTableRow prow : firstPage) {
 					logjson = new JSONObject();
 					logjson.put("id", prow.TrapLogID);
 					logjson.put("level", NlogType.getAlarmString(prow.TrapLogType));
+					//logjson.put("level", prow.level);
 					logjson.put("addr", prow.TrapDevAddress);
 					logjson.put("path", prow.neName);
 					logjson.put("type", prow.TrapLogType.toString());

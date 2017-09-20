@@ -15,8 +15,9 @@
 		}
 		loadProperties();
 		initWebSocket(encstr);	   	
-    	
+    //	addtablecontextmenu();
     	window.__globalobj__ = {
+			
     		    _webSocket:webSocket,
     		    _realDevice:undefined,
     		    _send:function(datastring) {  
@@ -122,10 +123,10 @@
         		  $(row).attr('id', data[0]);
                   if ( data[1] == "重要告警" || data[1] == "Secondary alarm")  {
                 	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
-                	  $('td', row).parent().addClass('alarm-warning');
+                	  //$('td', row).parent().addClass('alarm-warning');
                   }else if(data[1] == "紧急告警" || data[1] == "Urgent alarm"){
                 	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
-                	  $('td', row).parent().addClass('alarm-danger');                  
+                	//  $('td', row).parent().addClass('alarm-danger');                  
                   }
               }
         } );
@@ -501,10 +502,15 @@
         		  $(row).attr('id', data[0]);
                   if ( data[1] == $.i18n.prop('message_secalarm')) {
                 	  $('td', row).eq(0).prepend('<img src="images/Warning.png" class="alarm_ico" />  ');
-                	  $('td', row).parent().addClass('alarm-warning');
+  
+					  	  if(data[8] == ""){
+              	  $('td', row).parent().addClass('alarm-warning');
+					  }	
                   }else if(data[1] == $.i18n.prop('message_urgentalarm')){
                 	  $('td', row).eq(0).prepend('<img src="images/alert.png" class="alarm_ico" />  ');
-                	  $('td', row).parent().addClass('alarm-danger');                  
+					  if(data[8] == ""){
+                	  $('td', row).parent().addClass('alarm-danger');   
+					  }					  
                   }
               }
             } );
@@ -591,11 +597,20 @@
     	    }
     	});  
     	
+		
+		//双击告警条目定位到设备
     	$('#tbl_devalarm tbody').on('dblclick', 'tr', function () {
             var data = tbl_devalarm.row( this ).data();
             searchtreenode(data[2]);
         } );
-		
+	
+	$('#tbl_devalarm_old tbody').on('dblclick', 'tr', function () {
+            var data = tbl_devalarm_old.row( this ).data();
+            searchtreenode(data[2]);
+        } );
+	
+
+	
     	var tableToExcel = (function() {
             var uri = 'data:application/vnd.ms-excel;base64,',
             template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
@@ -610,6 +625,51 @@
             }
           })();
 	});
+	
+	
+	function addtablecontextmenu(){
+		
+		 $('#logo').contextMenu('myMenu',
+             {
+
+          //菜单样式
+          menuStyle: {
+            border: '2px solid #000'
+          },
+          //菜单项样式
+          itemStyle: {
+            fontFamily : 'verdana',
+            backgroundColor : 'green',
+            color: 'white',
+            border: 'none',
+            padding: '1px'
+
+          },
+          //菜单项鼠标放在上面样式
+          itemHoverStyle: {
+            color: 'blue',
+            backgroundColor: 'red',
+            border: 'none'
+          },
+                  bindings:
+                  {
+                    'edit': function(t) {
+                                          var url="xxx="+t.getAttribute("itemid");
+                        showThickbox("编辑备注",encodeURI(url));
+                    },
+                    'look': function(t) {
+                        var url = "yyy.action?type=look&";
+                    url+="&itemid="+t.getAttribute("itemid");
+                        showThickbox("查看备注",encodeURI(url));
+                    },
+                    'quit': function(t) {
+
+                    }
+                  }
+            });
+	
+}
+	
 	
 	function initWebSocket(encstr) {
 		var hostip = window.location.hostname;
@@ -642,7 +702,7 @@
         	$('#username')[0].textContent = sessionStorage.userName;
         	initTree(jsonobj.treenodes);    
     	    $("#sfversion")[0].textContent = jsonobj.sfversion;
-			   $("#Supporteddevices")[0].textContent = jsonobj.Supporteddevices;			
+			  $("#Supporteddevices")[0].textContent = jsonobj.Supporteddevices;			
         }else if(jsonobj.cmd == "loginAuth"){
         	sessionStorage.authlevel = jsonobj.level;
         	if(jsonobj.level == 3){
@@ -1542,6 +1602,9 @@
          
         return decrypted.toString(CryptoJS.enc.Utf8);    
     }            
+ 
+
+ 
  
     function loadProperties() {
     	$.i18n.properties({
