@@ -3,7 +3,6 @@ package wl.hfc.online;
 import java.io.*;
 import java.util.*;
 
-
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.snmp4j.CommunityTarget;
@@ -23,7 +22,8 @@ import redis.clients.jedis.Jedis;
 import wl.hfc.common.*;
 import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.common.nojuDeviceTableRow.HFCTypes;
-
+import wl.hfc.server.SmsgList;
+import wl.hfc.server.Sstatus;
 
 public class PDUServer extends Thread {
 	// config
@@ -36,35 +36,31 @@ public class PDUServer extends Thread {
 	// private EnumLogoVersion logoVersion;//当前网管定制版本
 	private Snmp session;
 	private boolean isOnlineThreadRun = true;
-	public  Hashtable listDevHash;
+	public Hashtable listDevHash;
 	public static boolean PDUServer_status = false;
 	private static RedisUtil redisUtil;
 
 	public static void setRedisUtil(RedisUtil redisUtil) {
 		PDUServer.redisUtil = redisUtil;
 	}
+
 	public static PDUServer me;
-	
-	
-	
+
 	public PDUServer() {
 
 		try {
 			initSnmpAPI();
 			PDUServer_status = true;
-		
 
 		} catch (Exception ex1) {
 			PDUServer_status = false;
 			ex1.printStackTrace();
 			log.error(ex1.getMessage());
 		}
-		
+
 		this.setName("PDUServer");
-		me=this;
+		me = this;
 	}
-
-
 
 	private void initSnmpAPI() throws IOException {
 
@@ -190,8 +186,9 @@ public class PDUServer extends Thread {
 
 			if (!lNode.isOline) {
 
-				if (devtype == HFCTypes.ES26 || devtype == HFCTypes.Cisco_64657T || devtype == HFCTypes.CiscoEDFA || devtype == HFCTypes.OTECWos
-						|| devtype == HFCTypes.wos3000SCTE || devtype == HFCTypes.wos4000 || devtype == HFCTypes.LYTB_MTRAN2000 || devtype == HFCTypes.wos5000
+				if (devtype == HFCTypes.ES26 || devtype == HFCTypes.Cisco_64657T || devtype == HFCTypes.CiscoEDFA
+						|| devtype == HFCTypes.OTECWos || devtype == HFCTypes.wos3000SCTE || devtype == HFCTypes.wos4000
+						|| devtype == HFCTypes.LYTB_MTRAN2000 || devtype == HFCTypes.wos5000
 						|| devtype == HFCTypes.TransDM_SCTE) {
 
 					lNode.ID = "";
@@ -213,11 +210,12 @@ public class PDUServer extends Thread {
 				rootjson.put("cmd", "devstatus");
 				rootjson.put("ip", ipaddr);
 				rootjson.put("isonline", true);
-				sendToSub(rootjson.toJSONString());
+				sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
 
-				nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.TestOnline), TrapLogTypes.TestOnline, ipaddr,
-						lNode.fullpath, (ClsLanguageExmp.isEn ? "Device online" : "设备上线"), new Date(), "", "", ClsLanguageExmp.isEn ? "Device online" : "设备上线",
-						"");
+				nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.TestOnline),
+						TrapLogTypes.TestOnline, ipaddr, lNode.fullpath,
+						(ClsLanguageExmp.isEn ? "Device online" : "设备上线"), new Date(), "", "",
+						ClsLanguageExmp.isEn ? "Device online" : "设备上线", "");
 				try {
 					// send to CurrentAlarmModel
 					String serStr = null;
@@ -234,8 +232,8 @@ public class PDUServer extends Thread {
 					json.put("val", serStr);
 					sendToQueue(json.toJSONString(), HFCALARM_MESSAGE);
 
-				} catch (Exception e) {	
-					// TODO: handle exception					
+				} catch (Exception e) {
+					// TODO: handle exception
 					log2.info(e.getMessage());
 				}
 
@@ -243,14 +241,13 @@ public class PDUServer extends Thread {
 
 		}
 
-	
 	}
 
 	@SuppressWarnings("static-access")
 	public void run() {
 
 		// OnlineTestThread();
-		log.info(this.getName()+ "....starting.......");
+		log.info(this.getName() + "....starting.......");
 		LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
 
 		PDU outpdu = new PDU();
@@ -264,14 +261,11 @@ public class PDUServer extends Thread {
 		outpdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.17409.1.3.1.19.0")));
 
 		PDUServer_status = true;
-		while (true) {		
-			
+		while (true) {
 
-
-			
 			try {
-				if (this.listDevHash==null) {			
-					
+				if (this.listDevHash == null) {
+
 					Thread.currentThread().sleep(3000);
 					continue;
 				}
@@ -340,11 +334,12 @@ public class PDUServer extends Thread {
 								rootjson.put("cmd", "devstatus");
 								rootjson.put("ip", dev._NetAddress);
 								rootjson.put("isonline", false);
-								sendToSub(rootjson.toJSONString());
+								this.sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
 
-								nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(NlogType.getAlarmLevel(TrapLogTypes.Offline), TrapLogTypes.Offline,
-										dev._NetAddress, dev.fullpath, ClsLanguageExmp.isEn ? "Device offline" : "设备下线", new Date(), "", "",
-										ClsLanguageExmp.isEn ? "Device offline" : "设备下线", "");								
+								nojuTrapLogTableRow traprst = new nojuTrapLogTableRow(
+										NlogType.getAlarmLevel(TrapLogTypes.Offline), TrapLogTypes.Offline,
+										dev._NetAddress, dev.fullpath, ClsLanguageExmp.isEn ? "Device offline" : "设备下线",
+										new Date(), "", "", ClsLanguageExmp.isEn ? "Device offline" : "设备下线", "");
 
 								// online log
 								String serStr = null;
@@ -371,52 +366,56 @@ public class PDUServer extends Thread {
 
 				}
 			} catch (Exception ex1) {
-				// log4net.LogManager.GetLogger("prgLog").Info("Exception from the OnlineTestThread");
+				// log4net.LogManager.GetLogger("prgLog").Info("Exception from the
+				// OnlineTestThread");
 				// log4net.LogManager.GetLogger("prgLog").Info(ex1.ToString()
 				// +
 				// ex1.Message);
 				ex1.printStackTrace();
-			//	log.info(ex1.getMessage());
+				// log.info(ex1.getMessage());
 			}
-			
-			
-
 
 		}
-		//log.error("PDUSERVER STOP WORK");
-		
+		// log.error("PDUSERVER STOP WORK");
 
-	}
-
-	private void sendToSub(String msg) {
-		Jedis jedis = null;
-		try {
-			jedis = redisUtil.getConnection();
-			jedis.publish(MAINKERNEL_MESSAGE, msg);
-			redisUtil.closeConnection(jedis);
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			if (jedis != null)
-				redisUtil.getJedisPool().returnBrokenResource(jedis);
-
-		}
 	}
 
 	private void sendToQueue(String msg, String queue) {
-		Jedis jedis = null;
-		try {
-			jedis = redisUtil.getConnection();
-			jedis.publish(HFCALARM_MESSAGE, msg);
-			redisUtil.closeConnection(jedis);
+		if (Sstatus.isRedis) {
+			Jedis jedis = null;
+			try {
+				jedis = redisUtil.getConnection();
+				jedis.publish(queue, msg);
+				redisUtil.closeConnection(jedis);
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			if (jedis != null)
-				redisUtil.getJedisPool().returnBrokenResource(jedis);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				// e.printStackTrace();
+				if (jedis != null)
+					redisUtil.getJedisPool().returnBrokenResource(jedis);
+
+			}
+
+		} else {
+			if (queue.equalsIgnoreCase(MAINKERNEL_MESSAGE)) {
+				synchronized (SmsgList.storage) {
+					SmsgList.storage.add(msg);
+					SmsgList.storage.notify();
+
+				}
+
+			}
+
+			if (queue.equalsIgnoreCase(HFCALARM_MESSAGE)) {
+				synchronized (SmsgList.alarmstorage) {
+					SmsgList.alarmstorage.add(msg);
+					SmsgList.alarmstorage.notify();
+
+				}
+
+			}
 
 		}
+
 	}
 }

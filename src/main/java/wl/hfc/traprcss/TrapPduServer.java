@@ -16,12 +16,12 @@ import org.snmp4j.transport.*;
 
 import redis.clients.jedis.Jedis;
 
-
 import wl.hfc.alarmlog.CurrentAlarmModel;
 import wl.hfc.common.DevTopd;
 import wl.hfc.common.nojuTrapLogTableRow;
 import wl.hfc.online.pmls;
-
+import wl.hfc.server.SmsgList;
+import wl.hfc.server.Sstatus;
 
 import com.xinlong.util.RedisUtil;
 
@@ -39,8 +39,7 @@ public class TrapPduServer extends Thread {
 	private static Logger logger = Logger.getLogger(TrapPduServer.class);
 	public static TrapPduServer me;
 	private static RedisUtil redisUtil;
-	
-	
+
 	private Address listenAddress;
 	public Hashtable listDevHash;
 
@@ -203,19 +202,33 @@ public class TrapPduServer extends Thread {
 	}
 
 	private void sendToQueue(String msg, String queue) {
-		Jedis jedis = null;
-		try {
-			jedis = redisUtil.getConnection();
-			jedis.publish(HFCALARM_MESSAGE, msg);
-			redisUtil.closeConnection(jedis);
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			if (jedis != null)
-				redisUtil.getJedisPool().returnBrokenResource(jedis);
+		if (Sstatus.isRedis) {
+			Jedis jedis = null;
+			try {
+				jedis = redisUtil.getConnection();
+				jedis.publish(queue, msg);
+				redisUtil.closeConnection(jedis);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				// e.printStackTrace();
+				if (jedis != null)
+					redisUtil.getJedisPool().returnBrokenResource(jedis);
+
+			}
+		} else {
+			if (queue.equalsIgnoreCase(HFCALARM_MESSAGE)) {
+				synchronized (SmsgList.alarmstorage) {
+					SmsgList.alarmstorage.add(msg);
+					SmsgList.alarmstorage.notify();
+
+				}
+
+			}
 
 		}
+
 	}
 
 }

@@ -20,7 +20,17 @@ public class topodtest {
 	
 	
 	public static void main(String args[]) {
-		System.out.println("Hello World!");
+		
+		
+		
+	       Storage storage = new Storage();  
+	        Producer producer = new Producer(storage.getStorage());  
+	        Consumer consumer = new Consumer(storage.getStorage());  
+	        producer.start();  
+	        consumer.start();  
+		
+		
+	/*	System.out.println("Hello World!");
 		RedisUtil redisUtil=new RedisUtil();
 		CDatabaseEngine	ICDatabaseEngine1=new CDatabaseEngine(redisUtil);
 		//ICDatabaseEngine1.getConnection();
@@ -49,7 +59,7 @@ public class topodtest {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
+		*/
 	
 
 		//grp test

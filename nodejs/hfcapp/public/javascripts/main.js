@@ -946,10 +946,15 @@
 			$("#userauth-level").append("<option value='1'>"+$.i18n.prop('message_superadmin')+"</option>");
 			$("#userauth-level").get(0).selectedIndex = 0;
 			
+			$('#userauth-level').attr("disabled", true);
+			
+			
 		}else{
 			$("#userauth-level").append("<option value='2'>"+$.i18n.prop('message_admin')+"</option>");
 			$("#userauth-level").append("<option value='3'>"+$.i18n.prop('message_observer')+"</option>");
 			$("#userauth-level").val(jsonobj.AuthTotal);
+		$('#userauth-level').attr("disabled", false);
+		   
 		}		
 	}
 	
@@ -1008,8 +1013,9 @@
     		$('.trapstatus').removeClass("icon-remove-circle");
     		$('.trapstatus').addClass("icon-ok-circle");
     		$('.trapstatus-lb').removeClass("ui-state-error-custom"); 
-    	}    	
-	    if(jsonobj.redisStatus){  
+    	}    
+		
+/* 	    if(jsonobj.redisStatus){  
 	    	$('.redisstatus').removeClass("icon-remove-circle");
     		$('.redisstatus').addClass("icon-ok-circle");
     		$('.redisstatus-lb').removeClass("ui-state-error-custom");
@@ -1018,7 +1024,7 @@
         	$('.redisstatus').removeClass("icon-ok-circle");
     		$('.redisstatus').addClass("icon-remove-circle");   
     		$('.redisstatus-lb').addClass("ui-state-error-custom");         
-        }           
+        }          */  
 	    $("#server-clients")[0].textContent = jsonobj.clientNum;
 
  

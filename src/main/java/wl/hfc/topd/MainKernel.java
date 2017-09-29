@@ -8,6 +8,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -27,6 +28,7 @@ import wl.hfc.common.NlogType.AuthResult;
 import wl.hfc.online.PDUServer;
 import wl.hfc.online.ParamKernel;
 import wl.hfc.online.Realtime_param_call;
+import wl.hfc.server.SmsgList;
 import wl.hfc.server.Sstatus;
 import wl.hfc.traprcss.TrapPduServer;
 
@@ -35,12 +37,10 @@ public class MainKernel {
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	private static Logger log = Logger.getLogger(MainKernel.class);
 	public static MainKernel me;
-	
-
 
 	@SuppressWarnings("rawtypes")
 	public Hashtable listDevHash = new Hashtable();
-	
+
 	@SuppressWarnings("rawtypes")
 	public Hashtable listGrpHash = new Hashtable();
 
@@ -49,7 +49,6 @@ public class MainKernel {
 	private LNode rootListNode;
 
 	public MainKernel() {
-
 		// Integer xx=null;
 		// log.info(xx.toString());
 		me = this;
@@ -102,19 +101,46 @@ public class MainKernel {
 
 	};
 
+	private List<String> tmplist = new ArrayList<String>();
+
+	public void doMSGlisten() {
+		while (true) {
+			synchronized (SmsgList.storage) {
+				if (SmsgList.storage.isEmpty()) {
+					try {
+						SmsgList.storage.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				tmplist.clear();
+				for (String attribute : SmsgList.storage) {
+					tmplist.add(attribute);
+				}
+				SmsgList.storage.clear();
+
+			}
+			for (String msg : tmplist) {
+				try {
+					phraseMSG(msg);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					log.info(e.getMessage());
+				}
+			}
+
+		}
+	}
+
 	private void phraseMSG(String message) throws InterruptedException, ParseException, IOException {
 		System.out.println(" [x] MainKernel Received: '" + message + "'");
-		
-		
+
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
 		JSONObject rootjson = new JSONObject();
 
-	/*	if (!this.isTopodInit) {
-			staticmemory.sendRemoteStr(getDBstatus(), jsondata.get("sessionid").toString());
-			return;
-
-		}*/
 		if (cmd.equalsIgnoreCase("loginAuth")) {
 			userAuth(jsondata);
 		} else if (cmd.equalsIgnoreCase("getgrouptree")) {
@@ -157,15 +183,18 @@ public class MainKernel {
 
 		log.info("[#3] .....MainKernel starting.......");
 		ClsLanguageExmp.init(true, true);
-		
+
 		new wl.hfc.common.trapDataForWHF(true);
+
+	new SmsgList();
+
 		ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);
 
 		initTopodData();
 
 		// CurrentAlarmModel.me.logEngine=ICDatabaseEngine1;
 		CurrentAlarmModel cam = new CurrentAlarmModel();
-		cam.logEngine=ICDatabaseEngine1;
+		cam.logEngine = ICDatabaseEngine1;
 		cam.setRedisUtil(redisUtil);
 		cam.setStaticMemory(staticmemory);
 
@@ -180,25 +209,28 @@ public class MainKernel {
 		ParamKernel.me.start();
 
 		Sstatus stsengine = new Sstatus(redisUtil);
-		stsengine.start();
-
-		Jedis jedis = null;
 		
-		//以下阻塞
-		try {
 
-			jedis = redisUtil.getConnection();
-			jedis.psubscribe(jedissubSub, MAINKERNEL_MESSAGE);
-			redisUtil.getJedisPool().returnResource(jedis);
+		// 以下阻塞
+		if (Sstatus.isRedis) {
+			Jedis jedis = null;
+			try {
+				jedis = redisUtil.getConnection();
+				jedis.psubscribe(jedissubSub, MAINKERNEL_MESSAGE);
+				redisUtil.getJedisPool().returnResource(jedis);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error(e.getMessage());
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.error(e.getMessage());
 
-			redisUtil.getJedisPool().returnResource(jedis);
+				redisUtil.getJedisPool().returnResource(jedis);
 
+			}
+
+		} else {
+
+			doMSGlisten();
 		}
-
 
 	}
 
@@ -211,20 +243,19 @@ public class MainKernel {
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), sessionid);
 			// 初始化
 			staticmemory.sendRemoteStr(getInitTree(rootjson), sessionid);
-			//staticmemory.sendRemoteStr(getDBstatus(), sessionid);
+			// staticmemory.sendRemoteStr(getDBstatus(), sessionid);
 			rootjson = new JSONObject();
 			rootjson.put("cmd", "getLoginInit");
 			rootjson.put("sessionid", sessionid);
 			sendToQueue(rootjson.toJSONString(), HFCALARM_MESSAGE);
-			
-			
+
 		} else {
 			jsondata.put("Authed", false);
-			if(rst == AuthResult.PASSWD_NOT_MATCH){
+			if (rst == AuthResult.PASSWD_NOT_MATCH) {
 				jsondata.put("desc", "Password Error!");
-			}else if(rst == AuthResult.USER_NOT_EXIST){
+			} else if (rst == AuthResult.USER_NOT_EXIST) {
 				jsondata.put("desc", "User not Exist!");
-			}			
+			}
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), sessionid);
 			staticmemory.RemoveSession(staticmemory.getSessionByID(sessionid));
 		}
@@ -237,7 +268,7 @@ public class MainKernel {
 
 		jsonarray = getSubTree(rootListNode);
 		rootjson.put("treenodes", jsonarray);
-		rootjson.put("sfversion", "Server:"+Sstatus.versionString);
+		rootjson.put("sfversion", "Server:" + Sstatus.versionString);
 		rootjson.put("Supporteddevices", Sstatus.Supporteddevices);
 		String jsonString = rootjson.toJSONString();
 		// System.out.println("jsonString==" + jsonString);
@@ -282,13 +313,11 @@ public class MainKernel {
 		return jsonarray;
 	}
 
-/*	private String getDBstatus() {
-		JSONObject rootjson = new JSONObject();
-		rootjson.put("cmd", "dbclosed");
-		rootjson.put("flag", !ICDatabaseEngine1.flag);
-		return rootjson.toJSONString();
-	}
-*/
+	/*
+	 * private String getDBstatus() { JSONObject rootjson = new JSONObject();
+	 * rootjson.put("cmd", "dbclosed"); rootjson.put("flag",
+	 * !ICDatabaseEngine1.flag); return rootjson.toJSONString(); }
+	 */
 	private JSONArray getSubTree(LNode pnode) {
 		JSONObject subjson;
 		JSONArray jsonarray = new JSONArray();
@@ -364,7 +393,8 @@ public class MainKernel {
 				subjsonarray.add(infojson);
 				infojson = new JSONObject();
 				infojson.put("key", dev.HFCType1.ordinal());
-				infojson.put("title", "<span class='net-info' >" + DProcess.getDevDISCRIPTIONByNettypeString(dev.mNetType) + "</span>");
+				infojson.put("title", "<span class='net-info' >"
+						+ DProcess.getDevDISCRIPTIONByNettypeString(dev.mNetType) + "</span>");
 				infojson.put("hfctype", dev.HFCType1.ordinal());
 				infojson.put("icon", "images/net_info.ico");
 				subjsonarray.add(infojson);
@@ -519,7 +549,8 @@ public class MainKernel {
 
 		// //get the group information from jsondata ,build a new
 		// UserGroupTableRow ***************
-		UserGroupTableRow mDevGrpTableRow = new UserGroupTableRow(0, jsondata.get("value").toString(), Integer.parseInt(jsondata.get("key").toString()));
+		UserGroupTableRow mDevGrpTableRow = new UserGroupTableRow(0, jsondata.get("value").toString(),
+				Integer.parseInt(jsondata.get("key").toString()));
 
 		System.out.println(jsondata.get("value").toString());
 
@@ -564,9 +595,9 @@ public class MainKernel {
 			rootjson = new JSONObject();
 			rootjson.put("cmd", "grpaddlog");
 			rootjson.put("title", mDevGrpTableRow.UserGroupName);
-			
-			Uhandle userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
-			rootjson.put("operater", userSession.username);			
+
+			Uhandle userSession = staticmemory.getUserSessionByID(jsondata.get("sessionid").toString());
+			rootjson.put("operater", userSession.username);
 
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 
@@ -589,10 +620,8 @@ public class MainKernel {
 
 		/*
 		 * if (!this.ICDatabaseEngine1.clearUserDevGrpInfo("",
-		 * mDevGrpTableRow.UserGroupID)) { return false; } if
-		 * (!this.ICDatabaseEngine1
-		 * .clearElemetTableByGID(cmd.mDevGrpTableRow.UserGroupID)) { return
-		 * false; }
+		 * mDevGrpTableRow.UserGroupID)) { return false; } if (!this.ICDatabaseEngine1
+		 * .clearElemetTableByGID(cmd.mDevGrpTableRow.UserGroupID)) { return false; }
 		 */
 
 		// have child node
@@ -624,8 +653,8 @@ public class MainKernel {
 			rootjson.put("cmd", "grpdellog");
 			rootjson.put("title", delgrp.BindUserGroupTableRow.UserGroupName);
 
-			Uhandle userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
-			rootjson.put("operater", userSession.username);			
+			Uhandle userSession = staticmemory.getUserSessionByID(jsondata.get("sessionid").toString());
+			rootjson.put("operater", userSession.username);
 
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 
@@ -639,36 +668,30 @@ public class MainKernel {
 
 	}
 
-	
-    private void reflashPath(devGroup grp, Hashtable effectPathList)
-    {   	
-    	
+	private void reflashPath(devGroup grp, Hashtable effectPathList) {
 
 		// select the all root nodes
 		for (LNode lNode : grp.Nodes) {
 
-            InodeInterface InodeInterface1 = (InodeInterface)lNode.Tag;
-            if (InodeInterface1.isGroup())
-            {
-                devGroup devGroup1 = (devGroup)InodeInterface1;
-                lNode.fullpath = lNode.parent.fullpath + "/" + devGroup1.BindUserGroupTableRow.UserGroupName;
-               // effectPathList.Add(devGroup1.BindUserGroupTableRow.UserGroupID.ToString(), lNode.fullpath);
-                reflashPath(devGroup1, effectPathList);
-            }
-            else
-            {
-                DevTopd DevTopd1 = (DevTopd)InodeInterface1;
-                lNode.fullpath = lNode.parent.fullpath + "/" + DevTopd1.BindnojuDeviceTableRow.Name;
-             //   effectPathList.Add(DevTopd1.BindnojuDeviceTableRow.NetAddress.ToString(), lNode.fullpath);             
+			InodeInterface InodeInterface1 = (InodeInterface) lNode.Tag;
+			if (InodeInterface1.isGroup()) {
+				devGroup devGroup1 = (devGroup) InodeInterface1;
+				lNode.fullpath = lNode.parent.fullpath + "/" + devGroup1.BindUserGroupTableRow.UserGroupName;
+				// effectPathList.Add(devGroup1.BindUserGroupTableRow.UserGroupID.ToString(),
+				// lNode.fullpath);
+				reflashPath(devGroup1, effectPathList);
+			} else {
+				DevTopd DevTopd1 = (DevTopd) InodeInterface1;
+				lNode.fullpath = lNode.parent.fullpath + "/" + DevTopd1.BindnojuDeviceTableRow.Name;
+				// effectPathList.Add(DevTopd1.BindnojuDeviceTableRow.NetAddress.ToString(),
+				// lNode.fullpath);
 
-            }
+			}
 
 		}
-    	
 
+	}
 
-    }
-	
 	public boolean handleUpdGrp(JSONObject jsondata) {
 		boolean mStatus = false;
 
@@ -688,11 +711,11 @@ public class MainKernel {
 			rootGroup.BindUserGroupTableRow = mDevGrpTableRow;
 			// rootGroup.name = rootGroup.BindUserGroupTableRow.UserGroupName;
 			rootGroup.fullpath = rootGroup.parent.fullpath + "/" + rootGroup.BindUserGroupTableRow.UserGroupName;
-			
-			 Hashtable effectPathList = new Hashtable();
+
+			Hashtable effectPathList = new Hashtable();
 			// effectPathList.put(rootGroup.BindUserGroupTableRow.UserGroupID,rootGroup.fullpath);
-			 reflashPath(rootGroup, effectPathList);
-			
+			reflashPath(rootGroup, effectPathList);
+
 			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "nodeedit");
 			rootjson.put("key", jsondata.get("key").toString());
@@ -704,8 +727,8 @@ public class MainKernel {
 			rootjson.put("cmd", "grpeditlog");
 			rootjson.put("title", jsondata.get("title").toString());
 
-			Uhandle userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
-			rootjson.put("operater", userSession.username);			
+			Uhandle userSession = staticmemory.getUserSessionByID(jsondata.get("sessionid").toString());
+			rootjson.put("operater", userSession.username);
 
 			// for syslog
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
@@ -739,16 +762,16 @@ public class MainKernel {
 		} catch (Exception e) {// invalid ip
 			return null;
 		}
-		 if(listDevHash.containsKey(addr.getHostAddress()))
-		{
+		if (listDevHash.containsKey(addr.getHostAddress())) {
 			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "devaddfalse");
-			rootjson.put("netip",addr.getHostAddress());		
-			rootjson.put("desc", "Device already exist");		
+			rootjson.put("netip", addr.getHostAddress());
+			rootjson.put("desc", "Device already exist");
 			staticmemory.sendRemoteStr(rootjson.toJSONString(), jsondata.get("sessionid").toString());
 			return null;
 		}
-		nojuDeviceTableRow mDeviceTableRow = new nojuDeviceTableRow(addr.getHostAddress(), DProcess.netTypeFromStringNetTypes(devtypestr));
+		nojuDeviceTableRow mDeviceTableRow = new nojuDeviceTableRow(addr.getHostAddress(),
+				DProcess.netTypeFromStringNetTypes(devtypestr));
 		mDeviceTableRow.UserGroupID = usergroupID;
 		mDeviceTableRow._ROCommunity = jsondata.get("rcommunity").toString();
 		mDeviceTableRow._RWCommunity = jsondata.get("wcommunity").toString();
@@ -788,7 +811,8 @@ public class MainKernel {
 			subjsonarray.add(subjson);
 			subjson = new JSONObject();
 			subjson.put("key", dev.mNetType.toString());
-			subjson.put("title", "<span class='net-info' >" + DProcess.getDevDISCRIPTIONByNettypeString(dev.mNetType) + "</span>");
+			subjson.put("title",
+					"<span class='net-info' >" + DProcess.getDevDISCRIPTIONByNettypeString(dev.mNetType) + "</span>");
 			subjson.put("icon", "images/net_info.ico");
 			subjsonarray.add(subjson);
 			rootnodejson.put("children", subjsonarray);
@@ -803,15 +827,14 @@ public class MainKernel {
 			rootjson.put("key", dev._NetAddress);
 			rootjson.put("title", dev.BindnojuDeviceTableRow.Name);
 
-			Uhandle userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
-			rootjson.put("operater", userSession.username);			
+			Uhandle userSession = staticmemory.getUserSessionByID(jsondata.get("sessionid").toString());
+			rootjson.put("operater", userSession.username);
 
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 
 			return dev;
 
 		}
-	
 
 		return null;
 	}
@@ -842,7 +865,8 @@ public class MainKernel {
 		mStatus = this.ICDatabaseEngine1.DeviceTableUpdateRow(mDeviceTableRow);
 
 		if (mStatus) {
-			staticmemory.SetRealTimeDevCommunity(netaddr, jsondata.get("rcommunity").toString(), jsondata.get("wcommunity").toString());
+			staticmemory.SetRealTimeDevCommunity(netaddr, jsondata.get("rcommunity").toString(),
+					jsondata.get("wcommunity").toString());
 			dev.BindnojuDeviceTableRow = mDeviceTableRow;
 
 			dev.fullpath = dev.parent.fullpath + "/" + dev.BindnojuDeviceTableRow.Name;
@@ -855,8 +879,8 @@ public class MainKernel {
 			rootjson.put("key", dev.BindnojuDeviceTableRow.get_NetAddress());
 			rootjson.put("title", dev.BindnojuDeviceTableRow.Name);
 
-			Uhandle userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
-			rootjson.put("operater", userSession.username);			
+			Uhandle userSession = staticmemory.getUserSessionByID(jsondata.get("sessionid").toString());
+			rootjson.put("operater", userSession.username);
 
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 		} else {
@@ -905,8 +929,8 @@ public class MainKernel {
 			rootjson.put("key", delDev.BindnojuDeviceTableRow.get_NetAddress());
 			rootjson.put("title", delDev.BindnojuDeviceTableRow.Name);
 
-			Uhandle userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
-			rootjson.put("operater", userSession.username);			
+			Uhandle userSession = staticmemory.getUserSessionByID(jsondata.get("sessionid").toString());
+			rootjson.put("operater", userSession.username);
 
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 
@@ -967,11 +991,11 @@ public class MainKernel {
 		jsondata.put("userlist", jsonarray);
 		return jsondata.toJSONString();
 	}
-	
+
 	private void handleUsers(JSONObject jsondata) {
 		String cmd = jsondata.get("target").toString();
 		String uname = jsondata.get("username").toString();
-		if(cmd.equalsIgnoreCase("getuserinfo")){
+		if (cmd.equalsIgnoreCase("getuserinfo")) {
 			try {
 				nojuUserAuthorizeTableRow uatr = ICDatabaseEngine1.UserAuthorizeTableFindUser(uname);
 				jsondata.put("AuthTotal", uatr.AuthTotal);
@@ -981,13 +1005,13 @@ public class MainKernel {
 				e.printStackTrace();
 			}
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
-		}else if(cmd.equalsIgnoreCase("modifypassword_admin")){
+		} else if (cmd.equalsIgnoreCase("modifypassword_admin")) {
 			handleUpdateUser_admin(jsondata);
-		}else if(cmd.equalsIgnoreCase("modifypassword")){
+		} else if (cmd.equalsIgnoreCase("modifypassword")) {
 			handleUpdateUser(jsondata);
-		}else if(cmd.equalsIgnoreCase("deluser")){
+		} else if (cmd.equalsIgnoreCase("deluser")) {
 			handleDeleteUser(jsondata);
-		}else if(cmd.equalsIgnoreCase("adduser")){
+		} else if (cmd.equalsIgnoreCase("adduser")) {
 			handleInsertUser(jsondata);
 		}
 	}
@@ -1035,9 +1059,9 @@ public class MainKernel {
 
 		boolean mStatus = false;
 		Byte AuthTotal = Byte.parseByte(jsondata.get("AuthTotal").toString());
-		//AuthTotal++;
-		nojuUserAuthorizeTableRow newRow = new nojuUserAuthorizeTableRow(-1, jsondata.get("username").toString(), AuthTotal, jsondata.get("password")
-				.toString());
+		// AuthTotal++;
+		nojuUserAuthorizeTableRow newRow = new nojuUserAuthorizeTableRow(-1, jsondata.get("username").toString(),
+				AuthTotal, jsondata.get("password").toString());
 
 		if (this.ICDatabaseEngine1.UserAuthorizeTableInsertRow(newRow) > 0) {
 			mStatus = true;
@@ -1046,17 +1070,17 @@ public class MainKernel {
 		if (mStatus) {
 			jsondata.put("key", newRow.UserID); // ParentGroupID
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
-			
+
 			// for syslog
 			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "insertuserlog");
-			rootjson.put("title",newRow.UserName);
+			rootjson.put("title", newRow.UserName);
 
-			Uhandle userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
-			rootjson.put("operater", userSession.username);			
+			Uhandle userSession = staticmemory.getUserSessionByID(jsondata.get("sessionid").toString());
+			rootjson.put("operater", userSession.username);
 
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
-			
+
 		}
 	}
 
@@ -1079,49 +1103,49 @@ public class MainKernel {
 			// for syslog
 			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "deluserlog");
-			rootjson.put("title",jsondata.get("username").toString());
+			rootjson.put("title", jsondata.get("username").toString());
 
-			Uhandle userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
-			rootjson.put("operater", userSession.username);			
+			Uhandle userSession = staticmemory.getUserSessionByID(jsondata.get("sessionid").toString());
+			rootjson.put("operater", userSession.username);
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 		} else {
 			log.info("Del user :" + uname + " Error!");
 		}
 
 	}
-	
+
 	private void handleUpdateUser_admin(JSONObject jsondata) {
 		String uname = jsondata.get("username").toString();// userid
 		nojuUserAuthorizeTableRow uatr;
 		boolean mStatus = true;
 		try {
 			uatr = ICDatabaseEngine1.UserAuthorizeTableFindUser(uname);
-			Byte AuthTotal = Byte.parseByte(jsondata.get("AuthTotal").toString());			
-			//AuthTotal++;
-			mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID, jsondata.get("password").toString(), AuthTotal);
-			
+			Byte AuthTotal = Byte.parseByte(jsondata.get("AuthTotal").toString());
+			// AuthTotal++;
+			mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID,
+					jsondata.get("password").toString(), AuthTotal);
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			mStatus = false;
-		}		
+		}
 
 		if (mStatus) {
-			
-		     System.out.println("update user password ok ");
+
+			System.out.println("update user password ok ");
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
-			
+
 			// for syslog
 			JSONObject rootjson = new JSONObject();
 			rootjson.put("cmd", "updateuserlog");
-			rootjson.put("title",jsondata.get("username").toString());
+			rootjson.put("title", jsondata.get("username").toString());
 
-			Uhandle userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
-			rootjson.put("operater", userSession.username);			
+			Uhandle userSession = staticmemory.getUserSessionByID(jsondata.get("sessionid").toString());
+			rootjson.put("operater", userSession.username);
 			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 		}
 	}
-
 
 	private void handleUpdateUser(JSONObject jsondata) {
 		String uname = jsondata.get("username").toString();// userid
@@ -1130,35 +1154,36 @@ public class MainKernel {
 		try {
 			uatr = ICDatabaseEngine1.UserAuthorizeTableFindUser(uname);
 			Byte AuthTotal = Byte.parseByte(jsondata.get("AuthTotal").toString());
-			
-			if(jsondata.get("oldpassword").toString().equalsIgnoreCase(uatr.PassWord)){
-				if(AuthTotal != 0){
-					mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID, jsondata.get("password").toString(), AuthTotal);
-				}else{
-					mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID, jsondata.get("password").toString(), uatr.AuthTotal);
+
+			if (jsondata.get("oldpassword").toString().equalsIgnoreCase(uatr.PassWord)) {
+				if (AuthTotal != 0) {
+					mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID,
+							jsondata.get("password").toString(), AuthTotal);
+				} else {
+					mStatus = this.ICDatabaseEngine1.UserAuthorizeTableUpdateRow(uatr.UserID,
+							jsondata.get("password").toString(), uatr.AuthTotal);
 				}
-				
-			}else{
+
+			} else {
 				mStatus = false;
 			}
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			mStatus = false;
 		}
-		
 
 		if (mStatus) {
 			staticmemory.sendRemoteStr(jsondata.toJSONString(), jsondata.get("sessionid").toString());
 			// for syslog
-						JSONObject rootjson = new JSONObject();
-						rootjson.put("cmd", "updateuserlog");
-						rootjson.put("title",jsondata.get("username").toString());
+			JSONObject rootjson = new JSONObject();
+			rootjson.put("cmd", "updateuserlog");
+			rootjson.put("title", jsondata.get("username").toString());
 
-						Uhandle userSession=staticmemory.getUserSessionByID( jsondata.get("sessionid").toString());			
-						rootjson.put("operater", userSession.username);			
-						sendToQueue(rootjson.toJSONString(), "currentalarm.message");
+			Uhandle userSession = staticmemory.getUserSessionByID(jsondata.get("sessionid").toString());
+			rootjson.put("operater", userSession.username);
+			sendToQueue(rootjson.toJSONString(), "currentalarm.message");
 		}
 	}
 
@@ -1192,17 +1217,32 @@ public class MainKernel {
 	}
 
 	public void sendToQueue(String msg, String queue) {
-		Jedis jedis = null;
-		try {
-			jedis = redisUtil.getConnection();
-			jedis.publish(queue, msg);
 
-		} catch (Exception e) {
-			log.info(e.getMessage());
+		if (Sstatus.isRedis) {
+			Jedis jedis = null;
+			try {
+				jedis = redisUtil.getConnection();
+				jedis.publish(queue, msg);
 
-		} finally {
-			redisUtil.closeConnection(jedis);
+			} catch (Exception e) {
+				log.info(e.getMessage());
+
+			} finally {
+				redisUtil.closeConnection(jedis);
+			}
+
+		} else {
+			if (queue.equalsIgnoreCase(HFCALARM_MESSAGE)) {
+				synchronized (SmsgList.alarmstorage) {
+					SmsgList.alarmstorage.add(msg);
+					System.out.println("生产" + "msg");
+					SmsgList.alarmstorage.notify();
+
+				}
+
+			}
 		}
+
 	}
 
 }

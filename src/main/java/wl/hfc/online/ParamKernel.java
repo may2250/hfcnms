@@ -2,8 +2,10 @@ package wl.hfc.online;
 
 import java.io.IOException;
 import java.net.InetAddress;
-
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -11,11 +13,11 @@ import org.json.simple.parser.ParseException;
 
 import com.xinlong.util.*;
 
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 import wl.commonComponent.DeviceSearchEngine;
 import wl.hfc.common.DevTopd;
+import wl.hfc.server.SmsgList;
 
 //DevGrpModel将承担拓扑的组建，维护，以及组，设备的增删查改的响应
 public class ParamKernel extends Thread {
@@ -43,6 +45,7 @@ public class ParamKernel extends Thread {
 		ParamKernel.staticmemory = staticmemory;
 	}
 
+	private List<String> tmplist = new ArrayList<String>();
 	private JedisPubSub jedissubSub = new JedisPubSub() {
 		public void onUnsubscribe(String arg0, int arg1) {
 
@@ -86,7 +89,7 @@ public class ParamKernel extends Thread {
 
 		if (cmd.equalsIgnoreCase("hfcvalueset")) {
 			hfcValueSet(jsondata);
-		} else if (cmd.equalsIgnoreCase("getdevicedetail")) {//clinet open device view
+		} else if (cmd.equalsIgnoreCase("getdevicedetail")) {// clinet open device view
 			if (!jsondata.get("predev").toString().equalsIgnoreCase("")) {
 				staticmemory.removeRealTimeDev(jsondata.get("predev").toString(), jsondata.get("sessionid").toString());
 			}
@@ -194,17 +197,45 @@ public class ParamKernel extends Thread {
 
 	public void run() {
 
-		log.info(this.getName() + "....starting.......");
-		Jedis jedis = null;
-		try {
+		/*
+		 * log.info(this.getName() + "....starting......."); Jedis jedis = null; try {
+		 * 
+		 * jedis = redisUtil.getConnection(); jedis.psubscribe(jedissubSub,
+		 * PARAMKERNEL_MESSAGE); redisUtil.getJedisPool().returnResource(jedis);
+		 * 
+		 * } catch (Exception e) { e.printStackTrace();
+		 * redisUtil.getJedisPool().returnBrokenResource(jedis);
+		 * 
+		 * }
+		 */
 
-			jedis = redisUtil.getConnection();
-			jedis.psubscribe(jedissubSub, PARAMKERNEL_MESSAGE);
-			redisUtil.getJedisPool().returnResource(jedis);
+		while (true) {
+			synchronized (SmsgList.paknelstorage) {
+				// 消费者去仓库拿消息的时候，如果发现仓库数据为空，则等待
+				if (SmsgList.paknelstorage.isEmpty()) {
+					try {
+						SmsgList.paknelstorage.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			redisUtil.getJedisPool().returnBrokenResource(jedis);
+				tmplist.clear();
+				for (String attribute : SmsgList.paknelstorage) {
+					tmplist.add(attribute);
+				}
+				SmsgList.paknelstorage.clear();
+
+			}
+			for (String msg : tmplist) {
+				try {
+					phraseMSG(msg);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					log.info(e.getMessage());
+				}
+			}
 
 		}
 
