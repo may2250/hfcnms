@@ -32,7 +32,9 @@ public class Services_Websocket {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	private static final String PARAMKERNEL_MESSAGE = "paramkernel.message";
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
-	private static final String Sstatus_MESSAGE = "sstatus.message";
+
+	
+	
 	private static final String deskey = "prevail0";
 	private static RedisUtil redisUtil;
 	private static StaticMemory staticmemory;
@@ -42,6 +44,7 @@ public class Services_Websocket {
 	}
 
 	public static void setStaticMemory(StaticMemory staticmemory) {
+		System.out.println("****************************************************&&&&&&&&&&&&&&&&&&HHHHHHHHHHHHHHHHHHHHHHHHHHHHHAAAAAAAAAAAAA " );
 		Services_Websocket.staticmemory = staticmemory;
 	}
 

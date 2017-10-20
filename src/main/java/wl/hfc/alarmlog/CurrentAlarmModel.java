@@ -68,6 +68,9 @@ public class CurrentAlarmModel extends Thread {
 		// invalidRowsTable = new Hashtable();
 
 		this.setName("CurrentAlarmModel");
+		
+		System.out.println("CurrentAlarmModelCurrentAlarmModelCurrentAlarmModelCurrentAlarmModelCurrentAlarmModelCurrentAlarmModelHHHHHHHHHHHHHHHHHHAAAAAAAAAAAAA " );
+		
 		me = this;
 
 	}

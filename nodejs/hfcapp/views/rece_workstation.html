@@ -4,31 +4,31 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript">		
+	$("#tab-dev2").on('dblclick' ,'.trapaddr',trapaddrEvent);
+
+	     $("#devcommparam").load("/mj/osw.html .tbl_devtips",commonViewLoad);
+		$("#tab-dev2").load("/mj/osw.html .devdetail-public",trapViewload);
+
+	  
+	  
+	  
 		$('#dev-status-text')[0].textContent = $.i18n.prop('message_devconnected');
-		$('#i18n-devip')[0].textContent = $.i18n.prop('message_devip');
-		$('#i18n-sysdesc')[0].textContent = $.i18n.prop('message_devsysdesc');
-		$('#i18n-contact')[0].textContent = $.i18n.prop('message_devcontact');
-		$('#i18n-uptime')[0].textContent = $.i18n.prop('message_devuptime');
+
 		$('#i18n-devoptrvparam')[0].textContent = $.i18n.prop('message_devoptrvparam');
 		$('#i18n-publicparam')[0].textContent = $.i18n.prop('message_devpublicparam');
 		$('#i18n-inputpower')[0].textContent = $.i18n.prop('message_devinpower');
-		$('#i18n-publictype')[0].textContent = $.i18n.prop('message_devtype');		
+	
 		$('#i18n-rtnoputpower')[0].textContent = $.i18n.prop('message_devrtnouputpower');
 		$('#i18n-channelnumber')[0].textContent = $.i18n.prop('message_devchannelnumber');
 		$('#i18n-rtnbiascurrent')[0].textContent = $.i18n.prop('message_devrtnbiascurrent');
+		
 		$('#i18n-powername')[0].textContent = $.i18n.prop('message_devpowername');
 		$('#i18n-powerval')[0].textContent = $.i18n.prop('message_devpowerval');
 		$('#i18n-outputtbl')[0].textContent = $.i18n.prop('message_devoutputtbl');
-		$('#i18n-outputlevel')[0].textContent = $.i18n.prop('message_devoutputlevel');
-		
-		$('#i18n-traptbl')[0].textContent = $.i18n.prop('message_devtraptbl');		
-		$('#i18n-trapindex')[0].textContent = $.i18n.prop('message_devtrapindex');
-		$('#i18n-trapip')[0].textContent = $.i18n.prop('message_devtrapip');		
-		$('#i18n-publictemper')[0].textContent = $.i18n.prop('message_devtemper');
-		$('#i18n-publicID')[0].textContent = $.i18n.prop('message_devlogicid');		
-		$('#i18n-publictype')[0].textContent = $.i18n.prop('message_devtype');		
-		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');	
+		$('#i18n-outputlevel')[0].textContent = $.i18n.prop('message_devoutputlevel');	
+
 		$('#i18n-agcvalidpower')[0].textContent = $.i18n.prop('agcvalidpower');
+		  
 	</script>
 </head>
 <body>
@@ -38,24 +38,8 @@
 			<!-- <li class="dev-img"><img src = "../images/oprv8604jl.png" /></li> -->
 		 	 <li class="dev-img"><img id = "HfcMinWorkstationimg" /></li> 
 			<li class="dev-status"><span id="dev-status-text"></span></li>
-			<li>
-				<table class="table tbl_noborder tbl_devtips">
-	        		<tr>
-	        			<td id="i18n-devip"></td>
-	        			<td id="panel-devip"></td>
-	        			<td id="i18n-sysdesc"></td>
-	        			<td id="panel-devinfo"></td>	        			
-	        		</tr>
-	        		<tr>
-	        			<td id="i18n-contact"></td>
-	        			<td id="panel-devcontact"></td>
-	        			<td id="i18n-uptime"></td>
-	        			<td id="panel-onlinetimeticks"></td>
-	        		</tr>
-					<tr>	
-	        			<td id="did"></td>
-	        		</tr>
-	        	</table>
+			<li id="devcommparam">
+		 	
 			</li>
 		</ul>	
 		<div class = "devdetail-content">
@@ -146,78 +130,7 @@
 					    </div>				    	
 				    </div>
 				    <div class="tab-pane tab-devpane" id="tab-dev2">
-				    	<div class="devdetail-public">
-				    		<div>
-				    			<table class="table table-bordered">
-								   <caption id="i18n-traptbl">Trap目标主机表</caption>
-								   <thead>
-									    <tr>
-									      <th id="i18n-trapindex">序号.</th>
-									      <th id="i18n-trapip">目标IP地址</th>
-									    </tr>
-								  </thead>
-								 <tbody>
-									    <tr>
-									      <td><label class="commonAgentTrapIndex_row0"></label></td>
-									      <td><label class="trapaddr" data-rownum="0" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row0"></label></td>
-									    </tr>
-									    <tr>
-									      <td><label class="commonAgentTrapIndex_row1"></label></td>
-									      <td><label class="trapaddr" data-rownum="1" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row1"></label></td>
-									    </tr>
-									    <tr>
-									      <td><label class="commonAgentTrapIndex_row2"></label></td>
-									      <td><label class="trapaddr" data-rownum="2" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row2"></label></td>
-									    </tr>
-									    <tr>
-									      <td><label class="commonAgentTrapIndex_row3"></label></td>
-									      <td><label class="trapaddr" data-rownum="3" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row3"></label></td>
-									    </tr>
-									    <tr>
-									      <td><label class="commonAgentTrapIndex_row4"></label></td>
-									      <td><label class="trapaddr" data-rownum="4" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row4"></label></td>
-									    </tr>
-									    <tr>
-									      <td><label class="commonAgentTrapIndex_row5"></label></td>
-									      <td><label class="trapaddr" data-rownum="5" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row5"></label></td>
-									    </tr>
-									    <tr>
-									      <td><label class="commonAgentTrapIndex_row6"></label></td>
-									      <td><label class="trapaddr" data-rownum="6" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row6"></label></td>
-									    </tr>
-									    <tr>
-									      <td><label class="commonAgentTrapIndex_row7"></label></td>
-									      <td><label class="trapaddr" data-rownum="7" data-paramname="commonAgentTrapIP" id="commonAgentTrapIP_row7"></label></td>
-									    </tr>
-								  </tbody>
-								</table>
-				    		</div>
-					    	<div>
-					    		<table class="table tbl_hfcpublic">
-								  <tbody>
-									    <tr>
-									      <td id="i18n-publictemper">温度:</td>
-									      <td><input type="text" class="form-control" id="commonInternalTemperature" readonly></td>									      
-									    </tr>
-									    <tr>
-									      <td id="i18n-publicID">逻辑ID:</td>
-									      <td><input type="text" class="form-control" id="commonNELogicalID" readonly></td>
-									    </tr>
-									    <tr>
-									      <td id="i18n-publictype">型号:</td>
-									      <td><input type="text" class="form-control" id="commonNEModelNumber" readonly></td>
-									    </tr>
-									    <tr>
-									      <td id="i18n-publicsn">序列号:</td>
-									      <td><input type="text" class="form-control" id="commonNESerialNumber" readonly></td>
-									    </tr>
-									    <tr>
-									      <td>MAC:</td>
-									      <td><input type="text" class="form-control" id="commonDeviceMACAddress" readonly></td>
-									    </tr>
-								  </tbody>
-								</table>
-					    	</div>							
+										
 					    </div>				    	
 				    </div>
 				</div>

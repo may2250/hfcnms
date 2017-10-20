@@ -21,9 +21,10 @@ function __getDeviceDetail(devnode, jsonobj) {
 		break;
 	case "HfcMinWorkstation":
 	case 14:
-		$(".candile").load("/rece_workstation", function () {
+	/* 	$(".candile").load("/rece_workstation", function () {
 			parseHfcDevice(jsonobj);
-		});
+		}); */
+			$(".candile").load("/rece_workstation");
 		break;
 	default:
 		$(".candile").load("/rece_workstation");

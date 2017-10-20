@@ -208,3 +208,69 @@ $('.device-close').click(function () {
 	__globalobj__._send(datastring);
 	$('.candile').empty();
 });
+
+
+    function trapaddrEvent() {
+		
+
+	if (sessionStorage.authlevel == 3) {
+		return;
+	}
+	var domstr = $(this).data("paramname");
+	var rownum = $(this).data("rownum");
+	$("#dialog-form").dialog({
+		autoOpen: false,
+		height: 240,
+		width: 300,
+		modal: true,
+		buttons: {
+			Ok: function () {
+				if (ipvalidate($("#set_value").val())) {
+					var node = __globalobj__._realDevice.getFirstChild();
+					var datastring = '{"cmd":"hfcvalueset","target":"setTrapHost","ip":"' + __globalobj__._realDevice.key + '","domstr":"' + domstr + '","isRow":"true","rowNum":"' + rownum + '","value":"' + $("#set_value").val() + '"}';
+					__globalobj__._send(datastring);
+					$(this).dialog("close");
+				} else {
+					$("#set_value").addClass("ui-state-error-custom")
+				}
+			}
+		},
+		close: function () {
+			$("#set_value").removeClass("ui-state-error-custom");
+		}
+	});
+	$("#set_value").val($(this)[0].textContent);
+	updateTips($.i18n.prop('message_devnewtrap'));
+	$("#dialog-form").dialog("open");
+		
+	}
+	
+	
+	function commonViewLoad() {		
+		
+		$('#i18n-devip')[0].textContent = $.i18n.prop('message_devip');
+		$('#i18n-sysdesc')[0].textContent = $.i18n.prop('message_devsysdesc');
+		$('#i18n-contact')[0].textContent = $.i18n.prop('message_devcontact');
+		$('#i18n-uptime')[0].textContent = $.i18n.prop('message_devuptime');
+	
+	}
+	function trapViewload() {		
+		
+		   $('#i18n-traptbl')[0].textContent = $.i18n.prop('message_devtraptbl');		
+		$('#i18n-trapindex')[0].textContent = $.i18n.prop('message_devtrapindex');
+		$('#i18n-trapip')[0].textContent = $.i18n.prop('message_devtrapip');
+		
+		
+				$('#i18n-publictemper')[0].textContent = $.i18n.prop('message_devtemper');
+		$('#i18n-publicID')[0].textContent = $.i18n.prop('message_devlogicid');		
+		$('#i18n-publictype')[0].textContent = $.i18n.prop('message_devtype');		
+		$('#i18n-publicsn')[0].textContent = $.i18n.prop('message_devsn');	
+				$('#i18n-publictype')[0].textContent = $.i18n.prop('message_devtype');	
+		
+	
+	}
+	
+		
+	
+
+

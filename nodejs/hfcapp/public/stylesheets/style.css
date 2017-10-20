@@ -166,6 +166,7 @@ a:hover { transition: all 200ms ease-in-out; }
 .top_menu p {
 	margin: 0 0 2px;
 	font-size: 10px;
+	float:right;
 }
 
 .top_menu ul  li:hover{
@@ -187,7 +188,7 @@ a:hover { transition: all 200ms ease-in-out; }
     display: block;
     float: left;
     cursor: pointer;
-    text-align: center;
+    text-align: left;
     margin: 0 auto;
 }
 
@@ -208,6 +209,8 @@ a:hover { transition: all 200ms ease-in-out; }
 .navigation p {
 	font-size:10px;
 	padding: 0px 8px;
+	margin: 0 auto;
+	margin-top:10px;
 }
 
 .candile {
@@ -221,8 +224,8 @@ a:hover { transition: all 200ms ease-in-out; }
 .users_details_left {
 	float: right;
     width: 13%;
-    padding-top: 10px;
-    height: 52.6px;	
+/*     padding-top: 10px;
+    height: 52.6px; */	
     margin-right: 20px;
 }
 
@@ -516,7 +519,7 @@ background-color:#00C6D7!important;
 
 .logo {
     width: 100%;
-    padding: 12px 14px;
+    /* padding: 12px 14px; */
     box-sizing: border-box;
     font-size: 14px;
 }
