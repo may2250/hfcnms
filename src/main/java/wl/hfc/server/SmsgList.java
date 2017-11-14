@@ -20,7 +20,7 @@ public class SmsgList {
         return storage;  
     }  
     public void setStorage(List<String> storage) {  
-        this.storage = storage;  
+        storage = storage;  
     }  
       
 }  

@@ -21,7 +21,7 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 
 	// VariableSnmpVars
 	public VariableSnmpVar[] mjVariables;
-	public VariableSnmpVar[] cInputVariables;
+	public VariableSnmpVar[] cDCVariables;
 	public VariableSnmpVar[] cOutputVariables;
 
 	public VariableSnmpVar[] swichVariables;
@@ -43,7 +43,7 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		pdeviceIDString = PDeviceID;
 		mjVariables = new VariableSnmpVar[3];
 		// tables
-		cInputVariables = new VariableSnmpVar[2];
+		cDCVariables = new VariableSnmpVar[2];
 		cOutputVariables = new VariableSnmpVar[4];
 
 		swichVariables = new VariableSnmpVar[4];
@@ -68,18 +68,18 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		mjVariables[vIns] = new VariableSnmpVar(row1, ".1", ToValueMode.FmtInteger, false);
 		paramHashTable.put(row1.ParamMibLabel, mjVariables[vIns]);
 		
-		
+		mjVariables[vIns].isformatter=true;
 	    if (PDeviceID.contains("YZ"))
 	    {			
-			mjVariables[vIns].isformatter=true;
+
 			mjVariables[vIns].maxValue=30;
 			mjVariables[vIns].minValue=0;		
 			mjVariables[vIns].setpvalue=0;
 			
 	    }
 	    else
-	    {			
-			mjVariables[vIns].isformatter=true;
+	    {		
+
 			mjVariables[vIns].maxValue=40;
 			mjVariables[vIns].minValue=0;		
 			mjVariables[vIns].setpvalue=0;
@@ -100,14 +100,13 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		}
 
 		vIns = 0;
-		row1 = new nojuParmsTableRow("heOpRxUnitSwitchMode", heOpRxUnitSwitchMode, "heOpRxUnitSwitchMode", true,
-				(float) 1, "F0", "");
+		row1 = new nojuParmsTableRow("heOpRxUnitSwitchMode", heOpRxUnitSwitchMode, "heOpRxUnitSwitchMode", false,
+				(float) 1, "F", "");
 		swichVariables[vIns] = new VariableSnmpVar(row1, ".0", ToValueMode.FmtInteger, false);
 		paramHashTable.put(row1.ParamMibLabel, swichVariables[vIns]);
 		this.switchVarPdu.add(new VariableBinding(swichVariables[vIns++].FullSnmpOid));
 
-		row1 = new nojuParmsTableRow("heOpRxUnitCurChan", heOpRxUnitCurChan, "heOpRxUnitCurChan", true, (float) 1, "F0",
-				"");
+		row1 = new nojuParmsTableRow("heOpRxUnitCurChan", heOpRxUnitCurChan, "heOpRxUnitCurChan", false, (float) 1, "F","");
 		swichVariables[vIns] = new VariableSnmpVar(row1, ".0", ToValueMode.FmtInteger, false);
 		paramHashTable.put(row1.ParamMibLabel, swichVariables[vIns]);
 		this.switchVarPdu.add(new VariableBinding(swichVariables[vIns++].FullSnmpOid));
@@ -115,13 +114,24 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		row1 = new nojuParmsTableRow("heOpRxUnitoOpticalThreshold", heOpRxUnitoOpticalThreshold,
 				"heOpRxUnitoOpticalThreshold", true, (float) 0.1, "F1", "dBm");
 		swichVariables[vIns] = new VariableSnmpVar(row1, ".0", ToValueMode.FmtInteger, false);
+		
+		swichVariables[vIns].isformatter=true;
+		swichVariables[vIns].setpvalue=0;
+		swichVariables[vIns].maxValue=120;
+		swichVariables[vIns].minValue=-100;	
+	
+		
 		paramHashTable.put(row1.ParamMibLabel, swichVariables[vIns]);
 		this.switchVarPdu.add(new VariableBinding(swichVariables[vIns++].FullSnmpOid));
 
+		
+
+		
+		
 		// B通道输入光功率
 		row1 = new nojuParmsTableRow("heOpRxUnitoOpticalInputPower", heOpRxUnitoOpticalInputPower,
 				"heOpRxUnitoOpticalInputPower", true, (float) 0.1, "F", "dBm");
-		swichVariables[vIns] = new VariableSnmpVar(row1, ".0", ToValueMode.FmtInteger, false);
+		swichVariables[vIns] = new VariableSnmpVar(row1, ".0", ToValueMode.FmtInteger, true);
 		paramHashTable.put(row1.ParamMibLabel, swichVariables[vIns]);
 		this.switchVarPdu.add(new VariableBinding(swichVariables[vIns++].FullSnmpOid));
 
@@ -134,12 +144,12 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		tableDCPdu.setType(PDU.GETNEXT);
 
 		row1 = pmls.tabch.get("oaDCPowerName");
-		cInputVariables[0] = new VariableSnmpVar(row1);
-		cInputVariables[0].ToValueMode1 = ToValueMode.FmtString;
+		cDCVariables[0] = new VariableSnmpVar(row1);
+		cDCVariables[0].ToValueMode1 = ToValueMode.FmtString;
 
 		row1 = pmls.tabch.get("oaDCPowerVoltage");
-		cInputVariables[1] = new VariableSnmpVar(row1, ".1", ToValueMode.FmtInteger, true);
-		paramHashTable.put(row1.ParamMibLabel, cInputVariables[1]);
+		cDCVariables[1] = new VariableSnmpVar(row1, ".1", ToValueMode.FmtInteger, true);
+		paramHashTable.put(row1.ParamMibLabel, cDCVariables[1]);
 
 		int begincol = 0;
 		int endcol = 1;
@@ -147,7 +157,7 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		VariableSnmpVar[] headerinfos = new VariableSnmpVar[endcol - begincol + 1];
 		int enumi;
 		for (enumi = 0; enumi < headerinfos.length; enumi++) {
-			headerinfos[enumi] = (VariableSnmpVar) cInputVariables[enumi + begincol];
+			headerinfos[enumi] = (VariableSnmpVar) cDCVariables[enumi + begincol];
 			tableDCPdu.add(new VariableBinding(headerinfos[enumi].MibDefinedOid));
 		}
 
@@ -182,7 +192,11 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 			headerinfos[enumi] = (VariableSnmpVar) cOutputVariables[enumi + begincol];
 			tableOutpdu.add(new VariableBinding(headerinfos[enumi].MibDefinedOid));
 		}
-
+		
+		
+		exinfor.put("heOpRxUnitoOpticalThreshold", "[-10,+12]");
+		exinfor.put("heOpRxUnitSwitchMode", "Auto,Manual");//0,1
+		exinfor.put("heOpRxUnitCurChan", "A,B");//0,1
 		me = this;
 
 	}
@@ -221,19 +235,24 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 		SnmpTableInfo reTable = SnmpEngine.GetMibTableVariables((PDU) this.tableDCPdu.clone(), cTgt, sver);
 		pJson.put("dctablerownum", reTable.RowNum);
 
+
+		SnmpEngine.tabVarToJason(this.cDCVariables,reTable, pJson,"powertbl");
+		
 		cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress, this.thisDev.ROCommunity, SnmpConstants.version1);
 		SnmpTableInfo reTable1 = SnmpEngine.GetMibTableVariables((PDU) this.tableOutpdu.clone(), cTgt, sver);
 		pJson.put("outtablerownum", reTable1.RowNum);
 
-		SnmpEngine.tabVarToJason(this.cInputVariables, this.cOutputVariables, reTable, reTable1, pJson);
+		//SnmpEngine.tabVarToJason(this.cInputVariables, this.cOutputVariables, reTable, reTable1, pJson);
 
+
+		SnmpEngine.tabVarToJason(this.cOutputVariables,reTable1, pJson,"pumptbl");
 		// table thread
-		for (int j = 0; j < this.cInputVariables.length; j++) {
+		for (int j = 0; j < this.cDCVariables.length; j++) {
 
-			if (this.cInputVariables[j].withNoThreashold) {
+			if (this.cDCVariables[j].withNoThreashold) {
 				for (int i = 0; i < reTable.RowNum; i++) {
-					this.getSubVarsWithTagInfo(this.cInputVariables[j], i);
-					SnmpEngine.ThreadPramVarToJason(this.cInputVariables[j], pJson, i, true);
+					this.getSubVarsWithTagInfo(this.cDCVariables[j], i);
+					SnmpEngine.ThreadPramVarToJason(this.cDCVariables[j], pJson, i, true);
 				}
 			}
 		}
@@ -250,15 +269,18 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 
 		}
 
+		
+		//switch vars
 		if (this.thisDev.DEVICEID.equalsIgnoreCase("WE-HD-SWITCH")
 				|| thisDev.DEVICEID.equalsIgnoreCase("WE-YZ-SWITCH")) {
+			
 			cTgt = SnmpEngine.createMajorPDU(thisDev.mNetAddress, this.thisDev.ROCommunity, SnmpConstants.version1);
 
 			inPDU = sver.SyncSendSnmpPdu(this.switchVarPdu, cTgt);
 			if (inPDU == null) {
 				throw new Exception("paramGetException,Failed!");
 			}
-			SnmpEngine.ParseBasicVars(this.swichVariables, inPDU);
+			SnmpEngine.ParseBasicVars(swichVariables, inPDU);
 			SnmpEngine.snmpVarToJason(swichVariables, pJson);
 
 			for (int i = 0; i < this.swichVariables.length; i++) {
@@ -270,10 +292,11 @@ public class EDFASnmpPrevail extends WosBaseSnmp {
 
 			for (int i = 0; i < swichVariables.length; i++) {
 				if (this.swichVariables[i].withNoThreashold) {
-					SnmpEngine.ThreadPramVarToJason(mjVariables[i], pJson, true);
+					SnmpEngine.ThreadPramVarToJason(swichVariables[i], pJson, true);
 				}
 
 			}
+			
 
 		}
 

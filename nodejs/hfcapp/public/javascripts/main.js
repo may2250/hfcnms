@@ -8,6 +8,7 @@
 	var tbl_alarmlists = null;
 	var lazyLoadData = null;
 	var encstrencstr;
+	var isEN=true;//网管中英文版本选择
 	$(function() {
 		encstr = sessionStorage.userName+'/'+ sessionStorage.passWord;
 		if(localStorage.void == undefined){
@@ -1617,7 +1618,7 @@
             name : 'strings', //资源文件名称
             path : '../i18n/', //资源文件路径
             mode : 'both', //用Map的方式使用资源文件中的值
-            language : 'en',
+            language :isEN?'en':'zh',
             async: true,
             callback : function() {//加载成功后设置显示内容
                 $('.nav_search p')[0].textContent = $.i18n.prop('message_navsearch');
@@ -1755,7 +1756,7 @@
                 $('#alarmfilter-istreatment')[0].options[0].textContent = $.i18n.prop('message_all');
                 $('#alarmfilter-istreatment')[0].options[1].textContent = $.i18n.prop('message_acknowledged');
                 $('#alarmfilter-istreatment')[0].options[2].textContent = $.i18n.prop('message_unacknowledged');
-                
+      
                 $(".context-menu-list li").each(function(i){
         			switch(i){
         			case 0:

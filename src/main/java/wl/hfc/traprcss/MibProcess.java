@@ -11,10 +11,9 @@ public class MibProcess {
 
     private static MibOperations MibOperObj;
 
-    //����MIB���������
 
     public static boolean MibProcess_status=false;
-    private static Logger logger = Logger.getLogger(TrapPduServer.class);
+    private static Logger logger = Logger.getLogger(MibProcess.class);
     public MibProcess(String path)
     {
         //shut by noju

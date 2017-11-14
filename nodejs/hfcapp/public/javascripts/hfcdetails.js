@@ -152,6 +152,13 @@ function parse_edfa(jsonobj) {
 	$('#oaInputOpticalPower').val(jsonobj.oaInputOpticalPower);
 	$('#oaOutputOpticalPower').val(jsonobj.oaOutputOpticalPower);
 	$('#oaOptAtt').val(jsonobj.oaOptAtt);
+	
+		$('#heOpRxUnitSwitchMode').data("comvalues", jsonobj.exinfor.heOpRxUnitSwitchMode); 
+			
+		$('#heOpRxUnitCurChan').data("comvalues", jsonobj.exinfor.heOpRxUnitCurChan);  		
+					
+		$('#heOpRxUnitoOpticalThreshold').data("comvalues", jsonobj.exinfor.heOpRxUnitoOpticalThreshold);  
+			
 	if (jsonobj.ViewATT == '1') {
 		$('#oaOptAtt').show();
 		$('#i18n-att').show();
@@ -161,9 +168,65 @@ function parse_edfa(jsonobj) {
 		$('#i18n-att').hide();
 
 	}
+	
+	
+		if (jsonobj.ViewSwtich == '1') {
+		$('#message_Binputpower').show();
+		$('#message_SwitchMode').show();
+			$('#message_CurrentChannel').show();
+				$('#message_SwitchThreshold').show();
+				
+				
+						$('#heOpRxUnitoOpticalInputPower').show();
+		$('#heOpRxUnitSwitchMode').show();
+			$('#heOpRxUnitCurChan').show();
+				$('#heOpRxUnitoOpticalThreshold').show();
+				
+				//SWICH VARS
+					$('#heOpRxUnitoOpticalInputPower').val(jsonobj.heOpRxUnitoOpticalInputPower);
+						var mArray = jsonobj.exinfor.heOpRxUnitSwitchMode.split(",");
+								switch (jsonobj.heOpRxUnitSwitchMode) {
+			case "0":
+				$('#heOpRxUnitSwitchMode').val(mArray[0]);
+				break;
+			case "1":
+				$('#heOpRxUnitSwitchMode').val(mArray[1]);
+				break;
+			}
+			
+
+				var mArray = jsonobj.exinfor.heOpRxUnitCurChan.split(",");
+								switch (jsonobj.heOpRxUnitCurChan) {
+			case "0":
+				$('#heOpRxUnitCurChan').val(mArray[0]);
+				break;
+			case "1":
+				$('#heOpRxUnitCurChan').val(mArray[1]);
+				break;
+			}
+			$('#heOpRxUnitoOpticalThreshold').val(jsonobj.heOpRxUnitoOpticalThreshold);			
+			
+			
+		    appendStatus(jsonobj.heOpRxUnitoOpticalInputPower6, "#heOpRxUnitoOpticalInputPower");//B通道输入功率
+	
+					
+	} else {
+
+	$('#message_Binputpower').hide();
+		$('#message_SwitchMode').hide();
+			$('#message_CurrentChannel').hide();
+				$('#message_SwitchThreshold').hide();
+				
+								$('#heOpRxUnitoOpticalInputPower').hide();
+		$('#heOpRxUnitSwitchMode').hide();
+			$('#heOpRxUnitCurChan').hide();
+				$('#heOpRxUnitoOpticalThreshold').hide();
+
+	}
+	appendStatus(jsonobj.oaInputOpticalPower6, "#oaInputOpticalPower");
 
 	appendStatus(jsonobj.oaInputOpticalPower6, "#oaInputOpticalPower");
-	appendStatus(jsonobj.oaOutputOpticalPower6, "#oaOutputOpticalPower");
+
 
 	var i = 0;
 	$.each(jsonobj.powertbl, function (key, itemv) {

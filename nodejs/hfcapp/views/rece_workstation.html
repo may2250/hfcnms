@@ -4,9 +4,9 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript">		
-	$("#tab-dev2").on('dblclick' ,'.trapaddr',trapaddrEvent);
+	$("#tab-dev2").on('dblclick' ,'.trapaddr',trapaddrEvent);//必须在load之前先指定事件，否则load加载的元素是不会响应cmpjs.js中的事件的
 
-	     $("#devcommparam").load("/mj/osw.html .tbl_devtips",commonViewLoad);
+	    $("#devcommparam").load("/mj/osw.html .tbl_devtips",commonViewLoad);
 		$("#tab-dev2").load("/mj/osw.html .devdetail-public",trapViewload);
 
 	  

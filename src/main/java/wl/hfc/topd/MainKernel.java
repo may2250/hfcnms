@@ -58,13 +58,16 @@ public class MainKernel {
 	// private static Logger log = Logger.getLogger(MainKernel.class);
 	private static RedisUtil redisUtil;
 	private static StaticMemory staticmemory;
-
+	private static Inojutest nojutestInstance;
 	public static void setRedisUtil(RedisUtil redisUtil) {
 		MainKernel.redisUtil = redisUtil;
 	}
 
 	public static void setStaticMemory(StaticMemory staticmemory) {
 		MainKernel.staticmemory = staticmemory;
+	}
+	public static void setInojutest(Inojutest nojutestInstance) {
+		MainKernel.nojutestInstance = nojutestInstance;
 	}
 
 	private JedisPubSub jedissubSub = new JedisPubSub() {
@@ -181,6 +184,8 @@ public class MainKernel {
 	@SuppressWarnings("static-access")
 	public void start() {
 
+		
+		nojutestInstance.doPrint();
 		log.info("[#3] .....MainKernel starting.......");
 		ClsLanguageExmp.init(true, true);
 

@@ -70,6 +70,9 @@
 	<bean id="staticMemory" class="com.xinlong.util.StaticMemory">
 	</bean>
     
+    	<bean id="nojutest" class="wl.hfc.topd.Nojutest2">
+	</bean>
+    
     <!-- 业务对象 -->
 	<bean id="websocktService" class="com.xinlong.Services.Services_Websocket" >
 		<property name="redisUtil" ref="redisUtil" />
@@ -89,6 +92,7 @@
 	<bean id="mainKernel" class="wl.hfc.topd.MainKernel" >
 		<property name="redisUtil" ref="redisUtil" />
 		<property name="staticMemory" ref="staticMemory" />
+				<property name="Inojutest" ref="nojutest" />
 	</bean>
 <!--
 		<bean id="CurrentAlarmModel" class="wl.hfc.alarmlog.CurrentAlarmModel" >
