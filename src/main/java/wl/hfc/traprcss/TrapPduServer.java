@@ -43,8 +43,12 @@ public class TrapPduServer extends Thread {
 	private Address listenAddress;
 	public Hashtable listDevHash;
 
-	public TrapPduServer() {
+	public TrapPduServer() {		
 
+		logger.info("******      ******      ******     **************    *********");			
+		logger.info("                       |||||||||||                             ");	
+		logger.info("******      ******      ******     **************    *********");	
+		logger.info("construct  TrapPduServer");	
 		String filePath = pmls.class.getResource("/").toString();
 		filePath = filePath.substring(filePath.indexOf("file:") + 5);
 		filePath = filePath + "mibs";
@@ -70,13 +74,14 @@ public class TrapPduServer extends Thread {
 
 	public void run() {
 
+	
 		if (!MibProcess.MibProcess_status) {
 			TrapPduServer_status = false;
 			logger.info(this.getName() + "....no need starting.......");
 			return;
 		}
+		logger.info(this.getName() + "  run.......");
 
-		logger.info(this.getName() + "....starting.......");
 		try {
 
 			String trapport = "162";

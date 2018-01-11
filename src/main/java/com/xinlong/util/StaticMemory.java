@@ -25,7 +25,7 @@ public class StaticMemory {
 	public void AddSession(Uhandle pHandle) {
 		synchronized (this) {
 			webSocketClients.add(pHandle);
-			System.out.println("now add the  "+pHandle.username+":::" + pHandle.getId());
+			log.info("now add the user  "+pHandle.username+":::" + pHandle.getId());
 			System.out.println("Uhandless Size::::" + webSocketClients.size());
 		}
 	}
@@ -36,8 +36,9 @@ public class StaticMemory {
 				if(session.getId() == pHandle.getId()){
 					webSocketClients.remove(pHandle);
 					removeRealTimeDev(session.getId());
-					System.out.println("now close the  "+pHandle.username+":::" + session.getId());
+					log.info("now remove the user  "+pHandle.username+":::" + session.getId());
 					System.out.println("Uhandless Size::::" + webSocketClients.size());
+		
 				}
 			}
 			

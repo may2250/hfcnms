@@ -25,7 +25,7 @@ import wl.hfc.server.SmsgList;
 import wl.hfc.server.Sstatus;
 import wl.hfc.traprcss.TrapPduServer;
 
-// @ServerEndpoint 注解是一个类层次的注解，它的功能主要是将目前的类定义成一个websocket服务器端,
+// @ServerEndpoint 注解是一个类层次的注解，它的功能主要是将目前的类定义成		一个websocket服务器端,
 @ServerEndpoint("/websocketservice/{username}/{password}")
 public class Services_Websocket {
 	private static Logger log = Logger.getLogger(Services_Websocket.class);
@@ -43,11 +43,20 @@ public class Services_Websocket {
 		Services_Websocket.redisUtil = redisUtil;
 	}
 
-	public static void setStaticMemory(StaticMemory staticmemory) {
-		System.out.println("****************************************************&&&&&&&&&&&&&&&&&&HHHHHHHHHHHHHHHHHHHHHHHHHHHHHAAAAAAAAAAAAA " );
+	public static void setStaticMemory(StaticMemory staticmemory) {	
 		Services_Websocket.staticmemory = staticmemory;
 	}
 
+	
+//	在使用spring框架配置AOP的时候，不管是通过XML配置文件还是注解的方式都需要定义pointcut"切入点"  
+//	例如定义切入点表达式 execution(* com.sample.service.impl..*.*(..))  
+//	execution()是最常用的切点函数，其语法如下所示：  
+//	 整个表达式可以分为五个部分：  
+//	 1、execution(): 表达式主体。  
+//	 2、第一个*号：表示返回类型，*号表示所有的类型。  
+//	 3、包名：表示需要拦截的包名，后面的两个句点表示当前包和当前包的所有子包，com.sample.service.impl包、子孙包下所有类的方法。  
+//	 4、第二个*号：表示类名，*号表示所有的类。  
+//	 5、*(..):最后这个星号表示方法名，*号表示所有的方法，后面括弧里面表示方法的参数，两个句点表示任何
 	
 /*	public Services_Websocket()
 	{		
@@ -57,9 +66,124 @@ public class Services_Websocket {
 	public void onMessage(String message, Session session) throws IOException, InterruptedException {
 
 		// Print the client message for testing purposes
-		System.out.println("Services_Websocket Received: " + message);
+		log.debug("Received: '" + message + "'");
 		parseWebMessage(message, session);		
 
+	}
+
+	private void sendToQueue(String msg, String queue) {
+
+		if (Sstatus.isRedis) {
+			Jedis jedis = null;
+			try {
+				jedis = redisUtil.getConnection();
+				jedis.publish(queue, msg);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+
+			} finally {
+				redisUtil.closeConnection(jedis);
+			}
+
+		} else {
+			
+
+			if (queue.equalsIgnoreCase(MAINKERNEL_MESSAGE)) {
+				synchronized (SmsgList.storage) {
+					SmsgList.storage.add(msg);
+					SmsgList.storage.notify();
+
+				}
+			}
+
+			if (queue.equalsIgnoreCase(HFCALARM_MESSAGE)) {
+				synchronized (SmsgList.alarmstorage) {
+					SmsgList.alarmstorage.add(msg);
+					SmsgList.alarmstorage.notify();
+
+				}
+
+			}
+
+			if (queue.equalsIgnoreCase(PARAMKERNEL_MESSAGE)) {
+				synchronized (SmsgList.paknelstorage) {
+					SmsgList.paknelstorage.add(msg);
+					SmsgList.paknelstorage.notify();
+
+				}
+
+			}
+
+		}
+
+		
+	}
+
+	@OnOpen//他们定义了当一个新用户连接和断开的时候所调用的方法。
+	public void onOpen(@PathParam("username") String username, @PathParam("password") String password,
+			Session session) {
+
+		log.info("onOpen   id:" + session.getId());
+		JSONObject rootjson = new JSONObject();
+		rootjson.put("cmd", "loginAuth");
+		if (username.equalsIgnoreCase("undefined") || password.equalsIgnoreCase("undefined")) {
+			rootjson.put("Authed", false);
+			try {
+				session.getBasicRemote().sendText(rootjson.toJSONString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				// 解密
+				String passWord = password;// decrypt(password, deskey);
+						// 用户认证
+				if (staticmemory.getSessionByuser(username)) {
+					// 已有同名用户登录
+					rootjson.put("Authed", false);
+					rootjson.put("desc", "User Already login!");
+					session.getBasicRemote().sendText(rootjson.toJSONString());
+				} else {
+					Uhandle usession = new Uhandle(username, session);
+					staticmemory.AddSession(usession);// 增加客户端名称
+		
+					// send to mainkernel to auth this user
+					rootjson.put("sessionid", session.getId());
+					rootjson.put("username", username);
+					rootjson.put("password", passWord);
+					sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
+
+					/*
+					 * // for syslog rootjson = new JSONObject(); rootjson.put("cmd", "userlogin");
+					 * rootjson.put("title",username); rootjson.put("operater",username);
+					 * sendToQueue(rootjson.toJSONString(), "currentalarm.message");
+					 */
+				}
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+	@OnError
+	public void onError(Throwable throwable) {
+		System.out.println(throwable.getMessage());
+	}
+
+	@OnClose
+	public void onClose(Session session) {
+
+		log.info("onClose   id:" + session.getId());
+		staticmemory.RemoveSession(session);
+		// System.out.println("Connection closed::::" + staticmemory.getCount());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -135,121 +259,6 @@ public class Services_Websocket {
 			e.printStackTrace();
 			log.info(e.getMessage());
 		}
-	}
-
-	private void sendToQueue(String msg, String queue) {
-
-		if (Sstatus.isRedis) {
-			Jedis jedis = null;
-			try {
-				jedis = redisUtil.getConnection();
-				jedis.publish(queue, msg);
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-
-			} finally {
-				redisUtil.closeConnection(jedis);
-			}
-
-		} else {
-			
-
-			if (queue.equalsIgnoreCase(MAINKERNEL_MESSAGE)) {
-				synchronized (SmsgList.storage) {
-					SmsgList.storage.add(msg);
-					SmsgList.storage.notify();
-
-				}
-			}
-
-			if (queue.equalsIgnoreCase(HFCALARM_MESSAGE)) {
-				synchronized (SmsgList.alarmstorage) {
-					SmsgList.alarmstorage.add(msg);
-					SmsgList.alarmstorage.notify();
-
-				}
-
-			}
-
-			if (queue.equalsIgnoreCase(PARAMKERNEL_MESSAGE)) {
-				synchronized (SmsgList.paknelstorage) {
-					SmsgList.paknelstorage.add(msg);
-					SmsgList.paknelstorage.notify();
-
-				}
-
-			}
-
-		}
-
-		
-	}
-
-	@OnOpen
-	public void onOpen(@PathParam("username") String username, @PathParam("password") String password,
-			Session session) {
-		System.out.println("onOpen   " + session.getId());
-
-		JSONObject rootjson = new JSONObject();
-		rootjson.put("cmd", "loginAuth");
-		if (username.equalsIgnoreCase("undefined") || password.equalsIgnoreCase("undefined")) {
-			rootjson.put("Authed", false);
-			try {
-				session.getBasicRemote().sendText(rootjson.toJSONString());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				// 解密
-				String passWord = password;// decrypt(password, deskey);
-				System.out.println("username::des::" + username + ":::password:des::" + passWord);
-				// 用户认证
-				if (staticmemory.getSessionByuser(username)) {
-					// 已有同名用户登录
-					rootjson.put("Authed", false);
-					rootjson.put("desc", "User Already login!");
-					session.getBasicRemote().sendText(rootjson.toJSONString());
-				} else {
-					Uhandle usession = new Uhandle(username, session);
-					staticmemory.AddSession(usession);// 增加客户端名称
-
-					// send to mainkernel to auth this user
-					rootjson.put("sessionid", session.getId());
-					rootjson.put("username", username);
-					rootjson.put("password", passWord);
-					sendToQueue(rootjson.toJSONString(), MAINKERNEL_MESSAGE);
-
-					/*
-					 * // for syslog rootjson = new JSONObject(); rootjson.put("cmd", "userlogin");
-					 * rootjson.put("title",username); rootjson.put("operater",username);
-					 * sendToQueue(rootjson.toJSONString(), "currentalarm.message");
-					 */
-				}
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
-	}
-
-	@OnError
-	public void onError(Throwable throwable) {
-		System.out.println(throwable.getMessage());
-	}
-
-	@OnClose
-	public void onClose(Session session) {
-		System.out.println("onClose   " + session.getId());
-		staticmemory.RemoveSession(session);
-		// System.out.println("Connection closed::::" + staticmemory.getCount());
 	}
 
 }

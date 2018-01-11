@@ -129,7 +129,7 @@ public class Onlinetest {
 
 		while (true) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(1000); 
 				System.out.println("123123123");
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -168,7 +168,7 @@ public class Onlinetest {
 	public static void trapTest() {
 
 		RedisUtil redisUtil = new RedisUtil();
-		CDatabaseEngine ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);
+		CDatabaseEngine ICDatabaseEngine1 = new CDatabaseEngine();
 		// ICDatabaseEngine1.getConnection();
 
 		Date dt = new Date();

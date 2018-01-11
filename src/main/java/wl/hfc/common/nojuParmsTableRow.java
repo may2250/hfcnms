@@ -10,6 +10,7 @@ public class nojuParmsTableRow {
 	public String ParamDispText;
 	public boolean IsFormatEnable;
 	public float FormatCoff;
+	
 	public String FormatText;
 	public String FormatUnit;
 

@@ -246,10 +246,26 @@ public class TrapProCenter {
 					}
 
 				} else {
-					paramName = oid.toString();
-					trapstring += ClsLanguageExmp.trapDiscrGet("名称") + paramName;
-					pValue = String.valueOf(tmpVAL);
-					trapstring += ClsLanguageExmp.trapDiscrGet("值") + pValue + " ";
+			         if (logicalID.contains("EDFA_SWITCH"))
+                     {
+
+                         if (oid.toString().equalsIgnoreCase(".1.3.6.1.4.1.17409.1.11.4.1.5.1") || oid.toString().equalsIgnoreCase(".1.3.6.1.4.1.17409.1.11.7.0"))
+                         {
+                             paramName = "B-" + ClsLanguageExmp.trapDiscrGet("输入光功率");
+                             trapstring += ClsLanguageExmp.trapDiscrGet("名称") + ":" + paramName;
+                             double tmpf2 = tmpVAL * 0.1;
+                             pValue = tmpf2 + "dBm";
+                             trapstring += ClsLanguageExmp.trapDiscrGet("值") + ":" + pValue;
+                         }
+                     }
+			         else
+			         {					
+					
+						paramName = oid.toString();
+						trapstring += ClsLanguageExmp.trapDiscrGet("名称") + paramName;
+						pValue = String.valueOf(tmpVAL);
+						trapstring += ClsLanguageExmp.trapDiscrGet("值") + pValue + " ";
+			         }
 
 				}
 				System.out.println(trapstring);

@@ -12,7 +12,7 @@ public class Sstatus {
 		private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 		private static Logger log = Logger.getLogger(Sstatus.class);	
 		public static boolean isRedis=false;
-		public static String versionString="V1.06";
+		public static String versionString="V1.07";
 		public static String Supporteddevices="Supported devices：WE-HD,WR1001J,WR1002RJ-II,WR1002JSE,EM30,WT-1550-DM-I,Optical switch";
 
 		private    RedisUtil redisUtil;

@@ -225,7 +225,7 @@ function parse_edfa(jsonobj) {
 	}
 	appendStatus(jsonobj.oaInputOpticalPower6, "#oaInputOpticalPower");
 
-	appendStatus(jsonobj.oaInputOpticalPower6, "#oaInputOpticalPower");
+	appendStatus(jsonobj.oaOutputOpticalPower6, "#oaOutputOpticalPower");
 
 
 	var i = 0;

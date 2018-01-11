@@ -17,7 +17,8 @@ public class Realtime_param_call extends Thread {
 	private static StaticMemory staticmemory;
 	public static Realtime_param_call me;
 
-	public Realtime_param_call() {
+	public Realtime_param_call() {		
+		log.info("construct  CurrentAlarmModel");	
 		this.setName("Realtime_param_call");
 		me = this;
 	}
@@ -29,7 +30,8 @@ public class Realtime_param_call extends Thread {
 	@SuppressWarnings("static-access")
 	public void run() {
 
-		log.info(this.getName() + "....starting.......");
+		log.info(this.getName() + "  run.......");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		while (true) {
 			if (!staticmemory.getAllRealTimeDev().isEmpty()) {

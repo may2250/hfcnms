@@ -48,6 +48,7 @@ public class PDUServer extends Thread {
 
 	public PDUServer() {
 
+		log.info("construct  PDUServer");
 		try {
 			initSnmpAPI();
 			PDUServer_status = true;
@@ -247,7 +248,9 @@ public class PDUServer extends Thread {
 	public void run() {
 
 		// OnlineTestThread();
-		log.info(this.getName() + "....starting.......");
+		log.info(this.getName() + "  run.......");
+		
+
 		LinkedList<DevTopd> testdevlist = new LinkedList<DevTopd>();
 
 		PDU outpdu = new PDU();

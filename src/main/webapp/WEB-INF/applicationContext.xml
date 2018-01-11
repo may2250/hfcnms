@@ -67,10 +67,11 @@
 	<bean id="redisUtil" class="com.xinlong.util.RedisUtil">
 		<property name="jedisPool" ref="jedisPool" />
 	</bean>
-	<bean id="staticMemory" class="com.xinlong.util.StaticMemory">
-	</bean>
-    
-    	<bean id="nojutest" class="wl.hfc.topd.Nojutest2">
+	
+	<bean id="staticMemory" class="com.xinlong.util.StaticMemory">	
+	</bean>    
+	
+    <bean id="nojutest" class="wl.hfc.topd.Nojutest2">
 	</bean>
     
     <!-- 业务对象 -->
@@ -78,6 +79,7 @@
 		<property name="redisUtil" ref="redisUtil" />
 		<property name="staticMemory" ref="staticMemory" />
 	</bean>
+	
 	<bean id="trapReceiverBean" class="wl.hfc.traprcss.TrapPduServer" >
 		<property name="redisUtil" ref="redisUtil" />
 	</bean>
@@ -85,14 +87,19 @@
 	<bean id="hfcAlarmProcessor" class="com.xinlong.Services.ServiceHfcAlarmProcessor" >
 		<property name="redisUtil" ref="redisUtil" />
 	</bean>-->
-
 	<bean id="pduserver" class="wl.hfc.online.PDUServer" >
 		<property name="redisUtil" ref="redisUtil" />
+	</bean>
+
+	<bean id="cdatabaseEngine" class="wl.hfc.common.CDatabaseEngine" >
+		<property name="dbuser" value="hfcnms" />
+	    <property name="dbpass" value="999999" />
+	    		<property name="redisUtil" ref="redisUtil" />
 	</bean>
 	<bean id="mainKernel" class="wl.hfc.topd.MainKernel" >
 		<property name="redisUtil" ref="redisUtil" />
 		<property name="staticMemory" ref="staticMemory" />
-				<property name="Inojutest" ref="nojutest" />
+		<property name="Inojutest" ref="nojutest" />
 	</bean>
 <!--
 		<bean id="CurrentAlarmModel" class="wl.hfc.alarmlog.CurrentAlarmModel" >

@@ -25,10 +25,12 @@ import org.xml.sax.SAXException;
 import redis.clients.jedis.Jedis;
 
 import com.xinlong.util.RedisUtil;
+import com.xinlong.util.StaticMemory;
 
 import wl.hfc.common.NlogType.OperLogTypes;
 import wl.hfc.common.NlogType.TrapLogTypes;
 import wl.hfc.online.pmls;
+import wl.hfc.topd.MainKernel;
 
 /*import com.mysql.jdbc.Connection;
  import com.mysql.jdbc.PreparedStatement;*/
@@ -39,6 +41,7 @@ public class CDatabaseEngine {
 	private static RedisUtil redisUtil;
 	public static boolean flag = false; // 数据库连接状态
 	public static CDatabaseEngine me;
+
 	// private boolean isFirstTimeSucedCnt = true;
 	private boolean lastTrapInsertIsSucced = false;
 	public Connection trapcon;
@@ -46,12 +49,22 @@ public class CDatabaseEngine {
 	private static Document docen;
 	private String dbuser="hfcnms";
 	private String dbpass="999999";
-	public CDatabaseEngine(RedisUtil predisUtil) {
-		redisUtil = predisUtil;
+	public CDatabaseEngine() {
+		log.info("construct  CDatabaseEngine");		
 		//loadDXml();
 		me = this;
 	}
 	
+	public  void setdbuser(String dbuser) {
+		this.dbuser = dbuser;
+	}
+	public  void setdbpass(String dbpass) {
+		this.dbpass = dbpass;
+	}
+	public static void setRedisUtil(RedisUtil redisUtil) {
+		redisUtil = redisUtil;
+	}
+
 	public boolean loadDXml() {
 
 		String filePath = pmls.class.getResource("/").toString();
@@ -66,15 +79,15 @@ public class CDatabaseEngine {
 
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
-			log.info(e.getMessage());
+			log.error(e.getMessage());
 			return false;
 		} catch (SAXException e) {
 			e.printStackTrace();
-			log.info(e.getMessage());
+			log.error(e.getMessage());
 			return false;
 		} catch (IOException e) {
 			e.printStackTrace();
-			log.info(e.getMessage());
+			log.error(e.getMessage());
 			return false;
 		}
 		Element rootElement = doc.getDocumentElement();
@@ -96,7 +109,7 @@ public class CDatabaseEngine {
 		boolean tmpFlag = flag;
 
 		String url = "jdbc:mysql://localhost:3306/hfctraplogs?characterEncoding=UTF-8&useSSL=false";
-		// ����������
+
 		String driver = "com.mysql.jdbc.Driver";
 
 		Connection con = null;
@@ -107,8 +120,7 @@ public class CDatabaseEngine {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
-			log.error(e.getMessage());
+			log.warn(e.getMessage(),e);
 
 			flag = false;
 
@@ -128,8 +140,8 @@ public class CDatabaseEngine {
 		} catch (Exception e) {
 
 			// TODO: handle exception
-			e.printStackTrace();
-			log.info(e.getMessage());
+			//e.printStackTrace();
+			log.warn(e);
 			trapcon = null;
 
 		}
@@ -314,7 +326,7 @@ public class CDatabaseEngine {
 				return true;
 
 		} catch (Exception EX) {
-			EX.printStackTrace();
+			log.warn(EX.getMessage(),EX);
 		}
 
 		return false;

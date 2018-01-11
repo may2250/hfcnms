@@ -1,10 +1,7 @@
 package wl.hfc.topd;
 
-import java.util.LinkedList; 
-import java.util.Queue; 
-import java.util.Random; 
+
 import java.util.List;  
-import java.util.UUID;  
 
   
 public class Producer extends Thread{  

@@ -28,6 +28,8 @@ public class ParamKernel extends Thread {
 	public static ParamKernel me;
 
 	public ParamKernel() {
+
+		log.info("construct  ParamKernel");
 		new pmls();
 		this.setName("ParamKernel");
 		me = this;
@@ -82,8 +84,7 @@ public class ParamKernel extends Thread {
 
 	private void phraseMSG(String message) throws InterruptedException, ParseException, IOException {
 
-		System.out.println(" [x] ParamKernel Received: '" + message + "'");
-
+		log.debug("Received: '" + message + "'");
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
 
@@ -208,7 +209,8 @@ public class ParamKernel extends Thread {
 		 * 
 		 * }
 		 */
-
+		log.info(this.getName() + "  run.......");
+		
 		while (true) {
 			synchronized (SmsgList.paknelstorage) {
 				// 消费者去仓库拿消息的时候，如果发现仓库数据为空，则等待

@@ -51,6 +51,8 @@ public class MainKernel {
 	public MainKernel() {
 		// Integer xx=null;
 		// log.info(xx.toString());
+
+		log.info("construct  MainKernel");		
 		me = this;
 
 	}
@@ -130,7 +132,7 @@ public class MainKernel {
 
 				} catch (Exception e) {
 					e.printStackTrace();
-					log.info(e.getMessage());
+					log.error(e.getMessage());
 				}
 			}
 
@@ -138,8 +140,9 @@ public class MainKernel {
 	}
 
 	private void phraseMSG(String message) throws InterruptedException, ParseException, IOException {
-		System.out.println(" [x] MainKernel Received: '" + message + "'");
 
+
+		log.debug("Received: '" + message + "'");
 		JSONObject jsondata = (JSONObject) new JSONParser().parse(message);
 		String cmd = jsondata.get("cmd").toString();
 		JSONObject rootjson = new JSONObject();
@@ -182,18 +185,17 @@ public class MainKernel {
 	}
 
 	@SuppressWarnings("static-access")
-	public void start() {
-
+	public void start() {	
 		
-		nojutestInstance.doPrint();
-		log.info("[#3] .....MainKernel starting.......");
+		//nojutestInstance.doPrint();
+		log.info("MainKernel start.......");			
 		ClsLanguageExmp.init(true, true);
 
 		new wl.hfc.common.trapDataForWHF(true);
 
-	new SmsgList();
+	     new SmsgList();
 
-		ICDatabaseEngine1 = new CDatabaseEngine(redisUtil);
+		ICDatabaseEngine1 =CDatabaseEngine.me;
 
 		initTopodData();
 
@@ -1240,7 +1242,6 @@ public class MainKernel {
 			if (queue.equalsIgnoreCase(HFCALARM_MESSAGE)) {
 				synchronized (SmsgList.alarmstorage) {
 					SmsgList.alarmstorage.add(msg);
-					System.out.println("生产" + "msg");
 					SmsgList.alarmstorage.notify();
 
 				}

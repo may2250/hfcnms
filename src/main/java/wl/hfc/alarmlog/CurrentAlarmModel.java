@@ -30,9 +30,12 @@ public class CurrentAlarmModel extends Thread {
 	private static final String MAINKERNEL_MESSAGE = "mainkernel.message";
 	private static final String HFCALARM_MESSAGE = "currentalarm.message";
 	private static Logger log = Logger.getLogger(CurrentAlarmModel.class);
+	
+	private static RedisUtil redisUtil;
+	private static StaticMemory staticmemory;
 
 	public static CurrentAlarmModel me;
-	// private static Logger log2 = Logger.getLogger("myTest1");
+
 
 	private int MAX_TRAPNUMBER = 100;
 	public CDatabaseEngine logEngine;
@@ -44,8 +47,7 @@ public class CurrentAlarmModel extends Thread {
 	public ArrayList<nojuTrapLogTableRow> invalidRows;
 	// public Hashtable invalidRowsTable;
 
-	private static RedisUtil redisUtil;
-	private static StaticMemory staticmemory;
+
 
 	private int pageNumMAX = 50;
 	private int versionNum = 0;
@@ -61,16 +63,15 @@ public class CurrentAlarmModel extends Thread {
 
 	public CurrentAlarmModel() {
 
+		log.info("construct  CurrentAlarmModel");	
 		allRows = new CopyOnWriteArrayList<nojuTrapLogTableRow>();
 		// allRowsTable = new Hashtable();
 
 		invalidRows = new ArrayList<nojuTrapLogTableRow>();
 		// invalidRowsTable = new Hashtable();
 
-		this.setName("CurrentAlarmModel");
-		
-		System.out.println("CurrentAlarmModelCurrentAlarmModelCurrentAlarmModelCurrentAlarmModelCurrentAlarmModelCurrentAlarmModelHHHHHHHHHHHHHHHHHHAAAAAAAAAAAAA " );
-		
+		this.setName("CurrentAlarmModel");		
+
 		me = this;
 
 	}
@@ -78,6 +79,7 @@ public class CurrentAlarmModel extends Thread {
 	private List<String> tmplist = new ArrayList<String>();
 
 	public void run() {
+		log.info("CurrentAlarmModel run.......");	
 		
 		if (Sstatus.isRedis) {
 			Jedis jedis = null;
@@ -132,8 +134,8 @@ public class CurrentAlarmModel extends Thread {
 	private void phraseMSG(String msg) {
 
 		try {
-			System.out.println(" [x] CurrentAlarmModel Received: '" + msg + "'");
 
+			log.debug("Received: '" + msg + "'");
 			JSONObject jsondata = (JSONObject) new JSONParser().parse(msg);
 			String cmd = jsondata.get("cmd").toString();
 			JSONObject rootjson = new JSONObject();
